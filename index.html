@@ -37,6 +37,17 @@
             Powered by Sony Alpha Vietnam. AI features by Google Gemini.
         </footer>
     </div>
+    
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] rounded-3xl flex flex-col">
+            <div class="p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
+                <h2 id="comparisonModalTitle" class="text-2xl font-bold" data-translate-key="comparisonModalTitle"></h2>
+                <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
+            </div>
+            <div id="comparisonModalContent" class="p-8 overflow-y-auto prose-comparison"></div>
+        </div>
+    </div>
 
     <script type="module" src="./app.js"></script>
 </body>
