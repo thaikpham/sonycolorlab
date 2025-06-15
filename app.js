@@ -1,4 +1,3 @@
-// ============== app.js ==============
 import { translations, quizQuestions } from './translations.js';
 import { recipesData } from './data.js';
 
@@ -7,6 +6,7 @@ const state = {
     currentLang: 'vi',
     currentView: 'home',
     selectedRecipeId: null,
+    comparisonList: [], // Restored for comparison
     lastGeneratedAiRecipe: null,
     isAILoading: false,
     quizStep: 0,
@@ -23,28 +23,27 @@ async function callAIApi(prompt, delay = 1000) {
     try {
         await new Promise(resolve => setTimeout(resolve, delay));
         if (prompt.includes("Recommend TWO recipes")) {
-             const idx1 = Math.floor(Math.random() * recipesData.length);
-             let idx2;
-             do { idx2 = Math.floor(Math.random() * recipesData.length); } while (idx1 === idx2);
-             return [ { recipeId: recipesData[idx1].id }, { recipeId: recipesData[idx2].id } ];
+            const idx1 = Math.floor(Math.random() * recipesData.length);
+            let idx2;
+            do { idx2 = Math.floor(Math.random() * recipesData.length); } while (idx1 === idx2);
+            return [{ recipeId: recipesData[idx1].id }, { recipeId: recipesData[idx2].id }];
+        }
+        if (prompt.includes("Compare the following two recipes")) {
+             const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
+             return `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
         }
         if (prompt.includes("Original Recipe")) {
             const originalId = prompt.match(/ID: (.*?)\)/)[1];
             const originalRecipe = recipesData.find(r => r.id === originalId);
             let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
             adjustedRecipe.name = {vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)`};
-            if (prompt.includes('ấm') || prompt.includes('warmer')) { adjustedRecipe.whiteBalance = "5500K, A6-M1"; }
-            if (prompt.includes('trong') || prompt.includes('clearer')) { if(adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = '0'; }
             return { recipe: adjustedRecipe };
         }
         if (prompt.includes("Create a new recipe based on prompt:")) {
             return {
-                id: `ai-${Date.now()}`,
-                name: { vi: "Sáng tạo của AI", en: "AI Creation" },
+                id: `ai-${Date.now()}`, name: { vi: "Sáng tạo của AI", en: "AI Creation" },
                 description: { vi: "Một công thức độc đáo được tạo ra từ prompt của bạn.", en: "A unique recipe generated from your prompt." },
-                type: "color",
-                contrast: ["high", "medium", "low"][Math.floor(Math.random()*3)],
-                saturation: ["high", "medium", "low"][Math.floor(Math.random()*3)],
+                type: "color", contrast: ["high", "medium", "low"][Math.floor(Math.random()*3)], saturation: ["high", "medium", "low"][Math.floor(Math.random()*3)],
                 whiteBalance: `${Math.floor(Math.random() * 60 + 30) * 100}K, A${Math.floor(Math.random()*8)}-M${Math.random().toFixed(1)}`,
                 settings: { "Black level": `${Math.floor(Math.random() * 31 - 15)}`, "Gamma": "Cine1", "Black Gamma": "Wide +0", "Knee": "Auto", "Color Mode": "Still", "Saturation": `+${Math.floor(Math.random() * 33)}`, "Color Phase": `+${Math.floor(Math.random() * 8)}`},
                 colorDepth: { R: `+${Math.floor(Math.random() * 8 - 4)}`, G: `+${Math.floor(Math.random() * 8 - 4)}`, B: `+${Math.floor(Math.random() * 8 - 4)}`, C: `+${Math.floor(Math.random() * 8 - 4)}`, M: `+${Math.floor(Math.random() * 8 - 4)}`, Y: `+${Math.floor(Math.random() * 8 - 4)}`},
@@ -80,8 +79,6 @@ function applyTranslations() {
             el.textContent = t(key);
         }
     });
-    document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
-    document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
 }
 
 function createSettingsGrid(settings) {
@@ -136,6 +133,7 @@ const viewTemplates = {
                      <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                 </div>
                 <div id="recipeListContainer" class="space-y-1 pt-4 mt-4 border-t flex-grow overflow-y-auto pr-2"></div>
+                <div id="compareBtnContainer" class="pt-2 flex-shrink-0"></div>
              </aside>
              <main class="md:w-2/3 lg:w-3/4 flex flex-col min-h-0"><div class="glass-panel flex-grow overflow-y-auto p-8 rounded-3xl">
                 <div id="recipeDetailWelcome" class="text-center flex flex-col items-center justify-center h-full text-neutral-400">
@@ -195,11 +193,49 @@ function handleFilterClick(e) {
     renderLibraryList();
 }
 
-function handleRecipeSelection(id) {
-    state.selectedRecipeId = id;
-    renderLibraryDetails();
+function handleRecipeSelection(id, type) {
+    if (type === 'checkbox') {
+        const index = state.comparisonList.indexOf(id);
+        if (index > -1) {
+            state.comparisonList.splice(index, 1);
+        } else if (state.comparisonList.length < 2) {
+            state.comparisonList.push(id);
+        }
+        
+        if (state.comparisonList.length !== 2) {
+            state.selectedRecipeId = null;
+            document.getElementById('recipeContent').classList.add('hidden');
+            document.getElementById('recipeDetailWelcome').classList.remove('hidden');
+        }
+    } else { 
+        state.selectedRecipeId = id;
+        state.comparisonList = []; // Clear comparison when viewing details
+        renderLibraryDetails();
+    }
     renderLibraryList();
 }
+
+async function handleAiComparison() {
+    if (state.comparisonList.length !== 2) return;
+    const [id1, id2] = state.comparisonList;
+    const modal = document.getElementById('comparisonModal');
+    const titleEl = document.getElementById('comparisonModalTitle');
+    const contentEl = document.getElementById('comparisonModalContent');
+    
+    modal.classList.remove('hidden');
+    titleEl.textContent = t('comparisonModalTitle');
+    contentEl.innerHTML = `<div class="flex items-center justify-center p-8"><div class="spinner !w-12 !h-12 !border-4"></div><p class="ml-4 text-lg font-semibold" data-translate-key="comparisonLoading"></p></div>`;
+    applyTranslations();
+
+    const recipe1 = recipesData.find(r => r.id === id1);
+    const recipe2 = recipesData.find(r => r.id === id2);
+
+    const prompt = `Compare the following two recipes: *${recipe1.name[state.currentLang]}* and *${recipe2.name[state.currentLang]}*. Analyze their overall feel, key parameter differences (like White Balance and Black Level), and suggest ideal use cases for each. Present the result in Markdown.`;
+    const comparisonText = await callAIApi(prompt, 1200);
+    
+    contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
+}
+
 
 async function handleAiAdjustment(button) {
     const recipeId = button.dataset.recipeId;
@@ -292,9 +328,22 @@ function attachViewEventListeners(viewName) {
         document.getElementById('searchInput').addEventListener('input', renderLibraryList);
         document.getElementById('filtersContainer').addEventListener('click', handleFilterClick);
         document.getElementById('recipeListContainer').addEventListener('click', e => {
-             const item = e.target.closest('.recipe-item');
-             if (item) handleRecipeSelection(item.dataset.recipeId);
+             const cb = e.target.closest('.recipe-compare-cb');
+             const item = e.target.closest('.recipe-item-clickable');
+             if (cb) {
+                 handleRecipeSelection(cb.dataset.recipeId, 'checkbox');
+             } else if (item) {
+                 handleRecipeSelection(item.dataset.recipeId, 'div');
+             }
         });
+        const compareBtnContainer = document.getElementById('compareBtnContainer');
+        if (compareBtnContainer) {
+            compareBtnContainer.addEventListener('click', (e) => {
+                if(e.target.id === 'compareBtn' && !e.target.disabled) {
+                    handleAiComparison();
+                }
+            });
+        }
     } else if (viewName === 'quiz') {
          document.querySelector('#quizView .grid').addEventListener('click', e => {
             const option = e.target.closest('.quiz-option');
@@ -327,13 +376,18 @@ function renderLibraryList() {
 
      container.innerHTML = recipesToRender.map(recipe => {
         const isSelected = recipe.id === state.selectedRecipeId;
-         return `<div class="recipe-item p-3 rounded-lg transition-all duration-200 border-l-4 border-transparent flex gap-3 cursor-pointer ${isSelected ? 'selected' : ''}" data-recipe-id="${recipe.id}">
-            <div class="flex-grow">
+        const isChecked = state.comparisonList.includes(recipe.id);
+         return `<div class="recipe-item p-3 rounded-lg transition-all duration-200 border-l-4 border-transparent flex gap-3 items-center ${isSelected ? 'selected' : ''}">
+            <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
+            <div class="flex-grow cursor-pointer recipe-item-clickable" data-recipe-id="${recipe.id}">
                 <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
                 <p class="text-xs text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
             </div>
         </div>`;
      }).join('');
+     
+     const btnContainer = document.getElementById('compareBtnContainer');
+     btnContainer.innerHTML = `<button id="compareBtn" class="btn btn-primary w-full mt-4 py-3" data-translate-key="compareBtn" ${state.comparisonList.length !== 2 ? 'disabled' : ''}></button>`;
      applyTranslations();
 }
 
@@ -388,12 +442,15 @@ function init() {
         const retakeQuizBtn = target.closest('#retakeQuizBtn');
         const aiTuningBtn = target.closest('#aiTuningBtn');
         const quizChoice = target.closest('.quiz-choice-option');
-        const recipeItem = target.closest('.recipe-item');
+        const recipeItemClickable = target.closest('.recipe-item-clickable');
+        const recipeCheckbox = target.closest('.recipe-compare-cb');
+        const compareBtn = target.closest('#compareBtn');
+        const closeModalBtn = target.closest('#closeComparisonModalBtn');
 
         const resetQuiz = async () => { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); };
 
         if (homeBtn) { await renderView('home'); return; }
-        if (navBtn && !navBtn.href) { // Prevent re-rendering for external links
+        if (navBtn && !navBtn.href) { 
             e.preventDefault();
             await renderView(navBtn.dataset.view); 
             return; 
@@ -410,8 +467,17 @@ function init() {
             await renderView('library');
             return; 
         }
-        if(recipeItem) {
-            handleRecipeSelection(recipeItem.dataset.recipeId);
+        if(recipeItemClickable) {
+            handleRecipeSelection(recipeItemClickable.dataset.recipeId, 'div');
+        }
+        if(recipeCheckbox) {
+            handleRecipeSelection(recipeCheckbox.dataset.recipeId, 'checkbox');
+        }
+        if (compareBtn && !compareBtn.disabled) {
+            handleAiComparison();
+        }
+        if (closeModalBtn) {
+            document.getElementById('comparisonModal').classList.add('hidden');
         }
     });
     
