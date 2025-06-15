@@ -10,12 +10,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./style.css">
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Chart.js for diagrams -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <!-- Background Animated Blurs -->
@@ -28,34 +26,30 @@
     <div id="appContainer" class="h-screen w-screen p-4 md:p-6 flex flex-col overflow-hidden">
         <!-- Header -->
         <header class="flex justify-between items-center w-full z-10 flex-shrink-0">
-             <div class="flex items-center">
-                <button id="homeBtn" class="text-2xl font-bold text-gray-800" data-translate-key="headerTitle">Alpha AI Color Lab</button>
-                <span id="betaBadge">BETA</span>
-            </div>
+            <button id="homeBtn" class="text-2xl font-bold text-gray-800" data-translate-key="headerTitle">Sony AI Color Lab</button>
             <div class="flex items-center gap-4">
                  <!-- Main Navigation -->
-                 <nav id="mainNav" class="hidden md:flex items-center gap-4">
-                    <button data-view="library" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navLibrary">Thư viện</button>
-                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navExplain">Giải thích</button>
-                    <button data-view="aiStudio" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navAiStudio">AI Studio</button>
+                 <nav id="mainNav" class="flex items-center gap-4">
+                    <button data-view="library" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navLibrary"></button>
+                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navExplain"></button>
                  </nav>
                  <!-- Language Switcher -->
                 <div class="flex items-center gap-2">
                      <button id="langEN" class="lang-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-8 h-8"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-6 h-6"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
                     </button>
                      <button id="langVI" class="lang-btn active">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-8 h-8"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-6 h-6"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
                     </button>
                 </div>
             </div>
         </header>
 
         <!-- Dynamic Content Area -->
-        <main id="mainContent" class="flex-grow min-h-0 relative mt-4 mb-2"></main>
-
+        <main id="mainContent" class="flex-grow min-h-0 relative mt-8"></main>
+        
         <!-- Footer -->
-        <footer class="text-center text-xs text-neutral-500 py-1 flex-shrink-0">
+        <footer class="text-center p-4 text-sm text-gray-500 w-full flex-shrink-0">
             Powered by Sony Alpha Vietnam. AI features by Google Gemini.
         </footer>
     </div>
@@ -64,7 +58,7 @@
     <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] rounded-3xl flex flex-col">
             <div class="p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
-                <h2 id="comparisonModalTitle" class="text-2xl font-bold" data-translate-key="comparisonModalTitle">So sánh bằng AI</h2>
+                <h2 id="comparisonModalTitle" class="text-2xl font-bold"></h2>
                 <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
             </div>
             <div id="comparisonModalContent" class="p-8 overflow-y-auto prose-comparison"></div>
