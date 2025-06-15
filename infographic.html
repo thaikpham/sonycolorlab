@@ -8,7 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Color Palette: Energetic & Playful -->
+    <!-- #00A6ED (Blue), #7FBA00 (Green), #FFB900 (Yellow), #F25022 (Orange), #737373 (Gray) -->
+    <!-- CONFIRMATION: NO SVG or Mermaid JS used. All diagrams are HTML/CSS or Canvas-rendered by Chart.js. -->
     <style>
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
@@ -52,7 +55,7 @@
     <div class="container mx-auto p-4 md:p-8">
 
         <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 mb-2">Làm Chủ Màu Sắc Film-look</h1>
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2">Làm Chủ Màu Sắc Film-look</h1>
             <h2 class="text-xl md:text-2xl text-[#00A6ED]">Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony</h2>
         </header>
 
@@ -184,7 +187,7 @@
                             <p class="text-xl mb-4">Tỷ màu</p>
                             <div class="w-full h-12 rounded-lg gradient-smooth"></div>
                             <p class="mt-2 text-green-600 font-semibold">Chuyển màu mượt mà</p>
-                            <p class="text-sm text-gray-600">Số lượng "bậc thang" màu nhiều gấp 64 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.</p>
+                            <p class="text-sm text-gray-600">Số lượng "bậc thang" màu nhiều gấp 4 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.</p>
                         </div>
                     </div>
                 </div>
@@ -252,6 +255,241 @@
 
     </div>
 
-    <script src="./infographic.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const FONT_COLOR = '#374151'; // text-gray-700
+            const GRID_COLOR = '#E5E7EB'; // text-gray-200
+            const PALETTE = {
+                blue: '#00A6ED',
+                green: '#7FBA00',
+                yellow: '#FFB900',
+                orange: '#F25022',
+                gray: '#737373'
+            };
+
+            const defaultChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                color: FONT_COLOR,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: FONT_COLOR
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: FONT_COLOR },
+                        grid: { color: GRID_COLOR }
+                    },
+                    y: {
+                        ticks: { color: FONT_COLOR },
+                        grid: { color: GRID_COLOR }
+                    }
+                }
+            };
+            
+            function wrapLabel(label) {
+                const maxLength = 16;
+                if (typeof label !== 'string' || label.length <= maxLength) {
+                    return label;
+                }
+                const words = label.split(' ');
+                let lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + ' ' + word).length > maxLength && currentLine.length > 0) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine += (currentLine ? ' ' : '') + word;
+                    }
+                }
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+                return lines;
+            }
+
+            // Chart 1: Kelvin Scale
+            const kelvinCtx = document.getElementById('kelvinChart');
+            if(kelvinCtx) {
+                new Chart(kelvinCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['2500K', '4000K', '5500K', '7500K', '9900K'],
+                        datasets: [{
+                            label: 'Nhiệt độ màu (Kelvin)',
+                            data: [1, 1, 1, 1, 1],
+                            backgroundColor: [
+                                'rgba(0, 166, 237, 0.4)',
+                                'rgba(0, 166, 237, 0.7)',
+                                'rgba(200, 200, 200, 0.8)',
+                                'rgba(242, 80, 34, 0.7)',
+                                'rgba(242, 80, 34, 0.4)'
+                            ],
+                            borderColor: [
+                                'rgba(0, 166, 237, 1)',
+                                'rgba(0, 166, 237, 1)',
+                                'rgba(150, 150, 150, 1)',
+                                'rgba(242, 80, 34, 1)',
+                                'rgba(242, 80, 34, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { ...defaultChartOptions, indexAxis: 'y', plugins: { legend: { display: false } } }
+                });
+            }
+
+            // Chart 2: WB Shift
+            const wbShiftCtx = document.getElementById('wbShiftChart');
+            if(wbShiftCtx) {
+                new Chart(wbShiftCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Sony Classic Negative',
+                            data: [{x: 6, y: 7}],
+                            backgroundColor: PALETTE.blue,
+                            pointRadius: 10,
+                            pointHoverRadius: 15
+                        }, {
+                            label: 'Kodak Portra 400',
+                            data: [{x: -7, y: 0.5}],
+                            backgroundColor: PALETTE.orange,
+                            pointRadius: 10,
+                            pointHoverRadius: 15
+                        }]
+                    },
+                    options: {
+                        ...defaultChartOptions,
+                        scales: {
+                            x: {
+                                ...defaultChartOptions.scales.x,
+                                min: -9, max: 9,
+                                title: { display: true, text: 'Trục Xanh (B) ← → Hổ phách (A)', color: FONT_COLOR }
+                            },
+                            y: {
+                                ...defaultChartOptions.scales.y,
+                                min: -9, max: 9,
+                                title: { display: true, text: 'Trục Tím (M) ↑', color: FONT_COLOR }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart 3: Black Gamma
+            const blackGammaCtx = document.getElementById('blackGammaChart');
+            if(blackGammaCtx) {
+                new Chart(blackGammaCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['-7', '-4', '0', '+4', '+7'],
+                        datasets: [{
+                            label: 'Level',
+                            data: [-7, -4, 0, 4, 7],
+                            backgroundColor: [PALETTE.blue, PALETTE.blue, PALETTE.gray, PALETTE.orange, PALETTE.orange],
+                        }]
+                    },
+                    options: {
+                        ...defaultChartOptions,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { title: { display: true, text: 'Nghiền bóng ↔ Nâng bóng' } } }
+                    }
+                });
+            }
+
+            // Chart 4: Knee
+            const kneeCtx = document.getElementById('kneeChart');
+            if(kneeCtx) {
+                 new Chart(kneeCtx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: 12}, (_, i) => i * 10), // 0 to 110
+                        datasets: [
+                            {
+                                label: 'Tín hiệu gốc (Không Knee)',
+                                data: Array.from({length: 11}, (_, i) => i * 10),
+                                borderColor: PALETTE.gray,
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                fill: false,
+                                tension: 0.1,
+                                pointRadius: 0,
+                            },
+                            {
+                                label: 'Soft Roll-off (Point:80, Slope:+4)',
+                                data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 88, 94, 98],
+                                borderColor: PALETTE.green,
+                                backgroundColor: PALETTE.green+'33',
+                                borderWidth: 3,
+                                fill: false,
+                                tension: 0.4,
+                                pointRadius: 0,
+                            },
+                            {
+                                label: 'Sharp Highlight (Point:95, Slope:-2)',
+                                data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 97, 101],
+                                borderColor: PALETTE.blue,
+                                backgroundColor: PALETTE.blue+'33',
+                                borderWidth: 3,
+                                fill: false,
+                                tension: 0.1,
+                                pointRadius: 0,
+                            }
+                        ]
+                    },
+                    options: {
+                        ...defaultChartOptions,
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 20 } } },
+                        scales: {
+                            x: { title: { display: true, text: 'Tín hiệu vào (%)' } },
+                            y: { title: { display: true, text: 'Tín hiệu ra (%)' }, min: 0, max: 110 }
+                        }
+                    }
+                });
+            }
+            
+            // Chart 5: Color Depth
+            const colorDepthCtx = document.getElementById('colorDepthChart');
+            if(colorDepthCtx) {
+                new Chart(colorDepthCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Đỏ (R)', 'X.lá (G)', 'X.dương (B)', 'Lục lam (C)', 'Tím (M)', 'Vàng (Y)'],
+                        datasets: [{
+                            label: 'Điều chỉnh Độ sâu màu',
+                            data: [-3, 5, -3, -3, -5, -2], // Kodak Portra Recipe
+                            backgroundColor: ['#EF5350', '#66BB6A', '#42A5F5', '#26C6DA', '#AB47BC', '#FFEE58'],
+                        }]
+                    },
+                    options: {
+                        ...defaultChartOptions,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { min: -7, max: 7, title: { display: true, text: 'Nhạt/Sáng ↔ Đậm/Tối' } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
+
