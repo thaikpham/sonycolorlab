@@ -48,205 +48,247 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        /* Active language button style */
+        .lang-active {
+            font-weight: 700;
+            color: #00A6ED;
+        }
+        .lang-inactive {
+            color: #6b7280; /* text-gray-500 */
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-gray-800">
 
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <a href="index.html" class="text-xl font-bold text-[#00A6ED]">Alpha AI Color Lab</a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-[#00A6ED]" data-lang-key="navHome">Trang Chủ</a>
+                    <a href="index.html#library" class="text-gray-600 hover:text-[#00A6ED]" data-lang-key="navLibrary">Thư Viện</a>
+                    <a href="#" class="text-[#00A6ED] font-semibold" data-lang-key="navGuide">Hướng Dẫn</a> <!-- Active page -->
+                    <a href="https://www.facebook.com/groups/sonydiycolor" target="_blank" class="text-gray-600 hover:text-[#00A6ED]" data-lang-key="navCommunity">Cộng Đồng</a>
+                    <!-- Language Switcher -->
+                    <div class="flex items-center space-x-2">
+                        <button id="lang-vi-btn" class="lang-active">VI</button>
+                        <span>|</span>
+                        <button id="lang-en-btn" class="lang-inactive">EN</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="outline-none">
+                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white">
+            <a href="index.html" class="block py-2 px-4 text-sm hover:bg-gray-100" data-lang-key="navHomeMobile">Trang Chủ</a>
+            <a href="index.html#library" class="block py-2 px-4 text-sm hover:bg-gray-100" data-lang-key="navLibraryMobile">Thư Viện</a>
+            <a href="#" class="block py-2 px-4 text-sm bg-gray-100 text-[#00A6ED] font-semibold" data-lang-key="navGuideMobile">Hướng Dẫn</a>
+            <a href="https://www.facebook.com/groups/sonydiycolor" target="_blank" class="block py-2 px-4 text-sm hover:bg-gray-100" data-lang-key="navCommunityMobile">Cộng Đồng</a>
+             <!-- Mobile Language Switcher -->
+            <div class="flex justify-center items-center space-x-2 py-4 border-t">
+                <button id="mobile-lang-vi-btn" class="lang-active">VI</button>
+                <span>|</span>
+                <button id="mobile-lang-en-btn" class="lang-inactive">EN</button>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mx-auto p-4 md:p-8">
 
         <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2">Làm Chủ Màu Sắc Film-look</h1>
-            <h2 class="text-xl md:text-2xl text-[#00A6ED]">Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony</h2>
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2" data-lang-key="mainTitle">Làm Chủ Màu Sắc Film-look</h1>
+            <h2 class="text-xl md:text-2xl text-[#00A6ED]" data-lang-key="mainSubtitle">Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony</h2>
         </header>
 
         <main class="space-y-16">
-
-            <!-- Section 1: Introduction -->
+            <!-- Sections will be populated by JS -->
             <section id="intro" class="text-center">
-                <h3 class="text-3xl font-bold mb-4">Nghệ Thuật Của Màu Sắc Sony DIY Color</h3>
-                <p class="max-w-3xl mx-auto text-lg mb-8">
+                <h3 class="text-3xl font-bold mb-4" data-lang-key="introTitle">Nghệ Thuật Của Màu Sắc Sony DIY Color</h3>
+                <p class="max-w-3xl mx-auto text-lg mb-8" data-lang-key="introParagraph">
                     Thay vì dành hàng giờ hậu kỳ, hãy tạo ra những bức ảnh với màu sắc hoàn hảo ngay từ máy ảnh. Đây là cách rèn luyện tư duy nhiếp ảnh, đưa ra quyết định sáng tạo ngay tại thời điểm bấm máy, sử dụng các công cụ mạnh mẽ mà Sony trang bị.
                 </p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="text-xl font-bold text-[#F25022] mb-2">Quy Trình Hậu Kỳ RAW</h4>
+                        <h4 class="text-xl font-bold text-[#F25022] mb-2" data-lang-key="rawProcessTitle">Quy Trình Hậu Kỳ RAW</h4>
                         <ol class="text-left space-y-2">
-                            <li><span>1. 📸 Chụp ảnh RAW</span></li>
-                            <li><span>2. 💻 Chuyển file vào máy tính</span></li>
-                            <li><span>3. 🎨 Mở phần mềm chỉnh sửa</span></li>
-                            <li><span>4.  sliders Kéo các thanh trượt màu sắc</span></li>
-                            <li><span>5. ✅ Xuất file JPEG/TIFF</span></li>
+                            <li data-lang-key="rawStep1"><span>1. 📸 Chụp ảnh RAW</span></li>
+                            <li data-lang-key="rawStep2"><span>2. 💻 Chuyển file vào máy tính</span></li>
+                            <li data-lang-key="rawStep3"><span>3. 🎨 Mở phần mềm chỉnh sửa</span></li>
+                            <li data-lang-key="rawStep4"><span>4.  sliders Kéo các thanh trượt màu sắc</span></li>
+                            <li data-lang-key="rawStep5"><span>5. ✅ Xuất file JPEG/TIFF</span></li>
                         </ol>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md border-4 border-[#7FBA00]">
-                        <h4 class="text-xl font-bold text-[#7FBA00] mb-2">Quy Trình Sáng Tạo Sony DIY Color</h4>
+                        <h4 class="text-xl font-bold text-[#7FBA00] mb-2" data-lang-key="diyProcessTitle">Quy Trình Sáng Tạo Sony DIY Color</h4>
                         <ol class="text-left space-y-2">
-                            <li><span>1. 🎨 Thiết lập màu trong máy ảnh</span></li>
-                            <li><span>2. 📸 Chụp ảnh JPEG/HEIF</span></li>
-                            <li><span class="font-bold">3. ✨ Sẵn sàng để sử dụng ngay!</span></li>
+                            <li data-lang-key="diyStep1"><span>1. 🎨 Thiết lập màu trong máy ảnh</span></li>
+                            <li data-lang-key="diyStep2"><span>2. 📸 Chụp ảnh JPEG/HEIF</span></li>
+                            <li data-lang-key="diyStep3"><span class="font-bold">3. ✨ Sẵn sàng để sử dụng ngay!</span></li>
                         </ol>
                     </div>
                 </div>
             </section>
 
-            <!-- Section 2: White Balance -->
             <section id="wb">
-                <h3 class="text-3xl font-bold text-center mb-8">Nền Tảng Sáng Tạo: Biến Cân Bằng Trắng Thành Cọ Vẽ</h3>
+                <h3 class="text-3xl font-bold text-center mb-8" data-lang-key="wbTitle">Nền Tảng Sáng Tạo: Biến Cân Bằng Trắng Thành Cọ Vẽ</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="text-xl font-bold mb-4">1. Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo</h4>
-                        <p class="mb-4">Sử dụng thang đo Kelvin như một nét cọ lớn để nhuộm toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.</p>
+                        <h4 class="text-xl font-bold mb-4" data-lang-key="wbKelvinTitle">1. Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo</h4>
+                        <p class="mb-4" data-lang-key="wbKelvinDesc">Sử dụng thang đo Kelvin như một nét cọ lớn để nhuộm toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.</p>
                         <div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div>
                         <div class="mt-4 text-sm text-gray-600">
-                            <p><span class="font-bold text-[#00A6ED]">Tông Lạnh (2500K-4000K):</span> Tạo cảm giác của cảnh đêm, trong bóng râm.</p>
-                            <p><span class="font-bold text-[#F25022]">Tông Ấm (6000K-9900K):</span> Mô phỏng ánh sáng hoàng hôn, hoài cổ.</p>
+                            <p data-lang-key="wbKelvinCool"><span class="font-bold text-[#00A6ED]">Tông Lạnh (2500K-4000K):</span> Tạo cảm giác của cảnh đêm, trong bóng râm.</p>
+                            <p data-lang-key="wbKelvinWarm"><span class="font-bold text-[#F25022]">Tông Ấm (6000K-9900K):</span> Mô phỏng ánh sáng hoàng hôn, hoài cổ.</p>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="text-xl font-bold mb-4">2. Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi</h4>
-                        <p class="mb-4">Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.</p>
+                        <h4 class="text-xl font-bold mb-4" data-lang-key="wbShiftTitle">2. Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi</h4>
+                        <p class="mb-4" data-lang-key="wbShiftDesc">Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.</p>
                         <div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div>
                         <div class="mt-4 text-sm text-gray-600">
-                            <p><span class="font-bold">Ví dụ "Sony Classic Negative":</span> Đặt 9900K, sau đó dịch chuyển tới B6, M7 để tạo ra lớp nền Xanh-Tím độc đáo.</p>
+                            <p data-lang-key="wbShiftExample"><span class="font-bold">Ví dụ "Sony Classic Negative":</span> Đặt 9900K, sau đó dịch chuyển tới B6, M7 để tạo ra lớp nền Xanh-Tím độc đáo.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Section 3: Picture Profile -->
             <section id="pp">
-                <h3 class="text-3xl font-bold text-center mb-8">Đi Sâu Vào "Lõi" Màu Sắc: Khám Phá Picture Profile (PP)</h3>
-                <p class="max-w-3xl mx-auto text-center text-lg mb-8">
+                <h3 class="text-3xl font-bold text-center mb-8" data-lang-key="ppTitle">Đi Sâu Vào "Lõi" Màu Sắc: Khám Phá Picture Profile (PP)</h3>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-lang-key="ppDesc">
                     Sau khi tạo "bức toan" màu nền bằng WB, PP là nơi chúng ta thực sự điêu khắc và tinh chỉnh màu sắc để tạo ra một "look" hoàn chỉnh. Đây là quy trình xử lý tín hiệu.
                 </p>
-                
                 <div class="bg-white p-6 rounded-lg shadow-md mb-8">
                     <div class="flex flex-col md:flex-row justify-around items-center text-center">
                         <div class="p-4">
-                            <h5 class="text-lg font-bold">Gamma & Color Mode</h5>
-                            <p class="text-sm">Xương sống Tương phản & Màu sắc</p>
+                            <h5 class="text-lg font-bold" data-lang-key="ppFlow1">Gamma & Color Mode</h5>
+                            <p class="text-sm" data-lang-key="ppFlow1Desc">Xương sống Tương phản & Màu sắc</p>
                         </div>
                         <div class="flow-arrow transform md:rotate-0 rotate-90">→</div>
                         <div class="p-4">
-                            <h5 class="text-lg font-bold">Black Gamma & Knee</h5>
-                            <p class="text-sm">Kiểm soát Vùng tối & Vùng sáng</p>
+                            <h5 class="text-lg font-bold" data-lang-key="ppFlow2">Black Gamma & Knee</h5>
+                            <p class="text-sm" data-lang-key="ppFlow2Desc">Kiểm soát Vùng tối & Vùng sáng</p>
                         </div>
                         <div class="flow-arrow transform md:rotate-0 rotate-90">→</div>
                         <div class="p-4">
-                            <h5 class="text-lg font-bold">Color Phase/Depth</h5>
-                            <p class="text-sm">Tinh chỉnh Màu sắc Tổng thể & Chi tiết</p>
+                            <h5 class="text-lg font-bold" data-lang-key="ppFlow3">Color Phase/Depth</h5>
+                            <p class="text-sm" data-lang-key="ppFlow3Desc">Tinh chỉnh Màu sắc Tổng thể & Chi tiết</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="text-xl font-bold mb-4">Black Gamma: Linh Hồn Vùng Tối</h4>
-                        <p class="mb-4">Điều chỉnh độ tương phản bên trong các vùng tối, tạo hiệu ứng "nâng bóng" (faded look) hoặc "nghiền bóng" (crushed blacks).</p>
+                        <h4 class="text-xl font-bold mb-4" data-lang-key="blackGammaTitle">Black Gamma: Linh Hồn Vùng Tối</h4>
+                        <p class="mb-4" data-lang-key="blackGammaDesc">Điều chỉnh độ tương phản bên trong các vùng tối, tạo hiệu ứng "nâng bóng" (faded look) hoặc "nghiền bóng" (crushed blacks).</p>
                         <div class="chart-container h-56"><canvas id="blackGammaChart"></canvas></div>
-                        <p class="mt-4 text-sm text-gray-600"><span class="font-bold text-[#F25022]">Level +7:</span> Nâng bóng, mờ ảo. <span class="font-bold text-[#00A6ED]">Level -7:</span> Nghiền bóng, kịch tính.</p>
+                        <p class="mt-4 text-sm text-gray-600" data-lang-key="blackGammaNote"><span class="font-bold text-[#F25022]">Level +7:</span> Nâng bóng, mờ ảo. <span class="font-bold text-[#00A6ED]">Level -7:</span> Nghiền bóng, kịch tính.</p>
                     </div>
-
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="text-xl font-bold mb-4">Knee: Bảo Vệ Vùng Sáng</h4>
-                        <p class="mb-4">Một cơ chế "bảo hiểm" cho vùng sáng, nén tín hiệu ở vùng sáng gắt để giữ lại chi tiết (như mây trời, váy cưới).</p>
+                        <h4 class="text-xl font-bold mb-4" data-lang-key="kneeTitle">Knee: Bảo Vệ Vùng Sáng</h4>
+                        <p class="mb-4" data-lang-key="kneeDesc">Một cơ chế "bảo hiểm" cho vùng sáng, nén tín hiệu ở vùng sáng gắt để giữ lại chi tiết (như mây trời, váy cưới).</p>
                         <div class="chart-container h-56"><canvas id="kneeChart"></canvas></div>
-                        <p class="mt-4 text-sm text-gray-600"><span class="font-bold text-[#7FBA00]">Soft Roll-off:</span> Chuyển tiếp mềm mại. <span class="font-bold text-[#00A6ED]">Sharp Highlight:</span> Tương phản cao.</p>
+                        <p class="mt-4 text-sm text-gray-600" data-lang-key="kneeNote"><span class="font-bold text-[#7FBA00]">Soft Roll-off:</span> Chuyển tiếp mềm mại. <span class="font-bold text-[#00A6ED]">Sharp Highlight:</span> Tương phản cao.</p>
                     </div>
-
                     <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2 lg:col-span-1">
-                        <h4 class="text-xl font-bold mb-4">Color Depth: Tinh Chỉnh Từng Màu</h4>
-                        <p class="mb-4">Điều chỉnh độ sáng và bão hòa của 6 kênh màu riêng lẻ. Ví dụ dưới đây là thiết lập cho công thức "Kodak Portra 400".</p>
+                        <h4 class="text-xl font-bold mb-4" data-lang-key="colorDepthTitle">Color Depth: Tinh Chỉnh Từng Màu</h4>
+                        <p class="mb-4" data-lang-key="colorDepthDesc">Điều chỉnh độ sáng và bão hòa của 6 kênh màu riêng lẻ. Ví dụ dưới đây là thiết lập cho công thức "Kodak Portra 400".</p>
                         <div class="chart-container h-56"><canvas id="colorDepthChart"></canvas></div>
-                        <p class="mt-4 text-sm text-gray-600">Cho phép nhấn mạnh màu xanh của lá cây hoặc làm dịu màu da một cách có chủ đích.</p>
+                        <p class="mt-4 text-sm text-gray-600" data-lang-key="colorDepthNote">Cho phép nhấn mạnh màu xanh của lá cây hoặc làm dịu màu da một cách có chủ đích.</p>
                     </div>
-
                 </div>
             </section>
-            
-            <!-- Section 4: HEIF -->
+
             <section id="heif">
-                 <h3 class="text-3xl font-bold text-center mb-8">Tối Ưu Hóa Chất Lượng: Định Dạng HEIF 10-bit</h3>
-                 <p class="max-w-3xl mx-auto text-center text-lg mb-8">
+                 <h3 class="text-3xl font-bold text-center mb-8" data-lang-key="heifTitle">Tối Ưu Hóa Chất Lượng: Định Dạng HEIF 10-bit</h3>
+                 <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-lang-key="heifDesc">
                     Tạo màu Sony DIY Color là một dạng "hậu kỳ trong máy". Việc chọn định dạng file phù hợp là cực kỳ quan trọng để lưu trữ thành quả.
                 </p>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div class="text-center">
-                            <h4 class="text-2xl font-bold">JPEG 8-bit</h4>
+                            <h4 class="text-2xl font-bold" data-lang-key="jpegTitle">JPEG 8-bit</h4>
                             <p class="text-5xl font-bold text-[#F25022] my-4">16.7</p>
-                            <p class="text-xl mb-4">Triệu màu</p>
+                            <p class="text-xl mb-4" data-lang-key="jpegColors">Triệu màu</p>
                             <div class="w-full h-12 rounded-lg gradient-banded"></div>
-                            <p class="mt-2 text-red-600 font-semibold">Nguy cơ bị "Banding" (phân dải màu)</p>
-                            <p class="text-sm text-gray-600">Sự chuyển tiếp màu không đủ mượt, tạo các dải sọc xấu xí khi chỉnh màu mạnh.</p>
+                            <p class="mt-2 text-red-600 font-semibold" data-lang-key="jpegBandingRisk">Nguy cơ bị "Banding" (phân dải màu)</p>
+                            <p class="text-sm text-gray-600" data-lang-key="jpegBandingDesc">Sự chuyển tiếp màu không đủ mượt, tạo các dải sọc xấu xí khi chỉnh màu mạnh.</p>
                         </div>
                          <div class="text-center">
-                            <h4 class="text-2xl font-bold">HEIF 10-bit</h4>
+                            <h4 class="text-2xl font-bold" data-lang-key="heifTitle10bit">HEIF 10-bit</h4>
                             <p class="text-5xl font-bold text-[#7FBA00] my-4">1+</p>
-                            <p class="text-xl mb-4">Tỷ màu</p>
+                            <p class="text-xl mb-4" data-lang-key="heifColors">Tỷ màu</p>
                             <div class="w-full h-12 rounded-lg gradient-smooth"></div>
-                            <p class="mt-2 text-green-600 font-semibold">Chuyển màu mượt mà</p>
-                            <p class="text-sm text-gray-600">Số lượng "bậc thang" màu nhiều gấp 4 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.</p>
+                            <p class="mt-2 text-green-600 font-semibold" data-lang-key="heifSmooth">Chuyển màu mượt mà</p>
+                            <p class="text-sm text-gray-600" data-lang-key="heifSmoothDesc">Số lượng "bậc thang" màu nhiều gấp 4 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Section 5: Recipes -->
             <section id="recipes">
-                <h3 class="text-3xl font-bold text-center mb-8">Thực Hành: Công Thức Màu Tham Khảo</h3>
-                <p class="max-w-3xl mx-auto text-center text-lg mb-8">
+                <h3 class="text-3xl font-bold text-center mb-8" data-lang-key="recipesTitle">Thực Hành: Công Thức Màu Tham Khảo</h3>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-lang-key="recipesDesc">
                    Dưới đây là một số công thức phổ biến để bạn bắt đầu. Hãy xem chúng là điểm xuất phát, tự do thử nghiệm và tạo ra dấu ấn của riêng bạn!
                 </p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="bg-white p-6 rounded-lg shadow-md recipe-card">
-                        <h4 class="text-2xl font-bold mb-4 text-[#F25022]">Kodak Vision3 250D</h4>
-                        <p class="mb-4 italic">Tông màu điện ảnh hiện đại, bão hòa cao, lấy cảm hứng từ phim Vision3.</p>
+                        <h4 class="text-2xl font-bold mb-4 text-[#F25022]" data-lang-key="recipe1Title">Kodak Vision3 250D</h4>
+                        <p class="mb-4 italic" data-lang-key="recipe1Desc">Tông màu điện ảnh hiện đại, bão hòa cao, lấy cảm hứng từ phim Vision3.</p>
                         <ul class="space-y-1 text-sm">
-                            <li><strong>WB:</strong> 3700K, A7-G1</li>
-                            <li><strong>Gamma:</strong> S-Cinetone</li>
-                            <li><strong>Color Mode:</strong> S-Cinetone</li>
-                            <li><strong>Black Gamma:</strong> Narrow / -7</li>
-                            <li><strong>Knee:</strong> Auto</li>
-                            <li><strong>Saturation:</strong> +32</li>
-                            <li><strong>Color Phase:</strong> +3</li>
+                            <li data-lang-key="recipeWb"><strong>WB:</strong> 3700K, A7-G1</li>
+                            <li data-lang-key="recipeGamma"><strong>Gamma:</strong> S-Cinetone</li>
+                            <li data-lang-key="recipeColorMode"><strong>Color Mode:</strong> S-Cinetone</li>
+                            <li data-lang-key="recipeBlackGamma"><strong>Black Gamma:</strong> Narrow / -7</li>
+                            <li data-lang-key="recipeKnee"><strong>Knee:</strong> Auto</li>
+                            <li data-lang-key="recipeSaturation"><strong>Saturation:</strong> +32</li>
+                            <li data-lang-key="recipeColorPhase"><strong>Color Phase:</strong> +3</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md recipe-card">
-                        <h4 class="text-2xl font-bold mb-4 text-[#737373]">Orthochromatic</h4>
-                        <p class="mb-4 italic">Màu sắc độc đáo, hoài cổ, mô phỏng lại đặc tính của phim Orthochromatic.</p>
+                        <h4 class="text-2xl font-bold mb-4 text-[#737373]" data-lang-key="recipe2Title">Orthochromatic</h4>
+                        <p class="mb-4 italic" data-lang-key="recipe2Desc">Màu sắc độc đáo, hoài cổ, mô phỏng lại đặc tính của phim Orthochromatic.</p>
                         <ul class="space-y-1 text-sm">
-                            <li><strong>WB:</strong> AWB, A3-M2.75</li>
-                            <li><strong>Gamma:</strong> Movie</li>
-                            <li><strong>Color Mode:</strong> Still</li>
-                            <li><strong>Black Gamma:</strong> Narrow / -7</li>
-                            <li><strong>Knee:</strong> Manual / 105% / +5</li>
-                            <li><strong>Saturation:</strong> +15</li>
-                            <li><strong>Color Phase:</strong> 0</li>
+                            <li data-lang-key="recipeWb_2"><strong>WB:</strong> AWB, A3-M2.75</li>
+                            <li data-lang-key="recipeGamma_2"><strong>Gamma:</strong> Movie</li>
+                            <li data-lang-key="recipeColorMode_2"><strong>Color Mode:</strong> Still</li>
+                            <li data-lang-key="recipeBlackGamma_2"><strong>Black Gamma:</strong> Narrow / -7</li>
+                            <li data-lang-key="recipeKnee_2"><strong>Knee:</strong> Manual / 105% / +5</li>
+                            <li data-lang-key="recipeSaturation_2"><strong>Saturation:</strong> +15</li>
+                            <li data-lang-key="recipeColorPhase_2"><strong>Color Phase:</strong> 0</li>
                         </ul>
                     </div>
                 </div>
                 <div class="text-center mt-10">
-                    <a href="index.html#library" class="inline-block bg-[#00A6ED] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-[#008cbf] transition-colors duration-300">
+                    <a href="index.html#library" class="inline-block bg-[#00A6ED] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-[#008cbf] transition-colors duration-300" data-lang-key="exploreMoreBtn">
                         Khám Phá Thêm Công Thức tại Thư Viện
                     </a>
                 </div>
             </section>
             
-            <!-- Section 6: Memory Recall -->
             <section id="memory-recall">
-                <h3 class="text-3xl font-bold text-center mb-8">Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall</h3>
+                <h3 class="text-3xl font-bold text-center mb-8" data-lang-key="recallTitle">Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall</h3>
                 <div class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-                    <p class="text-lg mb-6">Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.</p>
+                    <p class="text-lg mb-6" data-lang-key="recallDesc">Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <h4 class="text-xl font-bold text-slate-700 mb-2">Bộ Nhớ Trong (1, 2, 3)</h4>
-                            <p class="text-sm">Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.</p>
+                            <h4 class="text-xl font-bold text-slate-700 mb-2" data-lang-key="recallInternalTitle">Bộ Nhớ Trong (1, 2, 3)</h4>
+                            <p class="text-sm" data-lang-key="recallInternalDesc">Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.</p>
                         </div>
                         <div>
-                            <h4 class="text-xl font-bold text-slate-700 mb-2">Thẻ Nhớ (M1, M2, M3, M4)</h4>
-                            <p class="text-sm">Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.</p>
+                            <h4 class="text-xl font-bold text-slate-700 mb-2" data-lang-key="recallCardTitle">Thẻ Nhớ (M1, M2, M3, M4)</h4>
+                            <p class="text-sm" data-lang-key="recallCardDesc">Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.</p>
                         </div>
                     </div>
                 </div>
@@ -254,245 +296,328 @@
         </main>
 
         <footer class="text-center mt-16 pt-8 border-t border-slate-300">
-            <p class="text-gray-600">Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.</p>
-            <p class="text-sm text-gray-500 mt-2">Hành trình sáng tạo màu sắc của bạn bắt đầu từ đây!</p>
+            <p class="text-gray-600" data-lang-key="footerText">Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.</p>
+            <p class="text-sm text-gray-500 mt-2" data-lang-key="footerSubtext">Hành trình sáng tạo màu sắc của bạn bắt đầu từ đây!</p>
         </footer>
 
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const FONT_COLOR = '#374151'; // text-gray-700
-            const GRID_COLOR = '#E5E7EB'; // text-gray-200
+        // Language and translation logic will be here
+    </script>
+    <script>
+        const translations = {
+            // Navigation
+            navHome: { vi: 'Trang Chủ', en: 'Home' },
+            navLibrary: { vi: 'Thư Viện', en: 'Library' },
+            navGuide: { vi: 'Hướng Dẫn', en: 'Guide' },
+            navCommunity: { vi: 'Cộng Đồng', en: 'Community' },
+            navHomeMobile: { vi: 'Trang Chủ', en: 'Home' },
+            navLibraryMobile: { vi: 'Thư Viện', en: 'Library' },
+            navGuideMobile: { vi: 'Hướng Dẫn', en: 'Guide' },
+            navCommunityMobile: { vi: 'Cộng Đồng', en: 'Community' },
+            
+            // Header
+            mainTitle: { vi: 'Làm Chủ Màu Sắc Film-look', en: 'Mastering the Film Look' },
+            mainSubtitle: { vi: 'Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony', en: 'A Comprehensive Guide to White Balance and Picture Profile on Sony Cameras' },
+
+            // Intro Section
+            introTitle: { vi: 'Nghệ Thuật Của Màu Sắc Sony DIY Color', en: 'The Art of Sony DIY Color' },
+            introParagraph: { vi: 'Thay vì dành hàng giờ hậu kỳ, hãy tạo ra những bức ảnh với màu sắc hoàn hảo ngay từ máy ảnh. Đây là cách rèn luyện tư duy nhiếp ảnh, đưa ra quyết định sáng tạo ngay tại thời điểm bấm máy, sử dụng các công cụ mạnh mẽ mà Sony trang bị.', en: 'Instead of spending hours in post-production, create photos with perfect colors straight out of camera. This practice hones your photographic thinking, pushing creative decisions to the moment of capture using the powerful tools Sony provides.' },
+            rawProcessTitle: { vi: 'Quy Trình Hậu Kỳ RAW', en: 'RAW Post-Production Workflow' },
+            rawStep1: { vi: '1. 📸 Chụp ảnh RAW', en: '1. 📸 Shoot in RAW' },
+            rawStep2: { vi: '2. 💻 Chuyển file vào máy tính', en: '2. 💻 Transfer files to computer' },
+            rawStep3: { vi: '3. 🎨 Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
+            rawStep4: { vi: '4.  sliders Kéo các thanh trượt màu sắc', en: '4.  sliders Adjust color sliders' },
+            rawStep5: { vi: '5. ✅ Xuất file JPEG/TIFF', en: '5. ✅ Export JPEG/TIFF file' },
+            diyProcessTitle: { vi: 'Quy Trình Sáng Tạo Sony DIY Color', en: 'Sony DIY Color Workflow' },
+            diyStep1: { vi: '1. 🎨 Thiết lập màu trong máy ảnh', en: '1. 🎨 Set up color in-camera' },
+            diyStep2: { vi: '2. 📸 Chụp ảnh JPEG/HEIF', en: '2. 📸 Shoot in JPEG/HEIF' },
+            diyStep3: { vi: '3. ✨ Sẵn sàng để sử dụng ngay!', en: '3. ✨ Ready to use immediately!' },
+
+            // WB Section
+            wbTitle: { vi: 'Nền Tảng Sáng Tạo: Biến Cân Bằng Trắng Thành Cọ Vẽ', en: 'Creative Foundation: Turn White Balance into a Paintbrush' },
+            wbKelvinTitle: { vi: '1. Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo', en: '1. Kelvin Temperature (K): Create the Main Tone' },
+            wbKelvinDesc: { vi: 'Sử dụng thang đo Kelvin như một nét cọ lớn để nhuộm toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.', en: 'Use the Kelvin scale like a broad brush to tint the entire frame with warm or cool tones, shaping the photo\'s mood.' },
+            wbKelvinCool: { vi: '<span class="font-bold text-[#00A6ED]">Tông Lạnh (2500K-4000K):</span> Tạo cảm giác của cảnh đêm, trong bóng râm.', en: '<span class="font-bold text-[#00A6ED]">Cool Tones (2500K-4000K):</span> Evoke a sense of night scenes or shade.' },
+            wbKelvinWarm: { vi: '<span class="font-bold text-[#F25022]">Tông Ấm (6000K-9900K):</span> Mô phỏng ánh sáng hoàng hôn, hoài cổ.', en: '<span class="font-bold text-[#F25022]">Warm Tones (6000K-9900K):</span> Simulate sunset light, nostalgic vibes.' },
+            wbShiftTitle: { vi: '2. Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi', en: '2. Fine-Tuning Grid (A-B/G-M Shift): Add Subtle Hues' },
+            wbShiftDesc: { vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.', en: 'If Kelvin is the broad brush, the grid is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints.' },
+            wbShiftExample: { vi: '<span class="font-bold">Ví dụ "Sony Classic Negative":</span> Đặt 9900K, sau đó dịch chuyển tới B6, M7 để tạo ra lớp nền Xanh-Tím độc đáo.', en: '<span class="font-bold">Example "Sony Classic Negative":</span> Set to 9900K, then shift to B6, M7 to create a unique blue-magenta base layer.' },
+
+            // PP Section
+            ppTitle: { vi: 'Đi Sâu Vào "Lõi" Màu Sắc: Khám Phá Picture Profile (PP)', en: 'Diving into the Color Core: Exploring Picture Profile (PP)' },
+            ppDesc: { vi: 'Sau khi tạo "bức toan" màu nền bằng WB, PP là nơi chúng ta thực sự điêu khắc và tinh chỉnh màu sắc để tạo ra một "look" hoàn chỉnh. Đây là quy trình xử lý tín hiệu.', en: 'After creating the color canvas with WB, PP is where we truly sculpt and refine the color to create a complete look. This is the signal processing workflow.' },
+            ppFlow1: { vi: 'Gamma & Color Mode', en: 'Gamma & Color Mode' },
+            ppFlow1Desc: { vi: 'Xương sống Tương phản & Màu sắc', en: 'Contrast & Color Backbone' },
+            ppFlow2: { vi: 'Black Gamma & Knee', en: 'Black Gamma & Knee' },
+            ppFlow2Desc: { vi: 'Kiểm soát Vùng tối & Vùng sáng', en: 'Control Shadows & Highlights' },
+            ppFlow3: { vi: 'Color Phase/Depth', en: 'Color Phase/Depth' },
+            ppFlow3Desc: { vi: 'Tinh chỉnh Màu sắc Tổng thể & Chi tiết', en: 'Tweak Overall & Specific Colors' },
+            blackGammaTitle: { vi: 'Black Gamma: Linh Hồn Vùng Tối', en: 'Black Gamma: The Soul of the Shadows' },
+            blackGammaDesc: { vi: 'Điều chỉnh độ tương phản bên trong các vùng tối, tạo hiệu ứng "nâng bóng" (faded look) hoặc "nghiền bóng" (crushed blacks).', en: 'Adjusts the contrast within the dark areas, creating a "faded look" or "crushed blacks" effect.' },
+            blackGammaNote: { vi: '<span class="font-bold text-[#F25022]">Level +7:</span> Nâng bóng, mờ ảo. <span class="font-bold text-[#00A6ED]">Level -7:</span> Nghiền bóng, kịch tính.', en: '<span class="font-bold text-[#F25022]">Level +7:</span> Faded, lifted look. <span class="font-bold text-[#00A6ED]">Level -7:</span> Crushed, dramatic look.' },
+            kneeTitle: { vi: 'Knee: Bảo Vệ Vùng Sáng', en: 'Knee: Protecting the Highlights' },
+            kneeDesc: { vi: 'Một cơ chế "bảo hiểm" cho vùng sáng, nén tín hiệu ở vùng sáng gắt để giữ lại chi tiết (như mây trời, váy cưới).', en: 'An "insurance" mechanism for highlights, compressing the signal in bright areas to retain detail (like clouds, a wedding dress).' },
+            kneeNote: { vi: '<span class="font-bold text-[#7FBA00]">Soft Roll-off:</span> Chuyển tiếp mềm mại. <span class="font-bold text-[#00A6ED]">Sharp Highlight:</span> Tương phản cao.', en: '<span class="font-bold text-[#7FBA00]">Soft Roll-off:</span> Smooth transition. <span class="font-bold text-[#00A6ED]">Sharp Highlight:</span> High contrast.' },
+            colorDepthTitle: { vi: 'Color Depth: Tinh Chỉnh Từng Màu', en: 'Color Depth: Fine-Tuning Individual Colors' },
+            colorDepthDesc: { vi: 'Điều chỉnh độ sáng và bão hòa của 6 kênh màu riêng lẻ. Ví dụ dưới đây là thiết lập cho công thức "Kodak Portra 400".', en: 'Adjusts the luminance and saturation of 6 individual color channels. The example below is for a "Kodak Portra 400" recipe.' },
+            colorDepthNote: { vi: 'Cho phép nhấn mạnh màu xanh của lá cây hoặc làm dịu màu da một cách có chủ đích.', en: 'Allows for targeted emphasis of green foliage or softening of skin tones.' },
+
+            // HEIF Section
+            heifTitle: { vi: 'Tối Ưu Hóa Chất Lượng: Định Dạng HEIF 10-bit', en: 'Optimizing Quality: The HEIF 10-bit Format' },
+            heifDesc: { vi: 'Tạo màu Sony DIY Color là một dạng "hậu kỳ trong máy". Việc chọn định dạng file phù hợp là cực kỳ quan trọng để lưu trữ thành quả.', en: 'Creating a Sony DIY Color is a form of "in-camera post-production." Choosing the right file format is crucial to preserve the results.' },
+            jpegTitle: { vi: 'JPEG 8-bit', en: 'JPEG 8-bit' },
+            jpegColors: { vi: 'Triệu màu', en: 'Million Colors' },
+            jpegBandingRisk: { vi: 'Nguy cơ bị "Banding" (phân dải màu)', en: 'Risk of "Banding"' },
+            jpegBandingDesc: { vi: 'Sự chuyển tiếp màu không đủ mượt, tạo các dải sọc xấu xí khi chỉnh màu mạnh.', en: 'Color transitions aren\'t smooth enough, leading to ugly stripes with strong adjustments.' },
+            heifTitle10bit: { vi: 'HEIF 10-bit', en: 'HEIF 10-bit' },
+            heifColors: { vi: 'Tỷ màu', en: 'Billion+ Colors' },
+            heifSmooth: { vi: 'Chuyển màu mượt mà', en: 'Smooth Gradations' },
+            heifSmoothDesc: { vi: 'Số lượng "bậc thang" màu nhiều gấp 4 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.', en: '4x more color "steps," withstanding heavy adjustments without quality loss.' },
+
+            // Recipes Section
+            recipesTitle: { vi: 'Thực Hành: Công Thức Màu Tham Khảo', en: 'Practice: Sample Color Recipes' },
+            recipesDesc: { vi: 'Dưới đây là một số công thức phổ biến để bạn bắt đầu. Hãy xem chúng là điểm xuất phát, tự do thử nghiệm và tạo ra dấu ấn của riêng bạn!', en: 'Here are some popular recipes to get you started. Use them as a starting point, experiment freely, and create your own signature look!' },
+            recipe1Title: { vi: 'Kodak Vision3 250D', en: 'Kodak Vision3 250D' },
+            recipe1Desc: { vi: 'Tông màu điện ảnh hiện đại, bão hòa cao, lấy cảm hứng từ phim Vision3.', en: 'Modern cinematic tone, high saturation, inspired by Vision3 film.' },
+            recipe2Title: { vi: 'Orthochromatic', en: 'Orthochromatic' },
+            recipe2Desc: { vi: 'Màu sắc độc đáo, hoài cổ, mô phỏng lại đặc tính của phim Orthochromatic.', en: 'Unique, nostalgic color, simulating the characteristics of Orthochromatic film.' },
+            recipeWb: { vi: '<strong>WB:</strong> 3700K, A7-G1', en: '<strong>WB:</strong> 3700K, A7-G1' },
+            recipeGamma: { vi: '<strong>Gamma:</strong> S-Cinetone', en: '<strong>Gamma:</strong> S-Cinetone' },
+            recipeColorMode: { vi: '<strong>Color Mode:</strong> S-Cinetone', en: '<strong>Color Mode:</strong> S-Cinetone' },
+            recipeBlackGamma: { vi: '<strong>Black Gamma:</strong> Narrow / -7', en: '<strong>Black Gamma:</strong> Narrow / -7' },
+            recipeKnee: { vi: '<strong>Knee:</strong> Auto', en: '<strong>Knee:</strong> Auto' },
+            recipeSaturation: { vi: '<strong>Saturation:</strong> +32', en: '<strong>Saturation:</strong> +32' },
+            recipeColorPhase: { vi: '<strong>Color Phase:</strong> +3', en: '<strong>Color Phase:</strong> +3' },
+            recipeWb_2: { vi: '<strong>WB:</strong> AWB, A3-M2.75', en: '<strong>WB:</strong> AWB, A3-M2.75' },
+            recipeGamma_2: { vi: '<strong>Gamma:</strong> Movie', en: '<strong>Gamma:</strong> Movie' },
+            recipeColorMode_2: { vi: '<strong>Color Mode:</strong> Still', en: '<strong>Color Mode:</strong> Still' },
+            recipeBlackGamma_2: { vi: '<strong>Black Gamma:</strong> Narrow / -7', en: '<strong>Black Gamma:</strong> Narrow / -7' },
+            recipeKnee_2: { vi: '<strong>Knee:</strong> Manual / 105% / +5', en: '<strong>Knee:</strong> Manual / 105% / +5' },
+            recipeSaturation_2: { vi: '<strong>Saturation:</strong> +15', en: '<strong>Saturation:</strong> +15' },
+            recipeColorPhase_2: { vi: '<strong>Color Phase:</strong> 0', en: '<strong>Color Phase:</strong> 0' },
+            exploreMoreBtn: { vi: 'Khám Phá Thêm Công Thức tại Thư Viện', en: 'Explore More Recipes in the Library' },
+            
+            // Memory Recall Section
+            recallTitle: { vi: 'Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall', en: 'Save & Reuse: Mastering Memory Recall' },
+            recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.', en: 'Don\'t waste your effort! Save your recipes to the camera\'s memory for quick recall with a simple turn of a dial.' },
+            recallInternalTitle: { vi: 'Bộ Nhớ Trong (1, 2, 3)', en: 'Internal Memory (1, 2, 3)' },
+            recallInternalDesc: { vi: 'Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.', en: 'Saves directly to the camera. Quickest access via the mode dial. Ideal for your daily-use recipes.' },
+            recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, M2, M3, M4)' },
+            recallCardDesc: { vi: 'Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.', en: 'Saves as a file on your memory card. Extremely useful for backups or transferring recipes to another Sony camera body.' },
+
+            // Footer
+            footerText: { vi: 'Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.', en: 'Infographic based on research reports on Sony color customization.' },
+            footerSubtext: { vi: 'Hành trình sáng tạo màu sắc của bạn bắt đầu từ đây!', en: 'Your color creation journey starts here!' },
+
+            // Chart Texts
+            kelvinChartTitle: { vi: 'Nhiệt độ màu (Kelvin)', en: 'Color Temperature (Kelvin)'},
+            wbShiftXAxis: { vi: 'Trục Xanh (B) ← → Hổ phách (A)', en: 'Blue (B) ← → Amber (A) Axis' },
+            wbShiftYAxis: { vi: 'Trục Tím (M) ↑', en: 'Magenta (M) Axis ↑' },
+            wbShiftRecipe1: { vi: 'Sony Classic Negative', en: 'Sony Classic Negative'},
+            wbShiftRecipe2: { vi: 'Kodak Portra 400', en: 'Kodak Portra 400'},
+            blackGammaYAxis: { vi: 'Nghiền bóng ↔ Nâng bóng', en: 'Crush Blacks ↔ Lift Blacks'},
+            kneeChartSignalIn: { vi: 'Tín hiệu vào (%)', en: 'Input Signal (%)'},
+            kneeChartSignalOut: { vi: 'Tín hiệu ra (%)', en: 'Output Signal (%)'},
+            kneeChartNoKnee: { vi: 'Tín hiệu gốc (Không Knee)', en: 'Original Signal (No Knee)'},
+            kneeChartSoft: { vi: 'Soft Roll-off (Point:80, Slope:+4)', en: 'Soft Roll-off (Point:80, Slope:+4)'},
+            kneeChartSharp: { vi: 'Sharp Highlight (Point:95, Slope:-2)', en: 'Sharp Highlight (Point:95, Slope:-2)'},
+            colorDepthTitleChart: { vi: 'Điều chỉnh Độ sâu màu', en: 'Color Depth Adjustment'},
+            colorDepthYAxis: { vi: 'Nhạt/Sáng ↔ Đậm/Tối', en: 'Pale/Bright ↔ Deep/Dark'},
+            colorDepthLabels: {
+                vi: ['Đỏ (R)', 'X.lá (G)', 'X.dương (B)', 'Lục lam (C)', 'Tím (M)', 'Vàng (Y)'],
+                en: ['Red (R)', 'Green (G)', 'Blue (B)', 'Cyan (C)', 'Magenta (M)', 'Yellow (Y)']
+            }
+        };
+
+        let currentLang = localStorage.getItem('sony-color-lang') || 'vi';
+        let activeCharts = {};
+
+        function translateAllText(lang) {
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    el.innerHTML = translations[key][lang];
+                }
+            });
+            document.documentElement.lang = lang;
+        }
+
+        function updateLangButtons(lang) {
+            const buttons = [
+                document.getElementById('lang-vi-btn'),
+                document.getElementById('lang-en-btn'),
+                document.getElementById('mobile-lang-vi-btn'),
+                document.getElementById('mobile-lang-en-btn')
+            ];
+
+            buttons.forEach(btn => {
+                if (btn) {
+                    if ((btn.id.includes('vi') && lang === 'vi') || (btn.id.includes('en') && lang === 'en')) {
+                        btn.classList.add('lang-active');
+                        btn.classList.remove('lang-inactive');
+                    } else {
+                        btn.classList.add('lang-inactive');
+                        btn.classList.remove('lang-active');
+                    }
+                }
+            });
+        }
+        
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('sony-color-lang', lang);
+            translateAllText(lang);
+            updateLangButtons(lang);
+            destroyAllCharts();
+            renderAllCharts(lang);
+        }
+
+        function destroyAllCharts() {
+            Object.values(activeCharts).forEach(chart => chart.destroy());
+            activeCharts = {};
+        }
+
+        function renderAllCharts(lang) {
+            const FONT_COLOR = '#374151'; 
+            const GRID_COLOR = '#E5E7EB'; 
             const PALETTE = {
-                blue: '#00A6ED',
-                green: '#7FBA00',
-                yellow: '#FFB900',
-                orange: '#F25022',
-                gray: '#737373'
+                blue: '#00A6ED', green: '#7FBA00', yellow: '#FFB900', orange: '#F25022', gray: '#737373'
             };
 
-            const defaultChartOptions = {
+            const defaultChartOptions = (extraOptions = {}) => ({
                 responsive: true,
                 maintainAspectRatio: false,
                 color: FONT_COLOR,
                 plugins: {
-                    legend: {
-                        labels: {
-                            color: FONT_COLOR
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: function(tooltipItems) {
-                                const item = tooltipItems[0];
-                                let label = item.chart.data.labels[item.dataIndex];
-                                if (Array.isArray(label)) {
-                                  return label.join(' ');
-                                } else {
-                                  return label;
-                                }
-                            }
-                        }
-                    }
+                    legend: { labels: { color: FONT_COLOR } },
+                    tooltip: { callbacks: { title: (items) => Array.isArray(items[0].label) ? items[0].label.join(' ') : items[0].label } }
                 },
                 scales: {
-                    x: {
-                        ticks: { color: FONT_COLOR },
-                        grid: { color: GRID_COLOR }
-                    },
-                    y: {
-                        ticks: { color: FONT_COLOR },
-                        grid: { color: GRID_COLOR }
-                    }
-                }
-            };
+                    x: { ticks: { color: FONT_COLOR }, grid: { color: GRID_COLOR } },
+                    y: { ticks: { color: FONT_COLOR }, grid: { color: GRID_COLOR } }
+                },
+                ...extraOptions
+            });
             
-            function wrapLabel(label) {
-                const maxLength = 16;
-                if (typeof label !== 'string' || label.length <= maxLength) {
-                    return label;
-                }
-                const words = label.split(' ');
-                let lines = [];
-                let currentLine = '';
-                for (const word of words) {
-                    if ((currentLine + ' ' + word).length > maxLength && currentLine.length > 0) {
-                        lines.push(currentLine);
-                        currentLine = word;
-                    } else {
-                        currentLine += (currentLine ? ' ' : '') + word;
-                    }
-                }
-                if (currentLine) {
-                    lines.push(currentLine);
-                }
-                return lines;
-            }
-
-            // Chart 1: Kelvin Scale
-            const kelvinCtx = document.getElementById('kelvinChart');
+            // Kelvin Chart
+            const kelvinCtx = document.getElementById('kelvinChart')?.getContext('2d');
             if(kelvinCtx) {
-                new Chart(kelvinCtx, {
+                activeCharts.kelvin = new Chart(kelvinCtx, {
                     type: 'bar',
                     data: {
                         labels: ['2500K', '4000K', '5500K', '7500K', '9900K'],
                         datasets: [{
-                            label: 'Nhiệt độ màu (Kelvin)',
+                            label: translations.kelvinChartTitle[lang],
                             data: [1, 1, 1, 1, 1],
-                            backgroundColor: [
-                                'rgba(0, 166, 237, 0.4)',
-                                'rgba(0, 166, 237, 0.7)',
-                                'rgba(200, 200, 200, 0.8)',
-                                'rgba(242, 80, 34, 0.7)',
-                                'rgba(242, 80, 34, 0.4)'
-                            ],
-                            borderColor: [
-                                'rgba(0, 166, 237, 1)',
-                                'rgba(0, 166, 237, 1)',
-                                'rgba(150, 150, 150, 1)',
-                                'rgba(242, 80, 34, 1)',
-                                'rgba(242, 80, 34, 1)'
-                            ],
+                            backgroundColor: ['rgba(0, 166, 237, 0.4)','rgba(0, 166, 237, 0.7)','rgba(200, 200, 200, 0.8)','rgba(242, 80, 34, 0.7)','rgba(242, 80, 34, 0.4)'],
+                            borderColor: ['#00A6ED','#00A6ED','rgba(150, 150, 150, 1)','#F25022','#F25022'],
                             borderWidth: 1
                         }]
                     },
-                    options: { ...defaultChartOptions, indexAxis: 'y', plugins: { legend: { display: false } } }
+                    options: defaultChartOptions({ indexAxis: 'y', plugins: { legend: { display: false } } })
                 });
             }
 
-            // Chart 2: WB Shift
-            const wbShiftCtx = document.getElementById('wbShiftChart');
+            // WB Shift Chart
+            const wbShiftCtx = document.getElementById('wbShiftChart')?.getContext('2d');
             if(wbShiftCtx) {
-                new Chart(wbShiftCtx, {
+                activeCharts.wbShift = new Chart(wbShiftCtx, {
                     type: 'scatter',
                     data: {
-                        datasets: [{
-                            label: 'Sony Classic Negative',
-                            data: [{x: 6, y: 7}],
-                            backgroundColor: PALETTE.blue,
-                            pointRadius: 10,
-                            pointHoverRadius: 15
-                        }, {
-                            label: 'Kodak Portra 400',
-                            data: [{x: -7, y: 0.5}],
-                            backgroundColor: PALETTE.orange,
-                            pointRadius: 10,
-                            pointHoverRadius: 15
-                        }]
+                        datasets: [
+                          { label: translations.wbShiftRecipe1[lang], data: [{x: 6, y: 7}], backgroundColor: PALETTE.blue, pointRadius: 10, pointHoverRadius: 15 },
+                          { label: translations.wbShiftRecipe2[lang], data: [{x: -7, y: 0.5}], backgroundColor: PALETTE.orange, pointRadius: 10, pointHoverRadius: 15 }
+                        ]
                     },
-                    options: {
-                        ...defaultChartOptions,
+                    options: defaultChartOptions({
                         scales: {
-                            x: {
-                                ...defaultChartOptions.scales.x,
-                                min: -9, max: 9,
-                                title: { display: true, text: 'Trục Xanh (B) ← → Hổ phách (A)', color: FONT_COLOR }
-                            },
-                            y: {
-                                ...defaultChartOptions.scales.y,
-                                min: -9, max: 9,
-                                title: { display: true, text: 'Trục Tím (M) ↑', color: FONT_COLOR }
-                            }
+                            x: { min: -9, max: 9, title: { display: true, text: translations.wbShiftXAxis[lang], color: FONT_COLOR } },
+                            y: { min: -9, max: 9, title: { display: true, text: translations.wbShiftYAxis[lang], color: FONT_COLOR } }
                         }
-                    }
+                    })
                 });
             }
 
-            // Chart 3: Black Gamma
-            const blackGammaCtx = document.getElementById('blackGammaChart');
+            // Black Gamma Chart
+            const blackGammaCtx = document.getElementById('blackGammaChart')?.getContext('2d');
             if(blackGammaCtx) {
-                new Chart(blackGammaCtx, {
+                activeCharts.blackGamma = new Chart(blackGammaCtx, {
                     type: 'bar',
                     data: {
                         labels: ['-7', '-4', '0', '+4', '+7'],
                         datasets: [{
-                            label: 'Level',
-                            data: [-7, -4, 0, 4, 7],
+                            label: 'Level', data: [-7, -4, 0, 4, 7],
                             backgroundColor: [PALETTE.blue, PALETTE.blue, PALETTE.gray, PALETTE.orange, PALETTE.orange],
                         }]
                     },
-                    options: {
-                        ...defaultChartOptions,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { title: { display: true, text: 'Nghiền bóng ↔ Nâng bóng' } } }
-                    }
+                    options: defaultChartOptions({ plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: translations.blackGammaYAxis[lang] } } } })
                 });
             }
 
-            // Chart 4: Knee
-            const kneeCtx = document.getElementById('kneeChart');
+            // Knee Chart
+            const kneeCtx = document.getElementById('kneeChart')?.getContext('2d');
             if(kneeCtx) {
-                 new Chart(kneeCtx, {
+                 activeCharts.knee = new Chart(kneeCtx, {
                     type: 'line',
                     data: {
-                        labels: Array.from({length: 12}, (_, i) => i * 10), // 0 to 110
+                        labels: Array.from({length: 12}, (_, i) => i * 10),
                         datasets: [
-                            {
-                                label: 'Tín hiệu gốc (Không Knee)',
-                                data: Array.from({length: 11}, (_, i) => i * 10),
-                                borderColor: PALETTE.gray,
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                fill: false,
-                                tension: 0.1,
-                                pointRadius: 0,
-                            },
-                            {
-                                label: 'Soft Roll-off (Point:80, Slope:+4)',
-                                data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 88, 94, 98],
-                                borderColor: PALETTE.green,
-                                backgroundColor: PALETTE.green+'33',
-                                borderWidth: 3,
-                                fill: false,
-                                tension: 0.4,
-                                pointRadius: 0,
-                            },
-                            {
-                                label: 'Sharp Highlight (Point:95, Slope:-2)',
-                                data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 97, 101],
-                                borderColor: PALETTE.blue,
-                                backgroundColor: PALETTE.blue+'33',
-                                borderWidth: 3,
-                                fill: false,
-                                tension: 0.1,
-                                pointRadius: 0,
-                            }
+                            { label: translations.kneeChartNoKnee[lang], data: Array.from({length: 11}, (_, i) => i * 10), borderColor: PALETTE.gray, borderWidth: 2, borderDash: [5, 5], tension: 0.1, pointRadius: 0 },
+                            { label: translations.kneeChartSoft[lang], data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 88, 94, 98], borderColor: PALETTE.green, borderWidth: 3, tension: 0.4, pointRadius: 0 },
+                            { label: translations.kneeChartSharp[lang], data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 97, 101], borderColor: PALETTE.blue, borderWidth: 3, tension: 0.1, pointRadius: 0 }
                         ]
                     },
-                    options: {
-                        ...defaultChartOptions,
+                    options: defaultChartOptions({
                         plugins: { legend: { position: 'bottom', labels: { boxWidth: 20 } } },
                         scales: {
-                            x: { title: { display: true, text: 'Tín hiệu vào (%)' } },
-                            y: { title: { display: true, text: 'Tín hiệu ra (%)' }, min: 0, max: 110 }
+                            x: { title: { display: true, text: translations.kneeChartSignalIn[lang] } },
+                            y: { title: { display: true, text: translations.kneeChartSignalOut[lang] }, min: 0, max: 110 }
                         }
-                    }
+                    })
                 });
             }
             
-            // Chart 5: Color Depth
-            const colorDepthCtx = document.getElementById('colorDepthChart');
+            // Color Depth Chart
+            const colorDepthCtx = document.getElementById('colorDepthChart')?.getContext('2d');
             if(colorDepthCtx) {
-                new Chart(colorDepthCtx, {
+                activeCharts.colorDepth = new Chart(colorDepthCtx, {
                     type: 'bar',
                     data: {
-                        labels: ['Đỏ (R)', 'X.lá (G)', 'X.dương (B)', 'Lục lam (C)', 'Tím (M)', 'Vàng (Y)'],
+                        labels: translations.colorDepthLabels[lang],
                         datasets: [{
-                            label: 'Điều chỉnh Độ sâu màu',
-                            data: [-3, 5, -3, -3, -5, -2], // Kodak Portra Recipe
+                            label: translations.colorDepthTitleChart[lang],
+                            data: [-3, 5, -3, -3, -5, -2], 
                             backgroundColor: ['#EF5350', '#66BB6A', '#42A5F5', '#26C6DA', '#AB47BC', '#FFEE58'],
                         }]
                     },
-                    options: {
-                        ...defaultChartOptions,
+                    options: defaultChartOptions({
                         plugins: { legend: { display: false } },
-                        scales: {
-                            y: { min: -7, max: 7, title: { display: true, text: 'Nhạt/Sáng ↔ Đậm/Tối' } }
-                        }
-                    }
+                        scales: { y: { min: -7, max: 7, title: { display: true, text: translations.colorDepthYAxis[lang] } } }
+                    })
                 });
             }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initial setup
+            setLanguage(currentLang);
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Language switch listeners
+            ['lang-vi-btn', 'mobile-lang-vi-btn'].forEach(id => {
+                document.getElementById(id).addEventListener('click', () => setLanguage('vi'));
+            });
+            ['lang-en-btn', 'mobile-lang-en-btn'].forEach(id => {
+                document.getElementById(id).addEventListener('click', () => setLanguage('en'));
+            });
         });
     </script>
 </body>
