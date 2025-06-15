@@ -1,5 +1,12 @@
-// ============== data.js ==============
-export const recipesData = [
+/**
+ * recipes-data.js
+ * * Contains all the color recipe data for the Alpha AI Color Lab.
+ * This file is intended to be imported by the main application script.
+ */
+
+// The main array of recipe objects.
+// Each object represents a unique color recipe with its settings.
+const recipesData = [
             {"id":"vektro-100","name":{"vi":"Chiều Tàn","en":"Dusk / Twilight"},"description":{"vi":"Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm, lý tưởng cho cảnh hoàng hôn hoặc ánh đèn đêm ấm áp.","en":"Recreates the vibrant orange of fire and deep shadows, ideal for sunsets or warm night lights."},"type":"color","contrast":"high","saturation":"high","whiteBalance":"4000K, A5-M0.5","settings":{"Black level":"-10","Gamma":"Still","Black Gamma":"Wide -7","Knee":"Manual 92.5% +5","Color Mode":"S-Gamut3.Cine","Saturation":"+20","Color Phase":"0"},"colorDepth":{"R":"+5","G":"+7","B":"+5","C":"+5","M":"+2","Y":"+1"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
             {"id":"senova-light","name":{"vi":"Đà Lạt trong sương","en":"Da Lat Mist"},"description":{"vi":"Màu lam lạnh và tương phản cao, gợi cảm giác mờ ảo của cao nguyên buổi sớm.","en":"A cool blue tone with high contrast, evoking the misty feeling of the highlands in the early morning."},"type":"color","contrast":"high","saturation":"medium","whiteBalance":"8000K, B2-M2","settings":{"Black level":"-15","Gamma":"Cine3","Black Gamma":"Wide +7","Knee":"Manual 85% +4","Color Mode":"S-Gamut3.Cine","Saturation":"+20","Color Phase":"+7"},"colorDepth":{"R":"-5","G":"-1","B":"+3","C":"+4","M":"+5","Y":"+2"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
             {"id":"fuji-400h","name":{"vi":"Đồng Cỏ Mộc Châu","en":"Moc Chau Meadow"},"description":{"vi":"Tôn vinh sắc xanh tươi mát của cỏ cây dưới nắng hạ, mang lại cảm giác tự nhiên và trong trẻo.","en":"Honors the fresh green tones of plants under the summer sun, bringing a natural and clear feeling."},"type":"color","contrast":"low","saturation":"low","whiteBalance":"3700K, A7-M0.5","settings":{"Black level":"0","Gamma":"Movie","Black Gamma":"Wide +7","Knee":"Manual 80% +4","Color Mode":"Still","Saturation":"+11","Color Phase":"-3"},"colorDepth":{"R":"-4","G":"+7","B":"-3","C":"-3","M":"-5","Y":"-3"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
