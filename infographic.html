@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic: Làm Chủ Màu Sắc Film-look trên Máy Ảnh Sony</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            max-height: 400px;
+            width: 100%;
+            max-width: 600px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .gradient-banded {
+            background: linear-gradient(to right, #00A6ED, #0d8cc0, #1a7294, #265867, #333e3a, #40240e, #FFB900);
+        }
+        .gradient-smooth {
+            background: linear-gradient(to right, #00A6ED, #FFB900);
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: #737373;
+            line-height: 1;
+        }
+        .recipe-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 mb-2">Làm Chủ Màu Sắc Film-look</h1>
+            <h2 class="text-xl md:text-2xl text-[#00A6ED]">Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony</h2>
+        </header>
+
+        <main class="space-y-16">
+
+            <!-- Section 1: Introduction -->
+            <section id="intro" class="text-center">
+                <h3 class="text-3xl font-bold mb-4">Nghệ Thuật Của Màu Sắc Sony DIY Color</h3>
+                <p class="max-w-3xl mx-auto text-lg mb-8">
+                    Thay vì dành hàng giờ hậu kỳ, hãy tạo ra những bức ảnh với màu sắc hoàn hảo ngay từ máy ảnh. Đây là cách rèn luyện tư duy nhiếp ảnh, đưa ra quyết định sáng tạo ngay tại thời điểm bấm máy, sử dụng các công cụ mạnh mẽ mà Sony trang bị.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="text-xl font-bold text-[#F25022] mb-2">Quy Trình Hậu Kỳ RAW</h4>
+                        <ol class="text-left space-y-2">
+                            <li><span>1. 📸 Chụp ảnh RAW</span></li>
+                            <li><span>2. 💻 Chuyển file vào máy tính</span></li>
+                            <li><span>3. 🎨 Mở phần mềm chỉnh sửa</span></li>
+                            <li><span>4.  sliders Kéo các thanh trượt màu sắc</span></li>
+                            <li><span>5. ✅ Xuất file JPEG/TIFF</span></li>
+                        </ol>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-4 border-[#7FBA00]">
+                        <h4 class="text-xl font-bold text-[#7FBA00] mb-2">Quy Trình Sáng Tạo Sony DIY Color</h4>
+                        <ol class="text-left space-y-2">
+                            <li><span>1. 🎨 Thiết lập màu trong máy ảnh</span></li>
+                            <li><span>2. 📸 Chụp ảnh JPEG/HEIF</span></li>
+                            <li><span class="font-bold">3. ✨ Sẵn sàng để sử dụng ngay!</span></li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: White Balance -->
+            <section id="wb">
+                <h3 class="text-3xl font-bold text-center mb-8">Nền Tảng Sáng Tạo: Biến Cân Bằng Trắng Thành Cọ Vẽ</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="text-xl font-bold mb-4">1. Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo</h4>
+                        <p class="mb-4">Sử dụng thang đo Kelvin như một nét cọ lớn để nhuộm toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.</p>
+                        <div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p><span class="font-bold text-[#00A6ED]">Tông Lạnh (2500K-4000K):</span> Tạo cảm giác của cảnh đêm, trong bóng râm.</p>
+                            <p><span class="font-bold text-[#F25022]">Tông Ấm (6000K-9900K):</span> Mô phỏng ánh sáng hoàng hôn, hoài cổ.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="text-xl font-bold mb-4">2. Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi</h4>
+                        <p class="mb-4">Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.</p>
+                        <div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p><span class="font-bold">Ví dụ "Sony Classic Negative":</span> Đặt 9900K, sau đó dịch chuyển tới B6, M7 để tạo ra lớp nền Xanh-Tím độc đáo.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Picture Profile -->
+            <section id="pp">
+                <h3 class="text-3xl font-bold text-center mb-8">Đi Sâu Vào "Lõi" Màu Sắc: Khám Phá Picture Profile (PP)</h3>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-8">
+                    Sau khi tạo "bức toan" màu nền bằng WB, PP là nơi chúng ta thực sự điêu khắc và tinh chỉnh màu sắc để tạo ra một "look" hoàn chỉnh. Đây là quy trình xử lý tín hiệu.
+                </p>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <div class="flex flex-col md:flex-row justify-around items-center text-center">
+                        <div class="p-4">
+                            <h5 class="text-lg font-bold">Gamma & Color Mode</h5>
+                            <p class="text-sm">Xương sống Tương phản & Màu sắc</p>
+                        </div>
+                        <div class="flow-arrow transform md:rotate-0 rotate-90">→</div>
+                        <div class="p-4">
+                            <h5 class="text-lg font-bold">Black Gamma & Knee</h5>
+                            <p class="text-sm">Kiểm soát Vùng tối & Vùng sáng</p>
+                        </div>
+                        <div class="flow-arrow transform md:rotate-0 rotate-90">→</div>
+                        <div class="p-4">
+                            <h5 class="text-lg font-bold">Color Phase/Depth</h5>
+                            <p class="text-sm">Tinh chỉnh Màu sắc Tổng thể & Chi tiết</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="text-xl font-bold mb-4">Black Gamma: Linh Hồn Vùng Tối</h4>
+                        <p class="mb-4">Điều chỉnh độ tương phản bên trong các vùng tối, tạo hiệu ứng "nâng bóng" (faded look) hoặc "nghiền bóng" (crushed blacks).</p>
+                        <div class="chart-container h-56"><canvas id="blackGammaChart"></canvas></div>
+                        <p class="mt-4 text-sm text-gray-600"><span class="font-bold text-[#F25022]">Level +7:</span> Nâng bóng, mờ ảo. <span class="font-bold text-[#00A6ED]">Level -7:</span> Nghiền bóng, kịch tính.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h4 class="text-xl font-bold mb-4">Knee: Bảo Vệ Vùng Sáng</h4>
+                        <p class="mb-4">Một cơ chế "bảo hiểm" cho vùng sáng, nén tín hiệu ở vùng sáng gắt để giữ lại chi tiết (như mây trời, váy cưới).</p>
+                        <div class="chart-container h-56"><canvas id="kneeChart"></canvas></div>
+                        <p class="mt-4 text-sm text-gray-600"><span class="font-bold text-[#7FBA00]">Soft Roll-off:</span> Chuyển tiếp mềm mại. <span class="font-bold text-[#00A6ED]">Sharp Highlight:</span> Tương phản cao.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2 lg:col-span-1">
+                        <h4 class="text-xl font-bold mb-4">Color Depth: Tinh Chỉnh Từng Màu</h4>
+                        <p class="mb-4">Điều chỉnh độ sáng và bão hòa của 6 kênh màu riêng lẻ. Ví dụ dưới đây là thiết lập cho công thức "Kodak Portra 400".</p>
+                        <div class="chart-container h-56"><canvas id="colorDepthChart"></canvas></div>
+                        <p class="mt-4 text-sm text-gray-600">Cho phép nhấn mạnh màu xanh của lá cây hoặc làm dịu màu da một cách có chủ đích.</p>
+                    </div>
+
+                </div>
+            </section>
+            
+            <!-- Section 4: HEIF -->
+            <section id="heif">
+                 <h3 class="text-3xl font-bold text-center mb-8">Tối Ưu Hóa Chất Lượng: Định Dạng HEIF 10-bit</h3>
+                 <p class="max-w-3xl mx-auto text-center text-lg mb-8">
+                    Tạo màu Sony DIY Color là một dạng "hậu kỳ trong máy". Việc chọn định dạng file phù hợp là cực kỳ quan trọng để lưu trữ thành quả.
+                </p>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="text-center">
+                            <h4 class="text-2xl font-bold">JPEG 8-bit</h4>
+                            <p class="text-5xl font-bold text-[#F25022] my-4">16.7</p>
+                            <p class="text-xl mb-4">Triệu màu</p>
+                            <div class="w-full h-12 rounded-lg gradient-banded"></div>
+                            <p class="mt-2 text-red-600 font-semibold">Nguy cơ bị "Banding" (phân dải màu)</p>
+                            <p class="text-sm text-gray-600">Sự chuyển tiếp màu không đủ mượt, tạo các dải sọc xấu xí khi chỉnh màu mạnh.</p>
+                        </div>
+                         <div class="text-center">
+                            <h4 class="text-2xl font-bold">HEIF 10-bit</h4>
+                            <p class="text-5xl font-bold text-[#7FBA00] my-4">1+</p>
+                            <p class="text-xl mb-4">Tỷ màu</p>
+                            <div class="w-full h-12 rounded-lg gradient-smooth"></div>
+                            <p class="mt-2 text-green-600 font-semibold">Chuyển màu mượt mà</p>
+                            <p class="text-sm text-gray-600">Số lượng "bậc thang" màu nhiều gấp 64 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Recipes -->
+            <section id="recipes">
+                <h3 class="text-3xl font-bold text-center mb-8">Thực Hành: Công Thức Màu Tham Khảo</h3>
+                <p class="max-w-3xl mx-auto text-center text-lg mb-8">
+                   Dưới đây là một số công thức phổ biến để bạn bắt đầu. Hãy xem chúng là điểm xuất phát, tự do thử nghiệm và tạo ra dấu ấn của riêng bạn!
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md recipe-card">
+                        <h4 class="text-2xl font-bold mb-4 text-[#FFB900]">Kodak Portra 400 V1</h4>
+                        <p class="mb-4 italic">Tông màu ấm, da người đẹp, vùng tối mềm mại, hơi ngả xanh lá.</p>
+                        <ul class="space-y-1 text-sm">
+                            <li><strong>WB:</strong> 3900K, A7-M0.5</li>
+                            <li><strong>Gamma:</strong> Movie</li>
+                            <li><strong>Color Mode:</strong> Still</li>
+                            <li><strong>Black Gamma:</strong> Narrow / -7</li>
+                            <li><strong>Knee:</strong> Manual / 80% / +4</li>
+                            <li><strong>Saturation:</strong> +14</li>
+                            <li><strong>Color Phase:</strong> -2</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md recipe-card">
+                        <h4 class="text-2xl font-bold mb-4 text-[#00A6ED]">Fuji Classic Chrome</h4>
+                        <p class="mb-4 italic">Tông màu lạnh, khử bão hòa, tương phản cao, mang phong cách tài liệu.</p>
+                        <ul class="space-y-1 text-sm">
+                            <li><strong>WB:</strong> 4000K, A7-M0.5</li>
+                            <li><strong>Gamma:</strong> Still</li>
+                            <li><strong>Color Mode:</strong> Still</li>
+                            <li><strong>Black Gamma:</strong> Middle / -7</li>
+                            <li><strong>Knee:</strong> Manual / 75% / +4</li>
+                            <li><strong>Saturation:</strong> -5</li>
+                            <li><strong>Color Phase:</strong> +2</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 6: Memory Recall -->
+            <section id="memory-recall">
+                <h3 class="text-3xl font-bold text-center mb-8">Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall</h3>
+                <div class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+                    <p class="text-lg mb-6">Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-700 mb-2">Bộ Nhớ Trong (1, 2, 3)</h4>
+                            <p class="text-sm">Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-700 mb-2">Thẻ Nhớ (M1, M2, M3, M4)</h4>
+                            <p class="text-sm">Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 pt-8 border-t border-slate-300">
+            <p class="text-gray-600">Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.</p>
+            <p class="text-sm text-gray-500 mt-2">Hành trình sáng tạo màu sắc của bạn bắt đầu từ đây!</p>
+        </footer>
+
+    </div>
+
+    <script src="./infographic.js"></script>
+</body>
+</html>
