@@ -1,61 +1,146 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alpha AI Color Lab</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="./style.css">
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            overflow: hidden;
+        }
+        #bg-blurs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .blur-circle { position: absolute; border-radius: 50%; filter: blur(160px); opacity: 0.25; transition: all 1s ease-in-out; }
+        .blur-1 { width: 450px; height: 450px; background: #007AFF; top: 10%; left: 15%; animation: move-blur-1 25s infinite alternate; }
+        .blur-2 { width: 550px; height: 550px; background: #FF9500; bottom: 10%; right: 15%; animation: move-blur-2 30s infinite alternate; }
+        @keyframes move-blur-1 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(150px, 80px) scale(1.2) rotate(45deg); } }
+        @keyframes move-blur-2 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(-120px, -90px) scale(1.1) rotate(-60deg); } }
+
+        :root {
+            --primary-accent: #007AFF;
+            --primary-accent-darker: #0056B3;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+        }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); }
+        .recipe-item.selected { background-color: rgba(0, 122, 255, 0.08); border-left: 4px solid var(--primary-accent); color: var(--text-primary); transform: translateX(4px); }
+        .recipe-item:hover:not(.selected) { background-color: rgba(0, 0, 0, 0.04); transform: translateX(2px); }
+
+        .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;}
+        .btn-primary { background-color: var(--primary-accent); border: none; color: white; }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: scale(1.03); }
+        .btn:disabled { background-color: #a0aec0; cursor: not-allowed; opacity: 0.7; }
+        
+        .lang-btn { background: #e9ecef; border: none; border-radius: 9999px; padding: 0.25rem; transition: all 0.2s ease; }
+        .lang-btn.active { box-shadow: 0 0 0 2px var(--primary-accent); }
+        .lang-btn svg { width: 1.5rem; height: 1.5rem; }
+        
+        .landing-title, .quiz-question-title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.02em; }
+        .landing-subtitle { font-size: clamp(1rem, 2vw, 1.25rem); color: var(--text-secondary); margin-top: 1rem; max-width: 600px; }
+        
+        .view-transition { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+
+        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1.25rem; border-radius: 1.25rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; font-size: 1.1rem; text-align: center; }
+        .quiz-option:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
+        .quiz-option.selected { border-color: var(--primary-accent); background-color: rgba(0, 122, 255, 0.1); }
+        
+        .prose-fluid h3 { color: var(--text-primary); font-size: 1.25rem; margin-bottom: 0.5rem; margin-top: 2rem; }
+        .prose-fluid h4 { color: var(--primary-accent); font-size: 1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.25rem; }
+        .prose-fluid p, .prose-fluid li { line-height: 1.75; color: var(--text-secondary);}
+        .prose-fluid ul { list-style-position: inside; padding-left: 0.5rem; }
+        .prose-fluid li::marker { color: var(--primary-accent); }
+        .prose-fluid code { background-color: rgba(0, 122, 255, 0.1); color: var(--primary-accent); padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-weight: 600;}
+        .prose-fluid strong { color: var(--text-primary); }
+
+        .filter-btn { background-color: rgba(0,0,0,0.05); border: 1px solid transparent; transition: all 0.2s ease-in-out; }
+        .filter-btn.active { background-color: rgba(0, 122, 255, 0.1); border-color: var(--primary-accent); color: var(--primary-accent); font-weight: 600; }
+        
+        .spinner { border: 3px solid rgba(0, 0, 0, 0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: currentColor; animation: spin 1s ease infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .modal { z-index: 50; transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease; }
+        .modal.hidden .modal-content { transform: scale(0.95); }
+        
+        #comparisonModalContent { background-color: #f0f9ff; border-radius: 0 0 1.5rem 1.5rem; }
+        .prose-comparison h3 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); border-bottom: 2px solid var(--primary-accent); padding-bottom: 0.5rem; }
+        .prose-comparison p, .prose-comparison li { font-size: 1rem; line-height: 1.6; }
+        .prose-comparison table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .prose-comparison th, .prose-comparison td { border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem 1rem; text-align: left; }
+        .prose-comparison th { background-color: rgba(0,0,0,0.03); font-weight: 700; color: var(--text-primary); }
+        .prose-comparison td:nth-child(2), .prose-comparison td:nth-child(3) { font-family: monospace, monospace; }
+        .prose-comparison tr:nth-child(even) { background-color: rgba(0,0,0,0.015); }
+
+        .quiz-choice-option {
+            cursor: pointer;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .quiz-choice-option:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Apple-like scrollbar */
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 8px;
+        }
+        .overflow-y-auto::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .overflow-y-auto {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+        }
+
+    </style>
 </head>
 <body>
-    <!-- Background Animated Blurs -->
-    <div id="bg-blurs">
-        <div class="blur-circle blur-1"></div>
-        <div class="blur-circle blur-2"></div>
-    </div>
+    <div id="bg-blurs"><div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div></div>
     
-    <!-- Main Application Container -->
     <div id="appContainer" class="h-screen w-screen p-4 md:p-6 flex flex-col overflow-hidden">
-        <!-- Header -->
         <header class="flex justify-between items-center w-full z-10 flex-shrink-0">
-            <button id="homeBtn" class="text-2xl font-bold text-gray-800" data-translate-key="headerTitle">Sony AI Color Lab</button>
+            <button id="homeBtn" class="text-2xl font-bold text-gray-800" data-translate-key="headerTitle">Alpha AI Color Lab</button>
             <div class="flex items-center gap-4">
-                 <!-- Main Navigation -->
                  <nav id="mainNav" class="flex items-center gap-4">
-                    <button data-view="library" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navLibrary"></button>
-                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navExplain"></button>
+                    <button data-view="library" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors">Library</button>
+                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors">Explain</button>
                  </nav>
-                 <!-- Language Switcher -->
                 <div class="flex items-center gap-2">
-                     <button id="langEN" class="lang-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-6 h-6"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
-                    </button>
-                     <button id="langVI" class="lang-btn active">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-6 h-6"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
-                    </button>
+                     <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
+                     <button id="langVI" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
                 </div>
             </div>
         </header>
+        <div id="mainContent" class="flex-grow min-h-0 relative mt-4 mb-2"></div>
 
-        <!-- Dynamic Content Area -->
-        <main id="mainContent" class="flex-grow min-h-0 relative mt-8"></main>
-        
-        <!-- Footer -->
-        <footer class="text-center p-4 text-sm text-gray-500 w-full flex-shrink-0">
+        <footer class="text-center text-xs text-neutral-500 py-1 flex-shrink-0">
             Powered by Sony Alpha Vietnam. AI features by Google Gemini.
         </footer>
     </div>
     
-    <!-- Comparison Modal -->
-    <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] rounded-3xl flex flex-col">
             <div class="p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
                 <h2 id="comparisonModalTitle" class="text-2xl font-bold"></h2>
@@ -65,7 +150,549 @@
         </div>
     </div>
 
-    <!-- Application Logic -->
-    <script type="module" src="./app.js"></script>
-</body>
-</html>
+    <script type="module">
+        // --- STATE & CONFIGURATION ---
+        const state = {
+            currentLang: 'vi',
+            currentView: 'home',
+            selectedRecipeId: null,
+            comparisonList: [],
+            lastGeneratedAiRecipe: null,
+            isAILoading: false,
+            quizStep: 0,
+            quizAnswers: {},
+            activeFilters: { type: 'all', contrast: 'all', saturation: 'all' }
+        };
+
+        const mainContentEl = document.getElementById('mainContent');
+
+        const translations = {
+            // General
+            headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
+            navLibrary: {vi:"Thư viện", en:"Library"},
+            navExplain: {vi:"Giải thích", en:"Explain"},
+            noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
+            // Home / Quiz
+            landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find your signature color."},
+            landingSubtitle: {vi:"Trả lời vài câu hỏi để khám phá công thức màu được AI tạo ra dành riêng cho tâm trạng và phong cách của bạn hôm nay.", en:"Answer a few questions to discover a unique color recipe, tailored by AI to your mood and style for the day."},
+            startQuizBtn: {vi:"Khám phá màu của bạn", en:"Discover Your Color"},
+            quizResultTitle: {vi: "AI đề xuất 2 lựa chọn cho bạn:", en: "AI suggests 2 options for you:"},
+            viewInLibraryBtn: {vi: "Xem trong thư viện", en: "View in Library"},
+            loadingAnalyze: {vi: "Đang phân tích lựa chọn...", en: "Analyzing your choices..."},
+            
+            // Library
+            sidebarTitle: {vi: "Thư viện màu", en: "Color Library"},
+            searchInputPlaceholder: {vi: "🔍 Tìm công thức...", en: "🔍 Search recipes..."},
+            filterType: {vi: "Loại", en: "Type"},
+            filterTypeColor: {vi: "Màu", en: "Color"},
+            filterTypeBW: {vi: "Trắng Đen", en: "B&W"},
+            filterContrast: {vi: "Tương phản", en: "Contrast"},
+            filterSaturation: {vi: "Bão hòa", en: "Saturation"},
+            filterHigh: {vi: "Cao", en: "High"},
+            filterLow: {vi: "Thấp", en: "Low"},
+            compareBtn: {vi: "So sánh bằng AI", en: "Compare with AI"},
+            recipeDetailWelcomeTitle: {vi: "Thư viện Màu sắc", en: "Color Library"},
+            recipeDetailWelcomeText: {vi: "Chọn một công thức từ danh sách bên trái để xem chi tiết, hoặc chọn hai công thức để so sánh.", en: "Select a recipe from the list to see details, or select two to compare."},
+            whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
+            recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
+            colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
+            detailTitle: {vi: "Chi tiết", en: "Detail"},
+            aiTuningTitle: {vi: "Tinh chỉnh bằng AI", en: "AI Fine-Tuning"},
+            aiTuningPlaceholder: {vi: "Nhập yêu cầu của bạn ở đây... (ví dụ: 'làm cho màu ấm hơn và trong hơn')", en: "Enter your request here... (e.g., 'make it warmer and clearer')"},
+            aiTuningBtn: {vi: "Tạo bằng AI", en: "Generate with AI"},
+            aiResultTitle: {vi: "Công thức đã được AI tinh chỉnh:", en: "AI-Adjusted Recipe:"},
+            compareWithOriginalBtn: {vi: "So sánh với bản gốc", en: "Compare with Original"},
+            aiSuggestionTitle: {vi: "Gợi ý của AI:", en: "AI Suggestion:"},
+            aiSuggestionText: {vi: "Dựa trên yêu cầu của bạn, công thức này có vẻ phù hợp hơn: ", en: "Based on your request, this recipe might be a better fit: "},
+            comparisonModalTitle: {vi: "So sánh Công thức", en: "Recipe Comparison"},
+            comparisonLoading: {vi: "AI đang phân tích và so sánh...", en: "AI is analyzing and comparing..."},
+
+            // Tutorial
+            tutorialTitle: {vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide"},
+            tutorialStep1Title: {vi: "Bước 1: Tìm Picture Profile", en: "Step 1: Find Picture Profile"},
+            tutorialStep1P1: {vi: "Trong Menu, tìm đến mục <strong>Color/Tone</strong> (biểu tượng hồng) → <strong>Picture Profile</strong>.", en: "In the Menu, navigate to the <strong>Color/Tone</strong> section (pink icon) → <strong>Picture Profile</strong>."},
+            tutorialStep2Title: {vi: "Bước 2: Chọn và Reset", en: "Step 2: Select & Reset"},
+            tutorialStep2P1: {vi: "Chọn một profile trống (ví dụ: PP10), đi vào trong và nhấn nút 'Xoá' để reset về mặc định.", en: "Choose an empty profile (e.g., PP10), enter it, and press the 'Delete' button to reset it to default."},
+            tutorialStep3Title: {vi: "Bước 3: Nhập thông số", en: "Step 3: Enter Parameters"},
+            tutorialStep3P1: {vi: "Cẩn thận nhập tất cả các thông số của công thức, từ Black Level đến Color Depth.", en: "Carefully enter all parameters from the recipe, from Black Level to Color Depth."},
+            tutorialStep4Title: {vi: "Bước 4: Cài đặt White Balance", en: "Step 4: Set White Balance"},
+            tutorialStep4P1: {vi: "Thoát khỏi Picture Profile, vào mục <strong>White Balance</strong> và chỉnh theo nhiệt độ K và WB Shift được ghi trong công thức.", en: "Exit Picture Profile, go to <strong>White Balance</strong>, and adjust the Kelvin temperature and WB Shift as specified in the recipe."},
+
+            // Explain Tab
+            paramExplainTitle: {vi: "Giải thích Thông số Kỹ thuật", en: "Technical Parameter Explanation"},
+            explainIntroP1: {vi: "Picture Profile (PP) cho phép bạn can thiệp sâu vào hình ảnh trước khi quay/chụp, quyết định lớn đến màu sắc và cảm xúc của thành phẩm. Dưới đây là giải thích chi tiết từng thông số quan trọng.", en: "Picture Profile (PP) allows you to deeply manipulate the image before shooting, significantly influencing the final color and mood. Here is a detailed explanation of each important parameter."},
+            explainBLTitle: {vi: "⚫ Black Level (Mức Độ Đen)", en: "⚫ Black Level"},
+            explainBLP1: {vi: "<strong>Chức năng:</strong> Điều chỉnh độ sáng của vùng tối nhất (điểm đen tuyệt đối) trong ảnh. Giá trị dương (+) sẽ nâng vùng tối lên (làm nó sáng hơn, bạc hơn), trong khi giá trị âm (-) sẽ làm vùng tối sâu hơn.", en: "<strong>Function:</strong> Adjusts the brightness of the darkest parts (absolute black point) of the image. A positive value (+) lifts the shadows (making them brighter, faded), while a negative value (-) makes them deeper."},
+            explainBLP2: {vi: "<strong>Mẹo sử dụng:</strong><ul><li><strong>Giá trị âm (vd: -10, -15):</strong> Tạo ra màu đen sâu, đậm, tăng độ tương phản và mang lại cảm giác điện ảnh, mạnh mẽ.</li><li><strong>Giá trị dương (vd: +5, +7):</strong> Tạo hiệu ứng \"faded look\" hay \"màu bạc\", làm cho ảnh có cảm giác hoài cổ, nhẹ nhàng.</li></ul>", en: "<strong>Usage Tip:</strong><ul><li><strong>Negative values (e.g., -10, -15):</strong> Creates deep, rich blacks, increasing contrast for a strong, cinematic feel.</li><li><strong>Positive values (e.g., +5, +7):</strong> Creates a \"faded look,\" giving the image a nostalgic, gentle, dreamy feel.</li></ul>"},
+            explainGammaTitle: {vi: "📊 Black Gamma (Gamma cho vùng tối)", en: "📊 Black Gamma"},
+            explainGammaP1: {vi: "<strong>Chức năng:</strong> Điều chỉnh đường cong gamma chỉ cho các vùng có tông màu tối. Khác với Black Level chỉ tác động vào điểm đen nhất, Black Gamma ảnh hưởng đến một dải tông màu tối rộng hơn.", en: "<strong>Function:</strong> Adjusts the gamma curve for only the darker tones. Unlike Black Level which only affects the blackest point, Black Gamma affects a wider range of dark tones."},
+            explainGammaP2: {vi: "<strong>Mẹo sử dụng:</strong><ul><li><strong>Range (Phạm vi):</strong> Wide (Rộng), Middle (Trung bình), Narrow (Hẹp) quyết định mức độ ảnh hưởng đến các vùng tối.</li><li><strong>Level (Mức độ):</strong> Giá trị dương (+) làm sáng vùng tối, giảm tương phản ở vùng tối. Giá trị âm (-) làm vùng tối sâu hơn, tăng tương phản ở vùng tối.</li></ul>", en: "<strong>Usage Tip:</strong><ul><li><strong>Range:</strong> Wide, Middle, Narrow determines how much of the dark areas are affected.</li><li><strong>Level:</strong> A positive value (+) brightens the shadows, reducing contrast in the darks. A negative value (-) deepens the shadows, increasing contrast in the darks.</li></ul>"},
+            explainKneeTitle: {vi: "🦵 Knee (Điểm \"Gãy\")", en: "🦵 Knee"},
+            explainKneeP1: {vi: "<strong>Chức năng:</strong> Nén tín hiệu ở vùng sáng (highlights) để tránh bị \"cháy sáng\" (clipping), giúp giữ lại chi tiết trên các vùng rất sáng như mây, đèn.", en: "<strong>Function:</strong> Compresses the signal in bright areas (highlights) to prevent \"clipping,\" helping to retain detail in very bright areas like clouds or lights."},
+            explainKneeP2: {vi: "<strong>Mẹo sử dụng:</strong><ul><li><strong>Point (Điểm):</strong> Quyết định mức sáng mà Knee bắt đầu có hiệu lực.</li><li><strong>Slope (Độ dốc):</strong> Quyết định mức độ nén tín hiệu. Giá trị dương (+) nén nhiều hơn.</li></ul>", en: "<strong>Usage Tip:</strong><ul><li><strong>Point:</strong> Determines the brightness level where the Knee effect begins.</li><li><strong>Slope:</strong> Determines the degree of signal compression. A positive value (+) means more compression.</li></ul>"},
+            explainCDTitle: {vi: "🌈 Color Depth (Độ Sâu Màu)", en: "🌈 Color Depth"},
+            explainCDP1: {vi: "<strong>Chức năng:</strong> Cho phép tăng hoặc giảm độ bão hòa của 6 kênh màu riêng biệt: <strong>R</strong> (Đỏ), <strong>G</strong> (Xanh lá), <strong>B</strong> (Xanh dương), <strong>C</strong> (Lục lam), <strong>M</strong> (Đỏ tươi), <strong>Y</strong> (Vàng).", en: "<strong>Function:</strong> Allows you to increase or decrease the saturation of 6 individual color channels: <strong>R</strong> (Red), <strong>G</strong> (Green), <strong>B</strong> (Blue), <strong>C</strong> (Cyan), <strong>M</strong> (Magenta), <strong>Y</strong> (Yellow)."},
+            explainCDP2: {vi: "<strong>Mẹo sử dụng:</strong> Đây là trái tim của việc giả lập màu film. Bằng cách thay đổi các giá trị này, bạn có thể tái tạo lại màu sắc đặc trưng của một cuộn phim nào đó.", en: "<strong>Usage Tip:</strong> This is the heart of film simulation. By changing these values, you can replicate the characteristic colors of a specific film stock."},
+            explainWBTitle: {vi: "🌐 White Balance Shift (Tinh Chỉnh WB)", en: "🌐 White Balance Shift"},
+            explainWBP1: {vi: "<strong>Chức năng:</strong> Tinh chỉnh màu sắc trên một lưới 2 chiều: trục <strong>G-M (Green-Magenta)</strong> và trục <strong>A-B (Amber-Blue)</strong>. Đây là bước tinh chỉnh sau khi đã chọn nhiệt độ K, cho phép tạo ra các ám màu nghệ thuật một cách tinh tế.", en: "<strong>Function:</strong> Fine-tunes color on a 2D grid: the <strong>G-M (Green-Magenta)</strong> axis and the <strong>A-B (Amber-Blue)</strong> axis. This is a fine-tuning step after setting the Kelvin temperature, allowing for subtle, artistic color casts."},
+            explainWBShiftP2: {vi: "<strong>Mẹo sử dụng:</strong> Các công thức màu sử dụng thông số này (ví dụ: <code>A5-M0.5</code>) để tạo ra các ám màu rất tinh tế mà không thể đạt được chỉ bằng cách chỉnh Kelvin.", en: "<strong>Usage Tip:</strong> Color recipes use this parameter (e.g., <code>A5-M0.5</code>) to create very subtle color casts that cannot be achieved by just adjusting Kelvin."},
+            
+            // Quiz Questions
+            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"}, 
+            quizQ1A1: {vi: "Cổ điển", en: "Classic"}, 
+            quizQ1A2: {vi: "Hiện đại", en: "Modern"}, 
+            quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"}, 
+            quizQ1A4: {vi: "Nghệ thuật", en: "Artistic"},
+            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"}, 
+            quizQ2A1: {vi: "Chân dung", en: "Portraits"}, 
+            quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"}, 
+            quizQ2A3: {vi: "Đường phố", en: "Street"}, 
+            quizQ2A4: {vi: "Đời thường", en: "Everyday"},
+            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"}, 
+            quizQ3A1: {vi: "Vui vẻ", en: "Happy"}, 
+            quizQ3A2: {vi: "Trầm tư", en: "Contemplative"}, 
+            quizQ3A3: {vi: "Năng động", en: "Dynamic"}, 
+            quizQ3A4: {vi: "Bình yên", en: "Peaceful"},
+            quizQ4: {vi: "Bạn thích du lịch đến đâu?", en: "Where do you like to travel?"},
+            quizQ4A1: {vi: "Biển xanh", en: "Beaches"},
+            quizQ4A2: {vi: "Núi rừng", en: "Mountains"},
+            quizQ4A3: {vi: "Thành phố đô thị", en: "Urban Cities"},
+            quizQ4A4: {vi: "Phố cổ", en: "Old Towns"},
+            quizQ5: {vi: "Bạn thích tone màu nào?", en: "Which color tone do you prefer?"},
+            quizQ5A1: {vi: "Tone ấm", en: "Warm Tones"},
+            quizQ5A2: {vi: "Tone lạnh", en: "Cool Tones"},
+            quizQ6: {vi: "Xu hướng hình ảnh của bạn là gì?", en: "What is your image trend?"},
+            quizQ6A1: {vi: "Hơi thở Á Đông", en: "Eastern Vibe"},
+            quizQ6A2: {vi: "Cảm hứng Phương Tây", en: "Western Inspiration"}
+        };
+        
+        const quizQuestions = [
+            { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] },
+            { id: 'plan', title: 'quizQ2', options: ['quizQ2A1', 'quizQ2A2', 'quizQ2A3', 'quizQ2A4'], values: ['Portrait', 'Landscape', 'Street', 'Everyday'] },
+            { id: 'mood', title: 'quizQ3', options: ['quizQ3A1', 'quizQ3A2', 'quizQ3A3', 'quizQ3A4'], values: ['Happy', 'Contemplative', 'Dynamic', 'Peaceful'] },
+            { id: 'location', title: 'quizQ4', options: ['quizQ4A1', 'quizQ4A2', 'quizQ4A3', 'quizQ4A4'], values: ['Beach', 'Mountain', 'Urban', 'Old Town'] },
+            { id: 'tone', title: 'quizQ5', options: ['quizQ5A1', 'quizQ5A2'], values: ['Warm', 'Cool'] },
+            { id: 'style', title: 'quizQ6', options: ['quizQ6A1', 'quizQ6A2'], values: ['Eastern', 'Western'] }
+        ];
+        
+        // --- API CALLS (MOCKS) ---
+        async function callAIApi(prompt, delay = 1000) {
+            if (state.isAILoading) return;
+            state.isAILoading = true;
+            try {
+                // Mock Gemini API call
+                await new Promise(resolve => setTimeout(resolve, delay));
+                
+                // For quiz
+                if (prompt.includes("Recommend TWO recipes")) {
+                     const idx1 = Math.floor(Math.random() * recipesData.length);
+                     let idx2 = Math.floor(Math.random() * recipesData.length);
+                     while (idx1 === idx2) { // Ensure two different recipes
+                         idx2 = Math.floor(Math.random() * recipesData.length);
+                     }
+                     const mockRecipe1 = recipesData[idx1];
+                     const mockRecipe2 = recipesData[idx2];
+                     return [
+                         { recipeId: mockRecipe1.id, moodDescription: mockRecipe1.description[state.currentLang] },
+                         { recipeId: mockRecipe2.id, moodDescription: mockRecipe2.description[state.currentLang] }
+                     ];
+                }
+
+                // For tuning
+                if (prompt.includes("Original Recipe")) {
+                    const originalId = prompt.match(/ID: (.*?)\)/)[1];
+                    const originalRecipe = recipesData.find(r => r.id === originalId);
+                    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
+                    adjustedRecipe.name = {vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)`};
+                    if (prompt.includes('ấm') || prompt.includes('warmer')) { adjustedRecipe.whiteBalance = "5500K, A6-M1"; }
+                    if (prompt.includes('trong') || prompt.includes('clearer')) { if(adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = '0'; }
+                    return { recipe: adjustedRecipe };
+                }
+                
+                // For comparison
+                if (prompt.includes("Compare the following two recipes")) {
+                     const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
+                     return `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
+                }
+
+            } catch (error) {
+                console.error("AI API call failed:", error);
+                return null; // Handle error appropriately in the UI
+            } finally {
+                state.isAILoading = false;
+                updateUIAfterAILoading();
+            }
+        }
+        
+        // --- UTILITY & HELPER FUNCTIONS ---
+        function t(key) { return translations[key]?.[state.currentLang] || key; }
+        
+        function applyTranslations() {
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey;
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = t(key);
+                else el.innerHTML = t(key);
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
+            document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
+            document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
+        }
+
+        function createSettingsGrid(settings) {
+            if (!settings) return '';
+            return Object.entries(settings).map(([key, value]) => `<div class="flex flex-col"><span class="text-xs text-neutral-500">${key}</span><span class="font-semibold">${value}</span></div>`).join('');
+        };
+
+        function createFullRecipeHTML(recipe, isMainView = false) {
+            const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
+            const noteHTML = (recipe.notes && recipe.notes[state.currentLang]) 
+                ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg">
+                     <p class="font-bold" data-translate-key="noteTitle"></p>
+                     <p>${recipe.notes[state.currentLang]}</p>
+                   </div>` 
+                : '';
+
+            return `${noteHTML}<div class="space-y-6 mt-4">
+                <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-gray-500/10 rounded-lg"><p class="font-semibold">${recipe.whiteBalance || ''}</p></div></div>
+                <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4 p-4 bg-gray-500/10 rounded-lg">${createSettingsGrid(recipe.settings)}</div></div>
+                ${recipe.colorDepth ? `<div><h4 class="${titleClass} mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 md:grid-cols-6 gap-x-6 gap-y-4 p-4 bg-gray-500/10 rounded-lg">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
+                ${recipe.detailSettings ? `<div><h4 class="${titleClass} mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4 p-4 bg-gray-500/10 rounded-lg">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
+            </div>`;
+        }
+
+
+        function updateUIAfterAILoading() {
+            document.querySelectorAll('button:disabled').forEach(btn => {
+                if (btn.querySelector('.spinner')) {
+                    btn.innerHTML = btn.dataset.originalText || '';
+                    btn.disabled = false;
+                }
+            });
+        }
+        
+        // --- VIEW RENDERING LOGIC ---
+        const viewTemplates = {
+            home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition">
+                <h1 data-translate-key="landingTitle" class="landing-title"></h1>
+                <p data-translate-key="landingSubtitle" class="landing-subtitle mt-4"></p>
+                <button id="startQuizBtn" class="btn btn-primary mt-8 py-4 px-8 text-lg" data-translate-key="startQuizBtn"></button>
+            </div>`,
+            
+            quiz: () => {
+                if (state.quizStep >= quizQuestions.length) return '';
+                const q = quizQuestions[state.quizStep];
+                const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
+                return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
+                    <div class="w-full max-w-3xl text-center" data-quiz-group="${q.id}">
+                        <h2 class="quiz-question-title" data-translate-key="${q.title}"></h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">${optionsHTML}</div>
+                    </div>
+                </div>`;
+            },
+            
+            library: () => `
+                <div id="libraryView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
+                     <aside class="md:w-1/3 lg:w-1/4 glass-panel p-5 flex flex-col rounded-3xl">
+                        <h2 class="text-2xl font-bold" data-translate-key="sidebarTitle"></h2>
+                        <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                        <div id="filtersContainer" class="space-y-4">
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                        </div>
+                        <div id="recipeListContainer" class="space-y-1 pt-4 mt-4 border-t flex-grow overflow-y-auto pr-2"></div>
+                        <div id="compareBtnContainer" class="pt-2 flex-shrink-0"></div>
+                     </aside>
+                     <main class="md:w-2/3 lg:w-3/4 flex flex-col min-h-0"><div class="glass-panel flex-grow overflow-y-auto p-8 rounded-3xl">
+                        <div id="recipeDetailWelcome" class="text-center flex flex-col items-center justify-center h-full text-neutral-400">
+                           <svg class="mx-auto mb-4 w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z"></path></svg>
+                           <h2 class="text-3xl font-bold mt-4 text-gray-600" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-sm" data-translate-key="recipeDetailWelcomeText"></p>
+                        </div>
+                        <div id="recipeContent" class="hidden"></div>
+                     </div></main>
+                </div>`,
+            
+            explain: () => `<div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition"><div class="glass-panel p-8 rounded-3xl max-w-4xl mx-auto my-8">
+                <h2 data-translate-key="paramExplainTitle" class="text-3xl font-bold"></h2>
+                <div class="prose-fluid max-w-none space-y-12 mt-8">
+                    <div><h3 data-translate-key="explainBLTitle"></h3><p data-translate-key="explainBLP1"></p><p data-translate-key="explainBLP2"></p></div>
+                    <div class="mt-8"><h3 data-translate-key="explainGammaTitle"></h3><p data-translate-key="explainGammaP1"></p><img src="https://i.imgur.com/3whJda5.png" alt="Biểu đồ Black Gamma" class="rounded-lg shadow-md my-4 w-full max-w-md mx-auto p-4 bg-slate-100" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/500x300/f1f5f9/ffffff?text=black_gamma.png';"><p data-translate-key="explainGammaP2"></p></div>
+                    <div class="mt-8"><h3 data-translate-key="explainKneeTitle"></h3><p data-translate-key="explainKneeP1"></p><img src="https://i.imgur.com/oBJylE7.png" alt="Biểu đồ Knee" class="rounded-lg shadow-md my-4 w-full max-w-md mx-auto p-4 bg-slate-100" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/500x300/f1f5f9/ffffff?text=knee_point_01.png';"><p data-translate-key="explainKneeP2"></p></div>
+                    <div class="mt-8"><h3 data-translate-key="explainCDTitle"></h3><p data-translate-key="explainCDP1"></p><p data-translate-key="explainCDP2"></p></div>
+                    <div class="mt-8"><h3 data-translate-key="explainWBTitle" class="!mt-12"></h3><p data-translate-key="explainWBP1"></p><img src="https://i.imgur.com/yeq0dml.jpeg" alt="Lưới điều chỉnh White Balance Shift" class="rounded-lg shadow-md my-4 w-full max-w-sm mx-auto" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x400/111827/ffffff?text=white-balance.jpg';"><p data-translate-key="explainWBShiftP2"></p></div>
+                </div>
+            </div></div>`
+        };
+
+        function renderView(viewName) {
+            state.currentView = viewName;
+            return new Promise(resolve => {
+                const currentContent = mainContentEl.children[0];
+                if (currentContent) {
+                    currentContent.classList.add('view-transition-out');
+                    currentContent.addEventListener('animationend', () => {
+                        mainContentEl.innerHTML = viewTemplates[viewName]();
+                        attachViewEventListeners(viewName);
+                        applyTranslations();
+                        resolve();
+                    }, { once: true });
+                } else {
+                    mainContentEl.innerHTML = viewTemplates[viewName]();
+                    attachViewEventListeners(viewName);
+                    applyTranslations();
+                    resolve();
+                }
+            });
+        }
+        
+        // --- EVENT LISTENERS & HANDLERS ---
+        
+        function handleFilterClick(e) {
+            const btn = e.target.closest('.filter-btn');
+            if (!btn) return;
+            const group = btn.closest('[data-filter-group]').dataset.filterGroup;
+            const value = btn.dataset.filterValue;
+            state.activeFilters[group] = value;
+            document.querySelectorAll(`[data-filter-group="${group}"] .filter-btn`).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderLibraryList();
+        }
+
+        function handleRecipeSelection(id, type) {
+            if (type === 'checkbox') {
+                const index = state.comparisonList.indexOf(id);
+                if (index > -1) state.comparisonList.splice(index, 1);
+                else if (state.comparisonList.length < 2) state.comparisonList.push(id);
+                
+                if (state.comparisonList.length !== 2) {
+                    state.selectedRecipeId = null;
+                    document.getElementById('recipeContent').classList.add('hidden');
+                    document.getElementById('recipeDetailWelcome').classList.remove('hidden');
+                }
+            } else { // 'span' or 'div' click
+                state.selectedRecipeId = id;
+                state.comparisonList = []; // Clear comparison when viewing details
+                renderLibraryDetails();
+            }
+            renderLibraryList();
+        }
+
+        async function handleAiComparison(id1, id2, recipe2Obj = null) {
+            const modal = document.getElementById('comparisonModal');
+            const titleEl = document.getElementById('comparisonModalTitle');
+            const contentEl = document.getElementById('comparisonModalContent');
+            
+            modal.classList.remove('hidden');
+            titleEl.textContent = t('comparisonModalTitle');
+            contentEl.innerHTML = `<div class="flex items-center justify-center p-8"><div class="spinner !w-12 !h-12 !border-4"></div><p class="ml-4 text-lg font-semibold">${t('comparisonLoading')}</p></div>`;
+
+            const recipe1 = recipesData.find(r => r.id === id1);
+            const recipe2 = recipe2Obj ? { ...recipe2Obj, id: 'ai-adjusted', name: recipe2Obj.name } : recipesData.find(r => r.id === id2);
+
+            const prompt = `Compare the following two recipes: *${recipe1.name[state.currentLang]}* and *${recipe2.name[state.currentLang]}*. Analyze their overall feel, key parameter differences (like White Balance and Black Level), and suggest ideal use cases for each. Present the result in Markdown.`;
+            const comparisonText = await callAIApi(prompt, 1200);
+            
+            contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
+        }
+
+        async function handleAiAdjustment(button) {
+            const recipeId = button.dataset.recipeId;
+            const textarea = document.getElementById('aiTuningTextarea');
+            const resultContainer = document.getElementById('aiResultContainer');
+            if (!textarea.value || !resultContainer || state.isAILoading) return;
+            
+            button.disabled = true;
+            button.dataset.originalText = button.innerHTML;
+            button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
+
+            const originalRecipe = recipesData.find(r => r.id === recipeId);
+            const prompt = `Original Recipe (ID: ${recipeId}): ${JSON.stringify(originalRecipe.settings)}. User request: "${textarea.value}". Please provide a new JSON object with adjusted settings.`;
+            const aiResponse = await callAIApi(prompt);
+
+            if (aiResponse && aiResponse.recipe) {
+                state.lastGeneratedAiRecipe = aiResponse.recipe;
+                resultContainer.innerHTML = `
+                    <div class="mt-4 border-t border-gray-200/50 pt-4">
+                        <h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4>
+                        <div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div>
+                        <button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button>
+                    </div>`;
+            } else {
+                 resultContainer.innerHTML = `<p class="text-red-500">Failed to generate adjustment.</p>`;
+            }
+            button.disabled = false;
+            button.innerHTML = button.dataset.originalText;
+            applyTranslations();
+        }
+
+        async function handleQuizSubmit() {
+            await renderView('home');
+            const homeView = document.getElementById('homeView');
+            if (!homeView) {
+                console.error("Quiz Submit Error: homeView not found after render.");
+                return;
+            }
+
+            homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
+            applyTranslations();
+            
+            const prompt = `Based on user preferences: ${JSON.stringify(state.quizAnswers)}. Recommend TWO recipes from the available list. Respond with JSON array: [{"recipeId", "moodDescription" (in ${state.currentLang})}, ...].`;
+            const aiResponse = await callAIApi(prompt);
+
+            if (aiResponse && aiResponse.length >= 2) {
+                 const recommendedRecipe1 = recipesData.find(r => r.id === aiResponse[0].recipeId);
+                 const recommendedRecipe2 = recipesData.find(r => r.id === aiResponse[1].recipeId);
+                 if (recommendedRecipe1 && recommendedRecipe2) {
+                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition">
+                        <div class="quiz-result-container p-8 rounded-3xl w-full max-w-4xl mx-auto glass-panel">
+                            <h3 class="text-2xl font-bold mb-8 text-center" data-translate-key="quizResultTitle"></h3>
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div class="quiz-choice-option p-6 rounded-2xl bg-white/50 text-left" data-recipe-id="${recommendedRecipe1.id}">
+                                    <h4 class="text-2xl font-bold mb-2">${recommendedRecipe1.name[state.currentLang]}</h4>
+                                    <p class="text-md italic text-gray-600">"${recommendedRecipe1.description[state.currentLang]}"</p>
+                                </div>
+                                <div class="quiz-choice-option p-6 rounded-2xl bg-white/50 text-left" data-recipe-id="${recommendedRecipe2.id}">
+                                    <h4 class="text-2xl font-bold mb-2">${recommendedRecipe2.name[state.currentLang]}</h4>
+                                    <p class="text-md italic text-gray-600">"${recommendedRecipe2.description[state.currentLang]}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                    applyTranslations();
+                 }
+            } else {
+                 homeView.innerHTML = `<p class="text-red-500">Lỗi khi lấy đề xuất từ AI.</p>`;
+            }
+        }
+        
+        function attachViewEventListeners(viewName) {
+            if (viewName === 'library') {
+                renderLibraryList();
+                renderLibraryDetails();
+                document.getElementById('searchInput').addEventListener('input', renderLibraryList);
+                document.getElementById('filtersContainer').addEventListener('click', handleFilterClick);
+                document.getElementById('recipeListContainer').addEventListener('click', (e) => {
+                     const cb = e.target.closest('.recipe-compare-cb');
+                     const item = e.target.closest('.flex-grow');
+                     if (cb) {
+                         handleRecipeSelection(cb.dataset.recipeId, 'checkbox');
+                     } else if (item) {
+                         handleRecipeSelection(item.dataset.recipeId, 'div');
+                     }
+                });
+            } else if (viewName === 'quiz') {
+                 document.querySelector('#quizView .grid').addEventListener('click', (e) => {
+                    const option = e.target.closest('.quiz-option');
+                    if(!option || option.classList.contains('selected')) return;
+                    const group = option.closest('[data-quiz-group]').dataset.quizGroup;
+                    state.quizAnswers[group] = option.dataset.value;
+                    option.classList.add('selected');
+                    setTimeout(() => {
+                        state.quizStep++;
+                        if (state.quizStep >= quizQuestions.length) {
+                            handleQuizSubmit();
+                        } else {
+                            renderView('quiz');
+                        }
+                    }, 250);
+                });
+            }
+        }
+
+        // --- RENDER & INITIALIZATION ---
+        function renderLibraryList() {
+             const container = document.getElementById('recipeListContainer');
+             if (!container) return;
+             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+             
+             let recipesToRender = recipesData.filter(recipe => 
+                (recipe.name.vi.toLowerCase().includes(searchTerm) || recipe.name.en.toLowerCase().includes(searchTerm) || recipe.description.vi.toLowerCase().includes(searchTerm) || recipe.description.en.toLowerCase().includes(searchTerm)) &&
+                (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) &&
+                (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) &&
+                (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation)
+             );
+
+             container.innerHTML = recipesToRender.map(recipe => {
+                const isChecked = state.comparisonList.includes(recipe.id);
+                const isSelected = recipe.id === state.selectedRecipeId;
+                 return `<div class="recipe-item p-3 rounded-lg transition-all duration-200 border-l-4 border-transparent flex gap-3 ${isSelected ? 'selected' : ''}">
+                    <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
+                    <div class="flex-grow cursor-pointer" data-recipe-id="${recipe.id}">
+                        <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+                        <p class="text-xs text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
+                    </div>
+                </div>`;
+             }).join('');
+             
+             const btnContainer = document.getElementById('compareBtnContainer');
+             btnContainer.innerHTML = `<button id="compareBtn" class="btn btn-primary w-full mt-4 py-3" data-translate-key="compareBtn" ${state.comparisonList.length !== 2 ? 'disabled' : ''}></button>`;
+             applyTranslations();
+        }
+        
+        function renderLibraryDetails() {
+            const recipeContentContainer = document.getElementById('recipeContent');
+            const welcomeView = document.getElementById('recipeDetailWelcome');
+            const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+            if (!recipe) {
+                welcomeView.classList.remove('hidden');
+                recipeContentContainer.classList.add('hidden');
+                return;
+            }
+            welcomeView.classList.add('hidden');
+            recipeContentContainer.classList.remove('hidden');
+            
+            recipeContentContainer.innerHTML = `
+                <h3 class="text-3xl font-bold">${recipe.name[state.currentLang]}</h3>
+                <p class="text-lg text-neutral-600 mt-2 mb-6 italic">"${recipe.description[state.currentLang]}"</p>
+                <div id="recipeNotesContainer" class="mb-4"></div>
+                <div id="originalRecipeContainer">${createFullRecipeHTML(recipe, true)}</div>
+                <div class="mt-12 pt-8 border-t border-gray-200">
+                    <details class="group"><summary class="text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors"><span data-translate-key="tutorialTitle"></span><svg class="w-5 h-5 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></summary><div class="prose-fluid max-w-none mt-4 space-y-4"><div><h4 data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div><div><h4 data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div><div><h4 data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div><div><h4 data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div></div></details>
+                </div>
+                <div class="mt-12 pt-8 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
+                        <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
+                        <div id="aiResultContainer" class="mt-4"></div>
+                    </div>
+                </div>`;
+            applyTranslations();
+        }
+
+        function init() {
+            document.body.addEventListener('click', async (e) => {
+                const target = e.target;
+                const homeBtn = target.closest('#homeBtn');
+                const navBtn = target.closest('.nav-btn');
+                const langBtn = target.closest('.lang-btn');
+                const startQuizBtn = target.closest('#startQuizBtn');
+                const compareBtn = target.closest('#compareBtn');
+                const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
+                const closeModalBtn = target.closest('#closeComparisonModalBtn');
+                const aiTuningBtn = target.closest('#aiTuningBtn');
+                const quizChoice = target.closest('.quiz-choice-option');
+
+                if (homeBtn) { await renderView('home'); return; }
+                if (navBtn) { await renderView(navBtn.dataset.view); return; }
+                if (langBtn) { 
+                    state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); 
+                    await renderView(state.currentView);
+                    return; 
+                }
+                if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
+                if (compareBtn && !compareBtn.disabled) { handleAiComparison(state.comparisonList[0], state.comparisonList[1]); return; }
+                if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
+                if (closeModalBtn) { document.getElementById('comparisonModal').classList.add('hidden'); return; }
+                if (aiTuningBtn) { handleAiAdjustment(aiTuningBtn); return; }
+                if (quizChoice) { 
+                    state.selectedRecipeId = quizChoice.dataset.recipeId; 
+                    await renderView('library');
+                    return; 
+                }
+            });
+            
+            renderView('home');
+        }
+
+        document.addEventListener("DOMContentLoaded", init);
