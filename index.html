@@ -282,7 +282,7 @@
             rawProcessTitle: { vi: 'Quy Trình Hậu Kỳ RAW', en: 'RAW Post-Production Workflow' },
             rawStep1: { vi: '1. 📸 Chụp ảnh RAW', en: '1. 📸 Shoot in RAW' },
             rawStep2: { vi: '2. 💻 Chuyển file vào máy tính', en: '2. 💻 Transfer files to computer' },
-            rawStep3: { vi: '3. 🎨 Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
+            rawStep3: { vi: '3. � Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
             rawStep4: { vi: '4.  sliders Kéo các thanh trượt màu sắc', en: '4. sliders Adjust color sliders' },
             rawStep5: { vi: '5. ✅ Xuất file JPEG/TIFF', en: '5. ✅ Export JPEG/TIFF file' },
             diyProcessTitle: { vi: 'Quy Trình Sáng Tạo Sony DIY Color', en: 'Sony DIY Color Workflow' },
@@ -396,7 +396,8 @@
             } catch (error) {
                 console.error("AI API call failed:", error); return null;
             } finally {
-                state.isAILoading = false; updateUIAfterAILoading();
+                state.isAILoading = false;
+                updateUIAfterAILoading();
             }
         }
         
@@ -850,6 +851,17 @@
             const chartDefaultOptions = (yAxisTitleKey) => ({
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (e) => {
+                    const chart = e.chart;
+                    const elements = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                     if (elements.length) {
+                        const firstPoint = elements[0];
+                        const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
+                        if (recipeId) {
+                            handleRecipeSelection(recipeId, 'chart');
+                        }
+                    }
+                },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -867,18 +879,6 @@
                     y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
                 }
             });
-
-            const handleChartClick = (e, chart) => {
-                if (!chart) return;
-                const elements = Chart.getElementsAtEventForMode(chart, e, { intersect: true }, true);
-                if (elements.length) {
-                    const firstPoint = elements[0];
-                    const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
-                    if (recipeId) {
-                        handleRecipeSelection(recipeId, 'chart');
-                    }
-                }
-            };
             
             const colorCtx = document.getElementById('colorChart')?.getContext('2d');
             if (colorCtx) {
@@ -893,14 +893,13 @@
                                 return recipe ? recipe.personalityColor : '#CCCCCC'; // Fallback color
                             }),
                             pointBorderColor: 'rgba(255, 255, 255, 0.5)',
-                            pointBorderWidth: function(ctx) { return ctx.raw?.id === state.selectedRecipeId ? 4 : 2; },
-                            pointRadius: function(ctx) { return ctx.raw?.id === state.selectedRecipeId ? 11 : 7; },
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
                             pointHoverRadius: 11
                         }]
                     },
                     options: chartDefaultOptions('axisSaturation')
                 });
-                colorCtx.canvas.onclick = (e) => handleChartClick(e, activeCharts.color);
             }
 
             const bwCtx = document.getElementById('bwChart')?.getContext('2d');
@@ -913,15 +912,14 @@
                             data: bwData,
                             pointBackgroundColor: '#475569',
                             pointBorderColor: 'rgba(255, 255, 255, 0.5)',
-                            pointBorderWidth: function(ctx) { return ctx.raw?.id === state.selectedRecipeId ? 4 : 2; },
-                            pointRadius: function(ctx) { return ctx.raw?.id === state.selectedRecipeId ? 11 : 7; },
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
                             pointHoverRadius: 11,
                             pointHoverBorderWidth: 3
                         }]
                     },
                     options: chartDefaultOptions('axisChroma')
                 });
-                bwCtx.canvas.onclick = (e) => handleChartClick(e, activeCharts.bw);
             }
         }
 
@@ -973,3 +971,4 @@
     </script>
 </body>
 </html>
+�
