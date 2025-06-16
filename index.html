@@ -13,7 +13,7 @@
     <style>
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #f4f7fc;
+            background-color: #f4f7fc; /* Softer background */
             color: #212529;
             overflow: hidden;
         }
@@ -39,7 +39,7 @@
             -webkit-backdrop-filter: blur(40px) saturate(180%); 
             border: 1px solid var(--glass-border); 
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-            border-radius: 28px;
+            border-radius: 28px; /* Increased border radius */
         }
         .recipe-item.selected { 
             background-color: rgba(0, 122, 255, 0.1); 
@@ -88,18 +88,21 @@
         .quiz-choice-option { cursor: pointer; transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; background: rgba(255,255,255,0.7); border-radius: 20px;}
         .quiz-choice-option:hover { transform: scale(1.03); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
 
+        /* Apple-like scrollbar */
         .overflow-y-auto::-webkit-scrollbar { width: 10px; }
         .overflow-y-auto::-webkit-scrollbar-track { background-color: transparent; }
         .overflow-y-auto::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
         .overflow-y-auto::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
         .overflow-y-auto { scrollbar-width: auto; scrollbar-color: rgba(0, 0, 0, 0.2) transparent; }
 
-        .chart-container { position: relative; width: 100%;}
+        /* Infographic/Chart Styles */
+        .chart-container { position: relative; margin: auto; height: 350px; max-height: 450px; width: 100%;}
+        #colorChart, #bwChart { cursor: pointer; }
+        .gradient-banded { background: linear-gradient(to right, #00A6ED, #0d8cc0, #1a7294, #265867, #333e3a, #40240e, #FFB900); }
+        .gradient-smooth { background: linear-gradient(to right, #00A6ED, #FFB900); }
         .flow-arrow { font-size: 2rem; color: #737373; line-height: 1; }
         .recipe-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .recipe-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        .gradient-banded { background: linear-gradient(to right, #00A6ED, #0d8cc0, #1a7294, #265867, #333e3a, #40240e, #FFB900); }
-        .gradient-smooth { background: linear-gradient(to right, #00A6ED, #FFB900); }
     </style>
 </head>
 <body>
@@ -113,8 +116,9 @@
             </button>
             <div class="flex items-center gap-4">
                  <nav id="mainNav" class="flex items-center gap-6">
-                    <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navLibrary"></button>
-                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors" data-translate-key="navExplain"></button>
+                    <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
+                    <button data-view="colorLibrary" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
+                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                  </nav>
                 <div class="flex items-center gap-2 ml-4">
                      <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
@@ -159,7 +163,8 @@
         const translations = {
             // General
             headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
-            navLibrary: {vi:"Thư viện Màu", en:"Color Library"},
+            navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
+            navColorLibrary: {vi:"Thư viện màu", en:"Color Library"},
             navExplain: {vi:"Giải thích", en:"Guide"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
             footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Developed by Sony Alpha Vietnam. AI features powered by Google Gemini."},
@@ -172,8 +177,8 @@
             viewInLibraryBtn: {vi: "Xem trong thư viện", en: "View in Library"},
             loadingAnalyze: {vi: "Đang phân tích lựa chọn...", en: "Analyzing your choices..."},
             
-            // Recipe Formulas (Library)
-            sidebarTitle: {vi: "Danh sách Công thức", en: "Recipe List"},
+            // Recipe Formulas (Old Library)
+            sidebarTitle: {vi: "Công thức màu", en: "Color Recipes"},
             searchInputPlaceholder: {vi: "🔍 Tìm công thức...", en: "🔍 Search recipes..."},
             filterType: {vi: "Loại", en: "Type"},
             filterTypeColor: {vi: "Màu", en: "Color"},
@@ -189,8 +194,8 @@
             sortContrastHL: {vi: "Tương phản: Cao-Thấp", en: "Contrast: High-Low"},
             sortSaturationHL: {vi: "Bão hòa: Cao-Thấp", en: "Saturation: High-Low"},
             compareBtn: {vi: "So sánh bằng AI", en: "Compare with AI"},
-            recipeDetailWelcomeTitle: {vi: "Chào mừng đến với Thư viện Màu", en: "Welcome to the Color Library"},
-            recipeDetailWelcomeText: {vi: "Chọn một công thức từ danh sách bên trái hoặc nhấp vào một điểm trên biểu đồ để xem chi tiết.", en: "Select a recipe from the list or click a point on the charts to see details."},
+            recipeDetailWelcomeTitle: {vi: "Công thức Màu sắc", en: "Color Recipes"},
+            recipeDetailWelcomeText: {vi: "Chọn một công thức từ danh sách bên trái để xem chi tiết, hoặc chọn hai công thức để so sánh.", en: "Select a recipe from the list to see details, or select two to compare."},
             whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
             recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
             colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
@@ -205,7 +210,9 @@
             comparisonModalTitle: {vi: "So sánh Công thức", en: "Recipe Comparison"},
             comparisonLoading: {vi: "AI đang phân tích và so sánh...", en: "AI is analyzing and comparing..."},
 
-            // Charts
+            // Color Library (New Chart View)
+            colorLibraryTitle: {vi: "Thư viện màu Tương tác", en: "Interactive Color Library"},
+            colorLibrarySubtitle: {vi: "Khám phá các công thức màu một cách trực quan. Nhấp vào một điểm để xem chi tiết.", en: "Explore color recipes visually. Click a point to see the details."},
             colorChartTitle: {vi: "Biểu đồ Màu", en: "Color Chart"},
             bwChartTitle: {vi: "Biểu đồ Đơn sắc (B&W)", en: "Monochrome (B&W) Chart"},
             axisTonality: {vi: "Tương phản (← Mềm | Cứng →)", en: "Tonality (← Soft | Hard →)"},
@@ -260,7 +267,7 @@
             quizQ8A2: {vi: "Thấp (Nhẹ nhàng)", en: "Low (Subtle)"},
             quizQ8A3: {vi: "Trung bình", en: "Medium"},
             
-            // Infographic Section
+             // Infographic Section
             infographicMainTitle: { vi: 'Làm Chủ Màu Sắc Film-look', en: 'Mastering the Film Look' },
             infographicMainSubtitle: { vi: 'Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony', en: 'A Comprehensive Guide to White Balance and Picture Profile on Sony Cameras' },
             infographicFooterText: { vi: 'Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.', en: 'Infographic based on research reports on Sony color customization.' },
@@ -322,6 +329,7 @@
             recallInternalDesc: { vi: 'Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.', en: 'Saves directly to the camera. Quickest access via the mode dial. Ideal for your daily-use recipes.' },
             recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, M2, M3, M4)' },
             recallCardDesc: { vi: 'Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.', en: 'Saves as a file on your memory card. Extremely useful for backups or transferring recipes to another Sony camera body.' },
+            
             kelvinChartTitle: { vi: 'Nhiệt độ màu (Kelvin)', en: 'Color Temperature (Kelvin)'},
             wbShiftXAxis: { vi: 'Trục Xanh (B) ← → Hổ phách (A)', en: 'Blue (B) ← → Amber (A) Axis' },
             wbShiftYAxis: { vi: 'Trục Tím (M) ↑', en: 'Magenta (M) Axis ↑' },
@@ -399,10 +407,7 @@
                     else { el.innerHTML = t(key); }
                 }
             });
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                const key = btn.dataset.translateKey;
-                btn.textContent = t(key)
-            });
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
             document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
             document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
         }
@@ -453,7 +458,7 @@
                 return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
                     <div class="w-full max-w-4xl text-center" data-quiz-group="${q.id}">
                         <h2 class="quiz-question-title" data-translate-key="${q.title}"></h2>
-                        <div class="grid ${q.options.length >= 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3'} gap-5 mt-12">${optionsHTML}</div>
+                        <div class="grid ${q.options.length > 3 ? 'grid-cols-2' : 'grid-cols-3'} gap-5 mt-12">${optionsHTML}</div>
                     </div>
                 </div>`;
             },
@@ -480,26 +485,31 @@
                         <div id="recipeListContainer" class="space-y-2 pt-4 mt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                      </aside>
-                     <main class="md:w-2/3 lg:w-[70%] xl:w-3/4 flex flex-col min-h-0 gap-6">
-                        <div id="chartsContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                            <div class="glass-panel p-6 h-[35vh] xl:h-auto">
-                                <h3 class="text-xl font-bold text-center mb-2" data-translate-key="colorChartTitle"></h3>
-                                <div class="chart-container h-[calc(100%-40px)]"><canvas id="recipeColorChart"></canvas></div>
-                            </div>
-                            <div class="glass-panel p-6 h-[35vh] xl:h-auto">
-                                <h3 class="text-xl font-bold text-center mb-2" data-translate-key="bwChartTitle"></h3>
-                                <div class="chart-container h-[calc(100%-40px)]"><canvas id="recipeBwChart"></canvas></div>
-                            </div>
+                     <main class="md:w-2/3 lg:w-[70%] xl:w-3/4 flex flex-col min-h-0"><div class="glass-panel flex-grow overflow-y-auto p-8 lg:p-10">
+                        <div id="recipeDetailWelcome" class="text-center flex flex-col items-center justify-center h-full text-neutral-400">
+                           <svg class="mx-auto mb-4 w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z"></path></svg>
+                           <h2 class="text-3xl font-bold mt-4 text-gray-600" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-sm" data-translate-key="recipeDetailWelcomeText"></p>
                         </div>
-                        <div class="glass-panel flex-grow overflow-y-auto p-8 lg:p-10">
-                            <div id="recipeDetailWelcome" class="text-center flex flex-col items-center justify-center h-full text-neutral-400">
-                               <svg class="mx-auto mb-4 w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z"></path></svg>
-                               <h2 class="text-3xl font-bold mt-4 text-gray-600" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-sm" data-translate-key="recipeDetailWelcomeText"></p>
-                            </div>
-                            <div id="recipeContent" class="hidden"></div>
-                        </div>
-                     </main>
+                        <div id="recipeContent" class="hidden"></div>
+                     </div></main>
                 </div>`,
+            
+            colorLibrary: () => `<div id="colorLibraryView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
+                <div class="glass-panel p-6 md:p-10 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate-key="colorLibraryTitle"></h2>
+                    <p class="text-lg text-neutral-600 mt-2" data-translate-key="colorLibrarySubtitle"></p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                    <div class="glass-panel p-6">
+                        <h3 class="text-2xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3>
+                        <div class="chart-container"><canvas id="colorChart"></canvas></div>
+                    </div>
+                    <div class="glass-panel p-6">
+                        <h3 class="text-2xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3>
+                        <div class="chart-container"><canvas id="bwChart"></canvas></div>
+                    </div>
+                </div>
+            </div>`,
             
             explain: () => `<div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-100 text-gray-800">
                 <div class="container mx-auto p-4 md:p-12">
@@ -577,7 +587,7 @@
             activeCharts = {};
         }
 
-        function renderAllExplainCharts(lang) {
+        function renderAllCharts(lang) {
             destroyAllCharts();
             const FONT_COLOR = '#374151'; const GRID_COLOR = '#E5E7EB'; 
             const PALETTE = { blue: '#00A6ED', green: '#7FBA00', yellow: '#FFB900', orange: '#F25022', gray: '#737373' };
@@ -624,7 +634,7 @@
                 const currentContent = mainContentEl.children[0];
                 if (currentContent) {
                     currentContent.classList.add('view-transition-out');
-                    destroyAllCharts();
+                    destroyAllCharts(); // Destroy charts on any view change
                     currentContent.addEventListener('animationend', () => {
                         mainContentEl.innerHTML = viewTemplates[viewName]();
                         attachViewEventListeners(viewName);
@@ -661,7 +671,6 @@
                 }
             } else { state.selectedRecipeId = id; state.comparisonList = []; renderLibraryDetails(); }
             renderLibraryList();
-            renderRecipeCharts(state.currentLang); // Update chart highlights
         }
 
         async function handleAiComparison(id1, id2, recipe2Obj = null) {
@@ -715,7 +724,7 @@
         
         function attachViewEventListeners(viewName) {
             if (viewName === 'recipeFormulas') {
-                renderLibraryList(); renderLibraryDetails(); renderRecipeCharts(state.currentLang);
+                renderLibraryList(); renderLibraryDetails();
                 document.getElementById('searchInput').addEventListener('input', renderLibraryList);
                 document.getElementById('filtersContainer').addEventListener('click', handleFilterClick);
                 document.getElementById('sortSelect').addEventListener('change', renderLibraryList);
@@ -739,7 +748,7 @@
                     }, 250);
                 });
             } else if (viewName === 'explain') {
-                renderAllExplainCharts(state.currentLang);
+                renderAllCharts(state.currentLang);
                 document.getElementById('exploreMoreBtn')?.addEventListener('click', () => renderView('recipeFormulas'));
 
                 function generateRecipeExampleHTML(recipe, titleColor) {
@@ -765,7 +774,9 @@
                     recipe1Container.innerHTML = generateRecipeExampleHTML(recipe1Data, '#F25022');
                     recipe2Container.innerHTML = generateRecipeExampleHTML(recipe2Data, '#737373');
                 }
-            } 
+            } else if (viewName === 'colorLibrary') {
+                renderInteractiveCharts(state.currentLang);
+            }
         }
 
         // --- RENDER & INITIALIZATION ---
@@ -781,7 +792,7 @@
 
              container.innerHTML = recipesToRender.map(recipe => {
                 const isChecked = state.comparisonList.includes(recipe.id); const isSelected = recipe.id === state.selectedRecipeId;
-                 return `<div class="recipe-item p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex gap-4 ${isSelected ? 'selected' : ''}" data-recipe-id="${recipe.id}">
+                 return `<div class="recipe-item p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex gap-4 ${isSelected ? 'selected' : ''}">
                     <input type="checkbox" class="recipe-compare-cb form-checkbox h-6 w-6 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
                     <div class="flex-grow cursor-pointer" data-recipe-id="${recipe.id}"><span class="font-semibold text-primary text-lg">${recipe.name[state.currentLang]}</span><p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p></div>
                 </div>`;
@@ -802,22 +813,20 @@
             applyTranslations();
         }
 
-        function renderRecipeCharts(lang) {
+        function renderInteractiveCharts(lang) {
             destroyAllCharts();
 
-            const handleChartClick = (e, elements, chart) => {
-                if (elements.length > 0) {
-                    const firstPoint = elements[0];
-                    const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
+            const handleChartClick = (e, chartInstance) => {
+                const points = chartInstance.getElementsAtEventForMode(e, 'point', { intersect: true }, true);
+                if (points.length) {
+                    const firstPoint = points[0];
+                    const recipeId = chartInstance.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
                     if (recipeId) {
                         state.selectedRecipeId = recipeId;
-                        renderLibraryList();
-                        renderLibraryDetails();
-                        renderRecipeCharts(state.currentLang); // Re-render charts to show new selection highlight
+                        // FIX: Use setTimeout to decouple navigation from the chart's event handler, preventing race conditions.
                         setTimeout(() => {
-                            const listItem = document.querySelector(`.recipe-item[data-recipe-id='${recipeId}']`);
-                            listItem?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 50);
+                           renderView('recipeFormulas');
+                        }, 0);
                     }
                 }
             };
@@ -828,57 +837,77 @@
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            label: function(context) { return context.raw.name; }
+                            label: function(context) {
+                                return context.raw.name;
+                            }
                         }
                     }
                 },
                 scales: {
-                    x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] } },
-                    y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] } }
+                    x: {
+                        min: -10, max: 10,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { display: false },
+                        border: { dash: [4, 4] },
+                    },
+                    y: {
+                        min: -10, max: 10,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { display: false },
+                        border: { dash: [4, 4] },
+                    }
                 }
             };
 
             // Color Chart
-            const colorCtx = document.getElementById('recipeColorChart')?.getContext('2d');
+            const colorCtx = document.getElementById('colorChart')?.getContext('2d');
             if (colorCtx) {
-                const colorData = recipesData.filter(r => r.type === 'color').map(r => ({...r.coords, id: r.id, name: r.name[lang], dotColor: r.dotColor }));
+                const colorData = recipesData.filter(r => r.type === 'color').map(r => ({...r.coords, id: r.id, name: r.name[lang] }));
                 activeCharts.color = new Chart(colorCtx, {
                     type: 'scatter',
                     data: {
                         datasets: [{
                             data: colorData,
-                            pointBackgroundColor: ctx => ctx.raw.id === state.selectedRecipeId ? '#000' : ctx.raw.dotColor,
-                            pointBorderColor: ctx => ctx.raw.id === state.selectedRecipeId ? '#fff' : '#ffffff50',
-                            pointBorderWidth: ctx => ctx.raw.id === state.selectedRecipeId ? 3 : 1,
-                            pointRadius: ctx => ctx.raw.id === state.selectedRecipeId ? 11 : 7,
-                            pointHoverRadius: 10,
-                            pointHoverBorderWidth: 2,
-                            pointHoverBorderColor: '#000',
+                            pointBackgroundColor: 'rgba(0, 122, 255, 0.7)',
+                            pointBorderColor: 'rgba(0, 122, 255, 1)',
+                            pointRadius: 6,
+                            pointHoverRadius: 9,
                         }]
                     },
-                    options: { ...chartDefaultOptions, onClick: handleChartClick, scales: { ...chartDefaultOptions.scales, x: { ...chartDefaultOptions.scales.x, title: { display: true, text: t('axisTonality') } }, y: { ...chartDefaultOptions.scales.y, title: { display: true, text: t('axisSaturation') } } } }
+                    options: {
+                        ...chartDefaultOptions,
+                        scales: { ...chartDefaultOptions.scales, 
+                            x: { ...chartDefaultOptions.scales.x, title: { display: true, text: t('axisTonality') } },
+                            y: { ...chartDefaultOptions.scales.y, title: { display: true, text: t('axisSaturation') } }
+                        },
+                        onClick: (e) => handleChartClick(e, activeCharts.color)
+                    }
                 });
             }
 
             // B&W Chart
-            const bwCtx = document.getElementById('recipeBwChart')?.getContext('2d');
+            const bwCtx = document.getElementById('bwChart')?.getContext('2d');
             if (bwCtx) {
-                const bwData = recipesData.filter(r => r.type === 'bw').map(r => ({...r.coords, id: r.id, name: r.name[lang], dotColor: r.dotColor}));
+                const bwData = recipesData.filter(r => r.type === 'bw').map(r => ({...r.coords, id: r.id, name: r.name[lang] }));
                  activeCharts.bw = new Chart(bwCtx, {
                     type: 'scatter',
                     data: {
                          datasets: [{
                             data: bwData,
-                            pointBackgroundColor: ctx => ctx.raw.id === state.selectedRecipeId ? '#000' : ctx.raw.dotColor,
-                            pointBorderColor: ctx => ctx.raw.id === state.selectedRecipeId ? '#fff' : '#ffffff50',
-                            pointBorderWidth: ctx => ctx.raw.id === state.selectedRecipeId ? 3 : 1,
-                            pointRadius: ctx => ctx.raw.id === state.selectedRecipeId ? 11 : 7,
-                            pointHoverRadius: 10,
-                            pointHoverBorderWidth: 2,
-                            pointHoverBorderColor: '#000',
+                            pointBackgroundColor: 'rgba(100, 116, 139, 0.7)',
+                            pointBorderColor: 'rgba(51, 65, 85, 1)',
+                            pointRadius: 6,
+                            pointHoverRadius: 9,
                         }]
                     },
-                    options: { ...chartDefaultOptions, onClick: handleChartClick, scales: { ...chartDefaultOptions.scales, x: { ...chartDefaultOptions.scales.x, title: { display: true, text: t('axisTonality') } }, y: { ...chartDefaultOptions.scales.y, title: { display: true, text: t('axisChroma') } } } }
+                    options: {
+                        ...chartDefaultOptions,
+                         scales: { ...chartDefaultOptions.scales, 
+                            x: { ...chartDefaultOptions.scales.x, title: { display: true, text: t('axisTonality') } },
+                            y: { ...chartDefaultOptions.scales.y, title: { display: true, text: t('axisChroma') } }
+                        },
+                         onClick: (e) => handleChartClick(e, activeCharts.bw)
+                    }
                 });
             }
         }
@@ -908,8 +937,8 @@
 
         document.addEventListener("DOMContentLoaded", init);
         
-        // --- DATA ---
-        const recipesData = [
+             // --- DATA ---
+         const recipesData = [
             {"id":"vektro-100","name":{"vi":"Chiều Tàn","en":"Dusk / Twilight"},"description":{"vi":"Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm, lý tưởng cho cảnh hoàng hôn hoặc ánh đèn đêm ấm áp.","en":"Recreates the vibrant orange of fire and deep shadows, ideal for sunsets or warm night lights."},"type":"color","contrast":"high","saturation":"high","whiteBalance":"4000K, A5-M0.5","settings":{"Black level":"-10","Gamma":"Still","Black Gamma":"Wide -7","Knee":"Manual 92.5% +5","Color Mode":"S-Gamut3.Cine","Saturation":"+20","Color Phase":"0"},"colorDepth":{"R":"+5","G":"+7","B":"+5","C":"+5","M":"+2","Y":"+1"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
             {"id":"senova-light","name":{"vi":"Đà Lạt trong sương","en":"Da Lat Mist"},"description":{"vi":"Màu lam lạnh và tương phản cao, gợi cảm giác mờ ảo của cao nguyên buổi sớm.","en":"A cool blue tone with high contrast, evoking the misty feeling of the highlands in the early morning."},"type":"color","contrast":"high","saturation":"medium","whiteBalance":"8000K, B2-M2","settings":{"Black level":"-15","Gamma":"Cine3","Black Gamma":"Wide +7","Knee":"Manual 85% +4","Color Mode":"S-Gamut3.Cine","Saturation":"+20","Color Phase":"+7"},"colorDepth":{"R":"-5","G":"-1","B":"+3","C":"+4","M":"+5","Y":"+2"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
             {"id":"fuji-400h","name":{"vi":"Đồng Cỏ Mộc Châu","en":"Moc Chau Meadow"},"description":{"vi":"Tôn vinh sắc xanh tươi mát của cỏ cây dưới nắng hạ, mang lại cảm giác tự nhiên và trong trẻo.","en":"Honors the fresh green tones of plants under the summer sun, bringing a natural and clear feeling."},"type":"color","contrast":"low","saturation":"low","whiteBalance":"3700K, A7-M0.5","settings":{"Black level":"0","Gamma":"Movie","Black Gamma":"Wide +7","Knee":"Manual 80% +4","Color Mode":"Still","Saturation":"+11","Color Phase":"-3"},"colorDepth":{"R":"-4","G":"+7","B":"-3","C":"-3","M":"-5","Y":"-3"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
