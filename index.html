@@ -355,6 +355,7 @@
         async function callAIApi(prompt, delay = 1000) {
             if (state.isAILoading) return;
             state.isAILoading = true;
+            updateUIAfterAILoading(true); // Show spinner
             try {
                 await new Promise(resolve => setTimeout(resolve, delay));
                 if (prompt.includes("Recommend TWO recipes")) {
@@ -383,7 +384,8 @@
             } catch (error) {
                 console.error("AI API call failed:", error); return null;
             } finally {
-                state.isAILoading = false; updateUIAfterAILoading();
+                state.isAILoading = false;
+                updateUIAfterAILoading(false); // Hide spinner
             }
         }
         
@@ -398,10 +400,6 @@
                     else if (el.tagName === 'OPTION') { el.textContent = t(key); } 
                     else { el.innerHTML = t(key); }
                 }
-            });
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                const key = btn.dataset.translateKey;
-                btn.textContent = t(key)
             });
             document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
             document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
@@ -429,11 +427,21 @@
         }
 
 
-        function updateUIAfterAILoading() {
-            document.querySelectorAll('button:disabled').forEach(btn => {
-                if (btn.querySelector('.spinner')) {
-                    btn.innerHTML = btn.dataset.originalText || '';
-                    btn.disabled = false;
+        function updateUIAfterAILoading(isLoading) {
+            const buttons = document.querySelectorAll('#aiTuningBtn, #compareBtn');
+            buttons.forEach(button => {
+                if (!button) return;
+                if (isLoading) {
+                    button.disabled = true;
+                    button.dataset.originalText = button.innerHTML;
+                    button.innerHTML = `<div class="spinner"></div> ${button.textContent}`;
+                } else {
+                    if (button.dataset.originalText) {
+                         button.innerHTML = button.dataset.originalText;
+                    }
+                    if(button.id !== 'compareBtn' || state.comparisonList.length === 2) {
+                       button.disabled = false;
+                    }
                 }
             });
         }
@@ -654,23 +662,25 @@
                 const index = state.comparisonList.indexOf(id);
                 if (index > -1) state.comparisonList.splice(index, 1);
                 else if (state.comparisonList.length < 2) state.comparisonList.push(id);
-                if (state.comparisonList.length !== 2) {
+                
+                if (state.comparisonList.length !== 2 && state.selectedRecipeId !== null) {
+                    // If we break a comparison pair, deselect the recipe details view
                     state.selectedRecipeId = null;
-                    document.getElementById('recipeContent').classList.add('hidden');
-                    document.getElementById('recipeDetailWelcome').classList.remove('hidden');
+                    renderLibraryDetails();
                 }
             } else { 
-                if (state.selectedRecipeId === id) return;
+                if (state.selectedRecipeId === id) return; // Prevent re-rendering if already selected
                 state.selectedRecipeId = id; 
                 state.comparisonList = []; 
                 renderLibraryDetails(); 
             }
-            renderLibraryList();
+            // Always update list and charts to reflect selection changes
+            renderLibraryList(); 
             if(activeCharts.color) activeCharts.color.update();
             if(activeCharts.bw) activeCharts.bw.update();
         }
         
-        function handleChartClick(e, elements, chart) {
+        function handleChartClick(evt, elements, chart) {
             if (elements.length > 0) {
                 const firstPoint = elements[0];
                 const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
@@ -681,6 +691,7 @@
                     renderLibraryList();
                     if(activeCharts.color) activeCharts.color.update();
                     if(activeCharts.bw) activeCharts.bw.update();
+                    // Scroll the newly selected item into view in the list
                     setTimeout(() => {
                         const listItem = document.querySelector(`.recipe-item[data-recipe-id='${recipeId}']`);
                         listItem?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -708,8 +719,6 @@
             const textarea = document.getElementById('aiTuningTextarea');
             const resultContainer = document.getElementById('aiResultContainer');
             if (!textarea.value || !resultContainer || state.isAILoading) return;
-            button.disabled = true; button.dataset.originalText = button.innerHTML;
-            button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
             const originalRecipe = recipesData.find(r => r.id === recipeId);
             const prompt = `Original Recipe (ID: ${recipeId}): ${JSON.stringify(originalRecipe.settings)}. User request: "${textarea.value}". Please provide a new JSON object with adjusted settings.`;
             const aiResponse = await callAIApi(prompt);
@@ -717,7 +726,7 @@
                 state.lastGeneratedAiRecipe = aiResponse.recipe;
                 resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
             } else { resultContainer.innerHTML = `<p class="text-red-500">Failed to generate adjustment.</p>`; }
-            button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
+            applyTranslations();
         }
 
         async function handleQuizSubmit() {
@@ -746,10 +755,11 @@
                 document.getElementById('filtersContainer').addEventListener('click', handleFilterClick);
                 document.getElementById('sortSelect').addEventListener('change', renderLibraryList);
                 document.getElementById('recipeListContainer').addEventListener('click', (e) => {
+                     const recipeItem = e.target.closest('.recipe-item');
+                     if (!recipeItem) return;
+                     const recipeId = recipeItem.dataset.recipeId;
                      const cb = e.target.closest('.recipe-compare-cb');
-                     const item = e.target.closest('.flex-grow');
-                     if (cb) { handleRecipeSelection(cb.dataset.recipeId, 'checkbox'); } 
-                     else if (item) { handleRecipeSelection(item.dataset.recipeId, 'div'); }
+                     handleRecipeSelection(recipeId, cb ? 'checkbox' : 'div');
                 });
             } else if (viewName === 'quiz') {
                  document.querySelector('#quizView .grid').addEventListener('click', (e) => {
@@ -789,7 +799,7 @@
                     const recipe1Data = recipesData.find(r => r.id === 'vektro-100');
                     const recipe2Data = recipesData.find(r => r.id === 'senova-light');
                     recipe1Container.innerHTML = generateRecipeExampleHTML(recipe1Data, '#F25022');
-                    recipe2Container.innerHTML = generateRecipeExampleHTML(recipe2Data, '#737373');
+                    recipe2Container.innerHTML = generateRecipeExampleHTML(recipe2Data, '#00A6ED');
                 }
             } 
         }
@@ -807,9 +817,9 @@
 
              container.innerHTML = recipesToRender.map(recipe => {
                 const isChecked = state.comparisonList.includes(recipe.id); const isSelected = recipe.id === state.selectedRecipeId;
-                 return `<div class="recipe-item p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex gap-4 ${isSelected ? 'selected' : ''}" data-recipe-id="${recipe.id}">
-                    <input type="checkbox" class="recipe-compare-cb form-checkbox h-6 w-6 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
-                    <div class="flex-grow cursor-pointer" data-recipe-id="${recipe.id}"><span class="font-semibold text-primary text-lg">${recipe.name[state.currentLang]}</span><p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p></div>
+                 return `<div class="recipe-item p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex gap-4 cursor-pointer ${isSelected ? 'selected' : ''}" data-recipe-id="${recipe.id}">
+                    <input type="checkbox" class="recipe-compare-cb form-checkbox h-6 w-6 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
+                    <div class="flex-grow"><span class="font-semibold text-primary text-lg">${recipe.name[state.currentLang]}</span><p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p></div>
                 </div>`;
              }).join('');
              const btnContainer = document.getElementById('compareBtnContainer');
@@ -940,4 +950,3 @@
     </script>
 </body>
 </html>
-" because it contains a small typo. Can you please correct "lang-btn" to "lang-button" everywhere and regenerate the documents"
