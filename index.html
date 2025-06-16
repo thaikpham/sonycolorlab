@@ -481,17 +481,17 @@
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                      </aside>
                      <main class="md:w-2/3 lg:w-[70%] xl:w-3/4 flex flex-col min-h-0 gap-6">
-                        <div id="chartsContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                            <div class="glass-panel p-6 h-[35vh] xl:h-auto">
+                        <div id="chartsContainer" class="flex-shrink-0 grid grid-cols-1 xl:grid-cols-2 gap-6">
+                            <div class="glass-panel p-4 md:p-6">
                                 <h3 class="text-xl font-bold text-center mb-2" data-translate-key="colorChartTitle"></h3>
-                                <div class="chart-container h-[calc(100%-40px)]"><canvas id="recipeColorChart"></canvas></div>
+                                <div class="chart-container h-64"><canvas id="recipeColorChart"></canvas></div>
                             </div>
-                            <div class="glass-panel p-6 h-[35vh] xl:h-auto">
+                            <div class="glass-panel p-4 md:p-6">
                                 <h3 class="text-xl font-bold text-center mb-2" data-translate-key="bwChartTitle"></h3>
-                                <div class="chart-container h-[calc(100%-40px)]"><canvas id="recipeBwChart"></canvas></div>
+                                <div class="chart-container h-64"><canvas id="recipeBwChart"></canvas></div>
                             </div>
                         </div>
-                        <div class="glass-panel flex-grow overflow-y-auto p-8 lg:p-10">
+                        <div class="glass-panel flex-grow overflow-y-auto p-8 lg:p-10 min-h-0">
                             <div id="recipeDetailWelcome" class="text-center flex flex-col items-center justify-center h-full text-neutral-400">
                                <svg class="mx-auto mb-4 w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z"></path></svg>
                                <h2 class="text-3xl font-bold mt-4 text-gray-600" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-sm" data-translate-key="recipeDetailWelcomeText"></p>
@@ -940,3 +940,4 @@
     </script>
 </body>
 </html>
+" because it contains a small typo. Can you please correct "lang-btn" to "lang-button" everywhere and regenerate the documents"
