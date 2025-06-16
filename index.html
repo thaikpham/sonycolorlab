@@ -311,24 +311,6 @@
             heifSmoothDesc: { vi: 'Số lượng "bậc thang" màu nhiều gấp 4 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.', en: '4x more color "steps," withstanding heavy adjustments without quality loss.' },
             recipesTitle: { vi: 'Thực Hành: Công Thức Màu Tham Khảo', en: 'Practice: Sample Color Recipes' },
             recipesDesc: { vi: 'Dưới đây là một số công thức phổ biến để bạn bắt đầu. Hãy xem chúng là điểm xuất phát, tự do thử nghiệm và tạo ra dấu ấn của riêng bạn!', en: 'Here are some popular recipes to get you started. Use them as a starting point, experiment freely, and create your own signature look!' },
-            recipe1Title: { vi: 'Kodak Vision3 250D', en: 'Kodak Vision3 250D' },
-            recipe1Desc: { vi: 'Tông màu điện ảnh hiện đại, bão hòa cao, lấy cảm hứng từ phim Vision3.', en: 'Modern cinematic tone, high saturation, inspired by Vision3 film.' },
-            recipe2Title: { vi: 'Orthochromatic', en: 'Orthochromatic' },
-            recipe2Desc: { vi: 'Màu sắc độc đáo, hoài cổ, mô phỏng lại đặc tính của phim Orthochromatic.', en: 'Unique, nostalgic color, simulating the characteristics of Orthochromatic film.' },
-            recipeWb: { vi: '<strong>WB:</strong> 3700K, A7-G1', en: '<strong>WB:</strong> 3700K, A7-G1' },
-            recipeGamma: { vi: '<strong>Gamma:</strong> S-Cinetone', en: '<strong>Gamma:</strong> S-Cinetone' },
-            recipeColorMode: { vi: '<strong>Color Mode:</strong> S-Cinetone', en: '<strong>Color Mode:</strong> S-Cinetone' },
-            recipeBlackGamma: { vi: '<strong>Black Gamma:</strong> Narrow / -7', en: '<strong>Black Gamma:</strong> Narrow / -7' },
-            recipeKnee: { vi: '<strong>Knee:</strong> Auto', en: '<strong>Knee:</strong> Auto' },
-            recipeSaturation: { vi: '<strong>Saturation:</strong> +32', en: '<strong>Saturation:</strong> +32' },
-            recipeColorPhase: { vi: '<strong>Color Phase:</strong> +3', en: '<strong>Color Phase:</strong> +3' },
-            recipeWb_2: { vi: '<strong>WB:</strong> AWB, A3-M2.75', en: '<strong>WB:</strong> AWB, A3-M2.75' },
-            recipeGamma_2: { vi: '<strong>Gamma:</strong> Movie', en: '<strong>Gamma:</strong> Movie' },
-            recipeColorMode_2: { vi: '<strong>Color Mode:</strong> Still', en: '<strong>Color Mode:</strong> Still' },
-            recipeBlackGamma_2: { vi: '<strong>Black Gamma:</strong> Narrow / -7', en: '<strong>Black Gamma:</strong> Narrow / -7' },
-            recipeKnee_2: { vi: '<strong>Knee:</strong> Manual / 105% / +5', en: '<strong>Knee:</strong> Manual / 105% / +5' },
-            recipeSaturation_2: { vi: '<strong>Saturation:</strong> +15', en: '<strong>Saturation:</strong> +15' },
-            recipeColorPhase_2: { vi: '<strong>Color Phase:</strong> 0', en: '<strong>Color Phase:</strong> 0' },
             exploreMoreBtn: { vi: 'Khám Phá Thêm Công Thức', en: 'Explore More Recipes' },
             recallTitle: { vi: 'Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall', en: 'Save & Reuse: Mastering Memory Recall' },
             recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.', en: 'Don\'t waste your effort! Save your recipes to the camera\'s memory for quick recall with a simple turn of a dial.' },
@@ -554,8 +536,8 @@
                             <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="recipesTitle"></h3>
                             <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="recipesDesc"></p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div class="bg-white p-8 rounded-2xl shadow-lg recipe-card"><h4 class="text-2xl font-bold mb-4 text-[#F25022]" data-translate-key="recipe1Title"></h4><p class="mb-4 italic" data-translate-key="recipe1Desc"></p><ul class="space-y-1 text-sm"><li data-translate-key="recipeWb"></li><li data-translate-key="recipeGamma"></li><li data-translate-key="recipeColorMode"></li><li data-translate-key="recipeBlackGamma"></li><li data-translate-key="recipeKnee"></li><li data-translate-key="recipeSaturation"></li><li data-translate-key="recipeColorPhase"></li></ul></div>
-                                <div class="bg-white p-8 rounded-2xl shadow-lg recipe-card"><h4 class="text-2xl font-bold mb-4 text-[#737373]" data-translate-key="recipe2Title"></h4><p class="mb-4 italic" data-translate-key="recipe2Desc"></p><ul class="space-y-1 text-sm"><li data-translate-key="recipeWb_2"></li><li data-translate-key="recipeGamma_2"></li><li data-translate-key="recipeColorMode_2"></li><li data-translate-key="recipeBlackGamma_2"></li><li data-translate-key="recipeKnee_2"></li><li data-translate-key="recipeSaturation_2"></li><li data-translate-key="recipeColorPhase_2"></li></ul></div>
+                                <div id="explain-recipe-1" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
+                                <div id="explain-recipe-2" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
                             </div>
                             <div class="text-center mt-12"><button id="exploreMoreBtn" class="inline-block bg-[#00A6ED] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#008cbf] transition-all duration-300 transform hover:scale-105" data-translate-key="exploreMoreBtn"></button></div>
                         </section>
@@ -740,6 +722,34 @@
             } else if (viewName === 'explain') {
                 renderAllCharts(state.currentLang);
                 document.getElementById('exploreMoreBtn')?.addEventListener('click', () => renderView('library'));
+
+                // Dynamically populate recipe examples
+                function generateRecipeExampleHTML(recipe, titleColor) {
+                    if (!recipe || !recipe.settings) return '<p>Recipe data not available.</p>';
+                    return `
+                        <h4 class="text-2xl font-bold mb-4" style="color: ${titleColor};">${recipe.name[state.currentLang]}</h4>
+                        <p class="mb-4 italic">${recipe.description[state.currentLang]}</p>
+                        <ul class="space-y-1 text-sm">
+                            <li><strong>WB:</strong> ${recipe.whiteBalance}</li>
+                            <li><strong>Gamma:</strong> ${recipe.settings.Gamma || 'N/A'}</li>
+                            <li><strong>Color Mode:</strong> ${recipe.settings['Color Mode'] || 'N/A'}</li>
+                            <li><strong>Black Gamma:</strong> ${recipe.settings['Black Gamma'] || 'N/A'}</li>
+                            <li><strong>Knee:</strong> ${recipe.settings.Knee || 'N/A'}</li>
+                            <li><strong>Saturation:</strong> ${recipe.settings.Saturation || 'N/A'}</li>
+                            <li><strong>Color Phase:</strong> ${recipe.settings['Color Phase'] || 'N/A'}</li>
+                        </ul>
+                    `;
+                }
+
+                const recipe1Container = document.getElementById('explain-recipe-1');
+                const recipe2Container = document.getElementById('explain-recipe-2');
+
+                if (recipe1Container && recipe2Container) {
+                    const recipe1Data = recipesData.find(r => r.id === 'vektro-100');
+                    const recipe2Data = recipesData.find(r => r.id === 'senova-light');
+                    recipe1Container.innerHTML = generateRecipeExampleHTML(recipe1Data, '#F25022');
+                    recipe2Container.innerHTML = generateRecipeExampleHTML(recipe2Data, '#737373');
+                }
             }
         }
 
@@ -802,7 +812,7 @@
         document.addEventListener("DOMContentLoaded", init);
         
         // --- DATA ---
-        const recipesData = [
+         const recipesData = [
             {"id":"vektro-100","name":{"vi":"Chiều Tàn","en":"Dusk / Twilight"},"description":{"vi":"Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm, lý tưởng cho cảnh hoàng hôn hoặc ánh đèn đêm ấm áp.","en":"Recreates the vibrant orange of fire and deep shadows, ideal for sunsets or warm night lights."},"type":"color","contrast":"high","saturation":"high","whiteBalance":"4000K, A5-M0.5","settings":{"Black level":"-10","Gamma":"Still","Black Gamma":"Wide -7","Knee":"Manual 92.5% +5","Color Mode":"S-Gamut3.Cine","Saturation":"+20","Color Phase":"0"},"colorDepth":{"R":"+5","G":"+7","B":"+5","C":"+5","M":"+2","Y":"+1"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
             {"id":"senova-light","name":{"vi":"Đà Lạt trong sương","en":"Da Lat Mist"},"description":{"vi":"Màu lam lạnh và tương phản cao, gợi cảm giác mờ ảo của cao nguyên buổi sớm.","en":"A cool blue tone with high contrast, evoking the misty feeling of the highlands in the early morning."},"type":"color","contrast":"high","saturation":"medium","whiteBalance":"8000K, B2-M2","settings":{"Black level":"-15","Gamma":"Cine3","Black Gamma":"Wide +7","Knee":"Manual 85% +4","Color Mode":"S-Gamut3.Cine","Saturation":"+20","Color Phase":"+7"},"colorDepth":{"R":"-5","G":"-1","B":"+3","C":"+4","M":"+5","Y":"+2"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
             {"id":"fuji-400h","name":{"vi":"Đồng Cỏ Mộc Châu","en":"Moc Chau Meadow"},"description":{"vi":"Tôn vinh sắc xanh tươi mát của cỏ cây dưới nắng hạ, mang lại cảm giác tự nhiên và trong trẻo.","en":"Honors the fresh green tones of plants under the summer sun, bringing a natural and clear feeling."},"type":"color","contrast":"low","saturation":"low","whiteBalance":"3700K, A7-M0.5","settings":{"Black level":"0","Gamma":"Movie","Black Gamma":"Wide +7","Knee":"Manual 80% +4","Color Mode":"Still","Saturation":"+11","Color Phase":"-3"},"colorDepth":{"R":"-4","G":"+7","B":"-3","C":"-3","M":"-5","Y":"-3"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+2","B/W Balance":"Type 3","Limit":"7","Crispening":"7","Hi-Light Detail":"4"}},
