@@ -13,16 +13,19 @@
     <style>
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #f4f7fc; /* Softer background */
+            background-color: #f4f7fc;
             color: #212529;
-            overflow: hidden;
+            /* Allow vertical scroll on mobile, but keep it hidden for desktop view */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
+        
         #bg-blurs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
         .blur-circle { position: absolute; border-radius: 50%; filter: blur(180px); opacity: 0.15; transition: all 2s ease-in-out; }
-        .blur-1 { width: 500px; height: 500px; background: #007AFF; top: 5%; left: 10%; animation: move-blur-1 30s infinite alternate; }
-        .blur-2 { width: 600px; height: 600px; background: #FF9500; bottom: 5%; right: 10%; animation: move-blur-2 35s infinite alternate; }
-        @keyframes move-blur-1 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(200px, 100px) scale(1.3) rotate(55deg); } }
-        @keyframes move-blur-2 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(-150px, -100px) scale(1.2) rotate(-70deg); } }
+        .blur-1 { width: 40vw; height: 40vw; max-width: 500px; max-height: 500px; background: #007AFF; top: 5%; left: 10%; animation: move-blur-1 30s infinite alternate; }
+        .blur-2 { width: 50vw; height: 50vw; max-width: 600px; max-height: 600px; background: #FF9500; bottom: 5%; right: 10%; animation: move-blur-2 35s infinite alternate; }
+        @keyframes move-blur-1 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(10vw, 5vh) scale(1.3) rotate(55deg); } }
+        @keyframes move-blur-2 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(-8vw, -5vh) scale(1.2) rotate(-70deg); } }
 
         :root {
             --primary-accent: #007AFF;
@@ -33,18 +36,22 @@
             --text-secondary: #6e6e73;
         }
         
-        .glass-panel { 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(40px) saturate(180%); 
-            -webkit-backdrop-filter: blur(40px) saturate(180%); 
-            border: 1px solid var(--glass-border); 
+        .glass-panel {    
+            background: var(--glass-bg);    
+            backdrop-filter: blur(40px) saturate(180%);    
+            -webkit-backdrop-filter: blur(40px) saturate(180%);    
+            border: 1px solid var(--glass-border);    
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-            border-radius: 28px; /* Increased border radius */
+            border-radius: 24px; /* Slightly reduced for mobile */
         }
-        .recipe-item.selected { 
-            background-color: rgba(0, 122, 255, 0.1); 
-            border-left: 4px solid var(--primary-accent); 
-            color: var(--text-primary); 
+        @media (min-width: 768px) {
+            .glass-panel { border-radius: 28px; }
+        }
+
+        .recipe-item.selected {    
+            background-color: rgba(0, 122, 255, 0.1);    
+            border-left: 4px solid var(--primary-accent);    
+            color: var(--text-primary);    
             transform: translateX(4px);
             box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
         }
@@ -54,23 +61,23 @@
 
         .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;}
         .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
-        .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: scale(1.03); box-shadow: 0 6px 18px rgba(0, 118, 255, 0.45); }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 18px rgba(0, 118, 255, 0.45); }
         .btn:disabled { background-color: #b0bec5; cursor: not-allowed; opacity: 0.7; box-shadow: none; }
         
         .lang-btn { background: #e9ecef; border: none; border-radius: 9999px; padding: 0.25rem; transition: all 0.2s ease; }
         .lang-btn.active { box-shadow: 0 0 0 2.5px var(--primary-accent); }
         .lang-btn svg { width: 1.5rem; height: 1.5rem; }
         
-        .landing-title { font-size: clamp(2.8rem, 6vw, 4.8rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
-        .quiz-question-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
-        .landing-subtitle { font-size: clamp(1.1rem, 2vw, 1.35rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
+        .landing-title { font-size: clamp(2.5rem, 8vw, 4.8rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
+        .quiz-question-title { font-size: clamp(1.8rem, 6vw, 3.5rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
+        .landing-subtitle { font-size: clamp(1rem, 4vw, 1.35rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
         
         .view-transition { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-25px); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
 
-        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1.5rem; border-radius: 1.5rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; font-size: 1.1rem; text-align: center; }
+        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1.25rem; border-radius: 1.25rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; font-size: 1.1rem; text-align: center; }
         .quiz-option:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.07); }
         .quiz-option.selected { border-color: var(--primary-accent); background-color: rgba(0, 122, 255, 0.1); color: var(--primary-accent); }
         
@@ -98,7 +105,7 @@
         .overflow-y-auto { scrollbar-width: auto; scrollbar-color: rgba(0, 0, 0, 0.2) transparent; }
 
         /* Chart & Feature Styles */
-        .chart-container { position: relative; margin: auto; height: 300px; width: 100%;}
+        .chart-container { position: relative; margin: auto; height: 280px; width: 100%;}
         #colorChart, #bwChart { cursor: pointer; }
         .gradient-banded { background: linear-gradient(to right, #00A6ED, #0d8cc0, #1a7294, #265867, #333e3a, #40240e, #FFB900); }
         .gradient-smooth { background: linear-gradient(to right, #00A6ED, #FFB900); }
@@ -107,43 +114,71 @@
         .recipe-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
         .thumbnail-placeholder { background-color: #e2e8f0; border-radius: 1rem; aspect-ratio: 4 / 3; transition: transform 0.3s ease; }
         .thumbnail-placeholder:hover { transform: scale(1.05); }
+
+        /* Mobile Nav Menu */
+        #mobileNavMenu {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
 </head>
 <body>
     <div id="bg-blurs"><div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div></div>
     
-    <div id="appContainer" class="h-screen w-screen p-4 md:p-8 flex flex-col overflow-hidden">
-        <header class="flex justify-between items-center w-full z-10 flex-shrink-0">
-            <button id="homeBtn" class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+    <!-- App Container: Use min-h-screen for mobile to allow scrolling -->
+    <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
+        <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
+            <!-- Home Button -->
+            <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                <span data-translate-key="headerTitle"></span>
+                <span data-translate-key="headerTitle" class="hidden sm:inline"></span>
             </button>
-            <div class="flex items-center gap-4">
-                 <nav id="mainNav" class="flex items-center gap-6">
+            <div class="flex items-center gap-2 md:gap-4">
+                 <!-- Desktop Navigation -->
+                 <nav id="mainNav" class="hidden md:flex items-center gap-6">
                     <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                     <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                     <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                  </nav>
-                <div class="flex items-center gap-2 ml-4">
-                     <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
-                     <button id="langVI" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
+                 <!-- Language Buttons -->
+                <div class="flex items-center gap-2">
+                    <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
+                    <button id="langVI" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
                 </div>
+                 <!-- Hamburger Menu Button -->
+                <button id="hamburgerBtn" class="md:hidden p-2 rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
             </div>
         </header>
-        <div id="mainContent" class="flex-grow min-h-0 relative mt-6 mb-2"></div>
+        
+        <!-- Main Content Area -->
+        <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
 
         <footer class="text-center text-xs text-neutral-500 py-1 flex-shrink-0">
             <p data-translate-key="footerText"></p>
         </footer>
     </div>
     
-    <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <!-- Mobile Navigation Menu -->
+    <div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
+        <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
+            <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
+            <nav class="mt-16 flex flex-col gap-6 text-center">
+                <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
+                <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
+                <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col">
-            <div class="p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
-                <h2 id="comparisonModalTitle" class="text-2xl font-bold"></h2>
+            <div class="p-4 md:p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
+                <h2 id="comparisonModalTitle" class="text-xl md:text-2xl font-bold"></h2>
                 <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
             </div>
-            <div id="comparisonModalContent" class="p-8 overflow-y-auto prose-comparison"></div>
+            <div id="comparisonModalContent" class="p-6 md:p-8 overflow-y-auto prose-comparison"></div>
         </div>
     </div>
 
@@ -158,7 +193,8 @@
             isAILoading: false,
             quizStep: 0,
             quizAnswers: {},
-            activeFilters: { type: 'all', contrast: 'all', saturation: 'all' }
+            activeFilters: { type: 'all', contrast: 'all', saturation: 'all' },
+            isMobileDetailActive: false, // For mobile recipe view
         };
 
         const mainContentEl = document.getElementById('mainContent');
@@ -218,6 +254,7 @@
             axisTonality: {vi: "Tương phản (← Mềm | Cứng →)", en: "Tonality (← Soft | Hard →)"},
             axisSaturation: {vi: "Độ bão hòa (← Thấp | Cao →)", en: "Saturation (← Low | High →)"},
             axisChroma: {vi: "Độ sâu màu (← Thấp | Cao →)", en: "Chroma Depth (← Low | High →)"},
+            backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
 
             // Featured Photos
             featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
@@ -236,20 +273,20 @@
             tutorialStep4P1: {vi: "Thoát khỏi Picture Profile, vào mục <strong>White Balance</strong> và chỉnh theo nhiệt độ K và WB Shift được ghi trong công thức.", en: "Exit Picture Profile, go to <strong>White Balance</strong>, and adjust the Kelvin temperature and WB Shift as specified in the recipe."},
 
             // Quiz Questions
-            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"}, 
-            quizQ1A1: {vi: "Cổ điển", en: "Classic"}, 
-            quizQ1A2: {vi: "Hiện đại", en: "Modern"}, 
-            quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"}, 
+            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"},    
+            quizQ1A1: {vi: "Cổ điển", en: "Classic"},    
+            quizQ1A2: {vi: "Hiện đại", en: "Modern"},    
+            quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"},    
             quizQ1A4: {vi: "Nghệ thuật", en: "Artistic"},
-            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"}, 
-            quizQ2A1: {vi: "Chân dung", en: "Portraits"}, 
-            quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"}, 
-            quizQ2A3: {vi: "Đường phố", en: "Street"}, 
+            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"},    
+            quizQ2A1: {vi: "Chân dung", en: "Portraits"},    
+            quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"},    
+            quizQ2A3: {vi: "Đường phố", en: "Street"},    
             quizQ2A4: {vi: "Đời thường", en: "Everyday"},
-            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"}, 
-            quizQ3A1: {vi: "Vui vẻ", en: "Happy"}, 
-            quizQ3A2: {vi: "Trầm tư", en: "Contemplative"}, 
-            quizQ3A3: {vi: "Năng động", en: "Dynamic"}, 
+            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"},    
+            quizQ3A1: {vi: "Vui vẻ", en: "Happy"},    
+            quizQ3A2: {vi: "Trầm tư", en: "Contemplative"},    
+            quizQ3A3: {vi: "Năng động", en: "Dynamic"},    
             quizQ3A4: {vi: "Bình yên", en: "Peaceful"},
             quizQ4: {vi: "Bạn thích du lịch đến đâu?", en: "Where do you like to travel?"},
             quizQ4A1: {vi: "Biển xanh", en: "Beaches"},
@@ -272,7 +309,7 @@
             quizQ8A2: {vi: "Thấp (Nhẹ nhàng)", en: "Low (Subtle)"},
             quizQ8A3: {vi: "Trung bình", en: "Medium"},
             
-             // Infographic Section
+            // Infographic Section
             infographicMainTitle: { vi: 'Làm Chủ Màu Sắc Film-look', en: 'Mastering the Film Look' },
             infographicMainSubtitle: { vi: 'Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony', en: 'A Comprehensive Guide to White Balance and Picture Profile on Sony Cameras' },
             infographicFooterText: { vi: 'Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.', en: 'Infographic based on research reports on Sony color customization.' },
@@ -283,7 +320,7 @@
             rawStep1: { vi: '1. 📸 Chụp ảnh RAW', en: '1. 📸 Shoot in RAW' },
             rawStep2: { vi: '2. 💻 Chuyển file vào máy tính', en: '2. 💻 Transfer files to computer' },
             rawStep3: { vi: '3.   Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
-            rawStep4: { vi: '4.  sliders Kéo các thanh trượt màu sắc', en: '4. sliders Adjust color sliders' },
+            rawStep4: { vi: '4. sliders Kéo các thanh trượt màu sắc', en: '4. sliders Adjust color sliders' },
             rawStep5: { vi: '5. ✅ Xuất file JPEG/TIFF', en: '5. ✅ Export JPEG/TIFF file' },
             diyProcessTitle: { vi: 'Quy Trình Sáng Tạo Sony DIY Color', en: 'Sony DIY Color Workflow' },
             diyStep1: { vi: '1. 🎨 Thiết lập màu trong máy ảnh', en: '1. 🎨 Set up color in-camera' },
@@ -371,14 +408,14 @@
             try {
                 await new Promise(resolve => setTimeout(resolve, delay));
                 if (prompt.includes("Recommend TWO recipes")) {
-                     const idx1 = Math.floor(Math.random() * recipesData.length);
-                     let idx2 = Math.floor(Math.random() * recipesData.length);
-                     while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
-                     const mockRecipe1 = recipesData[idx1]; const mockRecipe2 = recipesData[idx2];
-                     return [
-                         { recipeId: mockRecipe1.id, moodDescription: mockRecipe1.description[state.currentLang] },
-                         { recipeId: mockRecipe2.id, moodDescription: mockRecipe2.description[state.currentLang] }
-                     ];
+                    const idx1 = Math.floor(Math.random() * recipesData.length);
+                    let idx2 = Math.floor(Math.random() * recipesData.length);
+                    while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
+                    const mockRecipe1 = recipesData[idx1]; const mockRecipe2 = recipesData[idx2];
+                    return [
+                        { recipeId: mockRecipe1.id, moodDescription: mockRecipe1.description[state.currentLang] },
+                        { recipeId: mockRecipe2.id, moodDescription: mockRecipe2.description[state.currentLang] }
+                    ];
                 }
                 if (prompt.includes("Original Recipe")) {
                     const originalId = prompt.match(/ID: (.*?)\)/)[1];
@@ -390,8 +427,8 @@
                     return { recipe: adjustedRecipe };
                 }
                 if (prompt.includes("Compare the following two recipes")) {
-                     const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
-                     return `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
+                    const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
+                    return `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
                 }
             } catch (error) {
                 console.error("AI API call failed:", error); return null;
@@ -408,12 +445,13 @@
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.dataset.translateKey;
                 if (translations[key] && translations[key][state.currentLang]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); } 
-                    else if (el.tagName === 'OPTION') { el.textContent = t(key); } 
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
+                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
                     else { el.innerHTML = t(key); }
                 }
             });
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
+            document.querySelectorAll('#mainNav .nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
+            document.querySelectorAll('#mobileNavMenu .nav-btn-mobile').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
             document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
             document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
         }
@@ -425,20 +463,19 @@
 
         function createFullRecipeHTML(recipe, isMainView = false) {
             const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
-            const noteHTML = (recipe.notes && recipe.notes[state.currentLang]) 
+            const noteHTML = (recipe.notes && recipe.notes[state.currentLang])    
                 ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-xl">
-                     <p class="font-bold" data-translate-key="noteTitle"></p>
-                     <p>${recipe.notes[state.currentLang]}</p>
-                   </div>` : '';
+                        <p class="font-bold" data-translate-key="noteTitle"></p>
+                        <p>${recipe.notes[state.currentLang]}</p>
+                      </div>` : '';
 
             return `${noteHTML}<div class="space-y-6 mt-6">
                 <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
-                <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
-                ${recipe.colorDepth ? `<div><h4 class="${titleClass} mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 md:grid-cols-6 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
-                ${recipe.detailSettings ? `<div><h4 class="${titleClass} mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
+                <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
+                ${recipe.colorDepth ? `<div><h4 class="${titleClass} mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 sm:grid-cols-6 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
+                ${recipe.detailSettings ? `<div><h4 class="${titleClass} mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
             </div>`;
         }
-
 
         function updateUIAfterAILoading() {
             document.querySelectorAll('button:disabled').forEach(btn => {
@@ -451,7 +488,7 @@
         
         // --- VIEW RENDERING LOGIC ---
         const viewTemplates = {
-            home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition">
+            home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
                 <h1 data-translate-key="landingTitle" class="landing-title"></h1>
                 <p data-translate-key="landingSubtitle" class="landing-subtitle"></p>
                 <button id="startQuizBtn" class="btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startQuizBtn"></button>
@@ -461,80 +498,98 @@
                 if (state.quizStep >= quizQuestions.length) return '';
                 const q = quizQuestions[state.quizStep];
                 const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
+                const gridCols = q.options.length > 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2';
                 return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
-                    <div class="w-full max-w-4xl text-center" data-quiz-group="${q.id}">
+                    <div class="w-full max-w-4xl text-center px-4" data-quiz-group="${q.id}">
                         <h2 class="quiz-question-title" data-translate-key="${q.title}"></h2>
-                        <div class="grid ${q.options.length > 3 ? 'grid-cols-2' : 'grid-cols-3'} gap-5 mt-12">${optionsHTML}</div>
+                        <div class="grid ${gridCols} gap-4 sm:gap-5 mt-10 sm:mt-12">${optionsHTML}</div>
                     </div>
                 </div>`;
             },
             
             recipeFormulas: () => `
-                <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-8 absolute inset-0 view-transition">
-                     <aside class="md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-6 flex flex-col">
-                        <h2 class="text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
+                <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
+                    <!-- Sidebar/Filters Panel -->
+                    <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
+                        <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
                         <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                        <div id="filtersContainer" class="space-y-4">
-                             <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                             <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                             <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                        <!-- Filters -->
+                        <div id="filtersContainer" class="space-y-4 text-sm">
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                         </div>
+                         <!-- Sort -->
                         <div class="mt-4">
-                            <label for="sortSelect" class="font-semibold mb-2 block" data-translate-key="filterSort"></label>
-                            <select id="sortSelect" class="w-full p-2.5 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all">
+                            <label for="sortSelect" class="font-semibold mb-2 block text-sm" data-translate-key="filterSort"></label>
+                            <select id="sortSelect" class="w-full p-2.5 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all text-sm">
                                 <option value="default" data-translate-key="sortDefault"></option>
                                 <option value="name_az" data-translate-key="sortNameAZ"></option>
                                 <option value="contrast_hl" data-translate-key="sortContrastHL"></option>
                                 <option value="saturation_hl" data-translate-key="sortSaturationHL"></option>
                             </select>
                         </div>
+                        <!-- Recipe List -->
                         <div id="recipeListContainer" class="space-y-2 pt-4 mt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
+                        <!-- Compare Button -->
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
-                     </aside>
-                     <main id="recipeMainPanel" class="md:w-2/3 lg:w-[70%] xl:w-3/4 flex flex-col min-h-0"><div class="glass-panel flex-grow overflow-y-auto p-8 lg:p-10">
-                        <div id="chartsContainer">
-                           <div class="text-center mb-10">
-                             <h2 class="text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                    </aside>
+                    <!-- Main Content Panel (Details / Charts) -->
+                    <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
+                        <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
+                            <!-- Charts shown by default on desktop -->
+                            <div id="chartsContainer">
+                               <div class="text-center mb-10">
+                                   <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                               </div>
+                               <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                                   <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
+                                   <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
+                               </div>
                            </div>
-                           <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                               <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
-                               <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
-                           </div>
+                           <!-- Recipe details, hidden until a recipe is selected -->
+                           <div id="recipeContent" class="hidden"></div>
                         </div>
-                        <div id="recipeContent" class="hidden"></div>
-                     </div></main>
+                    </main>
+                    <!-- Mobile-only Detail View -->
+                    <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
+                        <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4" data-translate-key="backToListBtn"></button>
+                        <div class="glass-panel p-6 overflow-y-auto">
+                           <div id="recipeContentMobile"></div>
+                        </div>
+                    </div>
                 </div>`,
             
-            featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
-                <div class="glass-panel p-8 md:p-12 text-center max-w-5xl mx-auto">
-                    <h2 class="text-3xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
-                    <p class="text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
-                    <a href="https://photos.app.goo.gl/H8v1SQ68RSnn2r5Q6" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-lg">
+            featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
+                <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
+                    <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
+                    <p class="text-base md:text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
+                    <a href="https://photos.app.goo.gl/H8v1SQ68RSnn2r5Q6" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-base md:text-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <span data-translate-key="featuredAlbumBtn"></span>
                     </a>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-12">
-                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/a9d6e5/274c77?text=Ảnh+1'); background-size: cover;"></div>
-                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/fde4cf/c9a227?text=Ảnh+2'); background-size: cover;"></div>
-                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/d8e2dc/4a5759?text=Ảnh+3'); background-size: cover;"></div>
-                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/ffcad4/d05c67?text=Ảnh+4'); background-size: cover;"></div>
-                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/cce3de/498467?text=Ảnh+5'); background-size: cover;"></div>
-                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/e0c3fc/6a00f4?text=Ảnh+6'); background-size: cover;"></div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/a9d6e5/274c77?text=Photo+1'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/fde4cf/c9a227?text=Photo+2'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/d8e2dc/4a5759?text=Photo+3'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/ffcad4/d05c67?text=Photo+4'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/cce3de/498467?text=Photo+5'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/e0c3fc/6a00f4?text=Photo+6'); background-size: cover;"></div>
                     </div>
                 </div>
             </div>`,
             
             explain: () => `<div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-100 text-gray-800">
                 <div class="container mx-auto p-4 md:p-12">
-                    <header class="text-center mb-16 pt-8">
-                        <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2" data-translate-key="infographicMainTitle"></h1>
-                        <h2 class="text-xl md:text-2xl text-[#00A6ED]" data-translate-key="infographicMainSubtitle"></h2>
+                    <header class="text-center mb-12 md:mb-16 pt-4 md:pt-8">
+                        <h1 class="text-3xl md:text-5xl font-bold text-slate-800 mb-2" data-translate-key="infographicMainTitle"></h1>
+                        <h2 class="text-lg md:text-2xl text-[#00A6ED]" data-translate-key="infographicMainSubtitle"></h2>
                     </header>
-                    <main class="space-y-20">
+                    <main class="space-y-16">
                         <section id="intro" class="text-center">
-                            <h3 class="text-3xl font-bold mb-4" data-translate-key="introTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-lg mb-8" data-translate-key="introParagraph"></p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-4" data-translate-key="introTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-base md:text-lg mb-8" data-translate-key="introParagraph"></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center max-w-4xl mx-auto">
                                 <div class="bg-white p-6 rounded-2xl shadow-lg">
                                     <h4 class="text-xl font-bold text-[#F25022] mb-3" data-translate-key="rawProcessTitle"></h4>
                                     <ol class="text-left space-y-2"><li data-translate-key="rawStep1"></li><li data-translate-key="rawStep2"></li><li data-translate-key="rawStep3"></li><li data-translate-key="rawStep4"></li><li data-translate-key="rawStep5"></li></ol>
@@ -546,48 +601,48 @@
                             </div>
                         </section>
                         <section id="wb">
-                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="wbTitle"></h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbKelvinTitle"></h4><p class="mb-4" data-translate-key="wbKelvinDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div><div class="mt-4 text-sm text-gray-600 space-y-1"><p data-translate-key="wbKelvinCool"></p><p data-translate-key="wbKelvinWarm"></p></div></div>
-                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4><p class="mb-4" data-translate-key="wbShiftDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div><div class="mt-4 text-sm text-gray-600"><p data-translate-key="wbShiftExample"></p></div></div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="wbTitle"></h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbKelvinTitle"></h4><p class="mb-4" data-translate-key="wbKelvinDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div><div class="mt-4 text-sm text-gray-600 space-y-1"><p data-translate-key="wbKelvinCool"></p><p data-translate-key="wbKelvinWarm"></p></div></div>
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4><p class="mb-4" data-translate-key="wbShiftDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div><div class="mt-4 text-sm text-gray-600"><p data-translate-key="wbShiftExample"></p></div></div>
                             </div>
                         </section>
                         <section id="pp">
-                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="ppTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="ppDesc"></p>
-                            <div class="bg-white p-8 rounded-2xl shadow-lg mb-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="ppTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-base md:text-lg mb-8" data-translate-key="ppDesc"></p>
+                            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg mb-8">
                                 <div class="flex flex-col md:flex-row justify-around items-center text-center">
                                     <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow1"></h5><p class="text-sm" data-translate-key="ppFlow1Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-4 md:my-0">→</div>
                                     <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow2"></h5><p class="text-sm" data-translate-key="ppFlow2Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-4 md:my-0">→</div>
                                     <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow3"></h5><p class="text-sm" data-translate-key="ppFlow3Desc"></p></div>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="blackGammaTitle"></h4><p class="mb-4" data-translate-key="blackGammaDesc"></p><div class="chart-container h-56"><canvas id="blackGammaChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="blackGammaNote"></p></div>
-                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="kneeTitle"></h4><p class="mb-4" data-translate-key="kneeDesc"></p><div class="chart-container h-64"><canvas id="kneeChart"></canvas></div><ul class="mt-4 text-sm text-gray-600 space-y-1"><li data-translate-key="kneePointExplain"></li><li data-translate-key="kneeSlopeExplain"></li></ul></div>
-                                <div class="bg-white p-8 rounded-2xl shadow-lg md:col-span-2 lg:col-span-1"><h4 class="text-xl font-bold mb-4" data-translate-key="colorDepthTitleChart"></h4><p class="mb-4" data-translate-key="colorDepthDesc"></p><div class="chart-container h-56"><canvas id="colorDepthChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="colorDepthNote"></p></div>
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="blackGammaTitle"></h4><p class="mb-4" data-translate-key="blackGammaDesc"></p><div class="chart-container h-56"><canvas id="blackGammaChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="blackGammaNote"></p></div>
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="kneeTitle"></h4><p class="mb-4" data-translate-key="kneeDesc"></p><div class="chart-container h-64"><canvas id="kneeChart"></canvas></div><ul class="mt-4 text-sm text-gray-600 space-y-1"><li data-translate-key="kneePointExplain"></li><li data-translate-key="kneeSlopeExplain"></li></ul></div>
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg lg:col-span-1"><h4 class="text-xl font-bold mb-4" data-translate-key="colorDepthTitleChart"></h4><p class="mb-4" data-translate-key="colorDepthDesc"></p><div class="chart-container h-56"><canvas id="colorDepthChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="colorDepthNote"></p></div>
                             </div>
                         </section>
                         <section id="heif">
-                             <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="heifTitle"></h3>
-                             <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="heifDesc"></p>
-                             <div class="bg-white p-8 rounded-2xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="text-center"><h4 class="text-2xl font-bold" data-translate-key="jpegTitle"></h4><p class="text-5xl font-bold text-[#F25022] my-4">16.7</p><p class="text-xl mb-4" data-translate-key="jpegColors"></p><div class="w-full h-12 rounded-lg gradient-banded"></div><p class="mt-2 text-red-600 font-semibold" data-translate-key="jpegBandingRisk"></p><p class="text-sm text-gray-600" data-translate-key="jpegBandingDesc"></p></div><div class="text-center"><h4 class="text-2xl font-bold" data-translate-key="heifTitle10bit"></h4><p class="text-5xl font-bold text-[#7FBA00] my-4">1+</p><p class="text-xl mb-4" data-translate-key="heifColors"></p><div class="w-full h-12 rounded-lg gradient-smooth"></div><p class="mt-2 text-green-600 font-semibold" data-translate-key="heifSmooth"></p><p class="text-sm text-gray-600" data-translate-key="heifSmoothDesc"></p></div></div></div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="heifTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-base md:text-lg mb-8" data-translate-key="heifDesc"></p>
+                            <div class="bg-white p-8 rounded-2xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="text-center"><h4 class="text-xl md:text-2xl font-bold" data-translate-key="jpegTitle"></h4><p class="text-4xl md:text-5xl font-bold text-[#F25022] my-4">16.7</p><p class="text-lg md:text-xl mb-4" data-translate-key="jpegColors"></p><div class="w-full h-12 rounded-lg gradient-banded"></div><p class="mt-2 text-red-600 font-semibold" data-translate-key="jpegBandingRisk"></p><p class="text-sm text-gray-600" data-translate-key="jpegBandingDesc"></p></div><div class="text-center"><h4 class="text-xl md:text-2xl font-bold" data-translate-key="heifTitle10bit"></h4><p class="text-4xl md:text-5xl font-bold text-[#7FBA00] my-4">1+</p><p class="text-lg md:text-xl mb-4" data-translate-key="heifColors"></p><div class="w-full h-12 rounded-lg gradient-smooth"></div><p class="mt-2 text-green-600 font-semibold" data-translate-key="heifSmooth"></p><p class="text-sm text-gray-600" data-translate-key="heifSmoothDesc"></p></div></div></div>
                         </section>
                         <section id="recipes">
-                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="recipesTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="recipesDesc"></p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div id="explain-recipe-1" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
-                                <div id="explain-recipe-2" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="recipesTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-base md:text-lg mb-8" data-translate-key="recipesDesc"></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                                <div id="explain-recipe-1" class="bg-white p-6 md:p-8 rounded-2xl shadow-lg recipe-card"></div>
+                                <div id="explain-recipe-2" class="bg-white p-6 md:p-8 rounded-2xl shadow-lg recipe-card"></div>
                             </div>
-                            <div class="text-center mt-12"><button id="exploreMoreBtn" class="inline-block bg-[#00A6ED] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#008cbf] transition-all duration-300 transform hover:scale-105" data-translate-key="exploreMoreBtn"></button></div>
+                            <div class="text-center mt-12"><button id="exploreMoreBtn" class="btn btn-primary py-3 px-8" data-translate-key="exploreMoreBtn"></button></div>
                         </section>
                         <section id="memory-recall">
-                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="recallTitle"></h3>
-                            <div class="bg-white p-8 rounded-2xl shadow-lg max-w-4xl mx-auto"><p class="text-lg mb-6" data-translate-key="recallDesc"></p><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4><p class="text-sm" data-translate-key="recallInternalDesc"></p></div><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4><p class="text-sm" data-translate-key="recallCardDesc"></p></div></div></div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="recallTitle"></h3>
+                            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg max-w-4xl mx-auto"><p class="text-lg mb-6" data-translate-key="recallDesc"></p><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4><p class="text-sm" data-translate-key="recallInternalDesc"></p></div><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4><p class="text-sm" data-translate-key="recallCardDesc"></p></div></div></div>
                         </section>
                     </main>
-                    <footer class="text-center mt-20 pt-8 border-t border-slate-300">
+                    <footer class="text-center mt-16 md:mt-20 pt-8 border-t border-slate-300">
                         <p class="text-gray-600" data-translate-key="infographicFooterText"></p>
                         <p class="text-sm text-gray-500 mt-2" data-translate-key="infographicFooterSubtext"></p>
                     </footer>
@@ -602,7 +657,7 @@
 
         function renderAllCharts(lang) {
             destroyAllCharts();
-            const FONT_COLOR = '#374151'; const GRID_COLOR = '#E5E7EB'; 
+            const FONT_COLOR = '#374151'; const GRID_COLOR = '#E5E7EB';    
             const PALETTE = { blue: '#00A6ED', green: '#7FBA00', yellow: '#FFB900', orange: '#F25022', gray: '#737373' };
             const defaultChartOptions = (extraOptions = {}) => ({
                 responsive: true, maintainAspectRatio: false, color: FONT_COLOR, animation: { duration: 500 },
@@ -675,24 +730,32 @@
         function handleRecipeSelection(id, type) {
             if (type === 'checkbox') {
                 const index = state.comparisonList.indexOf(id);
-                if (index > -1) state.comparisonList.splice(index, 1);
-                else if (state.comparisonList.length < 2) state.comparisonList.push(id);
-                
-                if (state.comparisonList.length !== 2) {
-                     // When managing comparison, don't affect the main selection
+                if (index > -1) {
+                    state.comparisonList.splice(index, 1);
+                } else if (state.comparisonList.length < 2) {
+                    state.comparisonList.push(id);
                 }
             } else {
-                // Toggle selection for main view
                 if (state.selectedRecipeId === id) {
-                    state.selectedRecipeId = null; // Deselect if clicked again
+                    state.selectedRecipeId = null;
+                    state.isMobileDetailActive = false;
                 } else {
                     state.selectedRecipeId = id;
+                    state.isMobileDetailActive = true;
                 }
-                state.comparisonList = []; // Clear comparison list when making a new main selection
+                state.comparisonList = [];
             }
-            renderLibraryList(); // Re-render list for checkbox states and selection highlight
-            renderLibraryDetails(); // Re-render main panel to show/hide details or charts
-            renderInteractiveCharts(state.currentLang); // Re-render charts to highlight selection
+            renderLibraryList();
+            renderLibraryDetails();
+            
+            // Instead of re-creating the charts, just update them.
+            // The scriptable options for radius/color will be re-evaluated.
+            if (activeCharts.color && typeof activeCharts.color.update === 'function') {
+                activeCharts.color.update();
+            }
+            if (activeCharts.bw && typeof activeCharts.bw.update === 'function') {
+                activeCharts.bw.update();
+            }
         }
 
         async function handleAiComparison(id1, id2, recipe2Obj = null) {
@@ -707,6 +770,7 @@
             const prompt = `Compare the following two recipes: *${recipe1.name[state.currentLang]}* and *${recipe2.name[state.currentLang]}*. Analyze their overall feel, key parameter differences (like White Balance and Black Level), and suggest ideal use cases for each. Present the result in Markdown.`;
             const comparisonText = await callAIApi(prompt, 1200);
             contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
+            applyTranslations();
         }
 
         async function handleAiAdjustment(button) {
@@ -735,33 +799,37 @@
             const prompt = `Based on user preferences: ${JSON.stringify(state.quizAnswers)}. Recommend TWO recipes from the available list. Respond with JSON array: [{"recipeId", "moodDescription" (in ${state.currentLang})}, ...].`;
             const aiResponse = await callAIApi(prompt);
             if (aiResponse && aiResponse.length >= 2) {
-                 const r1 = recipesData.find(r => r.id === aiResponse[0].recipeId);
-                 const r2 = recipesData.find(r => r.id === aiResponse[1].recipeId);
-                 if (r1 && r2) {
-                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-3xl font-bold mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-8"><div class="quiz-choice-option p-8" data-recipe-id="${r1.id}"><h4 class="text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-md italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-8" data-recipe-id="${r2.id}"><h4 class="text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-md italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
+                const r1 = recipesData.find(r => r.id === aiResponse[0].recipeId);
+                const r2 = recipesData.find(r => r.id === aiResponse[1].recipeId);
+                if (r1 && r2) {
+                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-6 md:p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-6"><div class="quiz-choice-option p-6" data-recipe-id="${r1.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-6" data-recipe-id="${r2.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
                     applyTranslations();
-                 }
+                }
             } else { homeView.innerHTML = `<p class="text-red-500">Lỗi khi lấy đề xuất từ AI.</p>`; }
         }
         
         function attachViewEventListeners(viewName) {
             if (viewName === 'recipeFormulas') {
-                renderLibraryList(); 
+                renderLibraryList();    
                 renderLibraryDetails();
                 renderInteractiveCharts(state.currentLang);
                 document.getElementById('searchInput').addEventListener('input', renderLibraryList);
                 document.getElementById('filtersContainer').addEventListener('click', handleFilterClick);
                 document.getElementById('sortSelect').addEventListener('change', renderLibraryList);
                 document.getElementById('recipeListContainer').addEventListener('click', (e) => {
-                     const cb = e.target.closest('.recipe-compare-cb');
-                     const item = e.target.closest('.recipe-item-content');
-                     const dot = e.target.closest('.recipe-dot');
-                     if (cb) { handleRecipeSelection(cb.dataset.recipeId, 'checkbox'); } 
-                     else if (item) { handleRecipeSelection(item.dataset.recipeId, 'div'); }
-                     else if (dot) { handleRecipeSelection(dot.dataset.recipeId, 'div'); }
+                    const cb = e.target.closest('.recipe-compare-cb');
+                    const item = e.target.closest('.recipe-item-content');
+                    const dot = e.target.closest('.recipe-dot');
+                    if (cb) { handleRecipeSelection(cb.dataset.recipeId, 'checkbox'); }    
+                    else if (item) { handleRecipeSelection(item.dataset.recipeId, 'div'); }
+                    else if (dot) { handleRecipeSelection(dot.dataset.recipeId, 'div'); }
+                });
+                document.getElementById('backToListBtn')?.addEventListener('click', () => {
+                    state.isMobileDetailActive = false;
+                    renderLibraryDetails();
                 });
             } else if (viewName === 'quiz') {
-                 document.querySelector('#quizView .grid').addEventListener('click', (e) => {
+                document.querySelector('#quizView .grid').addEventListener('click', (e) => {
                     const option = e.target.closest('.quiz-option');
                     if(!option || option.classList.contains('selected')) return;
                     const group = option.closest('[data-quiz-group]').dataset.quizGroup;
@@ -775,12 +843,16 @@
                 });
             } else if (viewName === 'explain') {
                 renderAllCharts(state.currentLang);
-                document.getElementById('exploreMoreBtn')?.addEventListener('click', () => renderView('recipeFormulas'));
+                document.getElementById('exploreMoreBtn')?.addEventListener('click', () => {
+                    state.selectedRecipeId = null;
+                    state.isMobileDetailActive = false;
+                    renderView('recipeFormulas');
+                });
 
                 function generateRecipeExampleHTML(recipe, titleColor) {
                     if (!recipe || !recipe.settings) return '<p>Recipe data not available.</p>';
                     return `
-                        <h4 class="text-2xl font-bold mb-4" style="color: ${titleColor};">${recipe.name[state.currentLang]}</h4>
+                        <h4 class="text-xl md:text-2xl font-bold mb-4" style="color: ${titleColor};">${recipe.name[state.currentLang]}</h4>
                         <p class="mb-4 italic">${recipe.description[state.currentLang]}</p>
                         <ul class="space-y-1 text-sm">
                             <li><strong>WB:</strong> ${recipe.whiteBalance}</li>
@@ -788,8 +860,6 @@
                             <li><strong>Color Mode:</strong> ${recipe.settings['Color Mode'] || 'N/A'}</li>
                             <li><strong>Black Gamma:</strong> ${recipe.settings['Black Gamma'] || 'N/A'}</li>
                             <li><strong>Knee:</strong> ${recipe.settings.Knee || 'N/A'}</li>
-                            <li><strong>Saturation:</strong> ${recipe.settings.Saturation || 'N/A'}</li>
-                            <li><strong>Color Phase:</strong> ${recipe.settings['Color Phase'] || 'N/A'}</li>
                         </ul>`;
                 }
                 const recipe1Container = document.getElementById('explain-recipe-1');
@@ -805,43 +875,74 @@
 
         // --- RENDER & INITIALIZATION ---
         function renderLibraryList() {
-             const container = document.getElementById('recipeListContainer'); if (!container) return;
-             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-             const sortBy = document.getElementById('sortSelect')?.value || 'default';
-             let recipesToRender = recipesData.filter(recipe => (recipe.name.vi.toLowerCase().includes(searchTerm) || recipe.name.en.toLowerCase().includes(searchTerm) || recipe.description.vi.toLowerCase().includes(searchTerm) || recipe.description.en.toLowerCase().includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
-             const sortMap = { high: 3, medium: 2, low: 1 };
-             if (sortBy === 'name_az') recipesToRender.sort((a, b) => a.name[state.currentLang].localeCompare(b.name[state.currentLang]));
-             else if (sortBy === 'contrast_hl') recipesToRender.sort((a, b) => (sortMap[b.contrast] || 0) - (sortMap[a.contrast] || 0));
-             else if (sortBy === 'saturation_hl') recipesToRender.sort((a, b) => (sortMap[b.saturation] || 0) - (sortMap[a.saturation] || 0));
+            const container = document.getElementById('recipeListContainer'); if (!container) return;
+            const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            const sortBy = document.getElementById('sortSelect')?.value || 'default';
+            let recipesToRender = recipesData.filter(recipe => (recipe.name.vi.toLowerCase().includes(searchTerm) || recipe.name.en.toLowerCase().includes(searchTerm) || recipe.description.vi.toLowerCase().includes(searchTerm) || recipe.description.en.toLowerCase().includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
+            const sortMap = { high: 3, medium: 2, low: 1 };
+            if (sortBy === 'name_az') recipesToRender.sort((a, b) => a.name[state.currentLang].localeCompare(b.name[state.currentLang]));
+            else if (sortBy === 'contrast_hl') recipesToRender.sort((a, b) => (sortMap[b.contrast] || 0) - (sortMap[a.contrast] || 0));
+            else if (sortBy === 'saturation_hl') recipesToRender.sort((a, b) => (sortMap[b.saturation] || 0) - (sortMap[a.saturation] || 0));
 
-             container.innerHTML = recipesToRender.map(recipe => {
+            container.innerHTML = recipesToRender.map(recipe => {
                 const isChecked = state.comparisonList.includes(recipe.id); const isSelected = recipe.id === state.selectedRecipeId;
-                 return `<div class="recipe-item p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-center gap-4 ${isSelected ? 'selected' : ''}">
+                return `<div class="recipe-item p-3 md:p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-center gap-4 ${isSelected ? 'selected' : ''}">
                     <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-center flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
                     <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 cursor-pointer" style="background-color: ${recipe.personalityColor}" data-recipe-id="${recipe.id}" title="${recipe.name[state.currentLang]}"></div>
                     <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}"><span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span><p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p></div>
                 </div>`;
-             }).join('');
-             const btnContainer = document.getElementById('compareBtnContainer');
-             btnContainer.innerHTML = `<button id="compareBtn" class="btn btn-primary w-full mt-4 py-3" data-translate-key="compareBtn" ${state.comparisonList.length !== 2 ? 'disabled' : ''}></button>`;
-             applyTranslations();
+            }).join('');
+            const btnContainer = document.getElementById('compareBtnContainer');
+            btnContainer.innerHTML = `<button id="compareBtn" class="btn btn-primary w-full mt-4 py-3" data-translate-key="compareBtn" ${state.comparisonList.length !== 2 ? 'disabled' : ''}></button>`;
+            applyTranslations();
         }
         
         function renderLibraryDetails() {
-            const recipeContentContainer = document.getElementById('recipeContent');
-            const chartsContainer = document.getElementById('chartsContainer');
-            if (!recipeContentContainer || !chartsContainer) return;
+            const isMobile = window.innerWidth < 768;
+            const recipeListPanel = document.getElementById('recipeListPanel');
+            const recipeMainPanel = document.getElementById('recipeMainPanel');
+            const recipeDetailPanelMobile = document.getElementById('recipeDetailPanelMobile');
+
+            // Mobile-specific layout changes
+            if (isMobile) {
+                if(state.isMobileDetailActive) {
+                    recipeListPanel.classList.add('hidden');
+                    recipeDetailPanelMobile.classList.remove('hidden');
+                } else {
+                    recipeListPanel.classList.remove('hidden');
+                    recipeDetailPanelMobile.classList.add('hidden');
+                }
+            } else {
+                // Ensure correct visibility on desktop
+                recipeListPanel?.classList.remove('hidden');
+                recipeDetailPanelMobile?.classList.add('hidden');
+            }
 
             const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
-            if (!recipe) { 
-                chartsContainer.classList.remove('hidden');
-                recipeContentContainer.classList.add('hidden');
-                return; 
+
+            // Determine which container to render content into
+            let recipeContentContainer, chartsContainer;
+            if (isMobile && state.isMobileDetailActive) {
+                recipeContentContainer = document.getElementById('recipeContentMobile');
+                chartsContainer = null; // No charts on mobile detail view for now
+            } else {
+                recipeContentContainer = document.getElementById('recipeContent');
+                chartsContainer = document.getElementById('chartsContainer');
             }
-            chartsContainer.classList.add('hidden');
+
+            if (!recipeContentContainer) return;
+
+            if (!recipe) {    
+                if (chartsContainer) chartsContainer.classList.remove('hidden');
+                recipeContentContainer.classList.add('hidden');
+                if(!isMobile) recipeMainPanel?.classList.remove('hidden');
+                return;    
+            }
+            if (chartsContainer) chartsContainer.classList.add('hidden');
             recipeContentContainer.classList.remove('hidden');
+            if(!isMobile) recipeMainPanel?.classList.remove('hidden');
             
-            recipeContentContainer.innerHTML = `<h3 class="text-4xl font-bold">${recipe.name[state.currentLang]}</h3><p class="text-lg text-neutral-600 mt-2 mb-8 italic">"${recipe.description[state.currentLang]}"</p><div id="recipeNotesContainer" class="mb-4"></div><div id="originalRecipeContainer">${createFullRecipeHTML(recipe, true)}</div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><details open class="group"><summary class="text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors"><span data-translate-key="tutorialTitle"></span><svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></summary><div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700"><div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div></div></details></div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><h3 class="text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3><div class="glass-panel p-6 -mx-2"><textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea><button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button><div id="aiResultContainer"></div></div></div>`;
+            recipeContentContainer.innerHTML = `<h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3><p class="text-lg text-neutral-600 mt-2 mb-8 italic">"${recipe.description[state.currentLang]}"</p><div id="recipeNotesContainer" class="mb-4"></div><div id="originalRecipeContainer">${createFullRecipeHTML(recipe, true)}</div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><details open class="group"><summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors"><span data-translate-key="tutorialTitle"></span><svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></summary><div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700"><div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div></div></details></div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3><div class="glass-panel p-4 md:p-6 -mx-2"><textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea><button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button><div id="aiResultContainer"></div></div></div>`;
             applyTranslations();
         }
 
@@ -854,7 +955,7 @@
                 onClick: (e) => {
                     const chart = e.chart;
                     const elements = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
-                     if (elements.length) {
+                    if (elements.length) {
                         const firstPoint = elements[0];
                         const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
                         if (recipeId) {
@@ -892,7 +993,7 @@
                                 const recipe = recipesData.find(r => r.id === d.id);
                                 return recipe ? recipe.personalityColor : '#CCCCCC'; // Fallback color
                             }),
-                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            pointBorderColor: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? '#007AFF' : 'rgba(255, 255, 255, 0.8)'),
                             pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
                             pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
                             pointHoverRadius: 11
@@ -911,7 +1012,7 @@
                         datasets: [{
                             data: bwData,
                             pointBackgroundColor: '#475569',
-                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            pointBorderColor: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? '#007AFF' : 'rgba(255, 255, 255, 0.8)'),
                             pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
                             pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
                             pointHoverRadius: 11,
@@ -923,34 +1024,72 @@
             }
         }
 
+        function toggleMobileNav(show) {
+            const menu = document.getElementById('mobileNavMenu');
+            if (show) {
+                menu.classList.remove('translate-x-full');
+            } else {
+                menu.classList.add('translate-x-full');
+            }
+        }
 
         function init() {
-            document.body.addEventListener('click', async (e) => {
+             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
-                const homeBtn = target.closest('#homeBtn'); const navBtn = target.closest('.nav-btn');
-                const langBtn = target.closest('.lang-btn'); const startQuizBtn = target.closest('#startQuizBtn');
-                const compareBtn = target.closest('#compareBtn'); const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
-                const closeModalBtn = target.closest('#closeComparisonModalBtn'); const aiTuningBtn = target.closest('#aiTuningBtn');
-                const quizChoice = target.closest('.quiz-choice-option'); const exploreMoreBtn = target.closest('#exploreMoreBtn');
-                if (homeBtn) { state.selectedRecipeId = null; await renderView('home'); return; }
-                if (navBtn) { state.selectedRecipeId = null; await renderView(navBtn.dataset.view); return; }
+                const homeBtn = target.closest('#homeBtn');
+                const navBtn = target.closest('.nav-btn'); // Desktop nav
+                const mobileNavBtn = target.closest('.nav-btn-mobile'); // Mobile nav
+                const langBtn = target.closest('.lang-btn');
+                const startQuizBtn = target.closest('#startQuizBtn');
+                const compareBtn = target.closest('#compareBtn');
+                const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
+                const closeModalBtn = target.closest('#closeComparisonModalBtn');
+                const aiTuningBtn = target.closest('#aiTuningBtn');
+                const quizChoice = target.closest('.quiz-choice-option');
+                const exploreMoreBtn = target.closest('#exploreMoreBtn');
+                const hamburgerBtn = target.closest('#hamburgerBtn');
+                const closeMobileNavBtn = target.closest('#closeMobileNavBtn');
+                
+                if (hamburgerBtn) { toggleMobileNav(true); return; }
+                if (closeMobileNavBtn || (target.id === 'mobileNavMenu' && !target.closest('#mobileNavMenu > div'))) { toggleMobileNav(false); return; }
+                
+                if (mobileNavBtn) {
+                    toggleMobileNav(false);
+                    state.selectedRecipeId = null;
+                    state.isMobileDetailActive = false;
+                    await renderView(mobileNavBtn.dataset.view);
+                    return;
+                }
+
+                if (homeBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('home'); return; }
+                if (navBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView(navBtn.dataset.view); return; }
                 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
                 if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
                 if (compareBtn && !compareBtn.disabled) { handleAiComparison(state.comparisonList[0], state.comparisonList[1]); return; }
                 if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
                 if (closeModalBtn) { document.getElementById('comparisonModal').classList.add('hidden'); return; }
                 if (aiTuningBtn) { handleAiAdjustment(aiTuningBtn); return; }
-                if (quizChoice) { state.selectedRecipeId = quizChoice.dataset.recipeId; await renderView('recipeFormulas'); return; }
-                if (exploreMoreBtn) { state.selectedRecipeId = null; await renderView('recipeFormulas'); return; }
+                if (quizChoice) { 
+                    state.selectedRecipeId = quizChoice.dataset.recipeId; 
+                    state.isMobileDetailActive = true;
+                    await renderView('recipeFormulas'); 
+                    return; 
+                }
+                if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
             });
+            
+            window.addEventListener('resize', () => {
+                if(state.currentView === 'recipeFormulas') {
+                   renderLibraryDetails();
+                }
+            });
+            
             renderView('home');
         }
 
         document.addEventListener("DOMContentLoaded", init);
 
-        
-     // Enhanced with personalityColor and coords for charts
-const recipesData = [
+        const recipesData = [
     {
         "id": "vektro-100",
         "name": { "vi": "1. Lửa Chiều Ta", "en": "1. Ember Glow" },
