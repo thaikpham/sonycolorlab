@@ -19,8 +19,8 @@
         }
         #bg-blurs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
         .blur-circle { position: absolute; border-radius: 50%; filter: blur(180px); opacity: 0.15; transition: all 2s ease-in-out; }
-        .blur-1 { width: 40vw; height: 40vw; max-width: 500px; max-height: 500px; background: #007AFF; top: 5%; left: 10%; animation: move-blur-1 30s infinite alternate; }
-        .blur-2 { width: 50vw; height: 50vw; max-width: 600px; max-height: 600px; background: #FF9500; bottom: 5%; right: 10%; animation: move-blur-2 35s infinite alternate; }
+        .blur-1 { width: 500px; height: 500px; background: #007AFF; top: 5%; left: 10%; animation: move-blur-1 30s infinite alternate; }
+        .blur-2 { width: 600px; height: 600px; background: #FF9500; bottom: 5%; right: 10%; animation: move-blur-2 35s infinite alternate; }
         @keyframes move-blur-1 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(200px, 100px) scale(1.3) rotate(55deg); } }
         @keyframes move-blur-2 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(-150px, -100px) scale(1.2) rotate(-70deg); } }
 
@@ -39,7 +39,7 @@
             -webkit-backdrop-filter: blur(40px) saturate(180%); 
             border: 1px solid var(--glass-border); 
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-            border-radius: 28px;
+            border-radius: 28px; /* Increased border radius */
         }
         .recipe-item.selected { 
             background-color: rgba(0, 122, 255, 0.1); 
@@ -61,20 +61,20 @@
         .lang-btn.active { box-shadow: 0 0 0 2.5px var(--primary-accent); }
         .lang-btn svg { width: 1.5rem; height: 1.5rem; }
         
-        .landing-title { font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
-        .quiz-question-title { font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
-        .landing-subtitle { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
+        .landing-title { font-size: clamp(2.8rem, 6vw, 4.8rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
+        .quiz-question-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
+        .landing-subtitle { font-size: clamp(1.1rem, 2vw, 1.35rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
         
         .view-transition { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-25px); } }
 
-        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1rem 1.5rem; border-radius: 1.5rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; font-size: 1.1rem; text-align: center; }
+        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1.5rem; border-radius: 1.5rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; font-size: 1.1rem; text-align: center; }
         .quiz-option:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.07); }
         .quiz-option.selected { border-color: var(--primary-accent); background-color: rgba(0, 122, 255, 0.1); color: var(--primary-accent); }
         
-        .filter-btn { background-color: rgba(0,0,0,0.05); border: 1px solid transparent; transition: all 0.2s ease-in-out; font-size: 0.875rem;}
+        .filter-btn { background-color: rgba(0,0,0,0.05); border: 1px solid transparent; transition: all 0.2s ease-in-out; }
         .filter-btn.active { background-color: rgba(0, 122, 255, 0.1); border-color: var(--primary-accent); color: var(--primary-accent); font-weight: 600; }
         
         .spinner { border: 3px solid rgba(0, 0, 0, 0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: currentColor; animation: spin 1s ease infinite; }
@@ -82,56 +82,55 @@
 
         .modal { z-index: 50; transition: opacity 0.3s ease; }
         .modal-content { transition: transform 0.3s ease; border-radius: 28px; }
-        .modal.hidden .modal-content { transform: scale(0.95) translateY(10px); }
+        .modal.hidden .modal-content { transform: scale(0.95); }
         
         #comparisonModalContent { background-color: #f0f9ff; border-radius: 0 0 28px 28px; }
-        .prose-comparison h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); border-bottom: 2px solid var(--primary-accent); padding-bottom: 0.5rem; }
+        .prose-comparison h3 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); border-bottom: 2px solid var(--primary-accent); padding-bottom: 0.5rem; }
 
         .quiz-choice-option { cursor: pointer; transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; background: rgba(255,255,255,0.7); border-radius: 20px;}
         .quiz-choice-option:hover { transform: scale(1.03); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
-        
+
         /* Apple-like scrollbar */
         .overflow-y-auto::-webkit-scrollbar { width: 10px; }
         .overflow-y-auto::-webkit-scrollbar-track { background-color: transparent; }
         .overflow-y-auto::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
         .overflow-y-auto::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
         .overflow-y-auto { scrollbar-width: auto; scrollbar-color: rgba(0, 0, 0, 0.2) transparent; }
+
+        /* Chart & Feature Styles */
+        .chart-container { position: relative; margin: auto; height: 300px; width: 100%;}
+        #colorChart, #bwChart { cursor: pointer; }
+        .gradient-banded { background: linear-gradient(to right, #00A6ED, #0d8cc0, #1a7294, #265867, #333e3a, #40240e, #FFB900); }
+        .gradient-smooth { background: linear-gradient(to right, #00A6ED, #FFB900); }
+        .flow-arrow { font-size: 2rem; color: #737373; line-height: 1; }
+        .recipe-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .recipe-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .thumbnail-placeholder { background-color: #e2e8f0; border-radius: 1rem; aspect-ratio: 4 / 3; transition: transform 0.3s ease; }
+        .thumbnail-placeholder:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
     <div id="bg-blurs"><div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div></div>
     
-    <div id="appContainer" class="h-screen w-screen p-4 md:p-6 lg:p-8 flex flex-col overflow-hidden">
+    <div id="appContainer" class="h-screen w-screen p-4 md:p-8 flex flex-col overflow-hidden">
         <header class="flex justify-between items-center w-full z-10 flex-shrink-0">
-            <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <button id="homeBtn" class="text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                <span data-translate-key="headerTitle" class="hidden sm:inline"></span>
+                <span data-translate-key="headerTitle"></span>
             </button>
-            <div class="flex items-center gap-2">
-                 <nav id="mainNav" class="hidden md:flex items-center gap-3 lg:gap-6">
-                    <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-2 py-1"></button>
-                    <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-2 py-1"></button>
-                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-2 py-1"></button>
+            <div class="flex items-center gap-4">
+                 <nav id="mainNav" class="flex items-center gap-6">
+                    <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
+                    <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
+                    <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                  </nav>
-                <div class="flex items-center gap-2 ml-2">
+                <div class="flex items-center gap-2 ml-4">
                      <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
                      <button id="langVI" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
                 </div>
-                <button id="hamburgerBtn" class="md:hidden ml-2 p-2 rounded-lg hover:bg-gray-200/50">
-                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
             </div>
         </header>
-
-        <div id="mobileMenu" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40">
-             <div class="absolute top-0 right-0 m-4 p-6 w-56 glass-panel flex flex-col gap-4 text-lg">
-                 <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-800 text-right"></button>
-                 <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-800 text-right"></button>
-                 <button data-view="explain" class="nav-btn font-semibold text-gray-800 text-right"></button>
-             </div>
-        </div>
-
-        <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
+        <div id="mainContent" class="flex-grow min-h-0 relative mt-6 mb-2"></div>
 
         <footer class="text-center text-xs text-neutral-500 py-1 flex-shrink-0">
             <p data-translate-key="footerText"></p>
@@ -140,24 +139,13 @@
     
     <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col">
-            <div class="p-4 md:p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
-                <h2 id="comparisonModalTitle" class="text-xl md:text-2xl font-bold"></h2>
+            <div class="p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
+                <h2 id="comparisonModalTitle" class="text-2xl font-bold"></h2>
                 <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
             </div>
-            <div id="comparisonModalContent" class="p-4 md:p-8 overflow-y-auto prose-comparison"></div>
+            <div id="comparisonModalContent" class="p-8 overflow-y-auto prose-comparison"></div>
         </div>
     </div>
-    
-    <div id="filterModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end justify-center">
-        <div class="modal-content bg-white w-full max-h-[80vh] flex flex-col rounded-t-3xl">
-            <div class="p-4 border-b border-black/10 flex justify-between items-center flex-shrink-0">
-                <h2 id="filterModalTitle" class="text-xl font-bold"></h2>
-                <button id="closeFilterModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
-            </div>
-            <div id="filterModalContent" class="p-6 overflow-y-auto"></div>
-        </div>
-    </div>
-
 
     <script type="module">
         // --- STATE & CONFIGURATION ---
@@ -184,9 +172,7 @@
             navExplain: {vi:"Giải thích", en:"Guide"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
             footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Developed by Sony Alpha Vietnam. AI features powered by Google Gemini."},
-            backBtn: {vi:"< Trở lại", en:"< Back"},
-            filterModalTitle: {vi: "Lọc & Sắp xếp", en: "Filter & Sort"},
-            
+
             // Home / Quiz
             landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
             landingSubtitle: {vi:"Trả lời vài câu hỏi để khám phá công thức màu được AI tạo ra dành riêng cho tâm trạng và phong cách của bạn.", en:"Answer a few questions to discover a unique color recipe, tailored by AI to your mood and style."},
@@ -296,8 +282,8 @@
             rawProcessTitle: { vi: 'Quy Trình Hậu Kỳ RAW', en: 'RAW Post-Production Workflow' },
             rawStep1: { vi: '1. 📸 Chụp ảnh RAW', en: '1. 📸 Shoot in RAW' },
             rawStep2: { vi: '2. 💻 Chuyển file vào máy tính', en: '2. 💻 Transfer files to computer' },
-            rawStep3: { vi: '3. 🎨 Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
-            rawStep4: { vi: '4. ⚙️ Kéo các thanh trượt màu sắc', en: '4. ⚙️ Adjust color sliders' },
+            rawStep3: { vi: '3.   Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
+            rawStep4: { vi: '4.  sliders Kéo các thanh trượt màu sắc', en: '4. sliders Adjust color sliders' },
             rawStep5: { vi: '5. ✅ Xuất file JPEG/TIFF', en: '5. ✅ Export JPEG/TIFF file' },
             diyProcessTitle: { vi: 'Quy Trình Sáng Tạo Sony DIY Color', en: 'Sony DIY Color Workflow' },
             diyStep1: { vi: '1. 🎨 Thiết lập màu trong máy ảnh', en: '1. 🎨 Set up color in-camera' },
@@ -434,10 +420,11 @@
 
         function createSettingsGrid(settings) {
             if (!settings) return '';
-            return Object.entries(settings).map(([key, value]) => `<div class="flex flex-col"><span class="text-xs text-neutral-500">${key}</span><span class="font-semibold text-base md:text-lg">${value}</span></div>`).join('');
+            return Object.entries(settings).map(([key, value]) => `<div class="flex flex-col"><span class="text-xs text-neutral-500">${key}</span><span class="font-semibold text-lg">${value}</span></div>`).join('');
         };
 
         function createFullRecipeHTML(recipe, isMainView = false) {
+            const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
             const noteHTML = (recipe.notes && recipe.notes[state.currentLang]) 
                 ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-xl">
                      <p class="font-bold" data-translate-key="noteTitle"></p>
@@ -445,12 +432,13 @@
                    </div>` : '';
 
             return `${noteHTML}<div class="space-y-6 mt-6">
-                <div><h4 class="font-bold mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-base md:text-lg">${recipe.whiteBalance || ''}</p></div></div>
-                <div><h4 class="font-bold mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
-                ${recipe.colorDepth ? `<div><h4 class="font-bold mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 md:grid-cols-6 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
-                ${recipe.detailSettings ? `<div><h4 class="font-bold mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
+                <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
+                <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
+                ${recipe.colorDepth ? `<div><h4 class="${titleClass} mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 md:grid-cols-6 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
+                ${recipe.detailSettings ? `<div><h4 class="${titleClass} mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
             </div>`;
         }
+
 
         function updateUIAfterAILoading() {
             document.querySelectorAll('button:disabled').forEach(btn => {
@@ -463,49 +451,69 @@
         
         // --- VIEW RENDERING LOGIC ---
         const viewTemplates = {
-            home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
+            home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition">
                 <h1 data-translate-key="landingTitle" class="landing-title"></h1>
                 <p data-translate-key="landingSubtitle" class="landing-subtitle"></p>
-                <button id="startQuizBtn" class="btn btn-primary mt-10 py-3 px-8 md:py-4 md:px-10 text-base md:text-lg" data-translate-key="startQuizBtn"></button>
+                <button id="startQuizBtn" class="btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startQuizBtn"></button>
             </div>`,
             
             quiz: () => {
                 if (state.quizStep >= quizQuestions.length) return '';
                 const q = quizQuestions[state.quizStep];
                 const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
-                return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition p-4">
+                return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
                     <div class="w-full max-w-4xl text-center" data-quiz-group="${q.id}">
                         <h2 class="quiz-question-title" data-translate-key="${q.title}"></h2>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 ${q.options.length > 3 ? 'md:grid-cols-4' : 'md:grid-cols-3'} gap-4 md:gap-5 mt-10 md:mt-12">${optionsHTML}</div>
+                        <div class="grid ${q.options.length > 3 ? 'grid-cols-2' : 'grid-cols-3'} gap-5 mt-12">${optionsHTML}</div>
                     </div>
                 </div>`;
             },
             
             recipeFormulas: () => `
-                <div id="recipeFormulasView" class="w-full h-full flex flex-col absolute inset-0 view-transition">
-                     <div id="recipeListPanel" class="w-full h-full flex flex-col p-2 md:p-0">
-                        <button id="openFilterModalBtn" class="md:hidden btn btn-primary w-full mb-4 py-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                            <span data-translate-key="filterModalTitle"></span>
-                        </button>
-                        <div id="recipeListContainerWrapper" class="flex-grow overflow-y-auto"></div>
+                <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-8 absolute inset-0 view-transition">
+                     <aside class="md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-6 flex flex-col">
+                        <h2 class="text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
+                        <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                        <div id="filtersContainer" class="space-y-4">
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                        </div>
+                        <div class="mt-4">
+                            <label for="sortSelect" class="font-semibold mb-2 block" data-translate-key="filterSort"></label>
+                            <select id="sortSelect" class="w-full p-2.5 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all">
+                                <option value="default" data-translate-key="sortDefault"></option>
+                                <option value="name_az" data-translate-key="sortNameAZ"></option>
+                                <option value="contrast_hl" data-translate-key="sortContrastHL"></option>
+                                <option value="saturation_hl" data-translate-key="sortSaturationHL"></option>
+                            </select>
+                        </div>
+                        <div id="recipeListContainer" class="space-y-2 pt-4 mt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
-                     </div>
-                     <div id="recipeDetailPanel" class="hidden w-full h-full absolute inset-0 bg-white/80 backdrop-blur-sm p-4 md:p-6 overflow-y-auto">
-                        <button id="backToListBtn" class="btn mb-4 py-2 px-4 bg-gray-200 text-black" data-translate-key="backBtn"></button>
-                        <div id="recipeContent"></div>
-                     </div>
+                     </aside>
+                     <main id="recipeMainPanel" class="md:w-2/3 lg:w-[70%] xl:w-3/4 flex flex-col min-h-0"><div class="glass-panel flex-grow overflow-y-auto p-8 lg:p-10">
+                        <div id="chartsContainer">
+                           <div class="text-center mb-10">
+                             <h2 class="text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                           </div>
+                           <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                               <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
+                               <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
+                           </div>
+                        </div>
+                        <div id="recipeContent" class="hidden"></div>
+                     </div></main>
                 </div>`,
             
             featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
-                <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
-                    <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
-                    <p class="text-base md:text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
-                    <a href="https://photos.app.goo.gl/H8v1SQ68RSnn2r5Q6" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-base md:text-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 md:w-6 md:h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="glass-panel p-8 md:p-12 text-center max-w-5xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
+                    <p class="text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
+                    <a href="https://photos.app.goo.gl/H8v1SQ68RSnn2r5Q6" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <span data-translate-key="featuredAlbumBtn"></span>
                     </a>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6 mt-12">
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-12">
                         <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/a9d6e5/274c77?text=Ảnh+1'); background-size: cover;"></div>
                         <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/fde4cf/c9a227?text=Ảnh+2'); background-size: cover;"></div>
                         <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/d8e2dc/4a5759?text=Ảnh+3'); background-size: cover;"></div>
@@ -518,56 +526,56 @@
             
             explain: () => `<div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-100 text-gray-800">
                 <div class="container mx-auto p-4 md:p-12">
-                    <header class="text-center mb-12 md:mb-16 pt-4 md:pt-8">
-                        <h1 class="text-3xl md:text-5xl font-bold text-slate-800 mb-2" data-translate-key="infographicMainTitle"></h1>
-                        <h2 class="text-lg md:text-2xl text-[#00A6ED]" data-translate-key="infographicMainSubtitle"></h2>
+                    <header class="text-center mb-16 pt-8">
+                        <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2" data-translate-key="infographicMainTitle"></h1>
+                        <h2 class="text-xl md:text-2xl text-[#00A6ED]" data-translate-key="infographicMainSubtitle"></h2>
                     </header>
-                    <main class="space-y-12 md:space-y-20">
+                    <main class="space-y-20">
                         <section id="intro" class="text-center">
-                            <h3 class="text-2xl md:text-3xl font-bold mb-4" data-translate-key="introTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-base md:text-lg mb-8" data-translate-key="introParagraph"></p>
+                            <h3 class="text-3xl font-bold mb-4" data-translate-key="introTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-lg mb-8" data-translate-key="introParagraph"></p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
                                 <div class="bg-white p-6 rounded-2xl shadow-lg">
-                                    <h4 class="text-lg md:text-xl font-bold text-[#F25022] mb-3" data-translate-key="rawProcessTitle"></h4>
-                                    <ol class="text-left space-y-2 text-sm md:text-base"><li data-translate-key="rawStep1"></li><li data-translate-key="rawStep2"></li><li data-translate-key="rawStep3"></li><li data-translate-key="rawStep4"></li><li data-translate-key="rawStep5"></li></ol>
+                                    <h4 class="text-xl font-bold text-[#F25022] mb-3" data-translate-key="rawProcessTitle"></h4>
+                                    <ol class="text-left space-y-2"><li data-translate-key="rawStep1"></li><li data-translate-key="rawStep2"></li><li data-translate-key="rawStep3"></li><li data-translate-key="rawStep4"></li><li data-translate-key="rawStep5"></li></ol>
                                 </div>
                                 <div class="bg-white p-6 rounded-2xl shadow-lg border-4 border-[#7FBA00]">
-                                    <h4 class="text-lg md:text-xl font-bold text-[#7FBA00] mb-3" data-translate-key="diyProcessTitle"></h4>
-                                    <ol class="text-left space-y-2 text-sm md:text-base"><li data-translate-key="diyStep1"></li><li data-translate-key="diyStep2"></li><li data-translate-key="diyStep3"></li></ol>
+                                    <h4 class="text-xl font-bold text-[#7FBA00] mb-3" data-translate-key="diyProcessTitle"></h4>
+                                    <ol class="text-left space-y-2"><li data-translate-key="diyStep1"></li><li data-translate-key="diyStep2"></li><li data-translate-key="diyStep3"></li></ol>
                                 </div>
                             </div>
                         </section>
                         <section id="wb">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="wbTitle"></h3>
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-lg md:text-xl font-bold mb-4" data-translate-key="wbKelvinTitle"></h4><p class="mb-4 text-sm md:text-base" data-translate-key="wbKelvinDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div><div class="mt-4 text-sm text-gray-600 space-y-1"><p data-translate-key="wbKelvinCool"></p><p data-translate-key="wbKelvinWarm"></p></div></div>
-                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-lg md:text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4><p class="mb-4 text-sm md:text-base" data-translate-key="wbShiftDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div><div class="mt-4 text-sm text-gray-600"><p data-translate-key="wbShiftExample"></p></div></div>
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="wbTitle"></h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbKelvinTitle"></h4><p class="mb-4" data-translate-key="wbKelvinDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div><div class="mt-4 text-sm text-gray-600 space-y-1"><p data-translate-key="wbKelvinCool"></p><p data-translate-key="wbKelvinWarm"></p></div></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4><p class="mb-4" data-translate-key="wbShiftDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div><div class="mt-4 text-sm text-gray-600"><p data-translate-key="wbShiftExample"></p></div></div>
                             </div>
                         </section>
                         <section id="pp">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="ppTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-base md:text-lg mb-8" data-translate-key="ppDesc"></p>
-                            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg mb-8">
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="ppTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="ppDesc"></p>
+                            <div class="bg-white p-8 rounded-2xl shadow-lg mb-8">
                                 <div class="flex flex-col md:flex-row justify-around items-center text-center">
-                                    <div class="p-2 md:p-4"><h5 class="text-base md:text-lg font-bold" data-translate-key="ppFlow1"></h5><p class="text-xs md:text-sm" data-translate-key="ppFlow1Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-2 md:my-0">→</div>
-                                    <div class="p-2 md:p-4"><h5 class="text-base md:text-lg font-bold" data-translate-key="ppFlow2"></h5><p class="text-xs md:text-sm" data-translate-key="ppFlow2Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-2 md:my-0">→</div>
-                                    <div class="p-2 md:p-4"><h5 class="text-base md:text-lg font-bold" data-translate-key="ppFlow3"></h5><p class="text-xs md:text-sm" data-translate-key="ppFlow3Desc"></p></div>
+                                    <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow1"></h5><p class="text-sm" data-translate-key="ppFlow1Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-4 md:my-0">→</div>
+                                    <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow2"></h5><p class="text-sm" data-translate-key="ppFlow2Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-4 md:my-0">→</div>
+                                    <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow3"></h5><p class="text-sm" data-translate-key="ppFlow3Desc"></p></div>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-lg md:text-xl font-bold mb-4" data-translate-key="blackGammaTitle"></h4><p class="mb-4 text-sm md:text-base" data-translate-key="blackGammaDesc"></p><div class="chart-container h-56"><canvas id="blackGammaChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="blackGammaNote"></p></div>
-                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-lg md:text-xl font-bold mb-4" data-translate-key="kneeTitle"></h4><p class="mb-4 text-sm md:text-base" data-translate-key="kneeDesc"></p><div class="chart-container h-64"><canvas id="kneeChart"></canvas></div><ul class="mt-4 text-sm text-gray-600 space-y-1"><li data-translate-key="kneePointExplain"></li><li data-translate-key="kneeSlopeExplain"></li></ul></div>
-                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg md:col-span-2 lg:col-span-1"><h4 class="text-lg md:text-xl font-bold mb-4" data-translate-key="colorDepthTitleChart"></h4><p class="mb-4 text-sm md:text-base" data-translate-key="colorDepthDesc"></p><div class="chart-container h-56"><canvas id="colorDepthChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="colorDepthNote"></p></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="blackGammaTitle"></h4><p class="mb-4" data-translate-key="blackGammaDesc"></p><div class="chart-container h-56"><canvas id="blackGammaChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="blackGammaNote"></p></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="kneeTitle"></h4><p class="mb-4" data-translate-key="kneeDesc"></p><div class="chart-container h-64"><canvas id="kneeChart"></canvas></div><ul class="mt-4 text-sm text-gray-600 space-y-1"><li data-translate-key="kneePointExplain"></li><li data-translate-key="kneeSlopeExplain"></li></ul></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-lg md:col-span-2 lg:col-span-1"><h4 class="text-xl font-bold mb-4" data-translate-key="colorDepthTitleChart"></h4><p class="mb-4" data-translate-key="colorDepthDesc"></p><div class="chart-container h-56"><canvas id="colorDepthChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="colorDepthNote"></p></div>
                             </div>
                         </section>
-                         <section id="heif">
-                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="heifTitle"></h3>
-                             <p class="max-w-3xl mx-auto text-center text-base md:text-lg mb-8" data-translate-key="heifDesc"></p>
-                             <div class="bg-white p-8 rounded-2xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="text-center"><h4 class="text-xl md:text-2xl font-bold" data-translate-key="jpegTitle"></h4><p class="text-4xl md:text-5xl font-bold text-[#F25022] my-4">16.7</p><p class="text-lg md:text-xl mb-4" data-translate-key="jpegColors"></p><div class="w-full h-12 rounded-lg gradient-banded"></div><p class="mt-2 text-red-600 font-semibold" data-translate-key="jpegBandingRisk"></p><p class="text-sm text-gray-600" data-translate-key="jpegBandingDesc"></p></div><div class="text-center"><h4 class="text-xl md:text-2xl font-bold" data-translate-key="heifTitle10bit"></h4><p class="text-4xl md:text-5xl font-bold text-[#7FBA00] my-4">1+</p><p class="text-lg md:text-xl mb-4" data-translate-key="heifColors"></p><div class="w-full h-12 rounded-lg gradient-smooth"></div><p class="mt-2 text-green-600 font-semibold" data-translate-key="heifSmooth"></p><p class="text-sm text-gray-600" data-translate-key="heifSmoothDesc"></p></div></div></div>
+                        <section id="heif">
+                             <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="heifTitle"></h3>
+                             <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="heifDesc"></p>
+                             <div class="bg-white p-8 rounded-2xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="text-center"><h4 class="text-2xl font-bold" data-translate-key="jpegTitle"></h4><p class="text-5xl font-bold text-[#F25022] my-4">16.7</p><p class="text-xl mb-4" data-translate-key="jpegColors"></p><div class="w-full h-12 rounded-lg gradient-banded"></div><p class="mt-2 text-red-600 font-semibold" data-translate-key="jpegBandingRisk"></p><p class="text-sm text-gray-600" data-translate-key="jpegBandingDesc"></p></div><div class="text-center"><h4 class="text-2xl font-bold" data-translate-key="heifTitle10bit"></h4><p class="text-5xl font-bold text-[#7FBA00] my-4">1+</p><p class="text-xl mb-4" data-translate-key="heifColors"></p><div class="w-full h-12 rounded-lg gradient-smooth"></div><p class="mt-2 text-green-600 font-semibold" data-translate-key="heifSmooth"></p><p class="text-sm text-gray-600" data-translate-key="heifSmoothDesc"></p></div></div></div>
                         </section>
                         <section id="recipes">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="recipesTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-base md:text-lg mb-8" data-translate-key="recipesDesc"></p>
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="recipesTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="recipesDesc"></p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div id="explain-recipe-1" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
                                 <div id="explain-recipe-2" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
@@ -575,11 +583,11 @@
                             <div class="text-center mt-12"><button id="exploreMoreBtn" class="inline-block bg-[#00A6ED] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#008cbf] transition-all duration-300 transform hover:scale-105" data-translate-key="exploreMoreBtn"></button></div>
                         </section>
                         <section id="memory-recall">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="recallTitle"></h3>
-                            <div class="bg-white p-8 rounded-2xl shadow-lg max-w-4xl mx-auto"><p class="text-base md:text-lg mb-6" data-translate-key="recallDesc"></p><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><h4 class="text-lg md:text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4><p class="text-sm" data-translate-key="recallInternalDesc"></p></div><div><h4 class="text-lg md:text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4><p class="text-sm" data-translate-key="recallCardDesc"></p></div></div></div>
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="recallTitle"></h3>
+                            <div class="bg-white p-8 rounded-2xl shadow-lg max-w-4xl mx-auto"><p class="text-lg mb-6" data-translate-key="recallDesc"></p><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4><p class="text-sm" data-translate-key="recallInternalDesc"></p></div><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4><p class="text-sm" data-translate-key="recallCardDesc"></p></div></div></div>
                         </section>
                     </main>
-                    <footer class="text-center mt-16 md:mt-20 pt-8 border-t border-slate-300">
+                    <footer class="text-center mt-20 pt-8 border-t border-slate-300">
                         <p class="text-gray-600" data-translate-key="infographicFooterText"></p>
                         <p class="text-sm text-gray-500 mt-2" data-translate-key="infographicFooterSubtext"></p>
                     </footer>
@@ -592,13 +600,54 @@
             activeCharts = {};
         }
 
+        function renderAllCharts(lang) {
+            destroyAllCharts();
+            const FONT_COLOR = '#374151'; const GRID_COLOR = '#E5E7EB'; 
+            const PALETTE = { blue: '#00A6ED', green: '#7FBA00', yellow: '#FFB900', orange: '#F25022', gray: '#737373' };
+            const defaultChartOptions = (extraOptions = {}) => ({
+                responsive: true, maintainAspectRatio: false, color: FONT_COLOR, animation: { duration: 500 },
+                plugins: {
+                    legend: { labels: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } } },
+                    tooltip: { bodyFont: { family: "'Be Vietnam Pro', sans-serif" }, titleFont: { family: "'Be Vietnam Pro', sans-serif" }, callbacks: { title: (items) => Array.isArray(items[0].label) ? items[0].label.join(' ') : items[0].label } }
+                },
+                scales: {
+                    x: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { color: GRID_COLOR }, title: { font: { family: "'Be Vietnam Pro', sans-serif" }} },
+                    y: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { color: GRID_COLOR }, title: { font: { family: "'Be Vietnam Pro', sans-serif" }} }
+                }, ...extraOptions
+            });
+            const kelvinCtx = document.getElementById('kelvinChart')?.getContext('2d');
+            if(kelvinCtx) {
+                activeCharts.kelvin = new Chart(kelvinCtx, { type: 'bar', data: { labels: ['2500K', '4000K', '5500K', '7500K', '9900K'], datasets: [{ label: t('kelvinChartTitle'), data: [1, 1, 1, 1, 1], backgroundColor: ['rgba(0, 166, 237, 0.4)','rgba(0, 166, 237, 0.7)','rgba(200, 200, 200, 0.8)','rgba(242, 80, 34, 0.7)','rgba(242, 80, 34, 0.4)'], borderColor: ['#00A6ED','#00A6ED','rgba(150, 150, 150, 1)','#F25022','#F25022'], borderWidth: 1 }] }, options: defaultChartOptions({ indexAxis: 'y', plugins: { legend: { display: false } } }) });
+            }
+            const wbShiftCtx = document.getElementById('wbShiftChart')?.getContext('2d');
+            if(wbShiftCtx) {
+                activeCharts.wbShift = new Chart(wbShiftCtx, { type: 'scatter', data: { datasets: [ { label: t('wbShiftRecipe1'), data: [{x: 6, y: 7}], backgroundColor: PALETTE.blue, pointRadius: 10, pointHoverRadius: 15 }, { label: t('wbShiftRecipe2'), data: [{x: -7, y: 0.5}], backgroundColor: PALETTE.orange, pointRadius: 10, pointHoverRadius: 15 } ] }, options: defaultChartOptions({ scales: { x: { min: -9, max: 9, title: { display: true, text: t('wbShiftXAxis'), color: FONT_COLOR } }, y: { min: -9, max: 9, title: { display: true, text: t('wbShiftYAxis'), color: FONT_COLOR } } } }) });
+            }
+            const blackGammaCtx = document.getElementById('blackGammaChart')?.getContext('2d');
+            if(blackGammaCtx) {
+                activeCharts.blackGamma = new Chart(blackGammaCtx, { type: 'bar', data: { labels: ['-7', '-4', '0', '+4', '+7'], datasets: [{ label: 'Level', data: [-7, -4, 0, 4, 7], backgroundColor: [PALETTE.blue, PALETTE.blue, PALETTE.gray, PALETTE.orange, PALETTE.orange], }] }, options: defaultChartOptions({ plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: t('blackGammaYAxis') } } } }) });
+            }
+            const kneeCtx = document.getElementById('kneeChart')?.getContext('2d');
+            if (kneeCtx) {
+                const labels = Array.from({ length: 111 }, (_, i) => i);
+                const clippedSignal = labels.map(i => Math.min(i, 100));
+                const kneeSignal = (point, slope) => labels.map(i => { if (i < point) return i; const x = i - point; const steepness = (5 - slope) * 0.08 + 0.1; const compressed = 100 - (100 - point) * Math.exp(-steepness * x * 0.08); return Math.min(compressed, 109); });
+                const kneePoint = 85;
+                activeCharts.knee = new Chart(kneeCtx, { type: 'line', data: { labels: labels, datasets: [ { label: t('kneeChartNoKnee'), data: clippedSignal, borderColor: PALETTE.orange, borderWidth: 3, borderDash: [6, 6], fill: false, tension: 0.1, pointRadius: 0 }, { label: t('kneeChartSoft'), data: kneeSignal(kneePoint, 3), borderColor: PALETTE.green, backgroundColor: 'rgba(127, 186, 0, 0.2)', borderWidth: 3, fill: { target: '0', above: 'rgba(127, 186, 0, 0.3)' }, tension: 0.2, pointRadius: 0 }, { type: 'bar', label: t('kneePointLabel'), data: labels.map(l => (l === kneePoint ? 110 : null)), backgroundColor: 'rgba(0, 166, 237, 0.5)', borderColor: PALETTE.blue, borderWidth: 1, barPercentage: 0.1 } ] }, options: defaultChartOptions({ plugins: { legend: { position: 'bottom', labels: { boxWidth: 20 } }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { title: { display: true, text: t('kneeChartSignalIn') }, min: 70, max: 110 }, y: { title: { display: true, text: t('kneeChartSignalOut') }, min: 70, max: 110 } } }) });
+            }
+            const colorDepthCtx = document.getElementById('colorDepthChart')?.getContext('2d');
+            if(colorDepthCtx) {
+                activeCharts.colorDepth = new Chart(colorDepthCtx, { type: 'bar', data: { labels: t('colorDepthLabels'), datasets: [{ label: t('colorDepthTitleChart'), data: [-3, 5, -3, -3, -5, -2], backgroundColor: ['#EF5350', '#66BB6A', '#42A5F5', '#26C6DA', '#AB47BC', '#FFEE58'], }] }, options: defaultChartOptions({ plugins: { legend: { display: false } }, scales: { y: { min: -7, max: 7, title: { display: true, text: t('colorDepthYAxis') } } } }) });
+            }
+        }
+
         function renderView(viewName) {
             state.currentView = viewName;
             return new Promise(resolve => {
                 const currentContent = mainContentEl.children[0];
                 if (currentContent) {
                     currentContent.classList.add('view-transition-out');
-                    destroyAllCharts();
+                    destroyAllCharts(); // Destroy charts on any view change
                     currentContent.addEventListener('animationend', () => {
                         mainContentEl.innerHTML = viewTemplates[viewName]();
                         attachViewEventListeners(viewName);
@@ -628,12 +677,22 @@
                 const index = state.comparisonList.indexOf(id);
                 if (index > -1) state.comparisonList.splice(index, 1);
                 else if (state.comparisonList.length < 2) state.comparisonList.push(id);
+                
+                if (state.comparisonList.length !== 2) {
+                     // When managing comparison, don't affect the main selection
+                }
             } else {
-                state.selectedRecipeId = id;
-                state.comparisonList = []; 
+                // Toggle selection for main view
+                if (state.selectedRecipeId === id) {
+                    state.selectedRecipeId = null; // Deselect if clicked again
+                } else {
+                    state.selectedRecipeId = id;
+                }
+                state.comparisonList = []; // Clear comparison list when making a new main selection
             }
-            renderLibraryList();
-            renderLibraryDetails(); 
+            renderLibraryList(); // Re-render list for checkbox states and selection highlight
+            renderLibraryDetails(); // Re-render main panel to show/hide details or charts
+            renderInteractiveCharts(state.currentLang); // Re-render charts to highlight selection
         }
 
         async function handleAiComparison(id1, id2, recipe2Obj = null) {
@@ -679,7 +738,7 @@
                  const r1 = recipesData.find(r => r.id === aiResponse[0].recipeId);
                  const r2 = recipesData.find(r => r.id === aiResponse[1].recipeId);
                  if (r1 && r2) {
-                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-4 md:p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-2xl md:text-3xl font-bold mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-4 md:gap-8"><div class="quiz-choice-option p-4 md:p-8" data-recipe-id="${r1.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-sm md:text-base italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-4 md:p-8" data-recipe-id="${r2.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-sm md:text-base italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
+                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-3xl font-bold mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-8"><div class="quiz-choice-option p-8" data-recipe-id="${r1.id}"><h4 class="text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-md italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-8" data-recipe-id="${r2.id}"><h4 class="text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-md italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
                     applyTranslations();
                  }
             } else { homeView.innerHTML = `<p class="text-red-500">Lỗi khi lấy đề xuất từ AI.</p>`; }
@@ -687,19 +746,20 @@
         
         function attachViewEventListeners(viewName) {
             if (viewName === 'recipeFormulas') {
-                document.getElementById('openFilterModalBtn').addEventListener('click', openFilterModal);
-                document.getElementById('backToListBtn').addEventListener('click', () => {
-                    document.getElementById('recipeListPanel').classList.remove('hidden');
-                    document.getElementById('recipeDetailPanel').classList.add('hidden');
-                    state.selectedRecipeId = null;
-                });
-                document.getElementById('recipeListContainerWrapper').addEventListener('click', (e) => {
+                renderLibraryList(); 
+                renderLibraryDetails();
+                renderInteractiveCharts(state.currentLang);
+                document.getElementById('searchInput').addEventListener('input', renderLibraryList);
+                document.getElementById('filtersContainer').addEventListener('click', handleFilterClick);
+                document.getElementById('sortSelect').addEventListener('change', renderLibraryList);
+                document.getElementById('recipeListContainer').addEventListener('click', (e) => {
                      const cb = e.target.closest('.recipe-compare-cb');
                      const item = e.target.closest('.recipe-item-content');
+                     const dot = e.target.closest('.recipe-dot');
                      if (cb) { handleRecipeSelection(cb.dataset.recipeId, 'checkbox'); } 
                      else if (item) { handleRecipeSelection(item.dataset.recipeId, 'div'); }
+                     else if (dot) { handleRecipeSelection(dot.dataset.recipeId, 'div'); }
                 });
-                renderLibraryList();
             } else if (viewName === 'quiz') {
                  document.querySelector('#quizView .grid').addEventListener('click', (e) => {
                     const option = e.target.closest('.quiz-option');
@@ -714,59 +774,52 @@
                     }, 250);
                 });
             } else if (viewName === 'explain') {
-                renderAllChartsForExplain();
+                renderAllCharts(state.currentLang);
                 document.getElementById('exploreMoreBtn')?.addEventListener('click', () => renderView('recipeFormulas'));
+
+                function generateRecipeExampleHTML(recipe, titleColor) {
+                    if (!recipe || !recipe.settings) return '<p>Recipe data not available.</p>';
+                    return `
+                        <h4 class="text-2xl font-bold mb-4" style="color: ${titleColor};">${recipe.name[state.currentLang]}</h4>
+                        <p class="mb-4 italic">${recipe.description[state.currentLang]}</p>
+                        <ul class="space-y-1 text-sm">
+                            <li><strong>WB:</strong> ${recipe.whiteBalance}</li>
+                            <li><strong>Gamma:</strong> ${recipe.settings.Gamma || 'N/A'}</li>
+                            <li><strong>Color Mode:</strong> ${recipe.settings['Color Mode'] || 'N/A'}</li>
+                            <li><strong>Black Gamma:</strong> ${recipe.settings['Black Gamma'] || 'N/A'}</li>
+                            <li><strong>Knee:</strong> ${recipe.settings.Knee || 'N/A'}</li>
+                            <li><strong>Saturation:</strong> ${recipe.settings.Saturation || 'N/A'}</li>
+                            <li><strong>Color Phase:</strong> ${recipe.settings['Color Phase'] || 'N/A'}</li>
+                        </ul>`;
+                }
                 const recipe1Container = document.getElementById('explain-recipe-1');
                 const recipe2Container = document.getElementById('explain-recipe-2');
                 if (recipe1Container && recipe2Container) {
                     const recipe1Data = recipesData.find(r => r.id === 'vektro-100');
                     const recipe2Data = recipesData.find(r => r.id === 'senova-light');
-                    recipe1Container.innerHTML = `<h4 class="text-xl md:text-2xl font-bold mb-4" style="color: #F25022;">${recipe1Data.name[state.currentLang]}</h4><p class="mb-4 italic text-sm md:text-base">${recipe1Data.description[state.currentLang]}</p><ul class="space-y-1 text-xs md:text-sm"><li><strong>WB:</strong> ${recipe1Data.whiteBalance}</li><li><strong>Gamma:</strong> ${recipe1Data.settings.Gamma || 'N/A'}</li><li><strong>Black Gamma:</strong> ${recipe1Data.settings['Black Gamma'] || 'N/A'}</li></ul>`;
-                    recipe2Container.innerHTML = `<h4 class="text-xl md:text-2xl font-bold mb-4" style="color: #00A6ED;">${recipe2Data.name[state.currentLang]}</h4><p class="mb-4 italic text-sm md:text-base">${recipe2Data.description[state.currentLang]}</p><ul class="space-y-1 text-xs md:text-sm"><li><strong>WB:</strong> ${recipe2Data.whiteBalance}</li><li><strong>Gamma:</strong> ${recipe2Data.settings.Gamma || 'N/A'}</li><li><strong>Black Gamma:</strong> ${recipe2Data.settings['Black Gamma'] || 'N/A'}</li></ul>`;
+                    recipe1Container.innerHTML = generateRecipeExampleHTML(recipe1Data, '#F25022');
+                    recipe2Container.innerHTML = generateRecipeExampleHTML(recipe2Data, '#00A6ED');
                 }
             }
-        }
-        
-        function getFilterHTML() {
-            return `<div id="filtersContainer" class="space-y-4">
-                 <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.type === 'all' ? 'active' : ''}" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.type === 'color' ? 'active' : ''}" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.type === 'bw' ? 'active' : ''}" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                 <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.contrast === 'all' ? 'active' : ''}" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.contrast === 'high' ? 'active' : ''}" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.contrast === 'medium' ? 'active' : ''}" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.contrast === 'low' ? 'active' : ''}" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                 <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.saturation === 'all' ? 'active' : ''}" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.saturation === 'high' ? 'active' : ''}" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.saturation === 'medium' ? 'active' : ''}" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full ${state.activeFilters.saturation === 'low' ? 'active' : ''}" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-            </div>
-            <div class="mt-4">
-                <label for="sortSelect" class="font-semibold mb-2 block" data-translate-key="filterSort"></label>
-                <select id="sortSelect" class="w-full p-2.5 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all">
-                    <option value="default" data-translate-key="sortDefault"></option>
-                    <option value="name_az" data-translate-key="sortNameAZ"></option>
-                    <option value="contrast_hl" data-translate-key="sortContrastHL"></option>
-                    <option value="saturation_hl" data-translate-key="sortSaturationHL"></option>
-                </select>
-            </div>`;
         }
 
         // --- RENDER & INITIALIZATION ---
         function renderLibraryList() {
-             const container = document.getElementById('recipeListContainerWrapper'); if (!container) return;
-             
-             let recipesToRender = recipesData.filter(recipe => (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
-             const sortMap = { high: 3, medium: 2, low: 1 };
+             const container = document.getElementById('recipeListContainer'); if (!container) return;
+             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
              const sortBy = document.getElementById('sortSelect')?.value || 'default';
-
+             let recipesToRender = recipesData.filter(recipe => (recipe.name.vi.toLowerCase().includes(searchTerm) || recipe.name.en.toLowerCase().includes(searchTerm) || recipe.description.vi.toLowerCase().includes(searchTerm) || recipe.description.en.toLowerCase().includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
+             const sortMap = { high: 3, medium: 2, low: 1 };
              if (sortBy === 'name_az') recipesToRender.sort((a, b) => a.name[state.currentLang].localeCompare(b.name[state.currentLang]));
              else if (sortBy === 'contrast_hl') recipesToRender.sort((a, b) => (sortMap[b.contrast] || 0) - (sortMap[a.contrast] || 0));
              else if (sortBy === 'saturation_hl') recipesToRender.sort((a, b) => (sortMap[b.saturation] || 0) - (sortMap[a.saturation] || 0));
 
              container.innerHTML = recipesToRender.map(recipe => {
                 const isChecked = state.comparisonList.includes(recipe.id); const isSelected = recipe.id === state.selectedRecipeId;
-                 return `<div class="recipe-item p-3 md:p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-center gap-4 ${isSelected ? 'selected' : ''}">
+                 return `<div class="recipe-item p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-center gap-4 ${isSelected ? 'selected' : ''}">
                     <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-center flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
-                    <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
-                        <div class="flex items-center gap-3">
-                           <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
-                           <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
-                        </div>
-                        <p class="text-sm text-neutral-600 mt-1 leading-snug pl-8">${recipe.description[state.currentLang]}</p>
-                    </div>
+                    <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 cursor-pointer" style="background-color: ${recipe.personalityColor}" data-recipe-id="${recipe.id}" title="${recipe.name[state.currentLang]}"></div>
+                    <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}"><span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span><p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p></div>
                 </div>`;
              }).join('');
              const btnContainer = document.getElementById('compareBtnContainer');
@@ -775,48 +828,105 @@
         }
         
         function renderLibraryDetails() {
-            const detailPanel = document.getElementById('recipeDetailPanel');
-            const listPanel = document.getElementById('recipeListPanel');
             const recipeContentContainer = document.getElementById('recipeContent');
-            
+            const chartsContainer = document.getElementById('chartsContainer');
+            if (!recipeContentContainer || !chartsContainer) return;
+
             const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
-            if (!recipe || !detailPanel || !listPanel || !recipeContentContainer) {
-                 if(detailPanel) detailPanel.classList.add('hidden');
-                 if(listPanel) listPanel.classList.remove('hidden');
+            if (!recipe) { 
+                chartsContainer.classList.remove('hidden');
+                recipeContentContainer.classList.add('hidden');
                 return; 
             }
+            chartsContainer.classList.add('hidden');
+            recipeContentContainer.classList.remove('hidden');
             
-            listPanel.classList.add('hidden');
-            detailPanel.classList.remove('hidden');
-            
-            recipeContentContainer.innerHTML = `<h3 class="text-2xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3><p class="text-base md:text-lg text-neutral-600 mt-2 mb-8 italic">"${recipe.description[state.currentLang]}"</p><div id="originalRecipeContainer">${createFullRecipeHTML(recipe, true)}</div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><details class="group"><summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors"><span data-translate-key="tutorialTitle"></span><svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></summary><div class="prose max-w-none mt-6 space-y-4 text-sm md:text-base text-gray-700"><div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div></div></details></div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3><div class="glass-panel p-4 md:p-6 -mx-2"><textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea><button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button><div id="aiResultContainer"></div></div></div>`;
+            recipeContentContainer.innerHTML = `<h3 class="text-4xl font-bold">${recipe.name[state.currentLang]}</h3><p class="text-lg text-neutral-600 mt-2 mb-8 italic">"${recipe.description[state.currentLang]}"</p><div id="recipeNotesContainer" class="mb-4"></div><div id="originalRecipeContainer">${createFullRecipeHTML(recipe, true)}</div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><details open class="group"><summary class="text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors"><span data-translate-key="tutorialTitle"></span><svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></summary><div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700"><div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div></div></details></div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><h3 class="text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3><div class="glass-panel p-6 -mx-2"><textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea><button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button><div id="aiResultContainer"></div></div></div>`;
             applyTranslations();
         }
 
-        function openFilterModal() {
-            const modal = document.getElementById('filterModal');
-            const content = document.getElementById('filterModalContent');
-            document.getElementById('filterModalTitle').textContent = t('filterModalTitle');
-            content.innerHTML = getFilterHTML();
-            applyTranslations();
-            modal.classList.remove('hidden');
-            content.querySelector('#sortSelect').value = document.getElementById('sortSelect')?.value || 'default';
-            content.addEventListener('click', handleFilterClick);
-            content.addEventListener('change', (e) => {
-                if(e.target.id === 'sortSelect') {
-                   renderLibraryList();
+        function renderInteractiveCharts(lang) {
+            destroyAllCharts();
+
+            const chartDefaultOptions = (yAxisTitleKey) => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                onClick: (e) => {
+                    const chart = e.chart;
+                    const elements = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                     if (elements.length) {
+                        const firstPoint = elements[0];
+                        const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
+                        if (recipeId) {
+                            handleRecipeSelection(recipeId, 'chart');
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 },
+                        padding: 10,
+                        callbacks: {
+                            label: function(context) { return context.raw.name; }
+                        }
+                    }
+                },
+                scales: {
+                    x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t('axisTonality') } },
+                    y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
                 }
             });
+            
+            const colorCtx = document.getElementById('colorChart')?.getContext('2d');
+            if (colorCtx) {
+                const colorData = recipesData.filter(r => r.type === 'color' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number' && r.personalityColor).map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
+                activeCharts.color = new Chart(colorCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            data: colorData,
+                            pointBackgroundColor: colorData.map(d => {
+                                const recipe = recipesData.find(r => r.id === d.id);
+                                return recipe ? recipe.personalityColor : '#CCCCCC'; // Fallback color
+                            }),
+                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
+                            pointHoverRadius: 11
+                        }]
+                    },
+                    options: chartDefaultOptions('axisSaturation')
+                });
+            }
+
+            const bwCtx = document.getElementById('bwChart')?.getContext('2d');
+            if (bwCtx) {
+                const bwData = recipesData.filter(r => r.type === 'bw' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number').map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
+                activeCharts.bw = new Chart(bwCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            data: bwData,
+                            pointBackgroundColor: '#475569',
+                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
+                            pointHoverRadius: 11,
+                            pointHoverBorderWidth: 3
+                        }]
+                    },
+                    options: chartDefaultOptions('axisChroma')
+                });
+            }
         }
-        
+
+
         function init() {
             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
-                if(target.closest('#hamburgerBtn')) { document.getElementById('mobileMenu').classList.toggle('hidden'); return; }
-                if(target.closest('#mobileMenu') && !target.closest('.glass-panel')) { document.getElementById('mobileMenu').classList.add('hidden'); return; }
-                if (target.closest('.nav-btn')) { document.getElementById('mobileMenu').classList.add('hidden'); }
-                if(target.closest('#closeFilterModalBtn') || (target.closest('#filterModal') && !target.closest('.modal-content'))) { document.getElementById('filterModal').classList.add('hidden'); }
-
                 const homeBtn = target.closest('#homeBtn'); const navBtn = target.closest('.nav-btn');
                 const langBtn = target.closest('.lang-btn'); const startQuizBtn = target.closest('#startQuizBtn');
                 const compareBtn = target.closest('#compareBtn'); const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
@@ -837,6 +947,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", init);
+
         
      // Enhanced with personalityColor and coords for charts
 const recipesData = [
