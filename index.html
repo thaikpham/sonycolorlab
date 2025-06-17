@@ -153,10 +153,6 @@
         
         <!-- Main Content Area -->
         <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
-
-        <footer class="text-center text-xs text-neutral-500 py-1 flex-shrink-0">
-            <p data-translate-key="footerText"></p>
-        </footer>
     </div>
     
     <!-- Mobile Navigation Menu -->
@@ -181,6 +177,9 @@
             <div id="comparisonModalContent" class="p-6 md:p-8 overflow-y-auto prose-comparison"></div>
         </div>
     </div>
+        <!-- <footer class="text-center text-xs text-neutral-500 py-1 flex-shrink-0"> -->
+        <!--     <p data-translate-key="footerText"></p> -->
+        <!-- </footer> -->
 
     <script type="module">
         // --- STATE & CONFIGURATION ---
@@ -530,7 +529,7 @@
                             </select>
                         </div>
                         <!-- Recipe List -->
-                        <div id="recipeListContainer" class="space-y-2 pt-4 mt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
+                        <div id="recipeListContainer" class="max-h-64 space-y-2 pt-4 mt-4 border-t flex-grow overflow-y-scroll pr-2 -mr-3"></div>
                         <!-- Compare Button -->
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                     </aside>
@@ -553,7 +552,7 @@
                     </main>
                     <!-- Mobile-only Detail View -->
                     <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
-                        <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4" data-translate-key="backToListBtn"></button>
+                        <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
                         <div class="glass-panel p-6 overflow-y-auto">
                            <div id="recipeContentMobile"></div>
                         </div>
