@@ -11,12 +11,13 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-
-         body {
+        body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #f4f7fc; /* Softer background */
+            background-color: #f4f7fc;
             color: #212529;
-            overflow-x: hidden; /* Prevent horizontal scroll, allow vertical */
+            /* Allow vertical scroll on mobile, but keep it hidden for desktop view */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
         
         #bg-blurs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
@@ -118,93 +119,6 @@
         #mobileNavMenu {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* WB Simulator Styles */
-        .wb-simulator {
-            background-color: #fff;
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-        }
-        .wb-preview {
-            width: 100%;
-            height: 12rem;
-            border-radius: 1rem;
-            background-color: #fff;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
-            position: relative;
-            overflow: hidden;
-            transition: background-color 0.3s ease;
-        }
-        .wb-preview-tint {
-            position: absolute;
-            inset: 0;
-            mix-blend-mode: soft-light; /* soft-light or overlay works well */
-            transition: background-color 0.3s ease;
-        }
-        .wb-grid-container {
-            aspect-ratio: 1 / 1;
-            max-width: 300px;
-            margin: 1.5rem auto 0;
-            position: relative;
-            background: linear-gradient(90deg, #93b5ff, white, #ffcb6b), linear-gradient(0deg, #b0e8a2, white, #ffb3ff);
-            background-blend-mode: multiply;
-            border-radius: 0.5rem;
-            border: 1px solid #d1d5db;
-        }
-        .wb-grid {
-            position: absolute;
-            inset: 0;
-            cursor: crosshair;
-        }
-        .wb-grid-lines {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(to right, #e5e7eb 1px, transparent 1px),
-                linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
-            background-size: calc(100% / 18) calc(100% / 18);
-        }
-        .wb-grid-axes {
-            position: absolute;
-            inset: 0;
-        }
-        .wb-grid-axes::before, .wb-grid-axes::after {
-            content: '';
-            position: absolute;
-            background-color: #9ca3af;
-        }
-        .wb-grid-axes::before { /* Vertical line */
-            left: 50%;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            transform: translateX(-50%);
-        }
-        .wb-grid-axes::after { /* Horizontal line */
-            top: 50%;
-            left: 0;
-            height: 2px;
-            width: 100%;
-            transform: translateY(-50%);
-        }
-        .wb-grid-labels {
-            font-weight: 600;
-            color: #4b5563;
-        }
-        .wb-handle {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            border: 3px solid white;
-            border-radius: 50%;
-            background-color: var(--primary-accent);
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            transition: transform 0.1s ease;
-        }
-
     </style>
 </head>
 <body>
@@ -359,7 +273,7 @@
             tutorialStep4P1: {vi: "Thoát khỏi Picture Profile, vào mục <strong>White Balance</strong> và chỉnh theo nhiệt độ K và WB Shift được ghi trong công thức.", en: "Exit Picture Profile, go to <strong>White Balance</strong>, and adjust the Kelvin temperature and WB Shift as specified in the recipe."},
 
             // Quiz Questions
-            quizQ1: {vi: "Phong cách ảnh của bạn?", en: "Your aesthetic?"},    
+            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"},    
             quizQ1A1: {vi: "Cổ điển", en: "Classic"},    
             quizQ1A2: {vi: "Hiện đại", en: "Modern"},    
             quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"},    
@@ -369,7 +283,7 @@
             quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"},    
             quizQ2A3: {vi: "Đường phố", en: "Street"},    
             quizQ2A4: {vi: "Đời thường", en: "Everyday"},
-            quizQ3: {vi: "Cảm xúc cho ảnh?", en: "Tone & mood?"},    
+            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"},    
             quizQ3A1: {vi: "Vui vẻ", en: "Happy"},    
             quizQ3A2: {vi: "Trầm tư", en: "Contemplative"},    
             quizQ3A3: {vi: "Năng động", en: "Dynamic"},    
@@ -396,8 +310,9 @@
             quizQ8A3: {vi: "Trung bình", en: "Medium"},
             
             // Infographic Section
-            infographicMainTitle: { vi: 'Hiểu và ứng dụng DIY Color Lab', en: 'Mastering the DIY Color Lab' },
+            infographicMainTitle: { vi: 'Làm Chủ Màu Sắc Film-look', en: 'Mastering the Film Look' },
             infographicMainSubtitle: { vi: 'Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony', en: 'A Comprehensive Guide to White Balance and Picture Profile on Sony Cameras' },
+            infographicFooterText: { vi: 'Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.', en: 'Infographic based on research reports on Sony color customization.' },
             infographicFooterSubtext: { vi: 'Hành trình sáng tạo màu sắc của bạn bắt đầu từ đây!', en: 'Your color creation journey starts here!' },
             introTitle: { vi: 'Nghệ Thuật Của Màu Sắc Sony DIY Color', en: 'The Art of Sony DIY Color' },
             introParagraph: { vi: 'Thay vì dành hàng giờ hậu kỳ, hãy tạo ra những bức ảnh với màu sắc hoàn hảo ngay từ máy ảnh. Đây là cách rèn luyện tư duy nhiếp ảnh, đưa ra quyết định sáng tạo ngay tại thời điểm bấm máy, sử dụng các công cụ mạnh mẽ mà Sony trang bị.', en: 'Instead of spending hours in post-production, create photos with perfect colors straight out of camera. This practice hones your photographic thinking, pushing creative decisions to the moment of capture using the powerful tools Sony provides.' },
@@ -405,8 +320,8 @@
             rawStep1: { vi: '1. 📸 Chụp ảnh RAW', en: '1. 📸 Shoot in RAW' },
             rawStep2: { vi: '2. 💻 Chuyển file vào máy tính', en: '2. 💻 Transfer files to computer' },
             rawStep3: { vi: '3.   Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
-            rawStep4: { vi: '4. Cân chỉnh các thanh trượt màu sắc', en: '4. Sliders adjust color channels' },
-            rawStep5: { vi: '5. ✅ Xuất file JPEG/PNG/TIFf', en: '5. ✅ Export JPEG/PNG/TIFF file' },
+            rawStep4: { vi: '4. sliders Kéo các thanh trượt màu sắc', en: '4. sliders Adjust color sliders' },
+            rawStep5: { vi: '5. ✅ Xuất file JPEG/TIFF', en: '5. ✅ Export JPEG/TIFF file' },
             diyProcessTitle: { vi: 'Quy Trình Sáng Tạo Sony DIY Color', en: 'Sony DIY Color Workflow' },
             diyStep1: { vi: '1. 🎨 Thiết lập màu trong máy ảnh', en: '1. 🎨 Set up color in-camera' },
             diyStep2: { vi: '2. 📸 Chụp ảnh JPEG/HEIF', en: '2. 📸 Shoot in JPEG/HEIF' },
@@ -687,36 +602,9 @@
                         </section>
                         <section id="wb">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="wbTitle"></h3>
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
                                 <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbKelvinTitle"></h4><p class="mb-4" data-translate-key="wbKelvinDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div><div class="mt-4 text-sm text-gray-600 space-y-1"><p data-translate-key="wbKelvinCool"></p><p data-translate-key="wbKelvinWarm"></p></div></div>
-                                
-                                <!-- WB Simulator Start -->
-                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
-                                    <h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4>
-                                    <p class="mb-4" data-translate-key="wbShiftDesc"></p>
-                                    <div id="wbSimulator" class="space-y-4">
-                                        <div class="wb-preview"><div class="wb-preview-tint"></div></div>
-                                        <div>
-                                            <div class="flex justify-between font-mono text-sm"><span>2500K</span><span>9900K</span></div>
-                                            <input type="range" id="kelvinSlider" min="2500" max="9900" value="5500" step="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                            <div class="text-center font-bold text-lg mt-2"><span id="kelvinValue">5500</span>K</div>
-                                        </div>
-                                        <div class="wb-grid-container">
-                                            <div class="wb-grid-lines"></div>
-                                            <div class="wb-grid-axes"></div>
-                                            <div class="absolute -top-6 left-1/2 -translate-x-1/2 wb-grid-labels">M</div>
-                                            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 wb-grid-labels">G</div>
-                                            <div class="absolute -left-6 top-1/2 -translate-y-1/2 wb-grid-labels">B</div>
-                                            <div class="absolute -right-6 top-1/2 -translate-y-1/2 wb-grid-labels">A</div>
-                                            <div id="wbGrid" class="wb-grid">
-                                                <div id="wbHandle" class="wb-handle" style="top: 50%; left: 50%;"></div>
-                                            </div>
-                                        </div>
-                                        <div class="text-center font-mono font-semibold text-lg" id="wbShiftValue">A0 G0</div>
-                                    </div>
-                                </div>
-                                <!-- WB Simulator End -->
-
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4><p class="mb-4" data-translate-key="wbShiftDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div><div class="mt-4 text-sm text-gray-600"><p data-translate-key="wbShiftExample"></p></div></div>
                             </div>
                         </section>
                         <section id="pp">
@@ -786,13 +674,10 @@
             if(kelvinCtx) {
                 activeCharts.kelvin = new Chart(kelvinCtx, { type: 'bar', data: { labels: ['2500K', '4000K', '5500K', '7500K', '9900K'], datasets: [{ label: t('kelvinChartTitle'), data: [1, 1, 1, 1, 1], backgroundColor: ['rgba(0, 166, 237, 0.4)','rgba(0, 166, 237, 0.7)','rgba(200, 200, 200, 0.8)','rgba(242, 80, 34, 0.7)','rgba(242, 80, 34, 0.4)'], borderColor: ['#00A6ED','#00A6ED','rgba(150, 150, 150, 1)','#F25022','#F25022'], borderWidth: 1 }] }, options: defaultChartOptions({ indexAxis: 'y', plugins: { legend: { display: false } } }) });
             }
-            
-            // Initialize WB Simulator if it exists
-            const wbSimulator = document.getElementById('wbSimulator');
-            if (wbSimulator) {
-                initWBSimulator();
+            const wbShiftCtx = document.getElementById('wbShiftChart')?.getContext('2d');
+            if(wbShiftCtx) {
+                activeCharts.wbShift = new Chart(wbShiftCtx, { type: 'scatter', data: { datasets: [ { label: t('wbShiftRecipe1'), data: [{x: 6, y: 7}], backgroundColor: PALETTE.blue, pointRadius: 10, pointHoverRadius: 15 }, { label: t('wbShiftRecipe2'), data: [{x: -7, y: 0.5}], backgroundColor: PALETTE.orange, pointRadius: 10, pointHoverRadius: 15 } ] }, options: defaultChartOptions({ scales: { x: { min: -9, max: 9, title: { display: true, text: t('wbShiftXAxis'), color: FONT_COLOR } }, y: { min: -9, max: 9, title: { display: true, text: t('wbShiftYAxis'), color: FONT_COLOR } } } }) });
             }
-
             const blackGammaCtx = document.getElementById('blackGammaChart')?.getContext('2d');
             if(blackGammaCtx) {
                 activeCharts.blackGamma = new Chart(blackGammaCtx, { type: 'bar', data: { labels: ['-7', '-4', '0', '+4', '+7'], datasets: [{ label: 'Level', data: [-7, -4, 0, 4, 7], backgroundColor: [PALETTE.blue, PALETTE.blue, PALETTE.gray, PALETTE.orange, PALETTE.orange], }] }, options: defaultChartOptions({ plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: t('blackGammaYAxis') } } } }) });
@@ -1147,94 +1032,6 @@
                 menu.classList.add('translate-x-full');
             }
         }
-        
-        function initWBSimulator() {
-            const slider = document.getElementById('kelvinSlider');
-            const kelvinValue = document.getElementById('kelvinValue');
-            const grid = document.getElementById('wbGrid');
-            const handle = document.getElementById('wbHandle');
-            const shiftValue = document.getElementById('wbShiftValue');
-            const preview = document.querySelector('.wb-preview');
-            const previewTint = document.querySelector('.wb-preview-tint');
-
-            if (!slider || !grid) return;
-
-            let isDragging = false;
-
-            function updateWB() {
-                // 1. Update Kelvin
-                const K = parseInt(slider.value);
-                kelvinValue.textContent = K;
-
-                // 2. Update Grid
-                const rect = grid.getBoundingClientRect();
-                const xPercent = (parseFloat(handle.style.left) || 50) / 100;
-                const yPercent = (parseFloat(handle.style.top) || 50) / 100;
-                
-                // Map 0-1 range to -9 to 9 range
-                const abValue = Math.round((xPercent - 0.5) * 18);
-                const gmValue = Math.round((0.5 - yPercent) * 18); // Invert Y-axis
-
-                const abPrefix = abValue >= 0 ? 'A' : 'B';
-                const gmPrefix = gmValue >= 0 ? 'M' : 'G';
-                shiftValue.textContent = `${abPrefix}${Math.abs(abValue)} ${gmPrefix}${Math.abs(gmValue)}`;
-
-                // 3. Update Preview Color
-                // --- Kelvin to Base Color ---
-                const kRatio = (K - 2500) / (9900 - 2500); // 0.0 to 1.0
-                const coolColor = [158, 209, 255]; // Cool blue
-                const warmColor = [255, 199, 143]; // Warm orange
-                const r = Math.round(coolColor[0] + (warmColor[0] - coolColor[0]) * kRatio);
-                const g = Math.round(coolColor[1] + (warmColor[1] - coolColor[1]) * kRatio);
-                const b = Math.round(coolColor[2] + (warmColor[2] - coolColor[2]) * kRatio);
-                preview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-
-                // --- Shift to Tint Color ---
-                const maxTintStrength = 0.3; // Max opacity for the tint
-                let tintR = 0, tintG = 0, tintB = 0;
-
-                // A/B axis: Amber to Blue
-                if (abValue > 0) tintR += 255, tintG += 190; // Amber
-                else tintB += 255; // Blue
-                let tintOpacityAB = (Math.abs(abValue) / 9) * maxTintStrength;
-
-                // G/M axis: Green to Magenta
-                if (gmValue < 0) tintG += 255; // Green
-                else tintR += 255, tintB += 255; // Magenta
-                let tintOpacityGM = (Math.abs(gmValue) / 9) * maxTintStrength;
-
-                // Simple average for diagonal tints. A more complex model could be used.
-                const finalR = (abValue > 0 ? 255 : 0) * tintOpacityAB + (gmValue > 0 ? 255 : 0) * tintOpacityGM;
-                const finalG = (abValue > 0 ? 190 : 0) * tintOpacityAB + (gmValue < 0 ? 255 : 0) * tintOpacityGM;
-                const finalB = (abValue < 0 ? 255 : 0) * tintOpacityAB + (gmValue > 0 ? 255 : 0) * tintOpacityGM;
-                const finalOpacity = Math.min(maxTintStrength, tintOpacityAB + tintOpacityGM);
-
-                previewTint.style.backgroundColor = `rgba(${finalR}, ${finalG}, ${finalB}, ${finalOpacity})`;
-            }
-
-            function setHandlePosition(e) {
-                const rect = grid.getBoundingClientRect();
-                const x = Math.max(0, Math.min(rect.width, (e.clientX || e.touches[0].clientX) - rect.left));
-                const y = Math.max(0, Math.min(rect.height, (e.clientY || e.touches[0].clientY) - rect.top));
-                
-                handle.style.left = `${(x / rect.width) * 100}%`;
-                handle.style.top = `${(y / rect.height) * 100}%`;
-                updateWB();
-            }
-
-            slider.addEventListener('input', updateWB);
-            
-            grid.addEventListener('mousedown', (e) => { isDragging = true; setHandlePosition(e); });
-            grid.addEventListener('touchstart', (e) => { isDragging = true; setHandlePosition(e); });
-
-            window.addEventListener('mousemove', (e) => { if (isDragging) setHandlePosition(e); });
-            window.addEventListener('touchmove', (e) => { if (isDragging) { e.preventDefault(); setHandlePosition(e); } }, { passive: false });
-            
-            window.addEventListener('mouseup', () => { isDragging = false; });
-            window.addEventListener('touchend', () => { isDragging = false; });
-
-            updateWB(); // Initial call
-        }
 
         function init() {
              document.body.addEventListener('click', async (e) => {
@@ -1295,7 +1092,7 @@
         const recipesData = [
     {
         "id": "vektro-100",
-        "name": { "vi": "1. Bình minh", "en": "1. The new dawn" },
+        "name": { "vi": "1. Lửa Chiều Ta", "en": "1. Ember Glow" },
         "description": { "vi": "Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm.", "en": "Vibrant orange of fire and deep shadows." },
         "type": "color", "contrast": "high", "saturation": "high",
         "whiteBalance": "4000K, A5-M0.5",
@@ -1306,7 +1103,7 @@
     },
     {
         "id": "senova-light",
-        "name": { "vi": "2. Đà Lạt trong sương", "en": "2. Da Lat Mist" },
+        "name": { "vi": "2. Sương Khói Đà Lạt", "en": "2. Da Lat Mist" },
         "description": { "vi": "Màu lam lạnh và tương phản cao, gợi cảm giác mờ ảo.", "en": "Cool blue tone with high contrast, evoking a misty feeling." },
         "type": "color", "contrast": "high", "saturation": "medium",
         "whiteBalance": "8000K, B2-M2",
@@ -1329,7 +1126,7 @@
     },
     {
         "id": "evpro-plus",
-        "name": { "vi": "4. Đông Dương", "en": "4. Indochine" },
+        "name": { "vi": "4. Nắng Vàng Đông Dương", "en": "4. Indochine Sun" },
         "description": { "vi": "Màu vàng rực rỡ và bão hòa cao, nắm bắt năng lượng.", "en": "Vibrant yellow, high saturation, captures energy." },
         "type": "color", "contrast": "high", "saturation": "high",
         "whiteBalance": "4300K, A3.5",
@@ -1340,7 +1137,7 @@
     },
     {
         "id": "ektar-100",
-        "name": { "vi": "5. Hoàng Hôn California", "en": "5. California Sunset" },
+        "name": { "vi": "5. Hoàng Hôn Sài Gòn", "en": "5. Saigon Sunset" },
         "description": { "vi": "Sắc đỏ và cam đậm, bão hòa cao, tái hiện hoàng hôn.", "en": "Rich red and orange hues, high saturation, recreating sunsets." },
         "type": "color", "contrast": "low", "saturation": "high",
         "whiteBalance": "5000K, A2-M1",
@@ -1362,7 +1159,7 @@
     },
     {
         "id": "kodak-gold-200-v2",
-        "name": { "vi": "7. Mật Ngọt", "en": "7. Gilded Honey" },
+        "name": { "vi": "7. Mật Ong Hoàng Kim", "en": "7. Gilded Honey" },
         "description": { "vi": "Một phiên bản khác của Kodak Gold với tông màu ấm và độ bão hòa cao.", "en": "Another version of Kodak Gold with warm tones and high saturation." },
         "type": "color", "contrast": "medium", "saturation": "high",
         "whiteBalance": "4600K, A7-G1.25",
@@ -1418,7 +1215,7 @@
     },
     {
         "id": "kodak-color-plus-200",
-        "name": { "vi": "12. Hoài Niệm", "en": "12. Retro Memory" },
+        "name": { "vi": "12. Ký Ức Hoài Niệm", "en": "12. Retro Memory" },
         "description": { "vi": "Tông màu ấm áp và hoài cổ, gợi nhớ những cuộn phim xưa.", "en": "A warm and nostalgic tone, reminiscent of old film rolls." },
         "type": "color", "contrast": "medium", "saturation": "high",
         "whiteBalance": "4000K, A7-G1",
@@ -1440,7 +1237,7 @@
     },
     {
         "id": "ektachrome",
-        "name": { "vi": "14. Pha Lê", "en": "14. Crystal Clear" },
+        "name": { "vi": "14. Lam Ngọc Trong Trẻo", "en": "14. Crystal Clear" },
         "description": { "vi": "Màu sắc trong trẻo và sạch sẽ, đặc trưng của dòng phim dương bản.", "en": "Clean and clear colors, characteristic of slide films." },
         "type": "color", "contrast": "medium", "saturation": "medium",
         "whiteBalance": "3600K, A7-M1",
@@ -1451,7 +1248,7 @@
     },
     {
         "id": "kodachrome-v1",
-        "name": { "vi": "15. Di Sản", "en": "15. Heritage" },
+        "name": { "vi": "15. Di Sản Đỏ", "en": "15. Heritage Red" },
         "description": { "vi": "Tái tạo tông màu độc đáo của dòng phim Kodachrome huyền thoại.", "en": "Recreates the unique color tones of the legendary Kodachrome film." },
         "type": "color", "contrast": "medium", "saturation": "medium",
         "whiteBalance": "4200K, A7-M0.5",
@@ -1462,7 +1259,7 @@
     },
     {
         "id": "kodachrome-v2",
-        "name": { "vi": "16. Hồi Ức", "en": "16. Crimson Flashback" },
+        "name": { "vi": "16. Hồi Ức Đỏ", "en": "16. Crimson Flashback" },
         "description": { "vi": "Một biến thể khác của Kodachrome với tông màu ấm và tương phản nhẹ.", "en": "Another variation of Kodachrome with warm tones and soft contrast." },
         "type": "color", "contrast": "high", "saturation": "medium",
         "whiteBalance": "4500K, A7-M0.5",
@@ -1484,7 +1281,7 @@
     },
     {
         "id": "kodachrome-v4",
-        "name": { "vi": "18. Tĩnh Lặng", "en": "18. Serene" },
+        "name": { "vi": "18. Bầu Trời Tĩnh Lặng", "en": "18. Serene Sky" },
         "description": { "vi": "Phiên bản Kodachrome với tông màu xanh da trời nổi bật và cân bằng trắng ấm.", "en": "A Kodachrome version with prominent sky blue tones and warm white balance." },
         "type": "color", "contrast": "medium", "saturation": "medium",
         "whiteBalance": "4000K, A7-M2",
@@ -1495,7 +1292,7 @@
     },
     {
         "id": "leicachrome",
-        "name": { "vi": "19. Berlin", "en": "19. Berlin Tone" },
+        "name": { "vi": "19. Nét Ảnh Berlin", "en": "19. Berlin Tone" },
         "description": { "vi": "Lấy cảm hứng từ màu sắc đặc trưng của máy ảnh Leica, với tông màu ấm và dễ chịu.", "en": "Inspired by the characteristic colors of Leica cameras, with warm and pleasant tones." },
         "type": "color", "contrast": "medium", "saturation": "low",
         "whiteBalance": "7000K, B5-M0.25",
@@ -1517,7 +1314,7 @@
     },
     {
         "id": "provia-rx",
-        "name": { "vi": "21. Lục Bảo", "en": "21. Emerald Punch" },
+        "name": { "vi": "21. Lục Bảo Sắc Nét", "en": "21. Emerald Punch" },
         "description": { "vi": "Một biến thể của Provia với độ tương phản cao hơn và màu sắc mạnh mẽ hơn.", "en": "A variation of Provia with higher contrast and stronger colors." },
         "type": "color", "contrast": "high", "saturation": "low",
         "whiteBalance": "4000K, A6.5-M1.75",
@@ -1528,7 +1325,7 @@
     },
     {
         "id": "velvia-pro",
-        "name": { "vi": "22. Kyoto", "en": "22. Kyoto Greens" },
+        "name": { "vi": "22. Phong Cảnh Kyoto", "en": "22. Kyoto Greens" },
         "description": { "vi": "Độ bão hòa màu cao, đặc biệt là màu xanh lá và xanh dương, lý tưởng cho phong cảnh.", "en": "High color saturation, especially greens and blues, ideal for landscapes." },
         "type": "color", "contrast": "medium", "saturation": "high",
         "whiteBalance": "3900K, A7-M0.25",
@@ -1539,7 +1336,7 @@
     },
     {
         "id": "astia",
-        "name": { "vi": "23. Phấn Đào", "en": "23. Soft Peach" },
+        "name": { "vi": "23. Phấn Hồng Dịu Dàng", "en": "23. Soft Peach" },
         "description": { "vi": "Tông màu mềm mại và tông da đẹp, phù hợp cho chụp ảnh thời trang và chân dung.", "en": "Soft tones and beautiful skin tones, suitable for fashion and portraits." },
         "type": "color", "contrast": "low", "saturation": "low",
         "whiteBalance": "4100K, A7-M0.25",
@@ -2215,7 +2012,8 @@
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
         "personalityColor": "#EF5350", "coords": { "x": 6.9, "y": 6.0 }
     }
-        ];
+])
     </script>
 </body>
 </html>
+
