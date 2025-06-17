@@ -1,18 +1,113 @@
 <!DOCTYPE html>
-<html lang="vi"> <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha AI Color Lab - Thư viện màu tương tác</title>
-    <meta name="description" content="Khám phá và tạo ra các công thức màu film-look độc đáo cho máy ảnh Sony Alpha với sự trợ giúp của AI.">
-    
+    <title>Alpha AI Color Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <link rel="stylesheet" href="style.css"> 
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f4f7fc; /* Softer background */
+            color: #212529;
+            overflow: hidden;
+        }
+        #bg-blurs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .blur-circle { position: absolute; border-radius: 50%; filter: blur(180px); opacity: 0.15; transition: all 2s ease-in-out; }
+        .blur-1 { width: 500px; height: 500px; background: #007AFF; top: 5%; left: 10%; animation: move-blur-1 30s infinite alternate; }
+        .blur-2 { width: 600px; height: 600px; background: #FF9500; bottom: 5%; right: 10%; animation: move-blur-2 35s infinite alternate; }
+        @keyframes move-blur-1 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(200px, 100px) scale(1.3) rotate(55deg); } }
+        @keyframes move-blur-2 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(-150px, -100px) scale(1.2) rotate(-70deg); } }
+
+        :root {
+            --primary-accent: #007AFF;
+            --primary-accent-darker: #0056B3;
+            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-border: rgba(0, 0, 0, 0.07);
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+        }
+        
+        .glass-panel { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(40px) saturate(180%); 
+            -webkit-backdrop-filter: blur(40px) saturate(180%); 
+            border: 1px solid var(--glass-border); 
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            border-radius: 28px; /* Increased border radius */
+        }
+        .recipe-item.selected { 
+            background-color: rgba(0, 122, 255, 0.1); 
+            border-left: 4px solid var(--primary-accent); 
+            color: var(--text-primary); 
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+        }
+        .recipe-item:hover:not(.selected) { background-color: rgba(0, 0, 0, 0.04); }
+        .recipe-dot { transition: transform 0.2s ease-in-out; }
+        .recipe-dot:hover { transform: scale(1.25); }
+
+        .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;}
+        .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: scale(1.03); box-shadow: 0 6px 18px rgba(0, 118, 255, 0.45); }
+        .btn:disabled { background-color: #b0bec5; cursor: not-allowed; opacity: 0.7; box-shadow: none; }
+        
+        .lang-btn { background: #e9ecef; border: none; border-radius: 9999px; padding: 0.25rem; transition: all 0.2s ease; }
+        .lang-btn.active { box-shadow: 0 0 0 2.5px var(--primary-accent); }
+        .lang-btn svg { width: 1.5rem; height: 1.5rem; }
+        
+        .landing-title { font-size: clamp(2.8rem, 6vw, 4.8rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
+        .quiz-question-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
+        .landing-subtitle { font-size: clamp(1.1rem, 2vw, 1.35rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
+        
+        .view-transition { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-25px); } }
+
+        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1.5rem; border-radius: 1.5rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; font-size: 1.1rem; text-align: center; }
+        .quiz-option:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.07); }
+        .quiz-option.selected { border-color: var(--primary-accent); background-color: rgba(0, 122, 255, 0.1); color: var(--primary-accent); }
+        
+        .filter-btn { background-color: rgba(0,0,0,0.05); border: 1px solid transparent; transition: all 0.2s ease-in-out; }
+        .filter-btn.active { background-color: rgba(0, 122, 255, 0.1); border-color: var(--primary-accent); color: var(--primary-accent); font-weight: 600; }
+        
+        .spinner { border: 3px solid rgba(0, 0, 0, 0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: currentColor; animation: spin 1s ease infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .modal { z-index: 50; transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease; border-radius: 28px; }
+        .modal.hidden .modal-content { transform: scale(0.95); }
+        
+        #comparisonModalContent { background-color: #f0f9ff; border-radius: 0 0 28px 28px; }
+        .prose-comparison h3 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); border-bottom: 2px solid var(--primary-accent); padding-bottom: 0.5rem; }
+
+        .quiz-choice-option { cursor: pointer; transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; background: rgba(255,255,255,0.7); border-radius: 20px;}
+        .quiz-choice-option:hover { transform: scale(1.03); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+
+        /* Apple-like scrollbar */
+        .overflow-y-auto::-webkit-scrollbar { width: 10px; }
+        .overflow-y-auto::-webkit-scrollbar-track { background-color: transparent; }
+        .overflow-y-auto::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
+        .overflow-y-auto { scrollbar-width: auto; scrollbar-color: rgba(0, 0, 0, 0.2) transparent; }
+
+        /* Chart & Feature Styles */
+        .chart-container { position: relative; margin: auto; height: 300px; width: 100%;}
+        #colorChart, #bwChart { cursor: pointer; }
+        .gradient-banded { background: linear-gradient(to right, #00A6ED, #0d8cc0, #1a7294, #265867, #333e3a, #40240e, #FFB900); }
+        .gradient-smooth { background: linear-gradient(to right, #00A6ED, #FFB900); }
+        .flow-arrow { font-size: 2rem; color: #737373; line-height: 1; }
+        .recipe-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .recipe-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .thumbnail-placeholder { background-color: #e2e8f0; border-radius: 1rem; aspect-ratio: 4 / 3; transition: transform 0.3s ease; }
+        .thumbnail-placeholder:hover { transform: scale(1.05); }
+    </style>
 </head>
 <body>
     <div id="bg-blurs"><div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div></div>
@@ -30,8 +125,8 @@
                     <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                  </nav>
                 <div class="flex items-center gap-2 ml-4">
-                     <button id="langEN" class="lang-btn" aria-label="Switch to English"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
-                     <button id="langVI" class="lang-btn" aria-label="Chuyển sang Tiếng Việt"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
+                     <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
+                     <button id="langVI" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
                 </div>
             </div>
         </header>
@@ -46,17 +141,13 @@
         <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
                 <h2 id="comparisonModalTitle" class="text-2xl font-bold"></h2>
-                <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10" aria-label="Đóng cửa sổ so sánh">&times;</button>
+                <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
             </div>
             <div id="comparisonModalContent" class="p-8 overflow-y-auto prose-comparison"></div>
         </div>
     </div>
 
     <script type="module">
-        // --- BƯỚC 1: IMPORT DỮ LIỆU TỪ FILE RIÊNG ---
-        // Dòng này sẽ lấy toàn bộ dữ liệu từ file recipes-data.js
-        import recipesData from './recipes-data.js';
-
         // --- STATE & CONFIGURATION ---
         const state = {
             currentLang: 'vi',
@@ -74,43 +165,1716 @@
         let activeCharts = {};
 
         const translations = {
-            // ... (toàn bộ object translations giữ nguyên như cũ) ...
+            // General
             headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
             navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-            // ... (v.v...)
+            navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
+            navExplain: {vi:"Giải thích", en:"Guide"},
+            noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
+            footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Developed by Sony Alpha Vietnam. AI features powered by Google Gemini."},
+
+            // Home / Quiz
+            landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
+            landingSubtitle: {vi:"Trả lời vài câu hỏi để khám phá công thức màu được AI tạo ra dành riêng cho tâm trạng và phong cách của bạn.", en:"Answer a few questions to discover a unique color recipe, tailored by AI to your mood and style."},
+            startQuizBtn: {vi:"Khám phá màu của bạn", en:"Discover Your Color"},
+            quizResultTitle: {vi: "AI đề xuất 2 lựa chọn cho bạn:", en: "AI suggests 2 options for you:"},
+            viewInLibraryBtn: {vi: "Xem trong thư viện", en: "View in Library"},
+            loadingAnalyze: {vi: "Đang phân tích lựa chọn...", en: "Analyzing your choices..."},
+            
+            // Recipe Formulas
+            sidebarTitle: {vi: "Công thức màu", en: "Color Recipes"},
+            searchInputPlaceholder: {vi: "🔍 Tìm công thức...", en: "🔍 Search recipes..."},
+            filterType: {vi: "Loại", en: "Type"},
+            filterTypeColor: {vi: "Màu", en: "Color"},
+            filterTypeBW: {vi: "Trắng Đen", en: "B&W"},
+            filterContrast: {vi: "Tương phản", en: "Contrast"},
+            filterSaturation: {vi: "Bão hòa", en: "Saturation"},
+            filterHigh: {vi: "Cao", en: "High"},
+            filterMedium: {vi: "Vừa", en: "Med"},
+            filterLow: {vi: "Thấp", en: "Low"},
+            filterSort: {vi: "Sắp xếp theo", en: "Sort by"},
+            sortDefault: {vi: "Mặc định", en: "Default"},
+            sortNameAZ: {vi: "Tên A-Z", en: "Name A-Z"},
+            sortContrastHL: {vi: "Tương phản: Cao-Thấp", en: "Contrast: High-Low"},
+            sortSaturationHL: {vi: "Bão hòa: Cao-Thấp", en: "Saturation: High-Low"},
+            compareBtn: {vi: "So sánh bằng AI", en: "Compare with AI"},
+            recipeDetailWelcomeTitle: {vi: "Thư viện màu Tương tác", en: "Interactive Color Library"},
+            recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan. Nhấp vào một điểm trên biểu đồ hoặc một công thức trong danh sách để xem chi tiết.", en: "Explore color recipes visually. Click a point on the chart or a recipe in the list to see details."},
+            whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
+            recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
+            colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
+            detailTitle: {vi: "Chi tiết", en: "Detail"},
+            aiTuningTitle: {vi: "Tinh chỉnh bằng AI", en: "AI Fine-Tuning"},
+            aiTuningPlaceholder: {vi: "Nhập yêu cầu của bạn ở đây... (ví dụ: 'làm cho màu ấm hơn và trong hơn')", en: "Enter your request here... (e.g., 'make it warmer and clearer')"},
+            aiTuningBtn: {vi: "Tạo bằng AI", en: "Generate with AI"},
+            aiResultTitle: {vi: "Công thức đã được AI tinh chỉnh:", en: "AI-Adjusted Recipe:"},
+            compareWithOriginalBtn: {vi: "So sánh với bản gốc", en: "Compare with Original"},
+            aiSuggestionTitle: {vi: "Gợi ý của AI:", en: "AI Suggestion:"},
+            aiSuggestionText: {vi: "Dựa trên yêu cầu của bạn, công thức này có vẻ phù hợp hơn: ", en: "Based on your request, this recipe might be a better fit: "},
+            comparisonModalTitle: {vi: "So sánh Công thức", en: "Recipe Comparison"},
+            comparisonLoading: {vi: "AI đang phân tích và so sánh...", en: "AI is analyzing and comparing..."},
+            colorChartTitle: {vi: "Biểu đồ Màu", en: "Color Chart"},
+            bwChartTitle: {vi: "Biểu đồ Đơn sắc (B&W)", en: "Monochrome (B&W) Chart"},
+            axisTonality: {vi: "Tương phản (← Mềm | Cứng →)", en: "Tonality (← Soft | Hard →)"},
+            axisSaturation: {vi: "Độ bão hòa (← Thấp | Cao →)", en: "Saturation (← Low | High →)"},
+            axisChroma: {vi: "Độ sâu màu (← Thấp | Cao →)", en: "Chroma Depth (← Low | High →)"},
+
+            // Featured Photos
+            featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
+            featuredCta: {vi: "Cùng nhau xây dựng một thư viện ảnh đầy cảm hứng! Hãy chia sẻ những tác phẩm bạn chụp bằng các công thức từ Alpha AI Color Lab. Ảnh được chọn sẽ xuất hiện tại đây để vinh danh.", en: "Let's build an inspiring gallery together! Share your creations shot with recipes from the Alpha AI Color Lab. Selected photos will be featured here."},
+            featuredAlbumBtn: {vi: "Xem Album & Đóng góp Ảnh", en: "View Album & Contribute Photos"},
+            
+            // Tutorial
+            tutorialTitle: {vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide"},
+            tutorialStep1Title: {vi: "Bước 1: Tìm Picture Profile", en: "Step 1: Find Picture Profile"},
+            tutorialStep1P1: {vi: "Trong Menu, tìm đến mục <strong>Color/Tone</strong> (biểu tượng hồng) → <strong>Picture Profile</strong>.", en: "In the Menu, navigate to the <strong>Color/Tone</strong> section (pink icon) → <strong>Picture Profile</strong>."},
+            tutorialStep2Title: {vi: "Bước 2: Chọn và Reset", en: "Step 2: Select & Reset"},
+            tutorialStep2P1: {vi: "Chọn một profile trống (ví dụ: PP10), đi vào trong và nhấn nút 'Xoá' để reset về mặc định.", en: "Choose an empty profile (e.g., PP10), enter it, and press the 'Delete' button to reset it to default."},
+            tutorialStep3Title: {vi: "Bước 3: Nhập thông số", en: "Step 3: Enter Parameters"},
+            tutorialStep3P1: {vi: "Cẩn thận nhập tất cả các thông số của công thức, từ Black Level đến Color Depth.", en: "Carefully enter all parameters from the recipe, from Black Level to Color Depth."},
+            tutorialStep4Title: {vi: "Bước 4: Cài đặt White Balance", en: "Step 4: Set White Balance"},
+            tutorialStep4P1: {vi: "Thoát khỏi Picture Profile, vào mục <strong>White Balance</strong> và chỉnh theo nhiệt độ K và WB Shift được ghi trong công thức.", en: "Exit Picture Profile, go to <strong>White Balance</strong>, and adjust the Kelvin temperature and WB Shift as specified in the recipe."},
+
+            // Quiz Questions
+            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"}, 
+            quizQ1A1: {vi: "Cổ điển", en: "Classic"}, 
+            quizQ1A2: {vi: "Hiện đại", en: "Modern"}, 
+            quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"}, 
+            quizQ1A4: {vi: "Nghệ thuật", en: "Artistic"},
+            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"}, 
+            quizQ2A1: {vi: "Chân dung", en: "Portraits"}, 
+            quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"}, 
+            quizQ2A3: {vi: "Đường phố", en: "Street"}, 
+            quizQ2A4: {vi: "Đời thường", en: "Everyday"},
+            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"}, 
+            quizQ3A1: {vi: "Vui vẻ", en: "Happy"}, 
+            quizQ3A2: {vi: "Trầm tư", en: "Contemplative"}, 
+            quizQ3A3: {vi: "Năng động", en: "Dynamic"}, 
+            quizQ3A4: {vi: "Bình yên", en: "Peaceful"},
+            quizQ4: {vi: "Bạn thích du lịch đến đâu?", en: "Where do you like to travel?"},
+            quizQ4A1: {vi: "Biển xanh", en: "Beaches"},
+            quizQ4A2: {vi: "Núi rừng", en: "Mountains"},
+            quizQ4A3: {vi: "Thành phố đô thị", en: "Urban Cities"},
+            quizQ4A4: {vi: "Phố cổ", en: "Old Towns"},
+            quizQ5: {vi: "Bạn thích tone màu nào?", en: "Which color tone do you prefer?"},
+            quizQ5A1: {vi: "Tone ấm", en: "Warm Tones"},
+            quizQ5A2: {vi: "Tone lạnh", en: "Cool Tones"},
+            quizQ5A3: {vi: "Trung tính", en: "Neutral"},
+            quizQ6: {vi: "Xu hướng hình ảnh của bạn là gì?", en: "What is your image trend?"},
+            quizQ6A1: {vi: "Hơi thở Á Đông", en: "Eastern Vibe"},
+            quizQ6A2: {vi: "Cảm hứng Phương Tây", en: "Western Inspiration"},
+            quizQ7: {vi: "Bạn thích độ tương phản ra sao?", en: "How do you like the contrast?"},
+            quizQ7A1: {vi: "Cao (Gắt)", en: "High (Punchy)"},
+            quizQ7A2: {vi: "Thấp (Mềm mại)", en: "Low (Soft)"},
+            quizQ7A3: {vi: "Trung bình", en: "Medium"},
+            quizQ8: {vi: "Bạn thích độ bão hòa màu sắc như thế nào?", en: "How do you like your color saturation?"},
+            quizQ8A1: {vi: "Cao (Rực rỡ)", en: "High (Vibrant)"},
+            quizQ8A2: {vi: "Thấp (Nhẹ nhàng)", en: "Low (Subtle)"},
+            quizQ8A3: {vi: "Trung bình", en: "Medium"},
+            
+             // Infographic Section
+            infographicMainTitle: { vi: 'Làm Chủ Màu Sắc Film-look', en: 'Mastering the Film Look' },
+            infographicMainSubtitle: { vi: 'Hướng dẫn toàn diện về White Balance và Picture Profile trên máy ảnh Sony', en: 'A Comprehensive Guide to White Balance and Picture Profile on Sony Cameras' },
+            infographicFooterText: { vi: 'Infographic được tạo dựa trên báo cáo nghiên cứu về Tùy chỉnh màu Sony.', en: 'Infographic based on research reports on Sony color customization.' },
+            infographicFooterSubtext: { vi: 'Hành trình sáng tạo màu sắc của bạn bắt đầu từ đây!', en: 'Your color creation journey starts here!' },
+            introTitle: { vi: 'Nghệ Thuật Của Màu Sắc Sony DIY Color', en: 'The Art of Sony DIY Color' },
+            introParagraph: { vi: 'Thay vì dành hàng giờ hậu kỳ, hãy tạo ra những bức ảnh với màu sắc hoàn hảo ngay từ máy ảnh. Đây là cách rèn luyện tư duy nhiếp ảnh, đưa ra quyết định sáng tạo ngay tại thời điểm bấm máy, sử dụng các công cụ mạnh mẽ mà Sony trang bị.', en: 'Instead of spending hours in post-production, create photos with perfect colors straight out of camera. This practice hones your photographic thinking, pushing creative decisions to the moment of capture using the powerful tools Sony provides.' },
+            rawProcessTitle: { vi: 'Quy Trình Hậu Kỳ RAW', en: 'RAW Post-Production Workflow' },
+            rawStep1: { vi: '1. 📸 Chụp ảnh RAW', en: '1. 📸 Shoot in RAW' },
+            rawStep2: { vi: '2. 💻 Chuyển file vào máy tính', en: '2. 💻 Transfer files to computer' },
+            rawStep3: { vi: '3. � Mở phần mềm chỉnh sửa', en: '3. 🎨 Open editing software' },
+            rawStep4: { vi: '4.  sliders Kéo các thanh trượt màu sắc', en: '4. sliders Adjust color sliders' },
+            rawStep5: { vi: '5. ✅ Xuất file JPEG/TIFF', en: '5. ✅ Export JPEG/TIFF file' },
+            diyProcessTitle: { vi: 'Quy Trình Sáng Tạo Sony DIY Color', en: 'Sony DIY Color Workflow' },
+            diyStep1: { vi: '1. 🎨 Thiết lập màu trong máy ảnh', en: '1. 🎨 Set up color in-camera' },
+            diyStep2: { vi: '2. 📸 Chụp ảnh JPEG/HEIF', en: '2. 📸 Shoot in JPEG/HEIF' },
+            diyStep3: { vi: '3. ✨ Sẵn sàng để sử dụng ngay!', en: '3. ✨ Ready to use immediately!' },
+            wbTitle: { vi: 'Nền Tảng Sáng Tạo: Biến Cân Bằng Trắng Thành Cọ Vẽ', en: 'Creative Foundation: Turn White Balance into a Paintbrush' },
+            wbKelvinTitle: { vi: '1. Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo', en: '1. Kelvin Temperature (K): Create the Main Tone' },
+            wbKelvinDesc: { vi: 'Sử dụng thang đo Kelvin như một nét cọ lớn để nhuộm toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.', en: 'Use the Kelvin scale like a broad brush to tint the entire frame with warm or cool tones, shaping the photo\'s mood.' },
+            wbKelvinCool: { vi: '<span class="font-bold text-[#00A6ED]">Tông Lạnh (2500K-4000K):</span> Tạo cảm giác của cảnh đêm, trong bóng râm.', en: '<span class="font-bold text-[#00A6ED]">Cool Tones (2500K-4000K):</span> Evoke a sense of night scenes or shade.' },
+            wbKelvinWarm: { vi: '<span class="font-bold text-[#F25022]">Tông Ấm (6000K-9900K):</span> Mô phỏng ánh sáng hoàng hôn, hoài cổ.', en: '<span class="font-bold text-[#F25022]">Warm Tones (6000K-9900K):</span> Simulate sunset light, nostalgic vibes.' },
+            wbShiftTitle: { vi: '2. Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi', en: '2. Fine-Tuning Grid (A-B/G-M Shift): Add Subtle Hues' },
+            wbShiftDesc: { vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.', en: 'If Kelvin is the broad brush, the grid is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints.' },
+            wbShiftExample: { vi: '<span class="font-bold">Ví dụ "Sony Classic Negative":</span> Đặt 9900K, sau đó dịch chuyển tới B6, M7 để tạo ra lớp nền Xanh-Tím độc đáo.', en: '<span class="font-bold">Example "Sony Classic Negative":</span> Set to 9900K, then shift to B6, M7 to create a unique blue-magenta base layer.' },
+            ppTitle: { vi: 'Đi Sâu Vào "Lõi" Màu Sắc: Khám Phá Picture Profile (PP)', en: 'Diving into the Color Core: Exploring Picture Profile (PP)' },
+            ppDesc: { vi: 'Sau khi tạo "bức toan" màu nền bằng WB, PP là nơi chúng ta thực sự điêu khắc và tinh chỉnh màu sắc để tạo ra một "look" hoàn chỉnh. Đây là quy trình xử lý tín hiệu.', en: 'After creating the color canvas with WB, PP is where we truly sculpt and refine the color to create a complete look. This is the signal processing workflow.' },
+            ppFlow1: { vi: 'Gamma & Color Mode', en: 'Gamma & Color Mode' },
+            ppFlow1Desc: { vi: 'Xương sống Tương phản & Màu sắc', en: 'Contrast & Color Backbone' },
+            ppFlow2: { vi: 'Black Gamma & Knee', en: 'Black Gamma & Knee' },
+            ppFlow2Desc: { vi: 'Kiểm soát Vùng tối & Vùng sáng', en: 'Control Shadows & Highlights' },
+            ppFlow3: { vi: 'Color Phase/Depth', en: 'Color Phase/Depth' },
+            ppFlow3Desc: { vi: 'Tinh chỉnh Màu sắc Tổng thể & Chi tiết', en: 'Tweak Overall & Specific Colors' },
+            blackGammaTitle: { vi: 'Black Gamma: Linh Hồn Vùng Tối', en: 'Black Gamma: The Soul of the Shadows' },
+            blackGammaDesc: { vi: 'Điều chỉnh độ tương phản bên trong các vùng tối, tạo hiệu ứng "nâng bóng" (faded look) hoặc "nghiền bóng" (crushed blacks).', en: 'Adjusts the contrast within the dark areas, creating a "faded look" or "crushed blacks" effect.' },
+            blackGammaNote: { vi: '<span class="font-bold text-[#F25022]">Level +7:</span> Nâng bóng, mờ ảo. <span class="font-bold text-[#00A6ED]">Level -7:</span> Nghiền bóng, kịch tính.', en: '<span class="font-bold text-[#F25022]">Level +7:</span> Faded, lifted look. <span class="font-bold text-[#00A6ED]">Level -7:</span> Crushed, dramatic look.' },
+            kneeTitle: { vi: 'Knee: Bảo Vệ Vùng Sáng', en: 'Knee: Protecting the Highlights' },
+            kneeDesc: { vi: 'Knee là một cơ chế "bảo hiểm" cho vùng sáng. Đồ thị dưới đây minh họa cách nó hoạt động: tín hiệu gốc (đường đứt nét màu cam) sẽ bị "cháy" ở mức 100%. Đường cong Knee (màu xanh lá) bắt đầu "uốn cong" tại <strong>Điểm Knee</strong>, nén tín hiệu để nó không bị cháy, qua đó giữ lại chi tiết ở vùng được tô màu.', en: 'Knee is an "insurance" mechanism for highlights. The chart below illustrates how it works: the original signal (dashed orange line) would "clip" at 100%. The Knee curve (green) starts to "bend" at the <strong>Knee Point</strong>, compressing the signal so it doesn\'t clip, thus retaining detail in the shaded area.' },
+            kneePointExplain: { vi: '<strong>Knee Point:</strong> Xác định điểm tín hiệu bắt đầu được nén (ví dụ 85%).', en: '<strong>Knee Point:</strong> Determines the signal point where compression begins (e.g., 85%).' },
+            kneeSlopeExplain: { vi: '<strong>Knee Slope:</strong> Xác định độ "mềm" của đường cong nén. Giá trị dương (+) tạo ra đường cong thoai thoải, giữ lại nhiều chi tiết hơn.', en: '<strong>Knee Slope:</strong> Determines the "softness" of the compression curve. A positive (+) value creates a gentler curve, retaining more detail.' },
+            colorDepthTitleChart: { vi: 'Color Depth: Tinh Chỉnh Từng Màu', en: 'Color Depth: Fine-Tuning Individual Colors' },
+            colorDepthDesc: { vi: 'Điều chỉnh độ sáng và bão hòa của 6 kênh màu riêng lẻ. Ví dụ dưới đây là thiết lập cho công thức "Kodak Portra 400".', en: 'Adjusts the luminance and saturation of 6 individual color channels. The example below is for a "Kodak Portra 400" recipe.' },
+            colorDepthNote: { vi: 'Cho phép nhấn mạnh màu xanh của lá cây hoặc làm dịu màu da một cách có chủ đích.', en: 'Allows for targeted emphasis of green foliage or softening of skin tones.' },
+            heifTitle: { vi: 'Tối Ưu Hóa Chất Lượng: Định Dạng HEIF 10-bit', en: 'Optimizing Quality: The HEIF 10-bit Format' },
+            heifDesc: { vi: 'Tạo màu Sony DIY Color là một dạng "hậu kỳ trong máy". Việc chọn định dạng file phù hợp là cực kỳ quan trọng để lưu trữ thành quả.', en: 'Creating a Sony DIY Color is a form of "in-camera post-production." Choosing the right file format is crucial to preserve the results.' },
+            jpegTitle: { vi: 'JPEG 8-bit', en: 'JPEG 8-bit' },
+            jpegColors: { vi: 'Triệu màu', en: 'Million Colors' },
+            jpegBandingRisk: { vi: 'Nguy cơ bị "Banding" (phân dải màu)', en: 'Risk of "Banding"' },
+            jpegBandingDesc: { vi: 'Sự chuyển tiếp màu không đủ mượt, tạo các dải sọc xấu xí khi chỉnh màu mạnh.', en: 'Color transitions aren\'t smooth enough, leading to ugly stripes with strong adjustments.' },
+            heifTitle10bit: { vi: 'HEIF 10-bit', en: 'HEIF 10-bit' },
+            heifColors: { vi: 'Tỷ màu', en: 'Billion+ Colors' },
+            heifSmooth: { vi: 'Chuyển màu mượt mà', en: 'Smooth Gradations' },
+            heifSmoothDesc: { vi: 'Số lượng "bậc thang" màu nhiều gấp 4 lần, chịu được các thao tác xử lý mạnh mà không suy giảm chất lượng.', en: '4x more color "steps," withstanding heavy adjustments without quality loss.' },
+            recipesTitle: { vi: 'Thực Hành: Công Thức Màu Tham Khảo', en: 'Practice: Sample Color Recipes' },
+            recipesDesc: { vi: 'Dưới đây là một số công thức phổ biến để bạn bắt đầu. Hãy xem chúng là điểm xuất phát, tự do thử nghiệm và tạo ra dấu ấn của riêng bạn!', en: 'Here are some popular recipes to get you started. Use them as a starting point, experiment freely, and create your own signature look!' },
+            exploreMoreBtn: { vi: 'Khám Phá Thêm Công Thức', en: 'Explore More Recipes' },
+            recallTitle: { vi: 'Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall', en: 'Save & Reuse: Mastering Memory Recall' },
+            recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.', en: 'Don\'t waste your effort! Save your recipes to the camera\'s memory for quick recall with a simple turn of a dial.' },
+            recallInternalTitle: { vi: 'Bộ Nhớ Trong (1, 2, 3)', en: 'Internal Memory (1, 2, 3)' },
+            recallInternalDesc: { vi: 'Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.', en: 'Saves directly to the camera. Quickest access via the mode dial. Ideal for your daily-use recipes.' },
+            recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, M2, M3, M4)' },
+            recallCardDesc: { vi: 'Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.', en: 'Saves as a file on your memory card. Extremely useful for backups or transferring recipes to another Sony camera body.' },
+            
+            kelvinChartTitle: { vi: 'Nhiệt độ màu (Kelvin)', en: 'Color Temperature (Kelvin)'},
+            wbShiftXAxis: { vi: 'Trục Xanh (B) ← → Hổ phách (A)', en: 'Blue (B) ← → Amber (A) Axis' },
+            wbShiftYAxis: { vi: 'Trục Tím (M) ↑', en: 'Magenta (M) Axis ↑' },
+            wbShiftRecipe1: { vi: 'Sony Classic Negative', en: 'Sony Classic Negative'},
+            wbShiftRecipe2: { vi: 'Kodak Portra 400', en: 'Kodak Portra 400'},
+            blackGammaYAxis: { vi: 'Nghiền bóng ↔ Nâng bóng', en: 'Crush Blacks ↔ Lift Blacks'},
+            kneeChartSignalIn: { vi: 'Tín hiệu vào (%)', en: 'Input Signal (%)'},
+            kneeChartSignalOut: { vi: 'Tín hiệu ra (%)', en: 'Output Signal (%)'},
+            kneeChartNoKnee: { vi: 'Tín hiệu gốc (Bị cháy sáng)', en: 'Original Signal (Clipped)'},
+            kneeChartSoft: { vi: 'Tín hiệu được Knee bảo vệ', en: 'Signal Protected by Knee'},
+            kneePointLabel: { vi: 'Điểm Knee (Bắt đầu nén)', en: 'Knee Point (Compression Starts)'},
+            colorDepthYAxis: { vi: 'Nhạt/Sáng ↔ Đậm/Tối', en: 'Pale/Bright ↔ Deep/Dark'},
+            colorDepthLabels: {
+                vi: ['Đỏ (R)', 'X.lá (G)', 'X.dương (B)', 'Lục lam (C)', 'Tím (M)', 'Vàng (Y)'],
+                en: ['Red (R)', 'Green (G)', 'Blue (B)', 'Cyan (C)', 'Magenta (M)', 'Yellow (Y)']
+            }
         };
         
         const quizQuestions = [
-            // ... (toàn bộ mảng quizQuestions giữ nguyên như cũ) ...
+            { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] },
+            { id: 'plan', title: 'quizQ2', options: ['quizQ2A1', 'quizQ2A2', 'quizQ2A3', 'quizQ2A4'], values: ['Portrait', 'Landscape', 'Street', 'Everyday'] },
+            { id: 'mood', title: 'quizQ3', options: ['quizQ3A1', 'quizQ3A2', 'quizQ3A3', 'quizQ3A4'], values: ['Happy', 'Contemplative', 'Dynamic', 'Peaceful'] },
+            { id: 'location', title: 'quizQ4', options: ['quizQ4A1', 'quizQ4A2', 'quizQ4A3', 'quizQ4A4'], values: ['Beach', 'Mountain', 'Urban', 'Old Town'] },
+            { id: 'tone', title: 'quizQ5', options: ['quizQ5A1', 'quizQ5A2', 'quizQ5A3'], values: ['Warm', 'Cool', 'Neutral'] },
+            { id: 'style', title: 'quizQ6', options: ['quizQ6A1', 'quizQ6A2'], values: ['Eastern', 'Western'] },
+            { id: 'contrast', title: 'quizQ7', options: ['quizQ7A1', 'quizQ7A2', 'quizQ7A3'], values: ['High', 'Low', 'Medium'] },
+            { id: 'saturation', title: 'quizQ8', options: ['quizQ8A1', 'quizQ8A2', 'quizQ8A3'], values: ['High', 'Low', 'Medium'] }
         ];
         
-        // --- CÁC HÀM TIỆN ÍCH, API, RENDERING ---
-        // ... (toàn bộ các hàm còn lại như callAIApi, t, applyTranslations, viewTemplates, v.v. giữ nguyên) ...
+        // --- API CALLS (MOCKS) ---
+        async function callAIApi(prompt, delay = 1000) {
+            if (state.isAILoading) return;
+            state.isAILoading = true;
+            try {
+                await new Promise(resolve => setTimeout(resolve, delay));
+                if (prompt.includes("Recommend TWO recipes")) {
+                     const idx1 = Math.floor(Math.random() * recipesData.length);
+                     let idx2 = Math.floor(Math.random() * recipesData.length);
+                     while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
+                     const mockRecipe1 = recipesData[idx1]; const mockRecipe2 = recipesData[idx2];
+                     return [
+                         { recipeId: mockRecipe1.id, moodDescription: mockRecipe1.description[state.currentLang] },
+                         { recipeId: mockRecipe2.id, moodDescription: mockRecipe2.description[state.currentLang] }
+                     ];
+                }
+                if (prompt.includes("Original Recipe")) {
+                    const originalId = prompt.match(/ID: (.*?)\)/)[1];
+                    const originalRecipe = recipesData.find(r => r.id === originalId);
+                    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
+                    adjustedRecipe.name = {vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)`};
+                    if (prompt.includes('ấm') || prompt.includes('warmer')) { adjustedRecipe.whiteBalance = "5500K, A6-M1"; }
+                    if (prompt.includes('trong') || prompt.includes('clearer')) { if(adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = '0'; }
+                    return { recipe: adjustedRecipe };
+                }
+                if (prompt.includes("Compare the following two recipes")) {
+                     const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
+                     return `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
+                }
+            } catch (error) {
+                console.error("AI API call failed:", error); return null;
+            } finally {
+                state.isAILoading = false;
+                updateUIAfterAILoading();
+            }
+        }
         
-        // --- KHỞI TẠO ỨNG DỤNG ---
-        // ... (hàm init() và event listener DOMContentLoaded giữ nguyên) ...
+        // --- UTILITY & HELPER FUNCTIONS ---
+        function t(key) { return translations[key]?.[state.currentLang] || key; }
+        
+        function applyTranslations() {
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey;
+                if (translations[key] && translations[key][state.currentLang]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); } 
+                    else if (el.tagName === 'OPTION') { el.textContent = t(key); } 
+                    else { el.innerHTML = t(key); }
+                }
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
+            document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
+            document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
+        }
+
+        function createSettingsGrid(settings) {
+            if (!settings) return '';
+            return Object.entries(settings).map(([key, value]) => `<div class="flex flex-col"><span class="text-xs text-neutral-500">${key}</span><span class="font-semibold text-lg">${value}</span></div>`).join('');
+        };
+
+        function createFullRecipeHTML(recipe, isMainView = false) {
+            const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
+            const noteHTML = (recipe.notes && recipe.notes[state.currentLang]) 
+                ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-xl">
+                     <p class="font-bold" data-translate-key="noteTitle"></p>
+                     <p>${recipe.notes[state.currentLang]}</p>
+                   </div>` : '';
+
+            return `${noteHTML}<div class="space-y-6 mt-6">
+                <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
+                <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
+                ${recipe.colorDepth ? `<div><h4 class="${titleClass} mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 md:grid-cols-6 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
+                ${recipe.detailSettings ? `<div><h4 class="${titleClass} mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
+            </div>`;
+        }
+
+
+        function updateUIAfterAILoading() {
+            document.querySelectorAll('button:disabled').forEach(btn => {
+                if (btn.querySelector('.spinner')) {
+                    btn.innerHTML = btn.dataset.originalText || '';
+                    btn.disabled = false;
+                }
+            });
+        }
+        
+        // --- VIEW RENDERING LOGIC ---
+        const viewTemplates = {
+            home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition">
+                <h1 data-translate-key="landingTitle" class="landing-title"></h1>
+                <p data-translate-key="landingSubtitle" class="landing-subtitle"></p>
+                <button id="startQuizBtn" class="btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startQuizBtn"></button>
+            </div>`,
+            
+            quiz: () => {
+                if (state.quizStep >= quizQuestions.length) return '';
+                const q = quizQuestions[state.quizStep];
+                const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
+                return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
+                    <div class="w-full max-w-4xl text-center" data-quiz-group="${q.id}">
+                        <h2 class="quiz-question-title" data-translate-key="${q.title}"></h2>
+                        <div class="grid ${q.options.length > 3 ? 'grid-cols-2' : 'grid-cols-3'} gap-5 mt-12">${optionsHTML}</div>
+                    </div>
+                </div>`;
+            },
+            
+            recipeFormulas: () => `
+                <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-8 absolute inset-0 view-transition">
+                     <aside class="md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-6 flex flex-col">
+                        <h2 class="text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
+                        <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                        <div id="filtersContainer" class="space-y-4">
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-4 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-4 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                        </div>
+                        <div class="mt-4">
+                            <label for="sortSelect" class="font-semibold mb-2 block" data-translate-key="filterSort"></label>
+                            <select id="sortSelect" class="w-full p-2.5 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all">
+                                <option value="default" data-translate-key="sortDefault"></option>
+                                <option value="name_az" data-translate-key="sortNameAZ"></option>
+                                <option value="contrast_hl" data-translate-key="sortContrastHL"></option>
+                                <option value="saturation_hl" data-translate-key="sortSaturationHL"></option>
+                            </select>
+                        </div>
+                        <div id="recipeListContainer" class="space-y-2 pt-4 mt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
+                        <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
+                     </aside>
+                     <main id="recipeMainPanel" class="md:w-2/3 lg:w-[70%] xl:w-3/4 flex flex-col min-h-0"><div class="glass-panel flex-grow overflow-y-auto p-8 lg:p-10">
+                        <div id="chartsContainer">
+                           <div class="text-center mb-10">
+                             <h2 class="text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                           </div>
+                           <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                               <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
+                               <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
+                           </div>
+                        </div>
+                        <div id="recipeContent" class="hidden"></div>
+                     </div></main>
+                </div>`,
+            
+            featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
+                <div class="glass-panel p-8 md:p-12 text-center max-w-5xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
+                    <p class="text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
+                    <a href="https://photos.app.goo.gl/H8v1SQ68RSnn2r5Q6" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span data-translate-key="featuredAlbumBtn"></span>
+                    </a>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-12">
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/a9d6e5/274c77?text=Ảnh+1'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/fde4cf/c9a227?text=Ảnh+2'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/d8e2dc/4a5759?text=Ảnh+3'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/ffcad4/d05c67?text=Ảnh+4'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/cce3de/498467?text=Ảnh+5'); background-size: cover;"></div>
+                        <div class="thumbnail-placeholder" style="background-image: url('https://placehold.co/600x450/e0c3fc/6a00f4?text=Ảnh+6'); background-size: cover;"></div>
+                    </div>
+                </div>
+            </div>`,
+            
+            explain: () => `<div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-100 text-gray-800">
+                <div class="container mx-auto p-4 md:p-12">
+                    <header class="text-center mb-16 pt-8">
+                        <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2" data-translate-key="infographicMainTitle"></h1>
+                        <h2 class="text-xl md:text-2xl text-[#00A6ED]" data-translate-key="infographicMainSubtitle"></h2>
+                    </header>
+                    <main class="space-y-20">
+                        <section id="intro" class="text-center">
+                            <h3 class="text-3xl font-bold mb-4" data-translate-key="introTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-lg mb-8" data-translate-key="introParagraph"></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
+                                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                                    <h4 class="text-xl font-bold text-[#F25022] mb-3" data-translate-key="rawProcessTitle"></h4>
+                                    <ol class="text-left space-y-2"><li data-translate-key="rawStep1"></li><li data-translate-key="rawStep2"></li><li data-translate-key="rawStep3"></li><li data-translate-key="rawStep4"></li><li data-translate-key="rawStep5"></li></ol>
+                                </div>
+                                <div class="bg-white p-6 rounded-2xl shadow-lg border-4 border-[#7FBA00]">
+                                    <h4 class="text-xl font-bold text-[#7FBA00] mb-3" data-translate-key="diyProcessTitle"></h4>
+                                    <ol class="text-left space-y-2"><li data-translate-key="diyStep1"></li><li data-translate-key="diyStep2"></li><li data-translate-key="diyStep3"></li></ol>
+                                </div>
+                            </div>
+                        </section>
+                        <section id="wb">
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="wbTitle"></h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbKelvinTitle"></h4><p class="mb-4" data-translate-key="wbKelvinDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div><div class="mt-4 text-sm text-gray-600 space-y-1"><p data-translate-key="wbKelvinCool"></p><p data-translate-key="wbKelvinWarm"></p></div></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4><p class="mb-4" data-translate-key="wbShiftDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div><div class="mt-4 text-sm text-gray-600"><p data-translate-key="wbShiftExample"></p></div></div>
+                            </div>
+                        </section>
+                        <section id="pp">
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="ppTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="ppDesc"></p>
+                            <div class="bg-white p-8 rounded-2xl shadow-lg mb-8">
+                                <div class="flex flex-col md:flex-row justify-around items-center text-center">
+                                    <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow1"></h5><p class="text-sm" data-translate-key="ppFlow1Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-4 md:my-0">→</div>
+                                    <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow2"></h5><p class="text-sm" data-translate-key="ppFlow2Desc"></p></div><div class="flow-arrow transform md:rotate-0 rotate-90 my-4 md:my-0">→</div>
+                                    <div class="p-4"><h5 class="text-lg font-bold" data-translate-key="ppFlow3"></h5><p class="text-sm" data-translate-key="ppFlow3Desc"></p></div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="blackGammaTitle"></h4><p class="mb-4" data-translate-key="blackGammaDesc"></p><div class="chart-container h-56"><canvas id="blackGammaChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="blackGammaNote"></p></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="kneeTitle"></h4><p class="mb-4" data-translate-key="kneeDesc"></p><div class="chart-container h-64"><canvas id="kneeChart"></canvas></div><ul class="mt-4 text-sm text-gray-600 space-y-1"><li data-translate-key="kneePointExplain"></li><li data-translate-key="kneeSlopeExplain"></li></ul></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-lg md:col-span-2 lg:col-span-1"><h4 class="text-xl font-bold mb-4" data-translate-key="colorDepthTitleChart"></h4><p class="mb-4" data-translate-key="colorDepthDesc"></p><div class="chart-container h-56"><canvas id="colorDepthChart"></canvas></div><p class="mt-4 text-sm text-gray-600" data-translate-key="colorDepthNote"></p></div>
+                            </div>
+                        </section>
+                        <section id="heif">
+                             <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="heifTitle"></h3>
+                             <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="heifDesc"></p>
+                             <div class="bg-white p-8 rounded-2xl shadow-lg"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="text-center"><h4 class="text-2xl font-bold" data-translate-key="jpegTitle"></h4><p class="text-5xl font-bold text-[#F25022] my-4">16.7</p><p class="text-xl mb-4" data-translate-key="jpegColors"></p><div class="w-full h-12 rounded-lg gradient-banded"></div><p class="mt-2 text-red-600 font-semibold" data-translate-key="jpegBandingRisk"></p><p class="text-sm text-gray-600" data-translate-key="jpegBandingDesc"></p></div><div class="text-center"><h4 class="text-2xl font-bold" data-translate-key="heifTitle10bit"></h4><p class="text-5xl font-bold text-[#7FBA00] my-4">1+</p><p class="text-xl mb-4" data-translate-key="heifColors"></p><div class="w-full h-12 rounded-lg gradient-smooth"></div><p class="mt-2 text-green-600 font-semibold" data-translate-key="heifSmooth"></p><p class="text-sm text-gray-600" data-translate-key="heifSmoothDesc"></p></div></div></div>
+                        </section>
+                        <section id="recipes">
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="recipesTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-lg mb-8" data-translate-key="recipesDesc"></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div id="explain-recipe-1" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
+                                <div id="explain-recipe-2" class="bg-white p-8 rounded-2xl shadow-lg recipe-card"></div>
+                            </div>
+                            <div class="text-center mt-12"><button id="exploreMoreBtn" class="inline-block bg-[#00A6ED] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#008cbf] transition-all duration-300 transform hover:scale-105" data-translate-key="exploreMoreBtn"></button></div>
+                        </section>
+                        <section id="memory-recall">
+                            <h3 class="text-3xl font-bold text-center mb-10" data-translate-key="recallTitle"></h3>
+                            <div class="bg-white p-8 rounded-2xl shadow-lg max-w-4xl mx-auto"><p class="text-lg mb-6" data-translate-key="recallDesc"></p><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4><p class="text-sm" data-translate-key="recallInternalDesc"></p></div><div><h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4><p class="text-sm" data-translate-key="recallCardDesc"></p></div></div></div>
+                        </section>
+                    </main>
+                    <footer class="text-center mt-20 pt-8 border-t border-slate-300">
+                        <p class="text-gray-600" data-translate-key="infographicFooterText"></p>
+                        <p class="text-sm text-gray-500 mt-2" data-translate-key="infographicFooterSubtext"></p>
+                    </footer>
+                </div>
+            </div>`
+        };
+
+        function destroyAllCharts() {
+            Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
+            activeCharts = {};
+        }
+
+        function renderAllCharts(lang) {
+            destroyAllCharts();
+            const FONT_COLOR = '#374151'; const GRID_COLOR = '#E5E7EB'; 
+            const PALETTE = { blue: '#00A6ED', green: '#7FBA00', yellow: '#FFB900', orange: '#F25022', gray: '#737373' };
+            const defaultChartOptions = (extraOptions = {}) => ({
+                responsive: true, maintainAspectRatio: false, color: FONT_COLOR, animation: { duration: 500 },
+                plugins: {
+                    legend: { labels: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } } },
+                    tooltip: { bodyFont: { family: "'Be Vietnam Pro', sans-serif" }, titleFont: { family: "'Be Vietnam Pro', sans-serif" }, callbacks: { title: (items) => Array.isArray(items[0].label) ? items[0].label.join(' ') : items[0].label } }
+                },
+                scales: {
+                    x: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { color: GRID_COLOR }, title: { font: { family: "'Be Vietnam Pro', sans-serif" }} },
+                    y: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { color: GRID_COLOR }, title: { font: { family: "'Be Vietnam Pro', sans-serif" }} }
+                }, ...extraOptions
+            });
+            const kelvinCtx = document.getElementById('kelvinChart')?.getContext('2d');
+            if(kelvinCtx) {
+                activeCharts.kelvin = new Chart(kelvinCtx, { type: 'bar', data: { labels: ['2500K', '4000K', '5500K', '7500K', '9900K'], datasets: [{ label: t('kelvinChartTitle'), data: [1, 1, 1, 1, 1], backgroundColor: ['rgba(0, 166, 237, 0.4)','rgba(0, 166, 237, 0.7)','rgba(200, 200, 200, 0.8)','rgba(242, 80, 34, 0.7)','rgba(242, 80, 34, 0.4)'], borderColor: ['#00A6ED','#00A6ED','rgba(150, 150, 150, 1)','#F25022','#F25022'], borderWidth: 1 }] }, options: defaultChartOptions({ indexAxis: 'y', plugins: { legend: { display: false } } }) });
+            }
+            const wbShiftCtx = document.getElementById('wbShiftChart')?.getContext('2d');
+            if(wbShiftCtx) {
+                activeCharts.wbShift = new Chart(wbShiftCtx, { type: 'scatter', data: { datasets: [ { label: t('wbShiftRecipe1'), data: [{x: 6, y: 7}], backgroundColor: PALETTE.blue, pointRadius: 10, pointHoverRadius: 15 }, { label: t('wbShiftRecipe2'), data: [{x: -7, y: 0.5}], backgroundColor: PALETTE.orange, pointRadius: 10, pointHoverRadius: 15 } ] }, options: defaultChartOptions({ scales: { x: { min: -9, max: 9, title: { display: true, text: t('wbShiftXAxis'), color: FONT_COLOR } }, y: { min: -9, max: 9, title: { display: true, text: t('wbShiftYAxis'), color: FONT_COLOR } } } }) });
+            }
+            const blackGammaCtx = document.getElementById('blackGammaChart')?.getContext('2d');
+            if(blackGammaCtx) {
+                activeCharts.blackGamma = new Chart(blackGammaCtx, { type: 'bar', data: { labels: ['-7', '-4', '0', '+4', '+7'], datasets: [{ label: 'Level', data: [-7, -4, 0, 4, 7], backgroundColor: [PALETTE.blue, PALETTE.blue, PALETTE.gray, PALETTE.orange, PALETTE.orange], }] }, options: defaultChartOptions({ plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: t('blackGammaYAxis') } } } }) });
+            }
+            const kneeCtx = document.getElementById('kneeChart')?.getContext('2d');
+            if (kneeCtx) {
+                const labels = Array.from({ length: 111 }, (_, i) => i);
+                const clippedSignal = labels.map(i => Math.min(i, 100));
+                const kneeSignal = (point, slope) => labels.map(i => { if (i < point) return i; const x = i - point; const steepness = (5 - slope) * 0.08 + 0.1; const compressed = 100 - (100 - point) * Math.exp(-steepness * x * 0.08); return Math.min(compressed, 109); });
+                const kneePoint = 85;
+                activeCharts.knee = new Chart(kneeCtx, { type: 'line', data: { labels: labels, datasets: [ { label: t('kneeChartNoKnee'), data: clippedSignal, borderColor: PALETTE.orange, borderWidth: 3, borderDash: [6, 6], fill: false, tension: 0.1, pointRadius: 0 }, { label: t('kneeChartSoft'), data: kneeSignal(kneePoint, 3), borderColor: PALETTE.green, backgroundColor: 'rgba(127, 186, 0, 0.2)', borderWidth: 3, fill: { target: '0', above: 'rgba(127, 186, 0, 0.3)' }, tension: 0.2, pointRadius: 0 }, { type: 'bar', label: t('kneePointLabel'), data: labels.map(l => (l === kneePoint ? 110 : null)), backgroundColor: 'rgba(0, 166, 237, 0.5)', borderColor: PALETTE.blue, borderWidth: 1, barPercentage: 0.1 } ] }, options: defaultChartOptions({ plugins: { legend: { position: 'bottom', labels: { boxWidth: 20 } }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { title: { display: true, text: t('kneeChartSignalIn') }, min: 70, max: 110 }, y: { title: { display: true, text: t('kneeChartSignalOut') }, min: 70, max: 110 } } }) });
+            }
+            const colorDepthCtx = document.getElementById('colorDepthChart')?.getContext('2d');
+            if(colorDepthCtx) {
+                activeCharts.colorDepth = new Chart(colorDepthCtx, { type: 'bar', data: { labels: t('colorDepthLabels'), datasets: [{ label: t('colorDepthTitleChart'), data: [-3, 5, -3, -3, -5, -2], backgroundColor: ['#EF5350', '#66BB6A', '#42A5F5', '#26C6DA', '#AB47BC', '#FFEE58'], }] }, options: defaultChartOptions({ plugins: { legend: { display: false } }, scales: { y: { min: -7, max: 7, title: { display: true, text: t('colorDepthYAxis') } } } }) });
+            }
+        }
+
+        function renderView(viewName) {
+            state.currentView = viewName;
+            return new Promise(resolve => {
+                const currentContent = mainContentEl.children[0];
+                if (currentContent) {
+                    currentContent.classList.add('view-transition-out');
+                    destroyAllCharts(); // Destroy charts on any view change
+                    currentContent.addEventListener('animationend', () => {
+                        mainContentEl.innerHTML = viewTemplates[viewName]();
+                        attachViewEventListeners(viewName);
+                        applyTranslations();
+                        resolve();
+                    }, { once: true });
+                } else {
+                    mainContentEl.innerHTML = viewTemplates[viewName]();
+                    attachViewEventListeners(viewName);
+                    applyTranslations();
+                    resolve();
+                }
+            });
+        }
+        
+        // --- EVENT LISTENERS & HANDLERS ---
+        function handleFilterClick(e) {
+            const btn = e.target.closest('.filter-btn'); if (!btn) return;
+            const group = btn.closest('[data-filter-group]').dataset.filterGroup;
+            const value = btn.dataset.filterValue; state.activeFilters[group] = value;
+            document.querySelectorAll(`[data-filter-group="${group}"] .filter-btn`).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); renderLibraryList();
+        }
+
+        function handleRecipeSelection(id, type) {
+            if (type === 'checkbox') {
+                const index = state.comparisonList.indexOf(id);
+                if (index > -1) state.comparisonList.splice(index, 1);
+                else if (state.comparisonList.length < 2) state.comparisonList.push(id);
+                
+                if (state.comparisonList.length !== 2) {
+                     // When managing comparison, don't affect the main selection
+                }
+            } else {
+                // Toggle selection for main view
+                if (state.selectedRecipeId === id) {
+                    state.selectedRecipeId = null; // Deselect if clicked again
+                } else {
+                    state.selectedRecipeId = id;
+                }
+                state.comparisonList = []; // Clear comparison list when making a new main selection
+            }
+            renderLibraryList(); // Re-render list for checkbox states and selection highlight
+            renderLibraryDetails(); // Re-render main panel to show/hide details or charts
+            renderInteractiveCharts(state.currentLang); // Re-render charts to highlight selection
+        }
+
+        async function handleAiComparison(id1, id2, recipe2Obj = null) {
+            const modal = document.getElementById('comparisonModal');
+            const titleEl = document.getElementById('comparisonModalTitle');
+            const contentEl = document.getElementById('comparisonModalContent');
+            modal.classList.remove('hidden');
+            titleEl.textContent = t('comparisonModalTitle');
+            contentEl.innerHTML = `<div class="flex items-center justify-center p-8"><div class="spinner !w-12 !h-12 !border-4"></div><p class="ml-4 text-lg font-semibold">${t('comparisonLoading')}</p></div>`;
+            const recipe1 = recipesData.find(r => r.id === id1);
+            const recipe2 = recipe2Obj ? { ...recipe2Obj, id: 'ai-adjusted', name: recipe2Obj.name } : recipesData.find(r => r.id === id2);
+            const prompt = `Compare the following two recipes: *${recipe1.name[state.currentLang]}* and *${recipe2.name[state.currentLang]}*. Analyze their overall feel, key parameter differences (like White Balance and Black Level), and suggest ideal use cases for each. Present the result in Markdown.`;
+            const comparisonText = await callAIApi(prompt, 1200);
+            contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
+        }
+
+        async function handleAiAdjustment(button) {
+            const recipeId = button.dataset.recipeId;
+            const textarea = document.getElementById('aiTuningTextarea');
+            const resultContainer = document.getElementById('aiResultContainer');
+            if (!textarea.value || !resultContainer || state.isAILoading) return;
+            button.disabled = true; button.dataset.originalText = button.innerHTML;
+            button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
+            const originalRecipe = recipesData.find(r => r.id === recipeId);
+            const prompt = `Original Recipe (ID: ${recipeId}): ${JSON.stringify(originalRecipe.settings)}. User request: "${textarea.value}". Please provide a new JSON object with adjusted settings.`;
+            const aiResponse = await callAIApi(prompt);
+            if (aiResponse && aiResponse.recipe) {
+                state.lastGeneratedAiRecipe = aiResponse.recipe;
+                resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
+            } else { resultContainer.innerHTML = `<p class="text-red-500">Failed to generate adjustment.</p>`; }
+            button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
+        }
+
+        async function handleQuizSubmit() {
+            await renderView('home');
+            const homeView = document.getElementById('homeView');
+            if (!homeView) { console.error("Quiz Submit Error: homeView not found after render."); return; }
+            homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
+            applyTranslations();
+            const prompt = `Based on user preferences: ${JSON.stringify(state.quizAnswers)}. Recommend TWO recipes from the available list. Respond with JSON array: [{"recipeId", "moodDescription" (in ${state.currentLang})}, ...].`;
+            const aiResponse = await callAIApi(prompt);
+            if (aiResponse && aiResponse.length >= 2) {
+                 const r1 = recipesData.find(r => r.id === aiResponse[0].recipeId);
+                 const r2 = recipesData.find(r => r.id === aiResponse[1].recipeId);
+                 if (r1 && r2) {
+                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-3xl font-bold mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-8"><div class="quiz-choice-option p-8" data-recipe-id="${r1.id}"><h4 class="text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-md italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-8" data-recipe-id="${r2.id}"><h4 class="text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-md italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
+                    applyTranslations();
+                 }
+            } else { homeView.innerHTML = `<p class="text-red-500">Lỗi khi lấy đề xuất từ AI.</p>`; }
+        }
+        
+        function attachViewEventListeners(viewName) {
+            if (viewName === 'recipeFormulas') {
+                renderLibraryList(); 
+                renderLibraryDetails();
+                renderInteractiveCharts(state.currentLang);
+                document.getElementById('searchInput').addEventListener('input', renderLibraryList);
+                document.getElementById('filtersContainer').addEventListener('click', handleFilterClick);
+                document.getElementById('sortSelect').addEventListener('change', renderLibraryList);
+                document.getElementById('recipeListContainer').addEventListener('click', (e) => {
+                     const cb = e.target.closest('.recipe-compare-cb');
+                     const item = e.target.closest('.recipe-item-content');
+                     const dot = e.target.closest('.recipe-dot');
+                     if (cb) { handleRecipeSelection(cb.dataset.recipeId, 'checkbox'); } 
+                     else if (item) { handleRecipeSelection(item.dataset.recipeId, 'div'); }
+                     else if (dot) { handleRecipeSelection(dot.dataset.recipeId, 'div'); }
+                });
+            } else if (viewName === 'quiz') {
+                 document.querySelector('#quizView .grid').addEventListener('click', (e) => {
+                    const option = e.target.closest('.quiz-option');
+                    if(!option || option.classList.contains('selected')) return;
+                    const group = option.closest('[data-quiz-group]').dataset.quizGroup;
+                    state.quizAnswers[group] = option.dataset.value;
+                    document.querySelectorAll(`[data-quiz-group="${group}"] .quiz-option`).forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    setTimeout(() => {
+                        state.quizStep++;
+                        if (state.quizStep >= quizQuestions.length) handleQuizSubmit(); else renderView('quiz');
+                    }, 250);
+                });
+            } else if (viewName === 'explain') {
+                renderAllCharts(state.currentLang);
+                document.getElementById('exploreMoreBtn')?.addEventListener('click', () => renderView('recipeFormulas'));
+
+                function generateRecipeExampleHTML(recipe, titleColor) {
+                    if (!recipe || !recipe.settings) return '<p>Recipe data not available.</p>';
+                    return `
+                        <h4 class="text-2xl font-bold mb-4" style="color: ${titleColor};">${recipe.name[state.currentLang]}</h4>
+                        <p class="mb-4 italic">${recipe.description[state.currentLang]}</p>
+                        <ul class="space-y-1 text-sm">
+                            <li><strong>WB:</strong> ${recipe.whiteBalance}</li>
+                            <li><strong>Gamma:</strong> ${recipe.settings.Gamma || 'N/A'}</li>
+                            <li><strong>Color Mode:</strong> ${recipe.settings['Color Mode'] || 'N/A'}</li>
+                            <li><strong>Black Gamma:</strong> ${recipe.settings['Black Gamma'] || 'N/A'}</li>
+                            <li><strong>Knee:</strong> ${recipe.settings.Knee || 'N/A'}</li>
+                            <li><strong>Saturation:</strong> ${recipe.settings.Saturation || 'N/A'}</li>
+                            <li><strong>Color Phase:</strong> ${recipe.settings['Color Phase'] || 'N/A'}</li>
+                        </ul>`;
+                }
+                const recipe1Container = document.getElementById('explain-recipe-1');
+                const recipe2Container = document.getElementById('explain-recipe-2');
+                if (recipe1Container && recipe2Container) {
+                    const recipe1Data = recipesData.find(r => r.id === 'vektro-100');
+                    const recipe2Data = recipesData.find(r => r.id === 'senova-light');
+                    recipe1Container.innerHTML = generateRecipeExampleHTML(recipe1Data, '#F25022');
+                    recipe2Container.innerHTML = generateRecipeExampleHTML(recipe2Data, '#00A6ED');
+                }
+            }
+        }
+
+        // --- RENDER & INITIALIZATION ---
+        function renderLibraryList() {
+             const container = document.getElementById('recipeListContainer'); if (!container) return;
+             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+             const sortBy = document.getElementById('sortSelect')?.value || 'default';
+             let recipesToRender = recipesData.filter(recipe => (recipe.name.vi.toLowerCase().includes(searchTerm) || recipe.name.en.toLowerCase().includes(searchTerm) || recipe.description.vi.toLowerCase().includes(searchTerm) || recipe.description.en.toLowerCase().includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
+             const sortMap = { high: 3, medium: 2, low: 1 };
+             if (sortBy === 'name_az') recipesToRender.sort((a, b) => a.name[state.currentLang].localeCompare(b.name[state.currentLang]));
+             else if (sortBy === 'contrast_hl') recipesToRender.sort((a, b) => (sortMap[b.contrast] || 0) - (sortMap[a.contrast] || 0));
+             else if (sortBy === 'saturation_hl') recipesToRender.sort((a, b) => (sortMap[b.saturation] || 0) - (sortMap[a.saturation] || 0));
+
+             container.innerHTML = recipesToRender.map(recipe => {
+                const isChecked = state.comparisonList.includes(recipe.id); const isSelected = recipe.id === state.selectedRecipeId;
+                 return `<div class="recipe-item p-4 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-center gap-4 ${isSelected ? 'selected' : ''}">
+                    <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-center flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
+                    <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 cursor-pointer" style="background-color: ${recipe.personalityColor}" data-recipe-id="${recipe.id}" title="${recipe.name[state.currentLang]}"></div>
+                    <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}"><span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span><p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p></div>
+                </div>`;
+             }).join('');
+             const btnContainer = document.getElementById('compareBtnContainer');
+             btnContainer.innerHTML = `<button id="compareBtn" class="btn btn-primary w-full mt-4 py-3" data-translate-key="compareBtn" ${state.comparisonList.length !== 2 ? 'disabled' : ''}></button>`;
+             applyTranslations();
+        }
+        
+        function renderLibraryDetails() {
+            const recipeContentContainer = document.getElementById('recipeContent');
+            const chartsContainer = document.getElementById('chartsContainer');
+            if (!recipeContentContainer || !chartsContainer) return;
+
+            const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+            if (!recipe) { 
+                chartsContainer.classList.remove('hidden');
+                recipeContentContainer.classList.add('hidden');
+                return; 
+            }
+            chartsContainer.classList.add('hidden');
+            recipeContentContainer.classList.remove('hidden');
+            
+            recipeContentContainer.innerHTML = `<h3 class="text-4xl font-bold">${recipe.name[state.currentLang]}</h3><p class="text-lg text-neutral-600 mt-2 mb-8 italic">"${recipe.description[state.currentLang]}"</p><div id="recipeNotesContainer" class="mb-4"></div><div id="originalRecipeContainer">${createFullRecipeHTML(recipe, true)}</div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><details open class="group"><summary class="text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors"><span data-translate-key="tutorialTitle"></span><svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></summary><div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700"><div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div><div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div></div></details></div><div class="mt-12 pt-8 border-t-2 border-gray-200/60"><h3 class="text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3><div class="glass-panel p-6 -mx-2"><textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea><button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button><div id="aiResultContainer"></div></div></div>`;
+            applyTranslations();
+        }
+
+        function renderInteractiveCharts(lang) {
+            destroyAllCharts();
+
+            const chartDefaultOptions = (yAxisTitleKey) => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                onClick: (e) => {
+                    const chart = e.chart;
+                    const elements = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                     if (elements.length) {
+                        const firstPoint = elements[0];
+                        const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
+                        if (recipeId) {
+                            handleRecipeSelection(recipeId, 'chart');
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 },
+                        padding: 10,
+                        callbacks: {
+                            label: function(context) { return context.raw.name; }
+                        }
+                    }
+                },
+                scales: {
+                    x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t('axisTonality') } },
+                    y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
+                }
+            });
+            
+            const colorCtx = document.getElementById('colorChart')?.getContext('2d');
+            if (colorCtx) {
+                const colorData = recipesData.filter(r => r.type === 'color' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number' && r.personalityColor).map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
+                activeCharts.color = new Chart(colorCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            data: colorData,
+                            pointBackgroundColor: colorData.map(d => {
+                                const recipe = recipesData.find(r => r.id === d.id);
+                                return recipe ? recipe.personalityColor : '#CCCCCC'; // Fallback color
+                            }),
+                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
+                            pointHoverRadius: 11
+                        }]
+                    },
+                    options: chartDefaultOptions('axisSaturation')
+                });
+            }
+
+            const bwCtx = document.getElementById('bwChart')?.getContext('2d');
+            if (bwCtx) {
+                const bwData = recipesData.filter(r => r.type === 'bw' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number').map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
+                activeCharts.bw = new Chart(bwCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            data: bwData,
+                            pointBackgroundColor: '#475569',
+                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
+                            pointHoverRadius: 11,
+                            pointHoverBorderWidth: 3
+                        }]
+                    },
+                    options: chartDefaultOptions('axisChroma')
+                });
+            }
+        }
+
 
         function init() {
-            // ... (nội dung hàm init giữ nguyên) ...
             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
-                const homeBtn = target.closest('#homeBtn');
-                if (homeBtn) {
-                  e.preventDefault(); // Ngăn hành vi mặc định nếu có
-                  state.selectedRecipeId = null; 
-                  await renderView('home'); 
-                  return; 
-                }
-                // ... (phần còn lại của event listener giữ nguyên) ...
+                const homeBtn = target.closest('#homeBtn'); const navBtn = target.closest('.nav-btn');
+                const langBtn = target.closest('.lang-btn'); const startQuizBtn = target.closest('#startQuizBtn');
+                const compareBtn = target.closest('#compareBtn'); const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
+                const closeModalBtn = target.closest('#closeComparisonModalBtn'); const aiTuningBtn = target.closest('#aiTuningBtn');
+                const quizChoice = target.closest('.quiz-choice-option'); const exploreMoreBtn = target.closest('#exploreMoreBtn');
+                if (homeBtn) { state.selectedRecipeId = null; await renderView('home'); return; }
+                if (navBtn) { state.selectedRecipeId = null; await renderView(navBtn.dataset.view); return; }
+                if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
+                if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
+                if (compareBtn && !compareBtn.disabled) { handleAiComparison(state.comparisonList[0], state.comparisonList[1]); return; }
+                if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
+                if (closeModalBtn) { document.getElementById('comparisonModal').classList.add('hidden'); return; }
+                if (aiTuningBtn) { handleAiAdjustment(aiTuningBtn); return; }
+                if (quizChoice) { state.selectedRecipeId = quizChoice.dataset.recipeId; await renderView('recipeFormulas'); return; }
+                if (exploreMoreBtn) { state.selectedRecipeId = null; await renderView('recipeFormulas'); return; }
             });
             renderView('home');
         }
 
         document.addEventListener("DOMContentLoaded", init);
         
-        // --- XÓA DỮ LIỆU Ở ĐÂY ---
-        // Toàn bộ mảng const recipesData = [...] đã được chuyển sang file recipes-data.js
-    
+        // --- DATA ---
+        // Enhanced with personalityColor and coords for charts
+   const recipesData = [
+    {
+        "id": "vektro-100",
+        "name": { "vi": "1. Chiều Tàn", "en": "1. Vektro 100" },
+        "description": { "vi": "Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm.", "en": "Vibrant orange of fire and deep shadows." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "4000K, A5-M0.5",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 92.5% +5", "Color Mode": "S-Gamut3.Cine", "Saturation": "+27", "Color Phase": "+6" },
+        "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "+2", "Y": "+1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#E57373", "coords": { "x": 7.8, "y": 8.1 }
+    },
+    {
+        "id": "senova-light",
+        "name": { "vi": "2. Đà Lạt trong sương", "en": "2. Senova Light" },
+        "description": { "vi": "Màu lam lạnh và tương phản cao, gợi cảm giác mờ ảo.", "en": "Cool blue tone with high contrast, evoking a misty feeling." },
+        "type": "color", "contrast": "high", "saturation": "medium",
+        "whiteBalance": "8000K, B2-M2",
+        "notes": { "vi": "Chế độ ban đêm: 2900K, A5-G1", "en": "Nighttime: 2900K, A5-G1" },
+        "settings": { "Black level": "-15", "Gamma": "Cine3", "Black Gamma": "Wide +7", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+20", "Color Phase": "+7" },
+        "colorDepth": { "R": "-5", "G": "-1", "B": "+3", "C": "+4", "M": "+5", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#64B5F6", "coords": { "x": 8.5, "y": 1.2 }
+    },
+    {
+        "id": "fuji-400h",
+        "name": { "vi": "3. Đồng Cỏ Mộc Châu", "en": "3. Fuji 400H" },
+        "description": { "vi": "Tôn vinh sắc xanh tươi mát của cỏ cây dưới nắng hạ.", "en": "Honors the fresh green tones of plants under the summer sun." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "3700K, A7-M0.5",
+        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-3" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#81C784", "coords": { "x": -7.1, "y": -8.2 }
+    },
+    {
+        "id": "evpro-plus",
+        "name": { "vi": "4. Đông Dương", "en": "4. EvPro+" },
+        "description": { "vi": "Màu vàng rực rỡ và bão hòa cao, nắm bắt năng lượng.", "en": "Vibrant yellow, high saturation, captures energy." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "4300K, A3.5",
+        "settings": { "Black level": "-10", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Auto", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+5" },
+        "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "-2", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFD54F", "coords": { "x": 7.2, "y": 7.5 }
+    },
+    {
+        "id": "ektar-100",
+        "name": { "vi": "5. Hoàng Hôn Sài Gòn", "en": "5. Ektar 100" },
+        "description": { "vi": "Sắc đỏ và cam đậm, bão hòa cao, tái hiện hoàng hôn.", "en": "Rich red and orange hues, high saturation, recreating sunsets." },
+        "type": "color", "contrast": "low", "saturation": "high",
+        "whiteBalance": "5000K, A2-M1",
+        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+25", "Color Phase": "+2" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "+1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FF8A65", "coords": { "x": -8.3, "y": 8.8 }
+    },
+    {
+        "id": "kodak-gold-v1",
+        "name": { "vi": "6. Ký Ức Vàng Son", "en": "6. Kodak Gold" },
+        "description": { "vi": "Ánh vàng ấm áp đặc trưng, gợi nhớ thập niên 90.", "en": "A distinctive warm golden glow, reminiscent of the 90s." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "8500K, B3-M1.75",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3/S-Gamut", "Saturation": "+32", "Color Phase": "+6" },
+        "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFB74D", "coords": { "x": -0.5, "y": 7.9 }
+    },
+    {
+        "id": "kodak-gold-200-v2",
+        "name": { "vi": "7. Hoàng Kim V2", "en": "7. Kodak Gold 200 V2" },
+        "description": { "vi": "Một phiên bản khác của Kodak Gold với tông màu ấm và độ bão hòa cao.", "en": "Another version of Kodak Gold with warm tones and high saturation." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "4600K, A7-G1.25",
+        "settings": { "Black level": "+2", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+25", "Color Phase": "+5" },
+        "colorDepth": { "R": "+3", "G": "-3", "B": "-5", "C": "-3", "M": "+3", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFC107", "coords": { "x": -1.5, "y": 8.2 }
+    },
+    {
+        "id": "kodak-portra-800",
+        "name": { "vi": "8. Chân dung mùa thu", "en": "8. Kodak Portra 800" },
+        "description": { "vi": "Màu sắc ấm áp, lý tưởng cho chụp chân dung trong điều kiện ánh sáng yếu.", "en": "Warm colors, ideal for portraits in low light conditions." },
+        "type": "color", "contrast": "medium", "saturation": "medium",
+        "whiteBalance": "4500K, A7-M1",
+        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
+        "settings": { "Black level": "-15", "Gamma": "S-Log2/S-Log3", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "+3" },
+        "colorDepth": { "R": "+3", "G": "+5", "B": "+5", "C": "+7", "M": "+7", "Y": "-3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#D7CCC8", "coords": { "x": -2.2, "y": 6.5 }
+    },
+    {
+        "id": "kodak-portra-400-v1",
+        "name": { "vi": "9. Chân dung cổ điển", "en": "9. Kodak Portra 400 V1" },
+        "description": { "vi": "Tông màu da tự nhiên và độ bão hòa dịu nhẹ, một lựa chọn kinh điển.", "en": "Natural skin tones and mild saturation, a classic choice." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "3900K, A7-M0.75",
+        "settings": { "Black level": "+4", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+14", "Color Phase": "-2" },
+        "colorDepth": { "R": "-3", "G": "+5", "B": "-3", "C": "-3", "M": "-5", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#A1887F", "coords": { "x": -8.1, "y": 4.5 }
+    },
+    {
+        "id": "kodak-portra-400-v2",
+        "name": { "vi": "10. Ngọc Bích", "en": "10. Kodak Portra 400 V2" },
+        "description": { "vi": "Tông màu dịu mát với sắc xanh ngọc bích nổi bật.", "en": "A cool tone with prominent jade green hues." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "3600K, A7-G1",
+        "settings": { "Black level": "+11", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 85% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-4" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "+2", "M": "+5", "Y": "+2" },
+        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 5", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#4DB6AC", "coords": { "x": -8.8, "y": -7.2 }
+    },
+    {
+        "id": "kodak-portra-160",
+        "name": { "vi": "11. Chân dung ánh sáng ngày", "en": "11. Kodak Portra 160" },
+        "description": { "vi": "Màu sắc tinh tế và hạt mịn, hoàn hảo cho chụp chân dung ngoài trời.", "en": "Subtle colors and fine grain, perfect for outdoor portraits." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "4200K, A7-M1",
+        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+7", "Color Phase": "+3" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#BCAAA4", "coords": { "x": -7.5, "y": -4.8 }
+    },
+    {
+        "id": "kodak-color-plus-200",
+        "name": { "vi": "12. Sắc màu ký ức", "en": "12. Kodak Color Plus 200" },
+        "description": { "vi": "Tông màu ấm áp và hoài cổ, gợi nhớ những cuộn phim xưa.", "en": "A warm and nostalgic tone, reminiscent of old film rolls." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "4000K, A7-G1",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +5", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+4" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFB74D", "coords": { "x": 2.5, "y": 8.5 }
+    },
+    {
+        "id": "kodak-ultra-max-400",
+        "name": { "vi": "13. Tối đa sắc màu", "en": "13. Kodak Ultra Max 400" },
+        "description": { "vi": "Độ bão hòa cao và màu sắc sống động cho những bức ảnh đầy năng lượng.", "en": "High saturation and vivid colors for energetic photos." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "4500K, A7-M0.75",
+        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+8", "Color Phase": "-1" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-5", "M": "+5", "Y": "+4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#EF5350", "coords": { "x": 1.0, "y": 7.0 }
+    },
+    {
+        "id": "ektachrome",
+        "name": { "vi": "14. Sắc màu dương bản", "en": "14. EktaChrome" },
+        "description": { "vi": "Màu sắc trong trẻo và sạch sẽ, đặc trưng của dòng phim dương bản.", "en": "Clean and clear colors, characteristic of slide films." },
+        "type": "color", "contrast": "medium", "saturation": "medium",
+        "whiteBalance": "3600K, A7-M1",
+        "settings": { "Black level": "-4", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "+3", "G": "+5", "B": "-4", "C": "+2", "M": "+6", "Y": "+5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#4FC3F7", "coords": { "x": 2.8, "y": -3.5 }
+    },
+    {
+        "id": "kodachrome-v1",
+        "name": { "vi": "15. Huyền thoại Kodachrome", "en": "15. Kodachrome V1" },
+        "description": { "vi": "Tái tạo tông màu độc đáo của dòng phim Kodachrome huyền thoại.", "en": "Recreates the unique color tones of the legendary Kodachrome film." },
+        "type": "color", "contrast": "medium", "saturation": "medium",
+        "whiteBalance": "4200K, A7-M0.5",
+        "settings": { "Black level": "+8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+12", "Color Phase": "-2" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+4", "C": "+4", "M": "+5", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#F44336", "coords": { "x": 3.3, "y": 6.1 }
+    },
+    {
+        "id": "kodachrome-v2",
+        "name": { "vi": "16. Kodachrome V2", "en": "16. Kodachrome V2" },
+        "description": { "vi": "Một biến thể khác của Kodachrome với tông màu ấm và tương phản nhẹ.", "en": "Another variation of Kodachrome with warm tones and soft contrast." },
+        "type": "color", "contrast": "high", "saturation": "medium",
+        "whiteBalance": "4500K, A7-M0.5",
+        "settings": { "Black level": "-10", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+17", "Color Phase": "0" },
+        "colorDepth": { "R": "+2", "G": "+6", "B": "+2", "C": "+7", "M": "+7", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#D32F2F", "coords": { "x": 7.0, "y": 6.8 }
+    },
+    {
+        "id": "kodachrome-v3",
+        "name": { "vi": "17. Kodachrome V3", "en": "17. Kodachrome V3" },
+        "description": { "vi": "Tông màu xanh và đỏ được nhấn mạnh, tạo cảm giác cổ điển.", "en": "Emphasized blue and red tones, creating a classic feel." },
+        "type": "color", "contrast": "high", "saturation": "medium",
+        "whiteBalance": "4700K, A7-G0.5",
+        "settings": { "Black level": "-15", "Gamma": "Cine1", "Black Gamma": "Wide -7", "Knee": "Manual 82.5% +4", "Color Mode": "S-Cinetone/Still", "Saturation": "+10", "Color Phase": "+2" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "-7", "C": "-6", "M": "+3", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#C62828", "coords": { "x": 7.4, "y": 5.2 }
+    },
+    {
+        "id": "kodachrome-v4",
+        "name": { "vi": "18. Kodachrome V4", "en": "18. Kodachrome V4" },
+        "description": { "vi": "Phiên bản Kodachrome với tông màu xanh da trời nổi bật và cân bằng trắng ấm.", "en": "A Kodachrome version with prominent sky blue tones and warm white balance." },
+        "type": "color", "contrast": "medium", "saturation": "medium",
+        "whiteBalance": "4000K, A7-M2",
+        "settings": { "Black level": "+6", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+14", "Color Phase": "-3" },
+        "colorDepth": { "R": "0", "G": "+7", "B": "+5", "C": "-2", "M": "+3", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#B71C1C", "coords": { "x": 3.8, "y": 5.9 }
+    },
+    {
+        "id": "leicachrome",
+        "name": { "vi": "19. Màu Leica", "en": "19. Leicachrome" },
+        "description": { "vi": "Lấy cảm hứng từ màu sắc đặc trưng của máy ảnh Leica, với tông màu ấm và dễ chịu.", "en": "Inspired by the characteristic colors of Leica cameras, with warm and pleasant tones." },
+        "type": "color", "contrast": "medium", "saturation": "low",
+        "whiteBalance": "7000K, B5-M0.25",
+        "settings": { "Black level": "-9", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+6", "Color Phase": "+2" },
+        "colorDepth": { "R": "+3", "G": "+7", "B": "+3", "C": "-5", "M": "+3", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#8D6E63", "coords": { "x": 1.5, "y": 2.5 }
+    },
+    {
+        "id": "fuji-provia",
+        "name": { "vi": "20. Fuji Provia", "en": "20. Fuji Provia" },
+        "description": { "vi": "Tái tạo màu sắc trung thực và sống động của phim Fuji Provia.", "en": "Recreates the true and vivid colors of Fuji Provia film." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "4000K, A7-M0.25",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+1" },
+        "colorDepth": { "R": "+1", "G": "+7", "B": "0", "C": "+3", "M": "+2", "Y": "+1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#81C784", "coords": { "x": -6.5, "y": -7.0 }
+    },
+    {
+        "id": "provia-rx",
+        "name": { "vi": "21. Provia RX", "en": "21. Provia RX" },
+        "description": { "vi": "Một biến thể của Provia với độ tương phản cao hơn và màu sắc mạnh mẽ hơn.", "en": "A variation of Provia with higher contrast and stronger colors." },
+        "type": "color", "contrast": "high", "saturation": "low",
+        "whiteBalance": "4000K, A6.5-M1.75",
+        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 80% +3", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "-2" },
+        "colorDepth": { "R": "-2", "G": "+7", "B": "+7", "C": "+5", "M": "+3", "Y": "+1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#689F38", "coords": { "x": 7.2, "y": -6.8 }
+    },
+    {
+        "id": "velvia-pro",
+        "name": { "vi": "22. Velvia Pro", "en": "22. Velvia Pro" },
+        "description": { "vi": "Độ bão hòa màu cao, đặc biệt là màu xanh lá và xanh dương, lý tưởng cho phong cảnh.", "en": "High color saturation, especially greens and blues, ideal for landscapes." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "3900K, A7-M0.25",
+        "settings": { "Black level": "-8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "-7", "Y": "0" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#388E3C", "coords": { "x": 2.0, "y": -5.0 }
+    },
+    {
+        "id": "astia",
+        "name": { "vi": "23. Astia", "en": "23. Astia" },
+        "description": { "vi": "Tông màu mềm mại và tông da đẹp, phù hợp cho chụp ảnh thời trang và chân dung.", "en": "Soft tones and beautiful skin tones, suitable for fashion and portraits." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "4100K, A7-M0.25",
+        "settings": { "Black level": "-8", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "0" },
+        "colorDepth": { "R": "0", "G": "+2", "B": "+3", "C": "+2", "M": "-7", "Y": "0" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFE0B2", "coords": { "x": -5.8, "y": -3.2 }
+    },
+    {
+        "id": "pro-neg-std",
+        "name": { "vi": "24. Pro Neg Std", "en": "24. Pro Neg Std" },
+        "description": { "vi": "Tông màu trung tính, độ tương phản thấp, lý tưởng cho việc hậu kỳ.", "en": "Neutral tones, low contrast, ideal for post-processing." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "3900K, A7",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide -5", "Knee": "Manual 75% +3", "Color Mode": "Still", "Saturation": "-6", "Color Phase": "+1" },
+        "colorDepth": { "R": "-2", "G": "+7", "B": "+3", "C": "-5", "M": "-4", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#CFD8DC", "coords": { "x": -7.3, "y": -8.8 }
+    },
+    {
+        "id": "reala-ace",
+        "name": { "vi": "25. Reala Ace", "en": "25. Reala Ace" },
+        "description": { "vi": "Tái tạo màu sắc chân thực với độ bão hòa vừa phải.", "en": "Reproduces true-to-life colors with moderate saturation." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "3900K, A7",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide +2", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "-2", "G": "+7", "B": "+4", "C": "+2", "M": "-4", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#BDBDBD", "coords": { "x": -4.5, "y": 3.5 }
+    },
+    {
+        "id": "sony-classic-negative",
+        "name": { "vi": "26. Âm bản cổ điển Sony", "en": "26. Sony Classic Negative" },
+        "description": { "vi": "Tông màu xanh lá và đỏ được xử lý đặc biệt, tạo cảm giác hoài cổ.", "en": "Specially treated green and red tones create a nostalgic feel." },
+        "type": "color", "contrast": "medium", "saturation": "medium",
+        "whiteBalance": "9900K, B6-M0.5",
+        "settings": { "Black level": "+4", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone/Still", "Saturation": "+5", "Color Phase": "+1" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "-4", "C": "-4", "M": "-5", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#80CBC4", "coords": { "x": 1.8, "y": -4.2 }
+    },
+    {
+        "id": "fuji-nostalgic-neg",
+        "name": { "vi": "27. Hoài niệm Fuji", "en": "27. Fuji Nostalgic Neg" },
+        "description": { "vi": "Màu sắc ấm áp, vùng tối mềm mại, mang lại cảm giác của những năm 70.", "en": "Warm colors, soft shadows, bringing a 70s vibe." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "4300K, A7-M0.25",
+        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Middle +2", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+3", "Color Phase": "+1" },
+        "colorDepth": { "R": "+1", "G": "+7", "B": "+2", "C": "+2", "M": "+4", "Y": "+2" },
+        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "0", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFAB91", "coords": { "x": -5.2, "y": -2.1 }
+    }
+].concat([
+    {
+        "id": "classic-chrome",
+        "name": { "vi": "28. Đô Thị", "en": "28. Classic Chrome" },
+        "description": { "vi": "Tông màu trầm, bão hòa thấp, tương phản cao, gai góc.", "en": "Subdued tone, low saturation, high contrast for a gritty feel." },
+        "type": "color", "contrast": "high", "saturation": "low",
+        "whiteBalance": "4000K, A7-M0.5",
+        "settings": { "Black level": "-7", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+2" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "+2", "C": "+3", "M": "-6", "Y": "-1" },
+        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#78909C", "coords": { "x": 8.1, "y": -8.5 }
+    },
+    {
+        "id": "fuji-eterna",
+        "name": { "vi": "29. Điệp Vụ Melancholy", "en": "29. Fuji Eterna" },
+        "description": { "vi": "Màu sắc trầm, bão hòa rất thấp, tạo cảm giác điện ảnh.", "en": "Subdued colors, very low saturation for a cinematic feel." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "4000K, A7-M0.25",
+        "settings": { "Black level": "+7", "Gamma": "Movie", "Black Gamma": "Wide -5", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+1" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-2", "C": "+6", "M": "+4", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#A1887F", "coords": { "x": -9.2, "y": -9.1 }
+    },
+    {
+        "id": "sony-eterna",
+        "name": { "vi": "30. Giấc Mơ Xanh", "en": "30. Sony Eterna" },
+        "description": { "vi": "Tông màu lạnh, ám xanh, bão hòa cao, siêu thực và mơ màng.", "en": "A cool, blue-tinted tone, high saturation, surreal and dreamy." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "4000K, A7-M1",
+        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide -5", "Knee": "Manual 87.5% +3", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
+        "colorDepth": { "R": "-3", "G": "-2", "B": "+3", "C": "+7", "M": "-3", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#64B5F6", "coords": { "x": 8.0, "y": 9.0 }
+    },
+    {
+        "id": "acros-x",
+        "name": { "vi": "31. Than Chì", "en": "31. Acros X" },
+        "description": { "vi": "Tương phản mạnh, chi tiết sắc nét, như bút than chì.", "en": "Strong contrast, sharp details, like a graphite sketch." },
+        "type": "bw", "contrast": "high", "saturation": "low",
+        "whiteBalance": "AWB",
+        "settings": { "Black level": "-11", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "-1", "G": "+1", "B": "-1", "C": "+3", "M": "-3", "Y": "-1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#9E9E9E", "coords": { "x": 8.2, "y": -7.5 }
+    },
+    {
+        "id": "acros-xy",
+        "name": { "vi": "32. Đá Cuội", "en": "32. Acros XY" },
+        "description": { "vi": "Dải tông màu xám phong phú với độ chuyển mượt mà.", "en": "Rich range of gray tones with smooth transitions." },
+        "type": "bw", "contrast": "high", "saturation": "low",
+        "whiteBalance": "AWB",
+        "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +4", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "-4", "G": "+1", "B": "+3", "C": "+3", "M": "-4", "Y": "-1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#BDBDBD", "coords": { "x": 7.1, "y": -3.1 }
+    },
+    {
+        "id": "acros-xr",
+        "name": { "vi": "33. Bóng Tối", "en": "33. Acros XR" },
+        "description": { "vi": "Tăng cường độ sâu cho vùng tối, tạo cái nhìn kịch tính.", "en": "Enhances the depth of shadows for a dramatic look." },
+        "type": "bw", "contrast": "high", "saturation": "low",
+        "whiteBalance": "AWB",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Middle +5", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "-6", "G": "+1", "B": "+5", "C": "+4", "M": "-6", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#757575", "coords": { "x": 9.0, "y": 5.5 }
+    },
+    {
+        "id": "acros-xg",
+        "name": { "vi": "34. Tương Phản Gắt", "en": "34. Acros XG" },
+        "description": { "vi": "Tương phản cực cao, làm nổi bật đường nét, hình khối.", "en": "Extremely high contrast, emphasizing lines and shapes." },
+        "type": "bw", "contrast": "high", "saturation": "low",
+        "whiteBalance": "AWB",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "+2", "G": "-4", "B": "-1", "C": "+2", "M": "-1", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#616161", "coords": { "x": 9.5, "y": -8.0 }
+    },
+    {
+        "id": "fortia-50",
+        "name": { "vi": "35. Lục Lâm", "en": "35. Fortia 50" },
+        "description": { "vi": "Màu xanh lá cây đậm và bão hòa, cảm giác sâu thẳm của rừng già.", "en": "Deep, saturated green, profound feeling of an ancient forest." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "3500K, A7-G0.25",
+        "settings": { "Black level": "-2", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "ITU709Matrix", "Saturation": "+18", "Color Phase": "-3" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#2E7D32", "coords": { "x": 7.5, "y": -7.0 }
+    },
+    {
+        "id": "sony-nostalgic-neg",
+        "name": { "vi": "36. Trà Chanh", "en": "36. Sony Nostalgic Neg" },
+        "description": { "vi": "Tông màu vàng chanh và xanh lá cây nhẹ, tạo cảm giác tươi mới.", "en": "Light lemon-yellow and green tone, creating a fresh feeling." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "4500K, A7-M2",
+        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 80% +4", "Color Mode": "Still/Pro", "Saturation": "+14", "Color Phase": "-3" },
+        "colorDepth": { "R": "+2", "G": "+5", "B": "-7", "C": "+4", "M": "-6", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#CDDC39", "coords": { "x": -6.0, "y": 6.0 }
+    },
+    {
+        "id": "classic-cinema",
+        "name": { "vi": "37. Phim Cổ Điển", "en": "37. Classic Cinema" },
+        "description": { "vi": "Tông màu điện ảnh, vùng tối được nâng, màu sắc ám xanh.", "en": "Cinematic tone with lifted shadows and a blue cast." },
+        "type": "color", "contrast": "medium", "saturation": "low",
+        "whiteBalance": "AWB White Priority, A2-G0.25",
+        "settings": { "Black level": "-2", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+12", "Color Phase": "-1" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-5", "C": "+5", "M": "-5", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#A1887F", "coords": { "x": -2.0, "y": -8.5 }
+    },
+    {
+        "id": "oktar",
+        "name": { "vi": "38. Màu Nhiệt Đới", "en": "38. Oktar" },
+        "description": { "vi": "Bão hòa cao, màu sắc rực rỡ, đặc biệt là xanh dương và xanh lá.", "en": "High saturation, vibrant colors, especially blues and greens." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "7000K, B2-M1",
+        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "Movie", "Saturation": "+25", "Color Phase": "+2" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#0091EA", "coords": { "x": 9.0, "y": 2.0 }
+    },
+    {
+        "id": "zero-mute",
+        "name": { "vi": "39. Xanh Trầm Lặng", "en": "39. Zero Mute" },
+        "description": { "vi": "Tông màu teal trầm, bão hòa thấp, tạo cảm giác yên tĩnh.", "en": "A subdued, low-saturation teal tone, creating a quiet feel." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "7000K, B1-M1",
+        "settings": { "Black level": "+7", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 80% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+10", "Color Phase": "+7" },
+        "colorDepth": { "R": "0", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "-3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#4DB6AC", "coords": { "x": -8.5, "y": -2.5 }
+    },
+    {
+        "id": "cinechrome",
+        "name": { "vi": "40. Sắc Màu Điện Ảnh", "en": "40. CineChrome" },
+        "description": { "vi": "Màu sắc sống động, tương phản cao, mang lại cái nhìn điện ảnh hiện đại.", "en": "Vivid colors, high contrast, providing a modern cinematic look." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "3900K, A7",
+        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
+        "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto", "Color Mode": "BT.2020", "Saturation": "+32", "Color Phase": "+7" },
+        "colorDepth": { "R": "-4", "G": "-1", "B": "+5", "C": "+4", "M": "+5", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#E91E63", "coords": { "x": 9.2, "y": 6.5 }
+    },
+    {
+        "id": "pro-color",
+        "name": { "vi": "41. Màu Chuyên Nghiệp", "en": "41. Pro Color" },
+        "description": { "vi": "Màu sắc cân bằng, bão hòa tốt, cho kết quả chuyên nghiệp.", "en": "Well-balanced, saturated colors for professional results." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "3900K, A7-G1.5",
+        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
+        "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto 90% High", "Color Mode": "Rec.709", "Saturation": "+22", "Color Phase": "+1" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+3", "C": "-4", "M": "-2", "Y": "+5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#03A9F4", "coords": { "x": 7.0, "y": 1.0 }
+    },
+    {
+        "id": "blue-velvet-cinestill-50d",
+        "name": { "vi": "42. Nhung Xanh", "en": "42. Blue Velvet / Cinestill 50D" },
+        "description": { "vi": "Tông màu xanh dương lạnh, mềm mại như nhung, sang trọng và bí ẩn.", "en": "A cool, soft blue tone like velvet, luxurious and mysterious." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "7400K, B4-M1",
+        "settings": { "Black level": "0", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-3" },
+        "colorDepth": { "R": "+4", "G": "+5", "B": "-4", "C": "-4", "M": "+5", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#5C6BC0", "coords": { "x": -7.5, "y": 2.5 }
+    },
+    {
+        "id": "cinestill-800t",
+        "name": { "vi": "43. Ánh Đèn Neon", "en": "43. Cinestill 800T" },
+        "description": { "vi": "Tối ưu cho ánh sáng yếu, tạo quầng sáng và màu sắc đặc trưng của cảnh đêm.", "en": "Optimized for low light, creating halation and characteristic colors of night scenes." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": "2700K, A7-M1.25",
+        "settings": { "Black level": "+3", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+5" },
+        "colorDepth": { "R": "-5", "G": "-7", "B": "-7", "C": "+3", "M": "-7", "Y": "-5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#F06292", "coords": { "x": -9.0, "y": 4.0 }
+    },
+    {
+        "id": "cinestill-x-bwxx",
+        "name": { "vi": "44. Phim Đen Trắng Cũ", "en": "44. Cinestill X - BWXX" },
+        "description": { "vi": "Tương phản cao, hạt phim rõ rệt, tái hiện cảm giác phim đen trắng cổ điển.", "en": "High contrast, distinct film grain, recreating the feel of classic B&W movies." },
+        "type": "bw", "contrast": "high", "saturation": "high",
+        "whiteBalance": "5500K",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "+7", "Y": "+1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#757575", "coords": { "x": 8.8, "y": -5.0 }
+    },
+    {
+        "id": "t-max-100",
+        "name": { "vi": "45. Phác Họa Chì", "en": "45. T-Max 100" },
+        "description": { "vi": "Độ sắc nét cao, hạt phim mịn, tạo ảnh đen trắng chi tiết, sạch sẽ.", "en": "High sharpness, fine grain, creating detailed, clean B&W images." },
+        "type": "bw", "contrast": "high", "saturation": "low",
+        "whiteBalance": "AWB, B3-G0.25",
+        "settings": { "Black level": "-12", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 82% +5", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
+        "colorDepth": { "R": "-1", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#BDBDBD", "coords": { "x": 7.9, "y": -9.0 }
+    },
+    {
+        "id": "delta-3200",
+        "name": { "vi": "46. Hạt Mịn", "en": "46. Delta 3200" },
+        "description": { "vi": "Tái tạo cấu trúc hạt phim đặc trưng cho ảnh tài liệu thiếu sáng.", "en": "Recreates film grain structure for low-light documentary." },
+        "type": "bw", "contrast": "medium", "saturation": "low",
+        "whiteBalance": "AWB",
+        "settings": { "Black level": "-11", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Manual 82.5% +0", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
+        "colorDepth": { "R": "+3", "G": "+2", "B": "+7", "C": "+7", "M": "+4", "Y": "-5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#9E9E9E", "coords": { "x": 0.5, "y": -7.0 }
+    },
+    {
+        "id": "kosmo-pan",
+        "name": { "vi": "47. Vũ Trụ Đơn Sắc", "en": "47. Kosmo Pan" },
+        "description": { "vi": "Vùng tối sâu, tương phản mạnh, mang lại cái nhìn kịch tính.", "en": "Deep blacks, strong contrast, for a dramatic look." },
+        "type": "bw", "contrast": "high", "saturation": "low",
+        "whiteBalance": "AWB",
+        "settings": { "Black level": "-8", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
+        "colorDepth": { "R": "-4", "G": "+3", "B": "+7", "C": "0", "M": "+7", "Y": "-5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#616161", "coords": { "x": 8.3, "y": -4.0 }
+    },
+    {
+        "id": "chroma-fade",
+        "name": { "vi": "48. Nhạt Phai", "en": "48. Chroma Fade" },
+        "description": { "vi": "Vùng tối được nâng tạo hiệu ứng bạc màu, hoài cổ, nhẹ nhàng.", "en": "Lifted shadows create a faded, nostalgic, and gentle effect." },
+        "type": "bw", "contrast": "low", "saturation": "low",
+        "whiteBalance": "AWB",
+        "settings": { "Black level": "+3", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
+        "colorDepth": { "R": "+5", "G": "+5", "B": "+7", "C": "+2", "M": "+7", "Y": "-4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#E0E0E0", "coords": { "x": -7.8, "y": -5.5 }
+    },
+    {
+        "id": "kodak-tri-x-1600",
+        "name": { "vi": "49. Kẻ lang thang", "en": "49. Kodak Tri-X 1600 Pushed" },
+        "description": { "vi": "Độ tương phản cao, hạt rõ, hoàn hảo cho khoảnh khắc chân thực.", "en": "High contrast, pronounced grain, perfect for authentic moments." },
+        "type": "bw", "contrast": "high", "saturation": "high",
+        "whiteBalance": "5500K, A3-G2",
+        "notes": { "vi": "Tắt Giảm nhiễu cho JPG. Chụp ISO 1600+ để tăng hạt.", "en": "Turn Off Noise Reduction for JPG. Shoot ISO 1600 or higher to increase Granularity." },
+        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 77.5% +2", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
+        "colorDepth": { "R": "-4", "G": "-1", "B": "+6", "C": "+5", "M": "-3", "Y": "-3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#424242", "coords": { "x": 9.3, "y": -3.5 }
+    },
+    {
+        "id": "kodak-tri-x-400",
+        "name": { "vi": "50. Ảnh Cũ", "en": "50. Kodak Tri-X 400" },
+        "description": { "vi": "Tương phản thấp, hạt mịn, tạo cảm giác ảnh cũ.", "en": "Low contrast, fine grain, feel of an old photo." },
+        "type": "bw", "contrast": "low", "saturation": "high",
+        "whiteBalance": "5500K, A3-G2",
+        "notes": { "vi": "Bật Giảm nhiễu cho JPG & đặt thành Thấp. Chụp ISO 1600+ để tăng hạt.", "en": "Turn On NR for JPG & Set to Low. Shoot ISO 1600+ to increase Granularity." },
+        "settings": { "Black level": "+3", "Gamma": "Cine1", "Black Gamma": "Narrow +5", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
+        "colorDepth": { "R": "+3", "G": "+3", "B": "+3", "C": "+2", "M": "+3", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#B0BEC5", "coords": { "x": -8.1, "y": -6.4 }
+    },
+    {
+        "id": "neo-max",
+        "name": { "vi": "51. Tương Lai Đơn Sắc", "en": "51. Neo Max" },
+        "description": { "vi": "Đen trắng hiện đại, tương phản cân bằng, vừa cổ điển vừa vị lai.", "en": "Modern B&W, balanced contrast, both classic and futuristic." },
+        "type": "bw", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "6000K, B2.5-M1.5",
+        "settings": { "Black level": "+2", "Gamma": "Cine1-4", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
+        "colorDepth": { "R": "-4", "G": "+5", "B": "+4", "C": "0", "M": "-5", "Y": "-3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#757575", "coords": { "x": 2.0, "y": -6.0 }
+    },
+    {
+        "id": "ilford-hp5",
+        "name": { "vi": "52. Khoảnh khắc quyết định", "en": "52. Ilford HP5" },
+        "description": { "vi": "Tương phản cao, phù hợp nhiếp ảnh tài liệu, nhấn mạnh cảm xúc.", "en": "High contrast for documentary, emphasizing emotion." },
+        "type": "bw", "contrast": "high", "saturation": "low",
+        "whiteBalance": "AWB, A3",
+        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -5", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
+        "colorDepth": { "R": "0", "G": "+3", "B": "0", "C": "+2", "M": "+3", "Y": "0" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#90A4AE", "coords": { "x": 7.6, "y": -1.8 }
+    },
+    {
+        "id": "midred-infra",
+        "name": { "vi": "53. Hồng Ngoại", "en": "53. MidRed Infra" },
+        "description": { "vi": "Tái tạo hiệu ứng phim hồng ngoại, tán lá trắng, bầu trời đen.", "en": "Recreates infrared film effect, white foliage, dark skies." },
+        "type": "bw", "contrast": "high", "saturation": "high",
+        "whiteBalance": "AWB, A3",
+        "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "+4" },
+        "colorDepth": { "R": "-7", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFFFFF", "coords": { "x": 8.9, "y": 0.5 }
+    },
+    {
+        "id": "dream-neg",
+        "name": { "vi": "54. Giấc Mơ Trưa", "en": "54. Dream Neg" },
+        "description": { "vi": "Màu sắc ấm áp, mềm mại, mang lại cảm giác mơ màng, lãng mạn.", "en": "Warm, soft colors, providing a dreamy, romantic feeling." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "4500K, A7",
+        "settings": { "Black level": "-5", "Gamma": "Cine1 or Cine4", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+25", "Color Phase": "+3" },
+        "colorDepth": { "R": "-2", "G": "+5", "B": "-2", "C": "+3", "M": "+3", "Y": "-1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFCC80", "coords": { "x": 3.0, "y": 8.5 }
+    },
+    {
+        "id": "agfa-precisa",
+        "name": { "vi": "55. Màu Chuẩn Xác", "en": "55. Agfa Precisa" },
+        "description": { "vi": "Độ bão hòa và tương phản cao, tạo màu sắc sống động và chuẩn xác.", "en": "High saturation and contrast, creating vivid and accurate colors." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "3500K, A7-G1.5",
+        "settings": { "Black level": "+1", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+2" },
+        "colorDepth": { "R": "+4", "G": "+1", "B": "+7", "C": "+1", "M": "+7", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#673AB7", "coords": { "x": 9.1, "y": 7.8 }
+    },
+    {
+        "id": "redscale-ultra",
+        "name": { "vi": "56. Đỏ Rực", "en": "56. RedScale Ultra" },
+        "description": { "vi": "Tông màu đỏ và cam bao trùm, tạo hiệu ứng độc đáo, nghệ thuật.", "en": "Dominant red and orange tone, creating a unique, artistic effect." },
+        "type": "color", "contrast": "low", "saturation": "low",
+        "whiteBalance": ">9900K, B3-G2",
+        "notes": { "vi": "Đặt WB tùy chỉnh bằng thẻ màu Teal.", "en": "Set with Custom WB and a Teal Card." },
+        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "ITU709Matrix", "Saturation": "+7", "Color Phase": "-1" },
+        "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "-7", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FF5722", "coords": { "x": -8.0, "y": 6.8 }
+    },
+    {
+        "id": "zetra-100",
+        "name": { "vi": "57. Bạc Hà Mát Lạnh", "en": "57. Zetra 100" },
+        "description": { "vi": "Tông màu lạnh, sắc xanh bạc hà đặc trưng, tươi mát, trong lành.", "en": "Cool tone, characteristic mint green hue, fresh and clean." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "4600K, A7-M1.5",
+        "settings": { "Black level": "-8", "Gamma": "Cine1", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+20", "Color Phase": "-4" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "-5", "C": "-5", "M": "+3", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#00BCD4", "coords": { "x": 7.3, "y": -1.5 }
+    },
+    {
+        "id": "rose-spectra",
+        "name": { "vi": "58. Cánh Hồng", "en": "58. Rose Spectra" },
+        "description": { "vi": "Tông màu hồng và đỏ tươi tắn, mềm mại, lý tưởng cho chân dung.", "en": "Fresh pink and red tone, soft, ideal for portraits." },
+        "type": "color", "contrast": "low", "saturation": "high",
+        "whiteBalance": "4600K, A7-M0.5",
+        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Pro", "Saturation": "+25", "Color Phase": "+2" },
+        "colorDepth": { "R": "-1", "G": "0", "B": "0", "C": "-3", "M": "+5", "Y": "-1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#E91E63", "coords": { "x": -7.0, "y": 7.2 }
+    },
+    {
+        "id": "kodak-vision-200t",
+        "name": { "vi": "59. Thành Phố Vàng", "en": "59. Kodak Vision 200T" },
+        "description": { "vi": "Tông màu vàng ấm áp, tối ưu cho ánh sáng đèn tungsten.", "en": "Warm golden tone, optimized for tungsten lighting." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "4700K, A7-G1.25",
+        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
+        "settings": { "Black level": "-15", "Gamma": "S-Log2 or S-Log3", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "ITU709Matrix", "Saturation": "+32", "Color Phase": "+5" },
+        "colorDepth": { "R": "+1", "G": "+7", "B": "-7", "C": "-7", "M": "+5", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFC107", "coords": { "x": 8.4, "y": 8.4 }
+    },
+    {
+        "id": "kodak-vision-200t-v2",
+        "name": { "vi": "60. Phố Cát", "en": "60. Kodak Vision 200T-V2" },
+        "description": { "vi": "Màu sắc ấm áp, ngả vàng cát, hoài niệm và bụi bặm.", "en": "Warm, sandy-yellow hue, nostalgic and dusty feel." },
+        "type": "color", "contrast": "low", "saturation": "high",
+        "whiteBalance": "4400K, A7-G1",
+        "settings": { "Black level": "0", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+25", "Color Phase": "+3" },
+        "colorDepth": { "R": "+3", "G": "+7", "B": "0", "C": "0", "M": "+5", "Y": "+3" },
+        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 5", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFD54F", "coords": { "x": -6.5, "y": 7.7 }
+    },
+    {
+        "id": "ayon-200",
+        "name": { "vi": "61. Sa Mạc Bỏng Cháy", "en": "61. Ayon 200" },
+        "description": { "vi": "Tông màu vàng cam bão hòa, tái hiện cái nóng của sa mạc.", "en": "Saturated yellow-orange tone, recreating desert heat." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "8000K, A7-G5.5",
+        "settings": { "Black level": "-12", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+7" },
+        "colorDepth": { "R": "+4", "G": "+5", "B": "0", "C": "0", "M": "-3", "Y": "+7" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FF9800", "coords": { "x": 9.4, "y": 8.9 }
+    },
+    {
+        "id": "phoenix-harman",
+        "name": { "vi": "62. Lửa Phượng Hoàng", "en": "62. Phoenix Harman" },
+        "description": { "vi": "Màu sắc rực rỡ, đỏ và vàng, tương phản cao, mạnh mẽ.", "en": "Vibrant red and yellow, high contrast, powerful." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "8500K, B3.5-G1",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 105% +5", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+1" },
+        "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#F44336", "coords": { "x": 9.6, "y": 9.2 }
+    },
+    {
+        "id": "phenomena",
+        "name": { "vi": "63. Huyền Ảo", "en": "63. Phenomena" },
+        "description": { "vi": "Màu sắc bão hòa cao, độc đáo, tạo cái nhìn siêu thực.", "en": "Highly saturated, unique colors, creating a surreal look." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "AWB, A3",
+        "settings": { "Black level": "-5", "Gamma": "Cine1-4", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Pro", "Saturation": "+25", "Color Phase": "0" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+5", "Y": "+4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#9C27B0", "coords": { "x": 4.5, "y": 9.5 }
+    },
+    {
+        "id": "acidnom",
+        "name": { "vi": "64. Xanh Acid", "en": "64. Acidnom" },
+        "description": { "vi": "Xanh lá cây và vàng chanh nổi bật, hiệu ứng thị giác mạnh.", "en": "Prominent green and lime-yellow, strong visual effect." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "3400K, A7-M1.75",
+        "settings": { "Black level": "-6", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+32", "Color Phase": "0" },
+        "colorDepth": { "R": "+3", "G": "+7", "B": "+2", "C": "+7", "M": "-5", "Y": "-4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#8BC34A", "coords": { "x": 1.5, "y": -8.0 }
+    },
+    {
+        "id": "estra-500",
+        "name": { "vi": "65. Dạ Khúc Ánh Trăng", "en": "65. Estra 500" },
+        "description": { "vi": "Màu sắc lạnh, ám xanh tím, tĩnh lặng và bí ẩn của đêm trăng.", "en": "Cool colors, blue-purple cast, quiet and mysterious moonlight." },
+        "type": "color", "contrast": "medium", "saturation": "low",
+        "whiteBalance": "8600K, B2.5-M3",
+        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 82.5% +4", "Color Mode": "Still", "Saturation": "-8", "Color Phase": "+1" },
+        "colorDepth": { "R": "-6", "G": "+7", "B": "+1", "C": "+3", "M": "+7", "Y": "+5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#7986CB", "coords": { "x": -3.0, "y": 1.5 }
+    },
+    {
+        "id": "arista-edu-100",
+        "name": { "vi": "66. Đơn Sắc Tối Giản", "en": "66. Arista Edu 100" },
+        "description": { "vi": "Tương phản cao, vùng đen sâu, tập trung vào hình khối, đường nét.", "en": "High contrast, deep blacks, focusing on shapes and lines." },
+        "type": "bw", "contrast": "high", "saturation": "high",
+        "whiteBalance": "5500K",
+        "settings": { "Black level": "-15", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "+28", "Color Phase": "0" },
+        "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "+3", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#616161", "coords": { "x": 8.7, "y": -6.8 }
+    },
+    {
+        "id": "x-tarr",
+        "name": { "vi": "67. Kịch Tính Đen Trắng", "en": "67. X-Tarr" },
+        "description": { "vi": "Tương phản, bão hòa tối đa, tạo cái nhìn đen trắng kịch tính.", "en": "Maximum contrast and saturation, creating a dramatic B&W look." },
+        "type": "bw", "contrast": "high", "saturation": "high",
+        "whiteBalance": "5500K",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +5", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
+        "colorDepth": { "R": "+4", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+7" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#212121", "coords": { "x": 9.8, "y": -9.8 }
+    },
+    {
+        "id": "magicspice",
+        "name": { "vi": "68. Gia Vị Ma Thuật", "en": "68. MagicSpice" },
+        "description": { "vi": "Tông màu ấm, ngả vàng đỏ, mang lại cảm giác ấm cúng.", "en": "Warm tone, yellow-red cast, providing a cozy feeling." },
+        "type": "color", "contrast": "high", "saturation": "medium",
+        "whiteBalance": "7000K, B4-M1.25",
+        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+17", "Color Phase": "-1" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#BF360C", "coords": { "x": 6.8, "y": 6.8 }
+    },
+    {
+        "id": "amarelo-300",
+        "name": { "vi": "69. Vỏ Chanh Vàng", "en": "69. Amarelo 300" },
+        "description": { "vi": "Tông màu vàng chanh tươi sáng, hơi gắt, tràn đầy năng lượng.", "en": "Bright and slightly sharp lemon-yellow tone, energetic." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "4200K, A7-G0.25",
+        "settings": { "Black level": "+4", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "-4" },
+        "colorDepth": { "R": "-1", "G": "+7", "B": "0", "C": "-3", "M": "-4", "Y": "-2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FDD835", "coords": { "x": -5.5, "y": 5.0 }
+    },
+    {
+        "id": "gaf-500",
+        "name": { "vi": "70. Rêu Phong", "en": "70. GAF 500" },
+        "description": { "vi": "Tông màu xanh rêu, nâu đất, tạo cảm giác cổ kính, trầm mặc.", "en": "Moss-green, earthy-brown tone, creating an ancient feel." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "5300K, A7-M0.75",
+        "settings": { "Black level": "+3", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "0" },
+        "colorDepth": { "R": "+3", "G": "+5", "B": "-3", "C": "-3", "M": "-3", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#795548", "coords": { "x": -6.8, "y": -7.8 }
+    },
+    {
+        "id": "vespera-nightime",
+        "name": { "vi": "71. Đêm Lam Tím", "en": "71. Vespera - Nightime" },
+        "description": { "vi": "Màu xanh chàm, tím sâu, tối ưu cho cảnh đêm, huyền ảo.", "en": "Deep indigo and violet, optimized for night scenes, magical." },
+        "type": "color", "contrast": "medium", "saturation": "low",
+        "whiteBalance": "2500K, B4-G2.5",
+        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 82.5% +4", "Color Mode": "Still", "Saturation": "-10", "Color Phase": "+7" },
+        "colorDepth": { "R": "-6", "G": "+7", "B": "+1", "C": "+3", "M": "+7", "Y": "+5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#311B92", "coords": { "x": -2.5, "y": 0.5 }
+    },
+    {
+        "id": "veniliqum-night",
+        "name": { "vi": "72. Ngọc Lục Bảo Đêm", "en": "72. Veniliqum - Night" },
+        "description": { "vi": "Tông xanh lục bảo đậm, bão hòa cao dưới đèn đêm, sang trọng.", "en": "Deep, highly saturated emerald green under night lights, luxurious." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "3000K, A7-G7",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 105% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+5" },
+        "colorDepth": { "R": "+5", "G": "-1", "B": "+2", "C": "+5", "M": "+5", "Y": "+3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#00695C", "coords": { "x": 7.7, "y": -6.5 }
+    },
+    {
+        "id": "gold-luxe-nighttime",
+        "name": { "vi": "73. Vàng 24K", "en": "73. Gold Luxe - Nighttime" },
+        "description": { "vi": "Tông vàng kim loại ấm áp, sang trọng, cho cảnh đêm lấp lánh.", "en": "Warm, luxurious metallic gold tone for sparkling night scenes." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "5500K, A7-M0.75",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+18", "Color Phase": "+7" },
+        "colorDepth": { "R": "+5", "G": "-1", "B": "+2", "C": "+5", "M": "+5", "Y": "-5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFB300", "coords": { "x": -4.0, "y": 7.0 }
+    },
+    {
+        "id": "eastman-color-negative-ii-100t",
+        "name": { "vi": "74. Âm Bản Cổ Điển", "en": "74. Eastman Color Negative II - 100T" },
+        "description": { "vi": "Tông màu lạnh, ám xanh, tái tạo cảm giác phim âm bản xưa.", "en": "Cool, blue-tinted tone, recreating the feel of old negative film." },
+        "type": "color", "contrast": "high", "saturation": "medium",
+        "whiteBalance": "8200K, B4.5-G1.75",
+        "settings": { "Black level": "-10", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+16", "Color Phase": "+2" },
+        "colorDepth": { "R": "+5", "G": "+7", "B": "-6", "C": "-5", "M": "+7", "Y": "-4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#2196F3", "coords": { "x": 6.5, "y": 3.0 }
+    },
+    {
+        "id": "kodak-vision3-50d",
+        "name": { "vi": "75. Thị Giác Mùa Hè", "en": "75. Kodak Vision3 50D" },
+        "description": { "vi": "Màu sắc rực rỡ, ấm áp, hoàn hảo cho ánh sáng ban ngày.", "en": "Vibrant, warm colors, perfect for daylight." },
+        "type": "color", "contrast": "high", "saturation": "high",
+        "whiteBalance": "3300K, A7-G0.75",
+        "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+32", "Color Phase": "+2" },
+        "colorDepth": { "R": "+4", "G": "+7", "B": "-6", "C": "+4", "M": "+6", "Y": "+5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFEB3B", "coords": { "x": 8.6, "y": 9.3 }
+    },
+    {
+        "id": "solara-100",
+        "name": { "vi": "76. Nắng Phai", "en": "76. Solara 100" },
+        "description": { "vi": "Tông màu ấm, ngả vàng, bão hòa thấp, tạo cảm giác hoài cổ.", "en": "Warm, yellowish tone, low saturation, creates a nostalgic feel." },
+        "type": "color", "contrast": "low", "saturation": "medium",
+        "whiteBalance": "4200K, A7-M2",
+        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+14", "Color Phase": "-3" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-7", "M": "-4", "Y": "-1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFF176", "coords": { "x": -5.0, "y": 6.5 }
+    },
+    {
+        "id": "kodak-pro-image-100",
+        "name": { "vi": "77. Ảnh Chuyên Nghiệp", "en": "77. Kodak Pro Image 100" },
+        "description": { "vi": "Màu sắc trung thực, tông da đẹp, lựa chọn tin cậy cho chân dung.", "en": "True colors, beautiful skin tones, a reliable choice for portraits." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "4000K, A7-G1",
+        "settings": { "Black level": "+6", "Gamma": "S-Cinetone/Cine4", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+30", "Color Phase": "-2" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+3", "C": "+5", "M": "+3", "Y": "-3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFB74D", "coords": { "x": 5.0, "y": 5.0 }
+    },
+    {
+        "id": "candy-look",
+        "name": { "vi": "78. Kẹo Ngọt", "en": "78. Candy Look" },
+        "description": { "vi": "Màu sắc rực rỡ, tươi sáng như kẹo, mang lại cảm giác vui tươi.", "en": "Bright, vibrant colors like candy, providing a cheerful feeling." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "AWB, A2-M0.75",
+        "settings": { "Black level": "-4", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+27", "Color Phase": "-3" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+4", "M": "+2", "Y": "-5" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#EC407A", "coords": { "x": 6.0, "y": 9.0 }
+    },
+    {
+        "id": "aeris-100",
+        "name": { "vi": "79. Không Khí Trong Lành", "en": "79. Aeris 100" },
+        "description": { "vi": "Tông xanh da trời và trắng sáng, tạo cảm giác trong lành.", "en": "Sky-blue and bright white tone, creating a fresh feeling." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "AWB, B2-G2",
+        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+30", "Color Phase": "+2" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "-5", "M": "-3", "Y": "-4" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#29B6F6", "coords": { "x": 3.5, "y": 2.0 }
+    },
+    {
+        "id": "sundune-400",
+        "name": { "vi": "80. Cồn Cát Vàng", "en": "80. Sundune 400" },
+        "description": { "vi": "Màu vàng cát ấm áp, bão hòa cao, gợi hình ảnh cồn cát.", "en": "Warm, highly saturated sandy yellow, evoking dunes." },
+        "type": "color", "contrast": "medium", "saturation": "high",
+        "whiteBalance": "AWB, A2-G1.75",
+        "settings": { "Black level": "+4", "Gamma": "S-Cinetone", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+3" },
+        "colorDepth": { "R": "+3", "G": "+7", "B": "+4", "C": "-5", "M": "-3", "Y": "-3" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FFA000", "coords": { "x": 4.0, "y": 8.0 }
+    },
+    {
+        "id": "kodak-vision3-250d",
+        "name": { "vi": "81. Điện Ảnh 250D", "en": "81. Kodak Vision3 250D" },
+        "description": { "vi": "Bão hòa cao, tông màu ấm, giả lập màu phim điện ảnh ban ngày.", "en": "High saturation, warm tone, simulates daylight cinematic film." },
+        "type": "color", "contrast": "low", "saturation": "high",
+        "whiteBalance": "3700K, A7-G1",
+        "settings": { "Black level": "+9", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+3" },
+        "colorDepth": { "R": "0", "G": "+3", "B": "+2", "C": "+2", "M": "-3", "Y": "+1" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#FF8F00", "coords": { "x": -6.0, "y": 8.3 }
+    },
+    {
+        "id": "orthochromatic",
+        "name": { "vi": "82. Đơn Sắc Cổ Điển", "en": "82. Orthochromatic" },
+        "description": { "vi": "Giả lập phim đen trắng cổ điển không nhạy với màu đỏ.", "en": "Simulates classic orthochromatic B&W film, not sensitive to red." },
+        "type": "bw", "contrast": "high", "saturation": "medium",
+        "whiteBalance": "AWB, A3-M2.75",
+        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "105% +5", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "+7", "G": "+7", "B": "-7", "C": "-7", "M": "+7", "Y": "+7" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#BDBDBD", "coords": { "x": 7.4, "y": -4.5 }
+    },
+    {
+        "id": "santa-color-100",
+        "name": { "vi": "83. Ấm cúng", "en": "83. Santa Color 100" },
+        "description": { "vi": "Tông màu ấm, sắc đỏ và xanh lá đặc trưng, không khí lễ hội.", "en": "Warm tone, characteristic red and green hues, festive atmosphere." },
+        "type": "color", "contrast": "high", "saturation": "medium",
+        "whiteBalance": "AWB, A5-G0.25",
+        "settings": { "Black level": "-7", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "105% +5", "Color Mode": "Still", "Saturation": "+13", "Color Phase": "+4" },
+        "colorDepth": { "R": "+3", "G": "+7", "B": "-4", "C": "-5", "M": "+4", "Y": "+2" },
+        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+        "personalityColor": "#EF5350", "coords": { "x": 6.9, "y": 6.0 }
+    }
+])
+
     </script>
 </body>
 </html>
