@@ -119,6 +119,93 @@
         #mobileNavMenu {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* WB Simulator Styles */
+        .wb-simulator {
+            background-color: #fff;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        }
+        .wb-preview {
+            width: 100%;
+            height: 12rem;
+            border-radius: 1rem;
+            background-color: #fff;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+        .wb-preview-tint {
+            position: absolute;
+            inset: 0;
+            mix-blend-mode: soft-light; /* soft-light or overlay works well */
+            transition: background-color 0.3s ease;
+        }
+        .wb-grid-container {
+            aspect-ratio: 1 / 1;
+            max-width: 300px;
+            margin: 1.5rem auto 0;
+            position: relative;
+            background: linear-gradient(90deg, #93b5ff, white, #ffcb6b), linear-gradient(0deg, #b0e8a2, white, #ffb3ff);
+            background-blend-mode: multiply;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+        }
+        .wb-grid {
+            position: absolute;
+            inset: 0;
+            cursor: crosshair;
+        }
+        .wb-grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+            background-size: calc(100% / 18) calc(100% / 18);
+        }
+        .wb-grid-axes {
+            position: absolute;
+            inset: 0;
+        }
+        .wb-grid-axes::before, .wb-grid-axes::after {
+            content: '';
+            position: absolute;
+            background-color: #9ca3af;
+        }
+        .wb-grid-axes::before { /* Vertical line */
+            left: 50%;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+        .wb-grid-axes::after { /* Horizontal line */
+            top: 50%;
+            left: 0;
+            height: 2px;
+            width: 100%;
+            transform: translateY(-50%);
+        }
+        .wb-grid-labels {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .wb-handle {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 3px solid white;
+            border-radius: 50%;
+            background-color: var(--primary-accent);
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: transform 0.1s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -601,9 +688,36 @@
                         </section>
                         <section id="wb">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-10" data-translate-key="wbTitle"></h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
                                 <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbKelvinTitle"></h4><p class="mb-4" data-translate-key="wbKelvinDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="kelvinChart"></canvas></div><div class="mt-4 text-sm text-gray-600 space-y-1"><p data-translate-key="wbKelvinCool"></p><p data-translate-key="wbKelvinWarm"></p></div></div>
-                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg"><h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4><p class="mb-4" data-translate-key="wbShiftDesc"></p><div class="chart-container h-64 md:h-80"><canvas id="wbShiftChart"></canvas></div><div class="mt-4 text-sm text-gray-600"><p data-translate-key="wbShiftExample"></p></div></div>
+                                
+                                <!-- WB Simulator Start -->
+                                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                                    <h4 class="text-xl font-bold mb-4" data-translate-key="wbShiftTitle"></h4>
+                                    <p class="mb-4" data-translate-key="wbShiftDesc"></p>
+                                    <div id="wbSimulator" class="space-y-4">
+                                        <div class="wb-preview"><div class="wb-preview-tint"></div></div>
+                                        <div>
+                                            <div class="flex justify-between font-mono text-sm"><span>2500K</span><span>9900K</span></div>
+                                            <input type="range" id="kelvinSlider" min="2500" max="9900" value="5500" step="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                            <div class="text-center font-bold text-lg mt-2"><span id="kelvinValue">5500</span>K</div>
+                                        </div>
+                                        <div class="wb-grid-container">
+                                            <div class="wb-grid-lines"></div>
+                                            <div class="wb-grid-axes"></div>
+                                            <div class="absolute -top-6 left-1/2 -translate-x-1/2 wb-grid-labels">M</div>
+                                            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 wb-grid-labels">G</div>
+                                            <div class="absolute -left-6 top-1/2 -translate-y-1/2 wb-grid-labels">B</div>
+                                            <div class="absolute -right-6 top-1/2 -translate-y-1/2 wb-grid-labels">A</div>
+                                            <div id="wbGrid" class="wb-grid">
+                                                <div id="wbHandle" class="wb-handle" style="top: 50%; left: 50%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center font-mono font-semibold text-lg" id="wbShiftValue">A0 G0</div>
+                                    </div>
+                                </div>
+                                <!-- WB Simulator End -->
+
                             </div>
                         </section>
                         <section id="pp">
@@ -673,10 +787,13 @@
             if(kelvinCtx) {
                 activeCharts.kelvin = new Chart(kelvinCtx, { type: 'bar', data: { labels: ['2500K', '4000K', '5500K', '7500K', '9900K'], datasets: [{ label: t('kelvinChartTitle'), data: [1, 1, 1, 1, 1], backgroundColor: ['rgba(0, 166, 237, 0.4)','rgba(0, 166, 237, 0.7)','rgba(200, 200, 200, 0.8)','rgba(242, 80, 34, 0.7)','rgba(242, 80, 34, 0.4)'], borderColor: ['#00A6ED','#00A6ED','rgba(150, 150, 150, 1)','#F25022','#F25022'], borderWidth: 1 }] }, options: defaultChartOptions({ indexAxis: 'y', plugins: { legend: { display: false } } }) });
             }
-            const wbShiftCtx = document.getElementById('wbShiftChart')?.getContext('2d');
-            if(wbShiftCtx) {
-                activeCharts.wbShift = new Chart(wbShiftCtx, { type: 'scatter', data: { datasets: [ { label: t('wbShiftRecipe1'), data: [{x: 6, y: 7}], backgroundColor: PALETTE.blue, pointRadius: 10, pointHoverRadius: 15 }, { label: t('wbShiftRecipe2'), data: [{x: -7, y: 0.5}], backgroundColor: PALETTE.orange, pointRadius: 10, pointHoverRadius: 15 } ] }, options: defaultChartOptions({ scales: { x: { min: -9, max: 9, title: { display: true, text: t('wbShiftXAxis'), color: FONT_COLOR } }, y: { min: -9, max: 9, title: { display: true, text: t('wbShiftYAxis'), color: FONT_COLOR } } } }) });
+            
+            // Initialize WB Simulator if it exists
+            const wbSimulator = document.getElementById('wbSimulator');
+            if (wbSimulator) {
+                initWBSimulator();
             }
+
             const blackGammaCtx = document.getElementById('blackGammaChart')?.getContext('2d');
             if(blackGammaCtx) {
                 activeCharts.blackGamma = new Chart(blackGammaCtx, { type: 'bar', data: { labels: ['-7', '-4', '0', '+4', '+7'], datasets: [{ label: 'Level', data: [-7, -4, 0, 4, 7], backgroundColor: [PALETTE.blue, PALETTE.blue, PALETTE.gray, PALETTE.orange, PALETTE.orange], }] }, options: defaultChartOptions({ plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: t('blackGammaYAxis') } } } }) });
@@ -1030,6 +1147,94 @@
             } else {
                 menu.classList.add('translate-x-full');
             }
+        }
+        
+        function initWBSimulator() {
+            const slider = document.getElementById('kelvinSlider');
+            const kelvinValue = document.getElementById('kelvinValue');
+            const grid = document.getElementById('wbGrid');
+            const handle = document.getElementById('wbHandle');
+            const shiftValue = document.getElementById('wbShiftValue');
+            const preview = document.querySelector('.wb-preview');
+            const previewTint = document.querySelector('.wb-preview-tint');
+
+            if (!slider || !grid) return;
+
+            let isDragging = false;
+
+            function updateWB() {
+                // 1. Update Kelvin
+                const K = parseInt(slider.value);
+                kelvinValue.textContent = K;
+
+                // 2. Update Grid
+                const rect = grid.getBoundingClientRect();
+                const xPercent = (parseFloat(handle.style.left) || 50) / 100;
+                const yPercent = (parseFloat(handle.style.top) || 50) / 100;
+                
+                // Map 0-1 range to -9 to 9 range
+                const abValue = Math.round((xPercent - 0.5) * 18);
+                const gmValue = Math.round((0.5 - yPercent) * 18); // Invert Y-axis
+
+                const abPrefix = abValue >= 0 ? 'A' : 'B';
+                const gmPrefix = gmValue >= 0 ? 'M' : 'G';
+                shiftValue.textContent = `${abPrefix}${Math.abs(abValue)} ${gmPrefix}${Math.abs(gmValue)}`;
+
+                // 3. Update Preview Color
+                // --- Kelvin to Base Color ---
+                const kRatio = (K - 2500) / (9900 - 2500); // 0.0 to 1.0
+                const coolColor = [158, 209, 255]; // Cool blue
+                const warmColor = [255, 199, 143]; // Warm orange
+                const r = Math.round(coolColor[0] + (warmColor[0] - coolColor[0]) * kRatio);
+                const g = Math.round(coolColor[1] + (warmColor[1] - coolColor[1]) * kRatio);
+                const b = Math.round(coolColor[2] + (warmColor[2] - coolColor[2]) * kRatio);
+                preview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+                // --- Shift to Tint Color ---
+                const maxTintStrength = 0.3; // Max opacity for the tint
+                let tintR = 0, tintG = 0, tintB = 0;
+
+                // A/B axis: Amber to Blue
+                if (abValue > 0) tintR += 255, tintG += 190; // Amber
+                else tintB += 255; // Blue
+                let tintOpacityAB = (Math.abs(abValue) / 9) * maxTintStrength;
+
+                // G/M axis: Green to Magenta
+                if (gmValue < 0) tintG += 255; // Green
+                else tintR += 255, tintB += 255; // Magenta
+                let tintOpacityGM = (Math.abs(gmValue) / 9) * maxTintStrength;
+
+                // Simple average for diagonal tints. A more complex model could be used.
+                const finalR = (abValue > 0 ? 255 : 0) * tintOpacityAB + (gmValue > 0 ? 255 : 0) * tintOpacityGM;
+                const finalG = (abValue > 0 ? 190 : 0) * tintOpacityAB + (gmValue < 0 ? 255 : 0) * tintOpacityGM;
+                const finalB = (abValue < 0 ? 255 : 0) * tintOpacityAB + (gmValue > 0 ? 255 : 0) * tintOpacityGM;
+                const finalOpacity = Math.min(maxTintStrength, tintOpacityAB + tintOpacityGM);
+
+                previewTint.style.backgroundColor = `rgba(${finalR}, ${finalG}, ${finalB}, ${finalOpacity})`;
+            }
+
+            function setHandlePosition(e) {
+                const rect = grid.getBoundingClientRect();
+                const x = Math.max(0, Math.min(rect.width, (e.clientX || e.touches[0].clientX) - rect.left));
+                const y = Math.max(0, Math.min(rect.height, (e.clientY || e.touches[0].clientY) - rect.top));
+                
+                handle.style.left = `${(x / rect.width) * 100}%`;
+                handle.style.top = `${(y / rect.height) * 100}%`;
+                updateWB();
+            }
+
+            slider.addEventListener('input', updateWB);
+            
+            grid.addEventListener('mousedown', (e) => { isDragging = true; setHandlePosition(e); });
+            grid.addEventListener('touchstart', (e) => { isDragging = true; setHandlePosition(e); });
+
+            window.addEventListener('mousemove', (e) => { if (isDragging) setHandlePosition(e); });
+            window.addEventListener('touchmove', (e) => { if (isDragging) { e.preventDefault(); setHandlePosition(e); } }, { passive: false });
+            
+            window.addEventListener('mouseup', () => { isDragging = false; });
+            window.addEventListener('touchend', () => { isDragging = false; });
+
+            updateWB(); // Initial call
         }
 
         function init() {
