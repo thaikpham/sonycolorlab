@@ -206,8 +206,9 @@
         </div>
     </div>
     
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
+    
+
+<div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
         <div id="lightbox-bg" class="absolute inset-0"></div>
         <div class="lightbox-content relative w-full max-w-4xl max-h-full">
             <button id="lightbox-close" class="absolute -top-4 -right-2 md:top-0 md:-right-12 text-white text-5xl font-bold z-10 leading-none p-2">&times;</button>
@@ -315,17 +316,23 @@
             explainIntroP: {vi: "Sony cung cấp nhiều công cụ màu sắc, nhưng chúng hoạt động ở các giai đoạn khác nhau. Hiểu rõ sự khác biệt là chìa khóa để khai thác tối đa tiềm năng của máy ảnh.", en:"Sony offers various color tools, but they operate at different stages. Understanding the differences is key to maximizing your camera's potential."},
             pillarsTitle: {vi: "Hai Trụ Cột Sáng Tạo Màu Sắc", en:"The Two Pillars of Color Creation"},
             wbPillarTitle: {vi: "Trụ cột 1: White Balance - Nền Tảng Cảm Xúc", en:"Pillar 1: White Balance - The Emotional Foundation"},
-            ppPillarTitle: {vi: "Trụ cột 2: Picture Profile - Tinh Chỉnh Chuyên Sâu", en:"Pillar 2: Picture Profile - In-depth Refinement"},
+            ppPillarTitle: {vi: "Trụ cột 2: Picture Profile - Lý Giải Thông Số", en:"Pillar 2: Picture Profile - Parameter Explanations"},
+            ppIntro_new: {vi: "Picture Profile cho phép can thiệp sâu vào nhiều thông số kỹ thuật, mở rộng tiềm năng sáng tạo. Dưới đây là giải thích các thông số cốt lõi:", en: "Picture Profile allows for deep technical adjustments, expanding creative potential. Here are the core parameter explanations:"},
+            gammaSubtitle: {vi: "Các chế độ điều chỉnh tương phản và dải tần nhạy sáng.", en: "Controls for contrast and dynamic range."},
+            colorModeSubtitle: {vi: "Các chế độ màu, nên chọn cùng loại với Gamma để tối ưu.", en: "Color modes, should be matched with Gamma for optimal results."},
+            sCinetoneTitle: {vi: "S-Cinetone: Màu Điện Ảnh Quay-Ăn-Liền", en: "S-Cinetone: The Out-of-the-Box Cinema Look"},
+            sCinetoneDesc: {vi: "Lấy cảm hứng từ máy quay VENICE, S-Cinetone tạo ra màu sắc điện ảnh tự nhiên, tông da dịu nhẹ và độ tương phản vừa phải mà không cần hậu kỳ phức tạp.", en: "Inspired by the VENICE camera, S-Cinetone produces a natural cinematic look with soft skin tones and balanced contrast, without complex post-production."},
+            sCinetoneFeature1: {vi: "Da người đẹp, dịu và tự nhiên.", en: "Beautiful, soft, and natural skin tones."},
+            sCinetoneFeature2: {vi: "Vùng tối (shadow) được nâng nhẹ, vùng sáng (highlight) dễ kiểm soát.", en: "Slightly lifted shadows, well-controlled highlights."},
+            sCinetoneFeature3: {vi: "Không cần hậu kỳ phức tạp như S-Log.", en: "No need for complex grading like S-Log."},
             wbKelvinTitle: {vi: "Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo", en: "Kelvin Temperature (K): Creating the Main Tone"},
             wbKelvinDesc: {vi: 'Sử dụng thang đo Kelvin như một nét cọ lớn để "nhuộm" toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.', en: 'Use the Kelvin scale like a broad brush to "tint" the entire frame with warm or cool tones, shaping the photo\'s mood.'},
             wbShiftTitle: {vi: "Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi", en:"Fine-Tuning Grid (A-B/G-M Shift): Adding Subtle Hues"},
             wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.', en: 'If Kelvin is the broad brush, the grid is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints.'},
             wbShiftExample: {vi: '<span class="font-bold">Ví dụ:</span> Để tạo màu phim cổ, bạn có thể đẩy nhẹ về phía Amber (A) và Green (G).', en:'<span class="font-bold">Example:</span> To create a vintage film look, you might push slightly towards Amber (A) and Green (G).'},
-            ppEvolutionTitle: {vi: "Hành Trình Tiến Hóa Của Picture Profile", en:"The Evolution Journey of Picture Profile"},
             ppTechTitle: {vi: "Các Yếu Tố Kỹ Thuật Cốt Lõi", en:"Core Technical Factors"},
             bitDepthTitle: {vi: "8-bit vs. 10-bit: Sự Khác Biệt Sống Còn", en:"8-bit vs. 10-bit: The Crucial Difference"},
             bitDepthDesc: {vi: "Độ sâu màu là yếu tố quyết định khả năng chỉnh màu. File 10-bit chứa lượng thông tin màu sắc nhiều hơn 64 lần so với file 8-bit, giúp quá trình chỉnh màu mượt mà, tránh hiện tượng gãy màu (banding) khi xử lý các cảnh quay Log.", en:"Color depth is the deciding factor in color grading flexibility. A 10-bit file contains 64 times more color information than an 8-bit file, enabling smoother grading and preventing banding when processing Log footage."},
-            ppDistributionTitle: {vi:"Phân Bổ Tính Năng Trên Các Dòng Máy", en:"Feature Distribution Across Camera Lines"},
             practicalTitle: {vi:"Thực Hành: Tạo Dáng Vẻ Phim Ảnh (Film Look)", en:"Practical Application: Creating a Film Look"},
             practicalDesc: {vi:"Bằng cách kết hợp các công cụ trên, bạn có thể tạo ra vô số màu sắc độc đáo. Dưới đây là quy trình 4 bước để bắt đầu:", en:"By combining these tools, you can create countless unique color looks. Here is a 4-step process to get started:"},
             practicalStep1: {vi: "Chọn Nền Tảng", en:"Choose a Foundation"},
@@ -509,25 +516,25 @@
             
             recipeFormulas: () => `
                 <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                    <!-- Sidebar/Filters Panel -->
+                    
                     <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
                         <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
                         <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                        <!-- Filters -->
+                        
                         <div id="filtersContainer" class="space-y-4 text-sm mb-4">
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                         </div>
-                        <!-- Recipe List -->
+                        
                         <div id="recipeListContainer" class="space-y-2 pt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
-                        <!-- Compare Button -->
+                        
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                     </aside>
-                    <!-- Main Content Panel (Details / Charts) -->
+                    
                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
-                            <!-- Charts shown by default on desktop -->
+                            
                             <div id="chartsContainer">
                                <div class="text-center mb-10">
                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
@@ -537,11 +544,11 @@
                                    <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
                                </div>
                            </div>
-                           <!-- Recipe details, hidden until a recipe is selected -->
+                           
                            <div id="recipeContent" class="hidden"></div>
                         </div>
                     </main>
-                    <!-- Mobile-only Detail View -->
+                    
                     <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
                         <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
                         <div class="glass-panel p-6 overflow-y-auto">
@@ -580,7 +587,6 @@
             
                     <main class="space-y-12 md:space-y-20">
             
-                        <!-- Comparison Table -->
                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl font-bold mb-4 text-center" data-translate-key="explainIntroTitle"></h3>
                             <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="explainIntroP"></p>
@@ -619,7 +625,6 @@
                             </div>
                         </section>
             
-                        <!-- Two Pillars -->
                         <section>
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="pillarsTitle"></h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -651,50 +656,59 @@
                                 </div>
                                 <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                                      <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
-                                     <div class="relative">
-                                        <div class="timeline-item">
-                                            <h5 class="font-bold text-lg">2014: S-Log2</h5>
-                                            <p class="text-sm text-gray-600">Sony A7S ra mắt, mở ra khả năng quay video với dải tần nhạy sáng rộng.</p>
-                                        </div>
-                                        <div class="timeline-item">
-                                            <h5 class="font-bold text-lg">2018: HLG & HDR</h5>
-                                            <p class="text-sm text-gray-600">A7 III tích hợp HLG, cho phép tạo video HDR không cần hậu kỳ phức tạp.</p>
-                                        </div>
-                                        <div class="timeline-item">
-                                            <h5 class="font-bold text-lg">2020: S-Cinetone & 10-bit</h5>
-                                            <p class="text-sm text-gray-600">A7S III thay đổi cuộc chơi với S-Cinetone từ dòng VENICE và khả năng ghi 10-bit.</p>
-                                        </div>
-                                        <div class="timeline-item">
-                                            <h5 class="font-bold text-lg">2023: Real-time LUT</h5>
-                                            <p class="text-sm text-gray-600">Các máy mới cho phép nhập LUT, xem trước màu cuối cùng ngay khi quay Log.</p>
-                                        </div>
+                                     <p class="text-sm text-gray-700 mb-6 text-center" data-translate-key="ppIntro_new"></p>
+                                     <div class="grid sm:grid-cols-2 gap-x-8 gap-y-6 text-left">
+                                         <div>
+                                             <h5 class="font-semibold text-lg">Gamma</h5>
+                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="gammaSubtitle"></p>
+                                             <ul class="space-y-3 text-sm list-disc list-inside">
+                                                 <li><strong>Movie:</strong> Gamma tiêu chuẩn cho phim, cân bằng tốt.</li>
+                                                 <li><strong>Still:</strong> Gamma cho ảnh tĩnh, tương phản và màu rực hơn.</li>
+                                                 <li><strong>Cine1-4:</strong> Gamma điện ảnh, tăng dải nhạy sáng. Cine4 phổ biến nhất.</li>
+                                                 <li><strong>ITU709:</strong> Gamma chuẩn cho phát sóng HDTV (Rec.709).</li>
+                                                 <li><strong>S-Log2/S-Log3:</strong> Gamma phẳng, tối đa hóa dải nhạy sáng, yêu cầu hậu kỳ màu. S-Log3 tối ưu hơn cho grading.</li>
+                                                 <li><strong>HLG:</strong> Chuẩn HDR, xem trực tiếp trên màn hình HDR.</li>
+                                             </ul>
+                                         </div>
+                                         <div>
+                                             <h5 class="font-semibold text-lg">Color Mode</h5>
+                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="colorModeSubtitle"></p>
+                                             <ul class="space-y-3 text-sm list-disc list-inside">
+                                                 <li><strong>Movie/Still:</strong> Đi kèm với Gamma tương ứng.</li>
+                                                 <li><strong>Cinema:</strong> Tông màu dịu, điện ảnh, dùng với Cine Gamma.</li>
+                                                 <li><strong>Pro:</strong> Màu sắc chân thực, cân bằng.</li>
+                                                 <li><strong>ITU709 Matrix:</strong> Màu theo chuẩn Rec.709.</li>
+                                                 <li><strong>S-Gamut/S-Gamut3.Cine:</strong> Không gian màu rộng cho S-Log. S-Gamut3.Cine dễ hậu kỳ hơn.</li>
+                                                 <li><strong>BT.2020:</strong> Chuẩn màu HDR mới, dùng với HLG.</li>
+                                             </ul>
+                                         </div>
+                                          <div class="sm:col-span-2">
+                                             <h5 class="font-semibold text-lg mt-4" data-translate-key="sCinetoneTitle"></h5>
+                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="sCinetoneDesc"></p>
+                                             <ul class="space-y-2 text-sm list-disc list-inside">
+                                                 <li data-translate-key="sCinetoneFeature1"></li>
+                                                 <li data-translate-key="sCinetoneFeature2"></li>
+                                                 <li data-translate-key="sCinetoneFeature3"></li>
+                                             </ul>
+                                         </div>
                                      </div>
                                 </div>
                             </div>
                         </section>
             
-                        <!-- Technical Deep Dive -->
                         <section>
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="ppTechTitle"></h3>
-                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                             <div class="grid grid-cols-1 gap-8">
+                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 max-w-3xl mx-auto w-full">
                                     <h4 class="text-xl font-bold text-center mb-4" data-translate-key="bitDepthTitle"></h4>
                                      <p class="text-center text-sm text-gray-600 mb-4" data-translate-key="bitDepthDesc"></p>
                                     <div class="chart-container h-64 md:h-72">
                                         <canvas id="bitDepthChart"></canvas>
                                     </div>
                                 </div>
-                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                                    <h4 class="text-xl font-bold text-center mb-4" data-translate-key="ppDistributionTitle"></h4>
-                                     <p class="text-center text-sm text-gray-600 mb-4">So sánh các cấu hình Gamma quan trọng và độ sâu màu giữa các mẫu máy ảnh phổ biến.</p>
-                                    <div class="chart-container h-64 md:h-72">
-                                        <canvas id="featureBarChart"></canvas>
-                                    </div>
-                                </div>
                             </div>
                         </section>
             
-                        <!-- Practical Guide -->
                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center" data-translate-key="practicalTitle"></h3>
                             <p class="max-w-3xl mx-auto text-center text-gray-700 mt-2 mb-8" data-translate-key="practicalDesc"></p>
@@ -717,7 +731,7 @@
                                 </div>
                             </div>
                              <div class="text-center mt-12">
-                                <button id="exploreMoreBtn" class="btn btn-primary py-3 px-8 text-base md:text-lg" data-translate-key="exploreMoreBtn"></button>
+                                <button id="exploreMoreBtn" class="btn btn-primary py-3 px-8 text-base md:text-lg" data-translate-key="navRecipeFormulas"></button>
                             </div>
                         </section>
             
@@ -874,33 +888,6 @@
                         plugins: {
                             legend: { display: false },
                             tooltip: { callbacks: { title: tooltipTitleCallback, label: (context) => ` ~${new Intl.NumberFormat('vi-VN').format(context.parsed.y)} màu` } }
-                        }
-                    }
-                });
-            }
-
-            const featureBarCtx = document.getElementById('featureBarChart')?.getContext('2d');
-            if(featureBarCtx) {
-                 new Chart(featureBarCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['A7 III (8-bit)', 'A7S III (10-bit)', 'A6400 (8-bit)', 'A6700 (10-bit)', 'FX3 (10-bit)'],
-                        datasets: [
-                            { label: 'S-Log3 / HLG', data: [1, 1, 1, 1, 1], backgroundColor: PALETTE.blue },
-                            { label: 'S-Cinetone', data: [0, 1, 0, 1, 1], backgroundColor: PALETTE.purple, },
-                            { label: 'Ghi hình 10-bit', data: [0, 1, 0, 1, 1], backgroundColor: PALETTE.darkBlue, }
-                        ]
-                    },
-                    options: {
-                        ...defaultChartOptions(),
-                        indexAxis: 'y',
-                        scales: {
-                            x: { stacked: true, ticks: { display: false }, grid: { display: false }, border: { display: false } },
-                            y: { stacked: true, ticks: { color: PALETTE.gray }, grid: { display: false }, border: { display: false } }
-                        },
-                        plugins: {
-                            legend: { position: 'bottom' },
-                            tooltip: { callbacks: { title: tooltipTitleCallback, label: (context) => ` ${context.dataset.label}: Có` } }
                         }
                     }
                 });
