@@ -86,6 +86,7 @@
         .spinner { border: 3px solid rgba(0, 0, 0, 0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: currentColor; animation: spin 1s ease infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* General Modal Styles */
         .modal { z-index: 50; transition: opacity 0.3s ease; }
         .modal-content { transition: transform 0.3s ease; border-radius: 28px; }
         .modal.hidden { opacity: 0; pointer-events: none; }
@@ -103,30 +104,57 @@
         .overflow-y-auto::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
         .overflow-y-auto { scrollbar-width: auto; scrollbar-color: rgba(0, 0, 0, 0.2) transparent; }
 
-        #mobileNavMenu { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* Lightbox Styles */
-        #lightbox { z-index: 100; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-        #lightbox.hidden { opacity: 0; pointer-events: none; }
-        #lightbox .lightbox-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        #lightbox.hidden .lightbox-content { transform: scale(0.95); opacity: 0; }
-        .lightbox-thumb { cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; }
-        .lightbox-thumb.active { border-color: var(--primary-accent); transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 122, 255, 0.5); }
-        .lightbox-nav-btn { background-color: rgba(0,0,0,0.4); transition: background-color 0.2s ease; }
-        .lightbox-nav-btn:hover { background-color: rgba(0,0,0,0.7); }
-        #lightbox-main-image { transition: opacity 0.2s ease-in-out; }
-        
-        /* Explanation Tab Specifics */
-        .param-card { background-color: white; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.05); overflow: hidden; }
-        .infographic { background-color: #f8f9fa; }
-        .flowchart-step { position: relative; padding: 1.5rem; background-color: white; border-radius: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
-        .flowchart-arrow { color: #cbd5e1; }
-        
-        /* Chart Styles */
+        /* Chart & Feature Styles */
         .chart-container { position: relative; margin: auto; height: 280px; width: 100%;}
         @media (min-width: 768px) { .chart-container { height: 320px; } }
         #colorChart, #bwChart { cursor: pointer; }
+        
+        #mobileNavMenu { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
+        /* Lightbox Styles */
+        #lightbox {
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        #lightbox.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #lightbox .lightbox-content {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #lightbox.hidden .lightbox-content {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        .lightbox-thumb {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .lightbox-thumb.active {
+            border-color: var(--primary-accent);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 122, 255, 0.5);
+        }
+        .lightbox-nav-btn {
+            background-color: rgba(0,0,0,0.4);
+            transition: background-color 0.2s ease;
+        }
+        .lightbox-nav-btn:hover {
+            background-color: rgba(0,0,0,0.7);
+        }
+        #lightbox-main-image {
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        /* Explanation Tab Specifics */
+        .timeline-item { position: relative; padding-bottom: 2rem; padding-left: 2rem; }
+        .timeline-item::before { content: ''; position: absolute; left: 0; top: 0.125rem; width: 1rem; height: 1rem; border-radius: 9999px; background-color: var(--primary-accent); border: 3px solid #bfdbfe; z-index: 10; }
+        .timeline-item::after { content: ''; position: absolute; left: calc(0.5rem - 1px); top: 1rem; bottom: 0; width: 2px; background-color: #93c5fd; }
+        .timeline-item:last-child::after { display: none; }
     </style>
 </head>
 <body>
@@ -178,7 +206,9 @@
         </div>
     </div>
     
-    <div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
+    
+
+<div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
         <div id="lightbox-bg" class="absolute inset-0"></div>
         <div class="lightbox-content relative w-full max-w-4xl max-h-full">
             <button id="lightbox-close" class="absolute -top-4 -right-2 md:top-0 md:-right-12 text-white text-5xl font-bold z-10 leading-none p-2">&times;</button>
@@ -246,6 +276,11 @@
             filterHigh: {vi: "Cao", en: "High"},
             filterMedium: {vi: "Vừa", en: "Med"},
             filterLow: {vi: "Thấp", en: "Low"},
+            filterSort: {vi: "Sắp xếp theo", en: "Sort by"},
+            sortDefault: {vi: "Mặc định", en: "Default"},
+            sortNameAZ: {vi: "Tên A-Z", en: "Name A-Z"},
+            sortContrastHL: {vi: "Tương phản: Cao-Thấp", en: "Contrast: High-Low"},
+            sortSaturationHL: {vi: "Bão hòa: Cao-Thấp", en: "Saturation: High-Low"},
             compareBtn: {vi: "So sánh bằng AI", en: "Compare with AI"},
             recipeDetailWelcomeTitle: {vi: "Thư viện màu Tương tác", en: "Interactive Color Library"},
             recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan. Nhấp vào một điểm trên biểu đồ hoặc một công thức trong danh sách để xem chi tiết.", en: "Explore color recipes visually. Click a point on the chart or a recipe in the list to see details."},
@@ -258,6 +293,8 @@
             aiTuningBtn: {vi: "Tạo bằng AI", en: "Generate with AI"},
             aiResultTitle: {vi: "Công thức đã được AI tinh chỉnh:", en: "AI-Adjusted Recipe:"},
             compareWithOriginalBtn: {vi: "So sánh với bản gốc", en: "Compare with Original"},
+            aiSuggestionTitle: {vi: "Gợi ý của AI:", en: "AI Suggestion:"},
+            aiSuggestionText: {vi: "Dựa trên yêu cầu của bạn, công thức này có vẻ phù hợp hơn: ", en: "Based on your request, this recipe might be a better fit: "},
             comparisonModalTitle: {vi: "So sánh Công thức", en: "Recipe Comparison"},
             comparisonLoading: {vi: "AI đang phân tích và so sánh...", en: "AI is analyzing and comparing..."},
             colorChartTitle: {vi: "Biểu đồ Màu", en: "Color Chart"},
@@ -266,7 +303,6 @@
             axisSaturation: {vi: "Độ bão hòa (← Thấp | Cao →)", en: "Saturation (← Low | High →)"},
             axisChroma: {vi: "Độ sâu màu (← Thấp | Cao →)", en: "Chroma Depth (← Low | High →)"},
             backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
-            exploreMoreBtn: { vi: 'Khám phá Thư viện Màu', en: 'Explore Color Library' },
 
             // Featured Photos
             featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
@@ -275,43 +311,44 @@
             
             // Tutorial & Explanation
             explainHeader: {vi: "Làm Chủ Màu Sắc Cùng Sony Alpha", en:"Mastering Color with Sony Alpha"},
-            explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh và video", en:"A comprehensive guide to creating your unique color signature for stills and video"},
-            paramsDeepDiveTitle: {vi: "Lý giải thông số Picture Profile", en: "Picture Profile Parameter Deep Dive"},
-            
-            gammaTitle: { vi: "Gamma", en: "Gamma" },
-            gammaDesc: { vi: "Quyết định độ tương phản tổng thể bằng cách điều chỉnh độ sáng của các tông màu. Gamma cao cho ảnh gắt, trong khi gamma thấp cho ảnh mềm mại, phẳng hơn.", en: "Determines the overall contrast by adjusting tonal brightness. High gamma gives a punchy image, while low gamma results in a softer, flatter look." },
-            gammaGraphShadows: { vi: "Vùng Tối", en: "Shadows" },
-            gammaGraphHighlights: { vi: "Vùng Sáng", en: "Highlights" },
-
-            blackGammaTitle: { vi: "Black Gamma", en: "Black Gamma" },
-            blackGammaDesc: { vi: "Tinh chỉnh riêng vùng tối nhất của ảnh. Kéo lên để làm vùng tối sáng hơn (tạo look 'faded'), hoặc kéo xuống để làm tối sâu hơn.", en: "Fine-tunes only the darkest parts of the image. Raise it to lift the blacks (for a 'faded' look), or lower it to deepen the shadows." },
-
-            kneeTitle: { vi: "Knee", en: "Knee" },
-            kneeDesc: { vi: "Nén vùng sáng để tránh bị 'cháy' (mất chi tiết). Giống như một chiếc gối mềm, nó làm mượt sự chuyển tiếp sang vùng trắng tinh, giữ lại chi tiết trên mây hoặc áo cưới.", en: "Compresses highlights to prevent 'clipping' (losing detail). Like a soft cushion, it smooths the transition to pure white, saving details in clouds or wedding dresses." },
-            
-            colorModeTitle: { vi: "Color Mode", en: "Color Mode" },
-            colorModeDesc: { vi: "Hoạt động song song với Gamma để xác định đặc tính màu. Chế độ 'Pro' cho màu tự nhiên, trong khi 'S-Gamut3.Cine' cung cấp không gian màu rộng lớn cho hậu kỳ chuyên nghiệp.", en: "Works alongside Gamma to define the color characteristics. 'Pro' mode gives natural colors, while 'S-Gamut3.Cine' provides a wide color space for professional grading." },
-
-            saturationTitle: { vi: "Saturation", en: "Saturation" },
-            saturationDesc: { vi: "Điều khiển cường độ của tất cả các màu. Tăng để màu rực rỡ, sống động; giảm để màu trầm hơn, nhẹ nhàng hơn.", en: "Controls the intensity of all colors. Increase for vibrant, vivid colors; decrease for more subdued, gentle tones." },
-
-            colorDepthTitleExplain: { vi: "Color Depth", en: "Color Depth" },
-            colorDepthDesc: { vi: "Cho phép bạn tăng hoặc giảm độ 'giàu' của từng kênh màu riêng lẻ (Đỏ, Xanh lá, Xanh dương, Lục lam, Tím, Vàng). Đây là công cụ mạnh mẽ để tạo phong cách màu độc đáo.", en: "Lets you increase or decrease the richness of individual color channels (Red, Green, Blue, Cyan, Magenta, Yellow). A powerful tool for unique color styling." },
-
-            detailTitleExplain: { vi: "Detail", en: "Detail" },
-            detailDesc: { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có được vẻ ngoài mềm mại, hữu cơ, giống phim. Tăng lên nếu bạn cần hình ảnh cực kỳ sắc nét.", en: "Controls the image's sharpness. Decrease it dramatically (e.g., -7) for a soft, organic, film-like appearance. Increase it if you need a very sharp image." },
-            
+            explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh", en:"A comprehensive guide to creating your unique color signature for stills"},
+            explainIntroTitle: {vi: "Picture Profile vs. Creative Style/Look", en:"Picture Profile vs. Creative Style/Look"},
+            explainIntroP: {vi: "Sony cung cấp nhiều công cụ màu sắc, nhưng chúng hoạt động ở các giai đoạn khác nhau. Hiểu rõ sự khác biệt là chìa khóa để khai thác tối đa tiềm năng của máy ảnh.", en:"Sony offers various color tools, but they operate at different stages. Understanding the differences is key to maximizing your camera's potential."},
+            pillarsTitle: {vi: "Hai Trụ Cột Sáng Tạo Màu Sắc", en:"The Two Pillars of Color Creation"},
+            wbPillarTitle: {vi: "Trụ cột 1: White Balance - Nền Tảng Cảm Xúc", en:"Pillar 1: White Balance - The Emotional Foundation"},
+            ppPillarTitle: {vi: "Trụ cột 2: Picture Profile - Lý Giải Thông Số", en:"Pillar 2: Picture Profile - Parameter Explanations"},
+            ppIntro_new: {vi: "Picture Profile cho phép can thiệp sâu vào nhiều thông số kỹ thuật, mở rộng tiềm năng sáng tạo. Dưới đây là giải thích các thông số cốt lõi:", en: "Picture Profile allows for deep technical adjustments, expanding creative potential. Here are the core parameter explanations:"},
+            gammaSubtitle: {vi: "Các chế độ điều chỉnh tương phản và dải tần nhạy sáng.", en: "Controls for contrast and dynamic range."},
+            colorModeSubtitle: {vi: "Các chế độ màu, nên chọn cùng loại với Gamma để tối ưu.", en: "Color modes, should be matched with Gamma for optimal results."},
+            sCinetoneTitle: {vi: "S-Cinetone: Màu Điện Ảnh Quay-Ăn-Liền", en: "S-Cinetone: The Out-of-the-Box Cinema Look"},
+            sCinetoneDesc: {vi: "Lấy cảm hứng từ máy quay VENICE, S-Cinetone tạo ra màu sắc điện ảnh tự nhiên, tông da dịu nhẹ và độ tương phản vừa phải mà không cần hậu kỳ phức tạp.", en: "Inspired by the VENICE camera, S-Cinetone produces a natural cinematic look with soft skin tones and balanced contrast, without complex post-production."},
+            sCinetoneFeature1: {vi: "Da người đẹp, dịu và tự nhiên.", en: "Beautiful, soft, and natural skin tones."},
+            sCinetoneFeature2: {vi: "Vùng tối (shadow) được nâng nhẹ, vùng sáng (highlight) dễ kiểm soát.", en: "Slightly lifted shadows, well-controlled highlights."},
+            sCinetoneFeature3: {vi: "Không cần hậu kỳ phức tạp như S-Log.", en: "No need for complex grading like S-Log."},
+            wbKelvinTitle: {vi: "Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo", en: "Kelvin Temperature (K): Creating the Main Tone"},
+            wbKelvinDesc: {vi: 'Sử dụng thang đo Kelvin như một nét cọ lớn để "nhuộm" toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.', en: 'Use the Kelvin scale like a broad brush to "tint" the entire frame with warm or cool tones, shaping the photo\'s mood.'},
+            wbShiftTitle: {vi: "Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi", en:"Fine-Tuning Grid (A-B/G-M Shift): Adding Subtle Hues"},
+            wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.', en: 'If Kelvin is the broad brush, the grid is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints.'},
+            wbShiftExample: {vi: '<span class="font-bold">Ví dụ:</span> Để tạo màu phim cổ, bạn có thể đẩy nhẹ về phía Amber (A) và Green (G).', en:'<span class="font-bold">Example:</span> To create a vintage film look, you might push slightly towards Amber (A) and Green (G).'},
+            ppTechTitle: {vi: "Các Yếu Tố Kỹ Thuật Cốt Lõi", en:"Core Technical Factors"},
+            bitDepthTitle: {vi: "8-bit vs. 10-bit: Sự Khác Biệt Sống Còn", en:"8-bit vs. 10-bit: The Crucial Difference"},
+            bitDepthDesc: {vi: "Độ sâu màu là yếu tố quyết định khả năng chỉnh màu. File 10-bit chứa lượng thông tin màu sắc nhiều hơn 64 lần so với file 8-bit, giúp quá trình chỉnh màu mượt mà, tránh hiện tượng gãy màu (banding) khi xử lý các cảnh quay Log.", en:"Color depth is the deciding factor in color grading flexibility. A 10-bit file contains 64 times more color information than an 8-bit file, enabling smoother grading and preventing banding when processing Log footage."},
             practicalTitle: {vi:"Thực Hành: Tạo Dáng Vẻ Phim Ảnh (Film Look)", en:"Practical Application: Creating a Film Look"},
             practicalDesc: {vi:"Bằng cách kết hợp các công cụ trên, bạn có thể tạo ra vô số màu sắc độc đáo. Dưới đây là quy trình 4 bước để bắt đầu:", en:"By combining these tools, you can create countless unique color looks. Here is a 4-step process to get started:"},
-            practicalStep1: {vi: "Nền Tảng", en:"Foundation"},
-            practicalStep1Desc: {vi: "Chọn <strong>Gamma: Cine4</strong> & <strong>Color Mode: Pro</strong> để có một nền tảng điện ảnh, mềm mại.", en:"Select <strong>Gamma: Cine4</strong> & <strong>Color Mode: Pro</strong> for a soft, cinematic base."},
-            practicalStep2: {vi: "Độ Phai Màu", en:"The Faded Look"},
-            practicalStep2Desc: {vi: "Tinh chỉnh <strong>Black Level: +8</strong>. Thao tác này sẽ nâng vùng tối, tạo hiệu ứng phai màu (faded) đặc trưng của phim.", en:"Adjust <strong>Black Level: +8</strong>. This lifts the shadows, creating the characteristic faded film effect."},
-            practicalStep3: {vi: "Định Hình Màu", en:"Color Shaping"},
-            practicalStep3Desc: {vi: "Sử dụng <strong>Color Depth</strong>. Ví dụ: <strong>R: +3</strong> và <strong>Y: +2</strong> để có tông màu ấm kiểu Kodak.", en:"Use <strong>Color Depth</strong>. For example, <strong>R: +3</strong> and <strong>Y: +2</strong> for a warm, Kodak-like tone."},
+            practicalStep1: {vi: "Chọn Nền Tảng", en:"Choose a Foundation"},
+            practicalStep1Desc: {vi: "Bắt đầu với Gamma `Cine4` cho look điện ảnh mềm mại, hoặc `Still` cho độ tương phản cao. Kết hợp với Color Mode như `Pro` hoặc `Cinema`.", en:"Start with a `Cine4` Gamma for a soft, cinematic look, or `Still` for higher contrast. Combine with a Color Mode like `Pro` or `Cinema`."},
+            practicalStep2: {vi: "Tinh Chỉnh Contrast", en:"Refine Contrast"},
+            practicalStep2Desc: {vi: "Sử dụng `Black Level`. Tăng giá trị (+5 đến +10) để \"nâng\" vùng tối, tạo hiệu ứng phai màu (faded) đặc trưng của phim.", en:"Use `Black Level`. Increase the value (+5 to +10) to \"lift\" the shadows, creating a characteristic faded film effect."},
+            practicalStep3: {vi: "Định Hình Màu Sắc", en:"Shape the Colors"},
+            practicalStep3Desc: {vi: "Dùng `Color Depth` & `Color Phase` để điều chỉnh từng kênh màu riêng lẻ. Ví dụ: tăng Đỏ/Vàng cho màu Kodak, hoặc Xanh lá/Lục lam cho màu Fuji.", en:"Use `Color Depth` & `Color Phase` to adjust individual color channels. For example, boost Reds/Yellows for a Kodak look, or Greens/Cyans for a Fuji look."},
             practicalStep4: {vi: "Hoàn Thiện", en:"Final Touches"},
-            practicalStep4Desc: {vi: "Đặt <strong>Detail: -7</strong> để có hình ảnh mềm mại, không quá sắc nét kiểu kỹ thuật số. Điều chỉnh <strong>Saturation</strong> tổng thể theo ý thích.", en:"Set <strong>Detail: -7</strong> for a soft, non-digital look. Adjust overall <strong>Saturation</strong> to taste."},
-            
+            practicalStep4Desc: {vi: "Giảm mạnh `Detail` (ví dụ: -7) để có look mềm mại, hữu cơ. Tinh chỉnh `Saturation` tổng thể cho vừa ý.", en:"Drastically reduce `Detail` (e.g., -7) for a soft, organic look. Adjust the overall `Saturation` to taste."},
+            recallTitle: { vi: 'Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall', en: 'Save & Reuse: Mastering Memory Recall' },
+            recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.', en: 'Don\'t waste your effort! Save your recipes to the camera\'s memory for quick recall with a simple turn of a dial.' },
+            recallInternalTitle: { vi: 'Bộ Nhớ Trong (1, 2, 3)', en: 'Internal Memory (1, 2, 3)' },
+            recallInternalDesc: { vi: 'Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.', en: 'Saves directly to the camera. Quickest access via the mode dial. Ideal for your daily-use recipes.' },
+            recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, M2, M3, M4)' },
+            recallCardDesc: { vi: 'Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.', en: 'Saves as a file on your memory card. Extremely useful for backups or transferring recipes to another Sony camera body.' },
             tutorialTitle: { vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide" },
             tutorialStep1Title: { vi: "Bước 1: Tìm Picture Profile", en: "Step 1: Find Picture Profile" },
             tutorialStep1P1: { vi: "Trong Menu, tìm đến mục <strong>Color/Tone</strong> (biểu tượng hồng) → <strong>Picture Profile</strong>.", en: "In the Menu, navigate to the <strong>Color/Tone</strong> section (pink icon) → <strong>Picture Profile</strong>." },
@@ -328,7 +365,48 @@
             quizQ1A2: {vi: "Hiện đại", en: "Modern"},    
             quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"},    
             quizQ1A4: {vi: "Nghệ thuật", en: "Artistic"},
+            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"},    
+            quizQ2A1: {vi: "Chân dung", en: "Portraits"},    
+            quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"},    
+            quizQ2A3: {vi: "Đường phố", en: "Street"},    
+            quizQ2A4: {vi: "Đời thường", en: "Everyday"},
+            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"},    
+            quizQ3A1: {vi: "Vui vẻ", en: "Happy"},    
+            quizQ3A2: {vi: "Trầm tư", en: "Contemplative"},    
+            quizQ3A3: {vi: "Năng động", en: "Dynamic"},    
+            quizQ3A4: {vi: "Bình yên", en: "Peaceful"},
+            quizQ4: {vi: "Bạn thích du lịch đến đâu?", en: "Where do you like to travel?"},
+            quizQ4A1: {vi: "Biển xanh", en: "Beaches"},
+            quizQ4A2: {vi: "Núi rừng", en: "Mountains"},
+            quizQ4A3: {vi: "Thành phố đô thị", en: "Urban Cities"},
+            quizQ4A4: {vi: "Phố cổ", en: "Old Towns"},
+            quizQ5: {vi: "Bạn thích tone màu nào?", en: "Which color tone do you prefer?"},
+            quizQ5A1: {vi: "Tone ấm", en: "Warm Tones"},
+            quizQ5A2: {vi: "Tone lạnh", en: "Cool Tones"},
+            quizQ5A3: {vi: "Trung tính", en: "Neutral"},
+            quizQ6: {vi: "Xu hướng hình ảnh của bạn là gì?", en: "What is your image trend?"},
+            quizQ6A1: {vi: "Hơi thở Á Đông", en: "Eastern Vibe"},
+            quizQ6A2: {vi: "Cảm hứng Phương Tây", en: "Western Inspiration"},
+            quizQ7: {vi: "Bạn thích độ tương phản ra sao?", en: "How do you like the contrast?"},
+            quizQ7A1: {vi: "Cao (Gắt)", en: "High (Punchy)"},
+            quizQ7A2: {vi: "Thấp (Mềm mại)", en: "Low (Soft)"},
+            quizQ7A3: {vi: "Trung bình", en: "Medium"},
+            quizQ8: {vi: "Bạn thích độ bão hòa màu sắc như thế nào?", en: "How do you like your color saturation?"},
+            quizQ8A1: {vi: "Cao (Rực rỡ)", en: "High (Vibrant)"},
+            quizQ8A2: {vi: "Thấp (Nhẹ nhàng)", en: "Low (Subtle)"},
+            quizQ8A3: {vi: "Trung bình", en: "Medium"},
         };
+        
+        const quizQuestions = [
+            { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] },
+            { id: 'plan', title: 'quizQ2', options: ['quizQ2A1', 'quizQ2A2', 'quizQ2A3', 'quizQ2A4'], values: ['Portrait', 'Landscape', 'Street', 'Everyday'] },
+            { id: 'mood', title: 'quizQ3', options: ['quizQ3A1', 'quizQ3A2', 'quizQ3A3', 'quizQ3A4'], values: ['Happy', 'Contemplative', 'Dynamic', 'Peaceful'] },
+            { id: 'location', title: 'quizQ4', options: ['quizQ4A1', 'quizQ4A2', 'quizQ4A3', 'quizQ4A4'], values: ['Beach', 'Mountain', 'Urban', 'Old Town'] },
+            { id: 'tone', title: 'quizQ5', options: ['quizQ5A1', 'quizQ5A2', 'quizQ5A3'], values: ['Warm', 'Cool', 'Neutral'] },
+            { id: 'style', title: 'quizQ6', options: ['quizQ6A1', 'quizQ6A2'], values: ['Eastern', 'Western'] },
+            { id: 'contrast', title: 'quizQ7', options: ['quizQ7A1', 'quizQ7A2', 'quizQ7A3'], values: ['High', 'Low', 'Medium'] },
+            { id: 'saturation', title: 'quizQ8', options: ['quizQ8A1', 'quizQ8A2', 'quizQ8A3'], values: ['High', 'Low', 'Medium'] }
+        ];
         
         // --- API CALLS (MOCKS) ---
         async function callAIApi(prompt, delay = 1000) {
@@ -375,6 +453,7 @@
                 const key = el.dataset.translateKey;
                 if (translations[key] && translations[key][state.currentLang]) {
                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
+                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
                     else { el.innerHTML = t(key); }
                 }
             });
@@ -423,31 +502,39 @@
             </div>`,
             
             quiz: () => {
-                const q = { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] };
+                if (state.quizStep >= quizQuestions.length) return '';
+                const q = quizQuestions[state.quizStep];
                 const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
+                const gridCols = q.options.length > 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2';
                 return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
                     <div class="w-full max-w-4xl text-center px-4" data-quiz-group="${q.id}">
                         <h2 class="quiz-question-title" data-translate-key="${q.title}"></h2>
-                        <div class="grid grid-cols-2 gap-4 sm:gap-5 mt-10 sm:mt-12">${optionsHTML}</div>
+                        <div class="grid ${gridCols} gap-4 sm:gap-5 mt-10 sm:mt-12">${optionsHTML}</div>
                     </div>
                 </div>`;
             },
             
             recipeFormulas: () => `
                 <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
+                    
                     <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
                         <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
                         <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                        
                         <div id="filtersContainer" class="space-y-4 text-sm mb-4">
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                         </div>
+                        
                         <div id="recipeListContainer" class="space-y-2 pt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
+                        
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                     </aside>
+                    
                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
+                            
                             <div id="chartsContainer">
                                <div class="text-center mb-10">
                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
@@ -457,9 +544,11 @@
                                    <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
                                </div>
                            </div>
+                           
                            <div id="recipeContent" class="hidden"></div>
                         </div>
                     </main>
+                    
                     <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
                         <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
                         <div class="glass-panel p-6 overflow-y-auto">
@@ -481,7 +570,7 @@
                             <div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb"
                                 data-recipe-id="${recipe.id}"
                                 data-index="0">
-                                <img src="${recipe.demoImages[0]}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/800x600/cccccc/ffffff?text=Image';">
+                                <img src="${recipe.demoImages[0]}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
                             </div>
                         `).join('')}
                     </div>
@@ -496,65 +585,171 @@
                         <h2 class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="explainSubtitle"></h2>
                     </header>
             
-                    <main class="space-y-16 md:space-y-24">
+                    <main class="space-y-12 md:space-y-20">
+            
+                        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                            <h3 class="text-2xl font-bold mb-4 text-center" data-translate-key="explainIntroTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="explainIntroP"></p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full min-w-[600px] text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-100">
+                                            <th class="p-4 font-bold border-b-2 border-slate-200">Tiêu chí</th>
+                                            <th class="p-4 font-bold border-b-2 border-slate-200">Creative Style / Look</th>
+                                            <th class="p-4 font-bold border-b-2 border-slate-200">Picture Profile</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="p-4 border-b border-slate-200 font-semibold">Mục đích</td>
+                                            <td class="p-4 border-b border-slate-200">Tạo "look" nhanh, sẵn sàng sử dụng cho ảnh JPEG.</td>
+                                            <td class="p-4 border-b border-slate-200">Kiểm soát sâu tín hiệu video/ảnh để hậu kỳ chuyên nghiệp hoặc tạo "look" tùy biến cao.</td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="p-4 border-b border-slate-200 font-semibold">Đối tượng</td>
+                                            <td class="p-4 border-b border-slate-200">Người dùng phổ thông, nhiếp ảnh gia chụp JPEG.</td>
+                                            <td class="p-4 border-b border-slate-200">Nhà làm phim, người dùng chuyên nghiệp, người thích tùy biến sâu.</td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="p-4 border-b border-slate-200 font-semibold">Mức độ kiểm soát</td>
+                                            <td class="p-4 border-b border-slate-200">Giới hạn (Tương phản, Bão hòa, Sắc nét).</td>
+                                            <td class="p-4 border-b border-slate-200">Rất sâu (Gamma, Black Level, Knee, Color Mode, Detail...).</td>
+                                        </tr>
+                                         <tr class="hover:bg-slate-50">
+                                            <td class="p-4 border-b border-slate-200 font-semibold">Giai đoạn áp dụng</td>
+                                            <td class="p-4 border-b border-slate-200">Sau khi xử lý tín hiệu cơ bản, áp dụng lên file JPEG.</td>
+                                            <td class="p-4 border-b border-slate-200">Ngay sau khi cảm biến nhận tín hiệu, trước khi nén.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+            
                         <section>
-                            <h3 class="text-2xl md:text-4xl font-bold text-center mb-12" data-translate-key="paramsDeepDiveTitle"></h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <!-- Gamma -->
-                                <div class="param-card flex flex-col">
-                                    <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="gammaTitle"></h4><p class="text-gray-600 mt-1" data-translate-key="gammaDesc"></p></div>
-                                    <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><svg viewBox="0 0 100 100" class="w-full h-full max-h-48"><path d="M 10 90 Q 50 50 90 10" stroke="#007AFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="4" /><path d="M 10 90 Q 70 20 90 10" stroke="#34D399" stroke-width="4" fill="none" stroke-linecap="round" /><path d="M 10 90 L 90 10" stroke="#E5E7EB" stroke-width="2" fill="none" /><text x="12" y="80" font-size="8" class="fill-gray-500" data-translate-key="gammaGraphShadows"></text><text x="68" y="22" font-size="8" class="fill-gray-500" data-translate-key="gammaGraphHighlights"></text></svg></div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="pillarsTitle"></h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                                    <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="wbPillarTitle"></h4>
+                                    <div class="mb-8">
+                                        <h5 class="font-bold text-lg" data-translate-key="wbKelvinTitle"></h5>
+                                        <p class="text-sm text-gray-600 mb-3" data-translate-key="wbKelvinDesc"></p>
+                                        <div class="w-full h-8 rounded-full bg-gradient-to-r from-blue-400 via-white to-orange-400 flex justify-between items-center px-2 text-xs font-bold text-gray-700">
+                                            <span>2500K</span>
+                                            <span>5500K</span>
+                                            <span>9900K</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-lg" data-translate-key="wbShiftTitle"></h5>
+                                        <p class="text-sm text-gray-600 mb-3" data-translate-key="wbShiftDesc"></p>
+                                        <div class="relative w-full max-w-[250px] mx-auto aspect-square bg-gray-50 border-2 border-gray-200 rounded-md">
+                                            <div class="absolute top-1/2 left-0 w-full h-px bg-gray-300 -translate-y-1/2"></div>
+                                            <div class="absolute left-1/2 top-0 w-px h-full bg-gray-300 -translate-x-1/2"></div>
+                                            <span class="absolute top-1/2 -left-5 -translate-y-1/2 font-bold text-blue-600">B</span>
+                                            <span class="absolute top-1/2 -right-5 -translate-y-1/2 font-bold text-orange-500">A</span>
+                                            <span class="absolute left-1/2 -top-5 -translate-x-1/2 font-bold text-green-600">G</span>
+                                            <span class="absolute left-1/2 -bottom-5 -translate-x-1/2 font-bold text-purple-600">M</span>
+                                            <div class="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-lg" style="top: calc(50% - 6px - (20%)); left: calc(50% - 6px + 30%);"></div>
+                                        </div>
+                                        <p class="text-xs text-center mt-3 text-gray-500" data-translate-key="wbShiftExample"></p>
+                                    </div>
                                 </div>
-                                <!-- Black Gamma -->
-                                <div class="param-card flex flex-col">
-                                    <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="blackGammaTitle"></h4><p class="text-gray-600 mt-1" data-translate-key="blackGammaDesc"></p></div>
-                                    <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><div class="w-full h-16 bg-gradient-to-r from-gray-800 via-gray-500 to-gray-200 rounded-lg shadow-inner"></div></div>
-                                </div>
-                                <!-- Knee -->
-                                <div class="param-card flex flex-col">
-                                     <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="kneeTitle"></h4><p class="text-gray-600 mt-1" data-translate-key="kneeDesc"></p></div>
-                                    <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><svg viewBox="0 0 100 80" class="w-full h-full max-h-48"><path d="M 10 70 L 60 20 L 90 20" stroke="#FECACA" stroke-width="3" fill="none" /><path d="M 10 70 L 50 30 Q 60 20 70 20 L 90 20" stroke="#F87171" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="60" cy="20" r="3" fill="red"/><text x="65" y="18" font-size="8" class="fill-red-700">Clip</text></svg></div>
-                                </div>
-                                <!-- Color Mode -->
-                                <div class="param-card flex flex-col">
-                                    <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="colorModeTitle"></h4><p class="text-gray-600 mt-1" data-translate-key="colorModeDesc"></p></div>
-                                    <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><div class="flex gap-2"><div class="w-12 h-12 rounded-full bg-blue-200"></div><div class="w-12 h-12 rounded-full bg-green-200"></div><div class="w-12 h-12 rounded-full bg-red-200"></div></div></div>
-                                </div>
-                                <!-- Saturation -->
-                                <div class="param-card flex flex-col">
-                                    <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="saturationTitle"></h4><p class="text-gray-600 mt-1" data-translate-key="saturationDesc"></p></div>
-                                    <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><div class="w-full h-12 rounded-lg bg-gradient-to-r from-gray-400 to-purple-500"></div></div>
-                                </div>
-                                <!-- Color Depth -->
-                                <div class="param-card flex flex-col">
-                                    <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="colorDepthTitleExplain"></h4><p class="text-gray-600 mt-1" data-translate-key="colorDepthDesc"></p></div>
-                                    <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><div class="flex justify-around w-full h-16 items-end gap-1"><div class="w-4 rounded-t-sm bg-red-500" style="height: 60%"></div><div class="w-4 rounded-t-sm bg-green-500" style="height: 80%"></div><div class="w-4 rounded-t-sm bg-blue-500" style="height: 50%"></div><div class="w-4 rounded-t-sm bg-cyan-500" style="height: 70%"></div><div class="w-4 rounded-t-sm bg-purple-500" style="height: 40%"></div><div class="w-4 rounded-t-sm bg-yellow-500" style="height: 90%"></div></div></div>
-                                </div>
-                                 <!-- Detail -->
-                                <div class="param-card flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
-                                    <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="detailTitleExplain"></h4><p class="text-gray-600 mt-1" data-translate-key="detailDesc"></p></div>
-                                    <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><div class="w-full text-center"><span class="text-6xl font-serif text-gray-400">A</span><span class="text-6xl font-serif font-bold text-gray-800 ml-8">A</span></div></div>
+                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                                     <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
+                                     <p class="text-sm text-gray-700 mb-6 text-center" data-translate-key="ppIntro_new"></p>
+                                     <div class="grid sm:grid-cols-2 gap-x-8 gap-y-6 text-left">
+                                         <div>
+                                             <h5 class="font-semibold text-lg">Gamma</h5>
+                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="gammaSubtitle"></p>
+                                             <ul class="space-y-3 text-sm list-disc list-inside">
+                                                 <li><strong>Movie:</strong> Gamma tiêu chuẩn cho phim, cân bằng tốt.</li>
+                                                 <li><strong>Still:</strong> Gamma cho ảnh tĩnh, tương phản và màu rực hơn.</li>
+                                                 <li><strong>Cine1-4:</strong> Gamma điện ảnh, tăng dải nhạy sáng. Cine4 phổ biến nhất.</li>
+                                                 <li><strong>ITU709:</strong> Gamma chuẩn cho phát sóng HDTV (Rec.709).</li>
+                                                 <li><strong>S-Log2/S-Log3:</strong> Gamma phẳng, tối đa hóa dải nhạy sáng, yêu cầu hậu kỳ màu. S-Log3 tối ưu hơn cho grading.</li>
+                                                 <li><strong>HLG:</strong> Chuẩn HDR, xem trực tiếp trên màn hình HDR.</li>
+                                             </ul>
+                                         </div>
+                                         <div>
+                                             <h5 class="font-semibold text-lg">Color Mode</h5>
+                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="colorModeSubtitle"></p>
+                                             <ul class="space-y-3 text-sm list-disc list-inside">
+                                                 <li><strong>Movie/Still:</strong> Đi kèm với Gamma tương ứng.</li>
+                                                 <li><strong>Cinema:</strong> Tông màu dịu, điện ảnh, dùng với Cine Gamma.</li>
+                                                 <li><strong>Pro:</strong> Màu sắc chân thực, cân bằng.</li>
+                                                 <li><strong>ITU709 Matrix:</strong> Màu theo chuẩn Rec.709.</li>
+                                                 <li><strong>S-Gamut/S-Gamut3.Cine:</strong> Không gian màu rộng cho S-Log. S-Gamut3.Cine dễ hậu kỳ hơn.</li>
+                                                 <li><strong>BT.2020:</strong> Chuẩn màu HDR mới, dùng với HLG.</li>
+                                             </ul>
+                                         </div>
+                                          <div class="sm:col-span-2">
+                                             <h5 class="font-semibold text-lg mt-4" data-translate-key="sCinetoneTitle"></h5>
+                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="sCinetoneDesc"></p>
+                                             <ul class="space-y-2 text-sm list-disc list-inside">
+                                                 <li data-translate-key="sCinetoneFeature1"></li>
+                                                 <li data-translate-key="sCinetoneFeature2"></li>
+                                                 <li data-translate-key="sCinetoneFeature3"></li>
+                                             </ul>
+                                         </div>
+                                     </div>
                                 </div>
                             </div>
                         </section>
             
                         <section>
-                            <h3 class="text-2xl md:text-4xl font-bold text-center mb-4" data-translate-key="practicalTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-gray-600 mt-2 mb-12" data-translate-key="practicalDesc"></p>
-                             <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
-                                <!-- Step 1 -->
-                                <div class="flowchart-step w-full md:w-auto"><div class="text-blue-500 font-bold mb-2">Bước 1</div><h4 class="text-lg font-bold mb-2" data-translate-key="practicalStep1"></h4><p class="text-sm text-gray-600" data-translate-key="practicalStep1Desc"></p></div>
-                                <div class="flowchart-arrow transform -rotate-90 md:rotate-0"><svg width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"></path></svg></div>
-                                <!-- Step 2 -->
-                                <div class="flowchart-step w-full md:w-auto"><div class="text-green-500 font-bold mb-2">Bước 2</div><h4 class="text-lg font-bold mb-2" data-translate-key="practicalStep2"></h4><p class="text-sm text-gray-600" data-translate-key="practicalStep2Desc"></p></div>
-                                <div class="flowchart-arrow transform -rotate-90 md:rotate-0"><svg width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"></path></svg></div>
-                                <!-- Step 3 -->
-                                <div class="flowchart-step w-full md:w-auto"><div class="text-purple-500 font-bold mb-2">Bước 3</div><h4 class="text-lg font-bold mb-2" data-translate-key="practicalStep3"></h4><p class="text-sm text-gray-600" data-translate-key="practicalStep3Desc"></p></div>
-                                <div class="flowchart-arrow transform -rotate-90 md:rotate-0"><svg width="48" height="48" viewBox="0 0 24 24"><path fill="currentColor" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"></path></svg></div>
-                                 <!-- Step 4 -->
-                                <div class="flowchart-step w-full md:w-auto"><div class="text-orange-500 font-bold mb-2">Bước 4</div><h4 class="text-lg font-bold mb-2" data-translate-key="practicalStep4"></h4><p class="text-sm text-gray-600" data-translate-key="practicalStep4Desc"></p></div>
-                             </div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="ppTechTitle"></h3>
+                             <div class="grid grid-cols-1 gap-8">
+                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 max-w-3xl mx-auto w-full">
+                                    <h4 class="text-xl font-bold text-center mb-4" data-translate-key="bitDepthTitle"></h4>
+                                     <p class="text-center text-sm text-gray-600 mb-4" data-translate-key="bitDepthDesc"></p>
+                                    <div class="chart-container h-64 md:h-72">
+                                        <canvas id="bitDepthChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </section>
+            
+                        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center" data-translate-key="practicalTitle"></h3>
+                            <p class="max-w-3xl mx-auto text-center text-gray-700 mt-2 mb-8" data-translate-key="practicalDesc"></p>
+                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                                <div class="border-t-4 border-blue-500 rounded-lg p-4 bg-slate-50 shadow-sm">
+                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-blue-500">①</span><span data-translate-key="practicalStep1"></span></h4>
+                                    <p class="text-sm mt-2" data-translate-key="practicalStep1Desc"></p>
+                                </div>
+                                <div class="border-t-4 border-green-500 rounded-lg p-4 bg-slate-50 shadow-sm">
+                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-green-500">②</span><span data-translate-key="practicalStep2"></span></h4>
+                                    <p class="text-sm mt-2" data-translate-key="practicalStep2Desc"></p>
+                                </div>
+                                 <div class="border-t-4 border-purple-500 rounded-lg p-4 bg-slate-50 shadow-sm">
+                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-purple-500">③</span><span data-translate-key="practicalStep3"></span></h4>
+                                    <p class="text-sm mt-2" data-translate-key="practicalStep3Desc"></p>
+                                </div>
+                                 <div class="border-t-4 border-orange-500 rounded-lg p-4 bg-slate-50 shadow-sm">
+                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-orange-500">④</span><span data-translate-key="practicalStep4"></span></h4>
+                                    <p class="text-sm mt-2" data-translate-key="practicalStep4Desc"></p>
+                                </div>
+                            </div>
+                             <div class="text-center mt-12">
+                                <button id="exploreMoreBtn" class="btn btn-primary py-3 px-8 text-base md:text-lg" data-translate-key="navRecipeFormulas"></button>
+                            </div>
+                        </section>
+            
+                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
+                             <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="recallDesc"></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                <div class="bg-slate-100 rounded-lg p-6 text-center">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4>
+                                    <p class="text-sm" data-translate-key="recallInternalDesc"></p>
+                                </div>
+                                <div class="bg-slate-100 rounded-lg p-6 text-center">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4>
+                                    <p class="text-sm" data-translate-key="recallCardDesc"></p>
+                                </div>
+                            </div>
+                         </section>
+            
                     </main>
                     <footer class="text-center text-sm text-gray-500 pt-8 mt-12 border-t">
                         <p data-translate-key="footerText"></p>
@@ -562,6 +757,142 @@
                 </div>
             </div>`
         };
+
+        // --- Lightbox Functions ---
+        function openLightbox(images, initialIndex = 0) {
+            if (!images || images.length === 0) return;
+
+            state.lightbox.isOpen = true;
+            state.lightbox.images = images;
+            state.lightbox.currentIndex = initialIndex;
+            
+            const lightboxEl = document.getElementById('lightbox');
+            lightboxEl.classList.remove('hidden');
+            
+            updateLightboxContent();
+        }
+
+        function closeLightbox() {
+            state.lightbox.isOpen = false;
+            const lightboxEl = document.getElementById('lightbox');
+            lightboxEl.classList.add('hidden');
+        }
+
+        function updateLightboxContent() {
+            if (!state.lightbox.isOpen) return;
+
+            const mainImageEl = document.getElementById('lightbox-main-image');
+            const thumbnailsContainer = document.getElementById('lightbox-thumbnails');
+
+            const newSrc = state.lightbox.images[state.lightbox.currentIndex];
+            mainImageEl.style.opacity = '0';
+            setTimeout(() => {
+                mainImageEl.src = newSrc;
+                mainImageEl.onload = () => { mainImageEl.style.opacity = '1'; };
+            }, 150);
+            
+            thumbnailsContainer.innerHTML = state.lightbox.images.map((imgSrc, index) => `
+                <img src="${imgSrc}" 
+                     class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" 
+                     data-index="${index}">
+            `).join('');
+        }
+
+        function navigateLightbox(direction) {
+            if (!state.lightbox.isOpen) return;
+            const imageCount = state.lightbox.images.length;
+            
+            let newIndex = state.lightbox.currentIndex + direction;
+            
+            if (newIndex < 0) {
+                newIndex = imageCount - 1;
+            } else if (newIndex >= imageCount) {
+                newIndex = 0;
+            }
+            
+            state.lightbox.currentIndex = newIndex;
+            updateLightboxContent();
+        }
+
+        function destroyAllCharts() {
+            Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
+            activeCharts = {};
+        }
+
+        function renderAllCharts(lang) {
+            destroyAllCharts();
+            const FONT_COLOR = '#374151'; 
+            const GRID_COLOR = '#E5E7EB';    
+            const PALETTE = { blue: '#3b82f6', darkBlue: '#1e3a8a', lightBlue: '#bfdbfe', green: '#22c55e', purple: '#8b5cf6', yellow: '#eab308', gray: '#4b5563', lightGray: '#e5e7eb' };
+            
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) return label.join(' ');
+                return label;
+            };
+
+            const defaultChartOptions = (legendPos = 'bottom') => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: legendPos,
+                        labels: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: { size: 14, family: "'Be Vietnam Pro', sans-serif" },
+                        bodyFont: { size: 12, family: "'Be Vietnam Pro', sans-serif" },
+                        callbacks: { title: tooltipTitleCallback }
+                    }
+                },
+                scales: {
+                    y: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { color: GRID_COLOR } },
+                    x: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { display: false } }
+                }
+            });
+
+            const bitDepthCtx = document.getElementById('bitDepthChart')?.getContext('2d');
+            if (bitDepthCtx) {
+                 new Chart(bitDepthCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Video 8-bit', 'Video 10-bit'],
+                        datasets: [{
+                            label: 'Số lượng màu',
+                            data: [16700000, 1070000000],
+                            backgroundColor: [PALETTE.lightBlue, PALETTE.darkBlue],
+                            borderColor: [PALETTE.blue, PALETTE.blue],
+                            borderWidth: 2,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        ...defaultChartOptions(),
+                        scales: {
+                            y: {
+                                type: 'logarithmic',
+                                ticks: { color: PALETTE.gray,
+                                    callback: function(value) {
+                                        if (value === 1000000000) return '1 Tỷ màu';
+                                        if (value === 100000000) return '100 Triệu màu';
+                                        if (value === 10000000) return '16.7 Triệu màu';
+                                        return null;
+                                    }
+                                },
+                                grid: { color: PALETTE.lightGray }
+                            },
+                            x: { ticks: { color: PALETTE.gray, font: {size: 14, weight: '600'}}, grid: { display: false } }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { title: tooltipTitleCallback, label: (context) => ` ~${new Intl.NumberFormat('vi-VN').format(context.parsed.y)} màu` } }
+                        }
+                    }
+                });
+            }
+        }
 
         function renderView(viewName) {
             state.currentView = viewName;
@@ -610,8 +941,9 @@
             }
             renderLibraryList();
             renderLibraryDetails();
-            if (activeCharts.color) activeCharts.color.update();
-            if (activeCharts.bw) activeCharts.bw.update();
+            
+            if (activeCharts.color && typeof activeCharts.color.update === 'function') { activeCharts.color.update(); }
+            if (activeCharts.bw && typeof activeCharts.bw.update === 'function') { activeCharts.bw.update(); }
         }
 
         async function handleAiComparison(id1, id2, recipe2Obj = null) {
@@ -669,9 +1001,12 @@
                 renderLibraryList();    
                 renderLibraryDetails();
                 renderInteractiveCharts(state.currentLang);
+            } else if (viewName === 'explain') {
+                renderAllCharts(state.currentLang);
             }
         }
 
+        // --- RENDER & INITIALIZATION ---
         function renderLibraryList() {
             const container = document.getElementById('recipeListContainer'); if (!container) return;
             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
@@ -705,80 +1040,84 @@
             const recipeListPanel = document.getElementById('recipeListPanel');
             const recipeMainPanel = document.getElementById('recipeMainPanel');
             const recipeDetailPanelMobile = document.getElementById('recipeDetailPanelMobile');
+
+            if (isMobile) {
+                if(state.isMobileDetailActive) {
+                    recipeListPanel.classList.add('hidden');
+                    recipeDetailPanelMobile.classList.remove('hidden');
+                } else {
+                    recipeListPanel.classList.remove('hidden');
+                    recipeDetailPanelMobile.classList.add('hidden');
+                }
+            } else {
+                recipeListPanel?.classList.remove('hidden');
+                recipeDetailPanelMobile?.classList.add('hidden');
+            }
+
             const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+
+            let recipeContentContainer, chartsContainer;
+            if (isMobile && state.isMobileDetailActive) {
+                recipeContentContainer = document.getElementById('recipeContentMobile');
+                chartsContainer = null;
+            } else {
+                recipeContentContainer = document.getElementById('recipeContent');
+                chartsContainer = document.getElementById('chartsContainer');
+            }
+
+            if (!recipeContentContainer) return;
+
+            if (!recipe) {    
+                if (chartsContainer) chartsContainer.classList.remove('hidden');
+                recipeContentContainer.classList.add('hidden');
+                if(!isMobile) recipeMainPanel?.classList.remove('hidden');
+                return;    
+            }
+            if (chartsContainer) chartsContainer.classList.add('hidden');
+            recipeContentContainer.classList.remove('hidden');
+            if(!isMobile) recipeMainPanel?.classList.remove('hidden');
             
-            const createDetailHTML = (recipe) => {
-                const thumbnailsHTML = (recipe.demoImages && recipe.demoImages.length > 0) ? `
+            const thumbnailsHTML = (recipe.demoImages && recipe.demoImages.length > 0) ? `
                 <div class="my-6">
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                         ${recipe.demoImages.map((imgSrc, index) => `
                             <div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb"
                                  data-recipe-id="${recipe.id}"
                                  data-index="${index}">
-                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]} ${index + 1}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/800x600/cccccc/ffffff?text=Image';">
+                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]} ${index + 1}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
                             </div>
                         `).join('')}
                     </div>
                 </div>` : '';
 
-                return `
-                    <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
-                    <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
-                    ${thumbnailsHTML}
-                    <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
-                    <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                        <details open class="group">
-                            <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
-                                <span data-translate-key="tutorialTitle"></span>
-                                <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </summary>
-                            <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
-                                <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div>
-                                <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
-                                <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
-                                <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
-                            </div>
-                        </details>
-                    </div>
-                    <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                        <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
-                        <div class="glass-panel p-4 md:p-6 -mx-2">
-                            <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
-                            <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
-                            <div id="aiResultContainer"></div>
+            recipeContentContainer.innerHTML = `
+                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+                <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
+                ${thumbnailsHTML}
+                <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
+                <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
+                    <details open class="group">
+                        <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
+                            <span data-translate-key="tutorialTitle"></span>
+                            <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </summary>
+                        <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
+                            <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div>
+                            <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
+                            <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
+                            <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
                         </div>
-                    </div>`;
-            }
-
-            if (isMobile) {
-                if(state.isMobileDetailActive) {
-                    recipeListPanel.classList.add('hidden');
-                    recipeDetailPanelMobile.classList.remove('hidden');
-                    if (recipe) {
-                         document.getElementById('recipeContentMobile').innerHTML = createDetailHTML(recipe);
-                    }
-                } else {
-                    recipeListPanel.classList.remove('hidden');
-                    recipeDetailPanelMobile.classList.add('hidden');
-                }
-            } else {
-                 const chartsContainer = document.getElementById('chartsContainer');
-                 const recipeContent = document.getElementById('recipeContent');
-                 if (recipe) {
-                    chartsContainer.classList.add('hidden');
-                    recipeContent.classList.remove('hidden');
-                    recipeContent.innerHTML = createDetailHTML(recipe);
-                 } else {
-                    chartsContainer.classList.remove('hidden');
-                    recipeContent.classList.add('hidden');
-                 }
-            }
+                    </details>
+                </div>
+                <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
+                    <div class="glass-panel p-4 md:p-6 -mx-2">
+                        <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
+                        <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
+                        <div id="aiResultContainer"></div>
+                    </div>
+                </div>`;
             applyTranslations();
-        }
-        
-        function destroyAllCharts() {
-            Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
-            activeCharts = {};
         }
 
         function renderInteractiveCharts(lang) {
@@ -802,8 +1141,8 @@
                     legend: { display: false },
                     tooltip: {
                         backgroundColor: 'rgba(0,0,0,0.8)',
-                        titleFont: { size: 14, family: "'Be Vietnam Pro', sans-serif" },
-                        bodyFont: { size: 13, family: "'Be Vietnam Pro', sans-serif" },
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 },
                         padding: 10,
                         callbacks: {
                             label: function(context) { return context.raw.name; }
@@ -818,10 +1157,7 @@
             
             const colorCtx = document.getElementById('colorChart')?.getContext('2d');
             if (colorCtx) {
-                const colorData = recipesData
-                    .filter(r => r.type === 'color' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number')
-                    .map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
-                
+                const colorData = recipesData.filter(r => r.type === 'color' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number' && r.personalityColor).map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
                 activeCharts.color = new Chart(colorCtx, {
                     type: 'scatter',
                     data: {
@@ -843,10 +1179,7 @@
 
             const bwCtx = document.getElementById('bwChart')?.getContext('2d');
             if (bwCtx) {
-                const bwData = recipesData
-                    .filter(r => r.type === 'bw' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number')
-                    .map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
-
+                const bwData = recipesData.filter(r => r.type === 'bw' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number').map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
                 activeCharts.bw = new Chart(bwCtx, {
                     type: 'scatter',
                     data: {
@@ -875,8 +1208,11 @@
         }
 
         function init() {
+            // Global event listener for the entire app
             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
+
+                // --- Lightbox Handling ---
                 if (state.lightbox.isOpen) {
                     if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) { closeLightbox(); } 
                     else if (target.closest('#lightbox-next')) { navigateLightbox(1); } 
@@ -886,17 +1222,20 @@
                         state.lightbox.currentIndex = parseInt(thumb.dataset.index);
                         updateLightboxContent();
                     }
-                    return; 
+                    return; // Prevent other click handlers when lightbox is open
                 }
+
                 const lightboxTrigger = target.closest('.lightbox-trigger-thumb');
                 if (lightboxTrigger) {
                     const recipeId = lightboxTrigger.dataset.recipeId;
                     const recipe = recipesData.find(r => r.id === recipeId);
-                    if (recipe && recipe.demoImages && recipe.demoImages.length > 0) {
+                    if (recipe && recipe.demoImages) {
                          openLightbox(recipe.demoImages, parseInt(lightboxTrigger.dataset.index));
                     }
                     return;
                 }
+                
+                // --- General App Click Handlers ---
                 const homeBtn = target.closest('#homeBtn');
                 const navBtn = target.closest('.nav-btn');
                 const mobileNavBtn = target.closest('.nav-btn-mobile');
@@ -911,10 +1250,12 @@
                 const hamburgerBtn = target.closest('#hamburgerBtn');
                 const closeMobileNavBtn = target.closest('#closeMobileNavBtn');
                 const recipeItemContent = target.closest('.recipe-item-content');
+                const recipeDot = target.closest('.recipe-dot');
                 const recipeCompareCb = target.closest('.recipe-compare-cb');
                 const backToListBtn = target.closest('#backToListBtn');
                 const quizOption = target.closest('.quiz-option');
                 
+                // Nav
                 if (hamburgerBtn) { toggleMobileNav(true); return; }
                 if (closeMobileNavBtn || (target.id === 'mobileNavMenu' && !target.closest('#mobileNavMenu > div'))) { toggleMobileNav(false); return; }
                 if (mobileNavBtn) {
@@ -927,8 +1268,10 @@
                 if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
                 if (backToListBtn) { state.isMobileDetailActive = false; renderLibraryDetails(); return; }
                 
+                // Language
                 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
                 
+                // Main Actions
                 if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
                 if (compareBtn && !compareBtn.disabled) { handleAiComparison(state.comparisonList[0], state.comparisonList[1]); return; }
                 if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
@@ -940,6 +1283,7 @@
                     await renderView('recipeFormulas'); return; 
                 }
 
+                // Quiz options
                 if (quizOption) {
                     if(!quizOption.classList.contains('selected')) {
                         const group = quizOption.closest('[data-quiz-group]').dataset.quizGroup;
@@ -948,13 +1292,15 @@
                         quizOption.classList.add('selected');
                         setTimeout(() => {
                             state.quizStep++;
-                            if (state.quizStep >= 1) handleQuizSubmit(); else renderView('quiz');
+                            if (state.quizStep >= quizQuestions.length) handleQuizSubmit(); else renderView('quiz');
                         }, 250);
                     }
                     return;
                 }
                 
+                // Recipe List Interactions
                 if (recipeItemContent) { handleRecipeSelection(recipeItemContent.dataset.recipeId, 'div'); return; }
+                if (recipeDot) { handleRecipeSelection(recipeDot.dataset.recipeId, 'div'); return; }
                 if (recipeCompareCb) { handleRecipeSelection(recipeCompareCb.dataset.recipeId, 'checkbox'); return; }
                 if (document.getElementById('filtersContainer')?.contains(target)) { handleFilterClick(e); return; }
             });
@@ -967,550 +1313,22 @@
         document.addEventListener("DOMContentLoaded", init);
 
         const recipesData = [
-    {
-        "id": "pro-portrait",
-        "name": { "vi": "1. Chân Dung Hoàn Hảo", "en": "1. Pro Portrait" },
-        "description": { "vi": "Màu sắc trung thực, tông da đẹp, lựa chọn tin cậy cho chân dung.", "en": "True colors, beautiful skin tones, a reliable choice for portraits." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "4000K, A7-G1",
-        "settings": { "Black level": "+6", "Gamma": "S-Cinetone/Cine4", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+30", "Color Phase": "-2" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+3", "C": "+5", "M": "+3", "Y": "-3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFB74D", "coords": { "x": 5.0, "y": 5.0 }, "demoImages": ["https://placehold.co/800x600/FFB74D/ffffff?text=Pro+Portrait"]
-    },
-    {
-        "id": "classic-ortho",
-        "name": { "vi": "2. Đơn Sắc Cổ Điển", "en": "2. Classic Ortho" },
-        "description": { "vi": "Giả lập phim đen trắng cổ điển không nhạy với màu đỏ.", "en": "Simulates classic orthochromatic B&W film, not sensitive to red." },
-        "type": "bw", "contrast": "high", "saturation": "medium",
-        "whiteBalance": "AWB, A3-M2.75",
-        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "105% +5", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "+7", "G": "+7", "B": "-7", "C": "-7", "M": "+7", "Y": "+7" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BDBDBD", "coords": { "x": 7.4, "y": -4.5 }, "demoImages": ["https://placehold.co/800x600/BDBDBD/ffffff?text=Classic+Ortho"]
-    },
-    {
-        "id": "emerald-night",
-        "name": { "vi": "3. Ngọc Lục Bảo Đêm", "en": "3. Emerald Night" },
-        "description": { "vi": "Tông xanh lục bảo đậm, bão hòa cao dưới đèn đêm, sang trọng.", "en": "Deep, highly saturated emerald green under night lights, luxurious." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "3000K, A7-G7",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 105% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+5" },
-        "colorDepth": { "R": "+5", "G": "-1", "B": "+2", "C": "+5", "M": "+5", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#00695C", "coords": { "x": 7.7, "y": -6.5 }, "demoImages": ["https://placehold.co/800x600/00695C/ffffff?text=Emerald+Night"]
-    },
-    {
-        "id": "deep-ink",
-        "name": { "vi": "4. Mực Đen Sâu Thẳm", "en": "4. Deep Ink" },
-        "description": { "vi": "Tăng cường độ sâu cho vùng tối, tạo cái nhìn kịch tính.", "en": "Enhances the depth of shadows for a dramatic look." },
-        "type": "bw", "contrast": "high", "saturation": "low",
-        "whiteBalance": "AWB",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Middle +5", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "-6", "G": "+1", "B": "+5", "C": "+4", "M": "-6", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#757575", "coords": { "x": 9.0, "y": 5.5 }, "demoImages": ["https://placehold.co/800x600/757575/ffffff?text=Deep+Ink"]
-    },
-    {
-        "id": "acid-green",
-        "name": { "vi": "5. Xanh Acid", "en": "5. Acid Green" },
-        "description": { "vi": "Xanh lá cây và vàng chanh nổi bật, hiệu ứng thị giác mạnh.", "en": "Prominent green and lime-yellow, strong visual effect." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "3400K, A7-M1.75",
-        "settings": { "Black level": "-6", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+32", "Color Phase": "0" },
-        "colorDepth": { "R": "+3", "G": "+7", "B": "+2", "C": "+7", "M": "-5", "Y": "-4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#8BC34A", "coords": { "x": 1.5, "y": -8.0 }, "demoImages": ["https://placehold.co/800x600/8BC34A/ffffff?text=Acid+Green"]
-    },
-    {
-        "id": "timeworn-grain",
-        "name": { "vi": "6. Bụi Thời Gian", "en": "6. Timeworn Grain" },
-        "description": { "vi": "Tương phản thấp, hạt mịn, tạo cảm giác ảnh cũ.", "en": "Low contrast, fine grain, feel of an old photo." },
-        "type": "bw", "contrast": "low", "saturation": "high",
-        "whiteBalance": "5500K, A3-G2",
-        "notes": { "vi": "Bật Giảm nhiễu cho JPG & đặt thành Thấp. Chụp ISO 1600+ để tăng hạt.", "en": "Turn On NR for JPG & Set to Low. Shoot ISO 1600+ to increase Granularity." },
-        "settings": { "Black level": "+3", "Gamma": "Cine1", "Black Gamma": "Narrow +5", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
-        "colorDepth": { "R": "+3", "G": "+3", "B": "+3", "C": "+2", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#B0BEC5", "coords": { "x": -8.1, "y": -6.4 }, "demoImages": ["https://placehold.co/800x600/B0BEC5/ffffff?text=Timeworn+Grain"]
-    },
-    {
-        "id": "jungle-jade",
-        "name": { "vi": "7. Rừng Già Cúc Phương", "en": "7. Jungle Jade" },
-        "description": { "vi": "Màu xanh lá cây đậm và bão hòa, cảm giác sâu thẳm của rừng già.", "en": "Deep, saturated green, profound feeling of an ancient forest." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "3500K, A7-G0.25",
-        "settings": { "Black level": "-2", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "ITU709Matrix", "Saturation": "+18", "Color Phase": "-3" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#2E7D32", "coords": { "x": 7.5, "y": -7.0 }, "demoImages": ["https://placehold.co/800x600/2E7D32/ffffff?text=Jungle+Jade"]
-    },
-    {
-        "id": "classic-negative",
-        "name": { "vi": "8. Âm Bản Cổ Điển", "en": "8. Classic Negative" },
-        "description": { "vi": "Tông màu lạnh, ám xanh, tái tạo cảm giác phim âm bản xưa.", "en": "Cool, blue-tinted tone, recreating the feel of old negative film." },
-        "type": "color", "contrast": "high", "saturation": "medium",
-        "whiteBalance": "8200K, B4.5-G1.75",
-        "settings": { "Black level": "-10", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+16", "Color Phase": "+2" },
-        "colorDepth": { "R": "+5", "G": "+7", "B": "-6", "C": "-5", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#2196F3", "coords": { "x": 6.5, "y": 3.0 }, "demoImages": ["https://placehold.co/800x600/2196F3/ffffff?text=Classic+Negative"]
-    },
-    {
-        "id": "autumn-portrait",
-        "name": { "vi": "9. Chân Dung Mùa Thu", "en": "9. Autumn Portrait" },
-        "description": { "vi": "Màu sắc ấm áp, lý tưởng cho chụp chân dung trong điều kiện ánh sáng yếu.", "en": "Warm colors, ideal for portraits in low light conditions." },
-        "type": "color", "contrast": "medium", "saturation": "medium",
-        "whiteBalance": "4500K, A7-M1",
-        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
-        "settings": { "Black level": "-15", "Gamma": "S-Log2/S-Log3", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "+3" },
-        "colorDepth": { "R": "+3", "G": "+5", "B": "+5", "C": "+7", "M": "+7", "Y": "-3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#D7CCC8", "coords": { "x": -2.2, "y": 6.5 }, "demoImages": ["https://placehold.co/800x600/D7CCC8/ffffff?text=Autumn+Portrait"]
-    },
-    {
-        "id": "blue-velvet",
-        "name": { "vi": "10. Nhung Xanh", "en": "10. Blue Velvet" },
-        "description": { "vi": "Tông màu xanh dương lạnh, mềm mại như nhung, sang trọng và bí ẩn.", "en": "A cool, soft blue tone like velvet, luxurious and mysterious." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "7400K, B4-M1",
-        "settings": { "Black level": "0", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-3" },
-        "colorDepth": { "R": "+4", "G": "+5", "B": "-4", "C": "-4", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#5C6BC0", "coords": { "x": -7.5, "y": 2.5 }, "demoImages": ["https://placehold.co/800x600/5C6BC0/ffffff?text=Blue+Velvet"]
-    },
-    {
-        "id": "urban-drama",
-        "name": { "vi": "11. Kịch Tính Đô Thị", "en": "11. Urban Drama" },
-        "description": { "vi": "Tương phản cực cao, làm nổi bật đường nét, hình khối.", "en": "Extremely high contrast, emphasizing lines and shapes." },
-        "type": "bw", "contrast": "high", "saturation": "low",
-        "whiteBalance": "AWB",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "+2", "G": "-4", "B": "-1", "C": "+2", "M": "-1", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#616161", "coords": { "x": 9.5, "y": -8.0 }, "demoImages": ["https://placehold.co/800x600/616161/ffffff?text=Urban+Drama"]
-    },
-    {
-        "id": "sandy-street",
-        "name": { "vi": "12. Phố Cát", "en": "12. Sandy Street" },
-        "description": { "vi": "Màu sắc ấm áp, ngả vàng cát, hoài niệm và bụi bặm.", "en": "Warm, sandy-yellow hue, nostalgic and dusty feel." },
-        "type": "color", "contrast": "low", "saturation": "high",
-        "whiteBalance": "4400K, A7-G1",
-        "settings": { "Black level": "0", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+25", "Color Phase": "+3" },
-        "colorDepth": { "R": "+3", "G": "+7", "B": "0", "C": "0", "M": "+5", "Y": "+3" },
-        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 5", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFD54F", "coords": { "x": -6.5, "y": 7.7 }, "demoImages": ["https://placehold.co/800x600/FFD54F/ffffff?text=Sandy+Street"]
-    },
-    {
-        "id": "berlin-tone",
-        "name": { "vi": "13. Bảng màu Berlin", "en": "13. Berlin Tone" },
-        "description": { "vi": "Lấy cảm hứng từ màu sắc đặc trưng của máy ảnh Leica, với tông màu ấm và dễ chịu.", "en": "Inspired by the characteristic colors of Leica cameras, with warm and pleasant tones." },
-        "type": "color", "contrast": "medium", "saturation": "low",
-        "whiteBalance": "7000K, B5-M0.25",
-        "settings": { "Black level": "-9", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+6", "Color Phase": "+2" },
-        "colorDepth": { "R": "+3", "G": "+7", "B": "+3", "C": "-5", "M": "+3", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#8D6E63", "coords": { "x": 1.5, "y": 2.5 }, "demoImages": ["https://placehold.co/800x600/8D6E63/ffffff?text=Berlin+Tone"]
-    },
-    {
-        "id": "indochine-sunshine",
-        "name": { "vi": "14. Nắng Vàng Đông Dương", "en": "14. Indochine Sunshine" },
-        "description": { "vi": "Màu vàng rực rỡ và bão hòa cao, nắm bắt năng lượng.", "en": "Vibrant yellow, high saturation, captures energy." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "4300K, A3.5",
-        "settings": { "Black level": "-10", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Auto", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+5" },
-        "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "-2", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFD54F", "coords": { "x": 7.2, "y": 7.5 }, "demoImages": ["https://placehold.co/800x600/FFD54F/ffffff?text=Indochine+Sunshine"]
-    },
-    {
-        "id": "lemon-peel",
-        "name": { "vi": "15. Vỏ Chanh Vàng", "en": "15. Lemon Peel" },
-        "description": { "vi": "Tông màu vàng chanh tươi sáng, hơi gắt, tràn đầy năng lượng.", "en": "Bright and slightly sharp lemon-yellow tone, energetic." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "4200K, A7-G0.25",
-        "settings": { "Black level": "+4", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "-4" },
-        "colorDepth": { "R": "-1", "G": "+7", "B": "0", "C": "-3", "M": "-4", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FDD835", "coords": { "x": -5.5, "y": 5.0 }, "demoImages": ["https://placehold.co/800x600/FDD835/ffffff?text=Lemon+Peel"]
-    },
-    {
-        "id": "faded-chrome",
-        "name": { "vi": "16. Nhạt Phai", "en": "16. Faded Chrome" },
-        "description": { "vi": "Vùng tối được nâng tạo hiệu ứng bạc màu, hoài cổ, nhẹ nhàng.", "en": "Lifted shadows create a faded, nostalgic, and gentle effect." },
-        "type": "bw", "contrast": "low", "saturation": "low",
-        "whiteBalance": "AWB",
-        "settings": { "Black level": "+3", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
-        "colorDepth": { "R": "+5", "G": "+5", "B": "+7", "C": "+2", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#E0E0E0", "coords": { "x": -7.8, "y": -5.5 }, "demoImages": ["https://placehold.co/800x600/E0E0E0/ffffff?text=Faded+Chrome"]
-    },
-    {
-        "id": "golden-era",
-        "name": { "vi": "17. Ký Ức Vàng Son", "en": "17. Golden Era" },
-        "description": { "vi": "Ánh vàng ấm áp đặc trưng, gợi nhớ thập niên 90.", "en": "A distinctive warm golden glow, reminiscent of the 90s." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "8500K, B3-M1.75",
-        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3/S-Gamut", "Saturation": "+32", "Color Phase": "+6" },
-        "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFB74D", "coords": { "x": -0.5, "y": 7.9 }, "demoImages": ["https://placehold.co/800x600/FFB74D/ffffff?text=Golden+Era"]
-    },
-    {
-        "id": "phoenix-fire",
-        "name": { "vi": "18. Lửa Phượng Hoàng", "en": "18. Phoenix Fire" },
-        "description": { "vi": "Màu sắc rực rỡ, đỏ và vàng, tương phản cao, mạnh mẽ.", "en": "Vibrant red and yellow, high contrast, powerful." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "8500K, B3.5-G1",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 105% +5", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+1" },
-        "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#F44336", "coords": { "x": 9.6, "y": 9.2 }, "demoImages": ["https://placehold.co/800x600/F44336/ffffff?text=Phoenix+Fire"]
-    },
-    {
-        "id": "faded-rose",
-        "name": { "vi": "19. Cánh Hồng Phai", "en": "19. Faded Rose" },
-        "description": { "vi": "Tông màu hồng và đỏ tươi tắn, mềm mại, lý tưởng cho chân dung.", "en": "Fresh pink and red tone, soft, ideal for portraits." },
-        "type": "color", "contrast": "low", "saturation": "high",
-        "whiteBalance": "4600K, A7-M0.5",
-        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Pro", "Saturation": "+25", "Color Phase": "+2" },
-        "colorDepth": { "R": "-1", "G": "0", "B": "0", "C": "-3", "M": "+5", "Y": "-1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#E91E63", "coords": { "x": -7.0, "y": 7.2 }, "demoImages": ["https://placehold.co/800x600/E91E63/ffffff?text=Faded+Rose"]
-    },
-    {
-        "id": "crisp-air",
-        "name": { "vi": "20. Không Khí Trong Lành", "en": "20. Crisp Air" },
-        "description": { "vi": "Tông xanh da trời và trắng sáng, tạo cảm giác trong lành.", "en": "Sky-blue and bright white tone, creating a fresh feeling." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "AWB, B2-G2",
-        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+30", "Color Phase": "+2" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "-5", "M": "-3", "Y": "-4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#29B6F6", "coords": { "x": 3.5, "y": 2.0 }, "demoImages": ["https://placehold.co/800x600/29B6F6/ffffff?text=Crisp+Air"]
-    },
-    {
-        "id": "cotton-candy",
-        "name": { "vi": "21. Kẹo Bông Gòn", "en": "21. Cotton Candy" },
-        "description": { "vi": "Màu sắc rực rỡ, tươi sáng như kẹo, mang lại cảm giác vui tươi.", "en": "Bright, vibrant colors like candy, providing a cheerful feeling." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "AWB, A2-M0.75",
-        "settings": { "Black level": "-4", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+27", "Color Phase": "-3" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+4", "M": "+2", "Y": "-5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#EC407A", "coords": { "x": 6.0, "y": 9.0 }, "demoImages": ["https://placehold.co/800x600/EC407A/ffffff?text=Cotton+Candy"]
-    },
-    {
-        "id": "faded-sunshine",
-        "name": { "vi": "22. Nắng Vàng Phai", "en": "22. Faded Sunshine" },
-        "description": { "vi": "Tông màu ấm, ngả vàng, bão hòa thấp, tạo cảm giác hoài cổ.", "en": "Warm, yellowish tone, low saturation, creates a nostalgic feel." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "4200K, A7-M2",
-        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+14", "Color Phase": "-3" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-7", "M": "-4", "Y": "-1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFF176", "coords": { "x": -5.0, "y": 6.5 }, "demoImages": ["https://placehold.co/800x600/FFF176/ffffff?text=Faded+Sunshine"]
-    },
-    {
-        "id": "graphite-sketch",
-        "name": { "vi": "23. Than Chì", "en": "23. Graphite Sketch" },
-        "description": { "vi": "Tương phản mạnh, chi tiết sắc nét, như bút than chì.", "en": "Strong contrast, sharp details, like a graphite sketch." },
-        "type": "bw", "contrast": "high", "saturation": "low",
-        "whiteBalance": "AWB",
-        "settings": { "Black level": "-11", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "-1", "G": "+1", "B": "-1", "C": "+3", "M": "-3", "Y": "-1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#9E9E9E", "coords": { "x": 8.2, "y": -7.5 }, "demoImages": ["https://placehold.co/800x600/9E9E9E/ffffff?text=Graphite+Sketch"]
-    },
-    {
-        "id": "ember-glow",
-        "name": { "vi": "24. Lửa Chiều Tàn", "en": "24. Ember Glow" },
-        "description": { "vi": "Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm.", "en": "Vibrant orange of fire and deep shadows." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "4000K, A5-M0.5",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 92.5% +5", "Color Mode": "S-Gamut3.Cine", "Saturation": "+27", "Color Phase": "+6" },
-        "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "+2", "Y": "+1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#E57373", "coords": { "x": 7.8, "y": 8.1 }, "demoImages": ["https://placehold.co/800x600/E57373/ffffff?text=Ember+Glow"]
-    },
-    {
-        "id": "daydream",
-        "name": { "vi": "25. Giấc Mơ Trưa", "en": "25. Daydream" },
-        "description": { "vi": "Màu sắc ấm áp, mềm mại, mang lại cảm giác mơ màng, lãng mạn.", "en": "Warm, soft colors, providing a dreamy, romantic feeling." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "4500K, A7",
-        "settings": { "Black level": "-5", "Gamma": "Cine1 or Cine4", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+25", "Color Phase": "+3" },
-        "colorDepth": { "R": "-2", "G": "+5", "B": "-2", "C": "+3", "M": "+3", "Y": "-1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFCC80", "coords": { "x": 3.0, "y": 8.5 }, "demoImages": ["https://placehold.co/800x600/FFCC80/ffffff?text=Daydream"]
-    },
-    {
-        "id": "decisive-moment",
-        "name": { "vi": "26. Khoảnh Khắc Quyết Định", "en": "26. Decisive Moment" },
-        "description": { "vi": "Tương phản cao, phù hợp nhiếp ảnh tài liệu, nhấn mạnh cảm xúc.", "en": "High contrast for documentary, emphasizing emotion." },
-        "type": "bw", "contrast": "high", "saturation": "low",
-        "whiteBalance": "AWB, A3",
-        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -5", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
-        "colorDepth": { "R": "0", "G": "+3", "B": "0", "C": "+2", "M": "+3", "Y": "0" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#90A4AE", "coords": { "x": 7.6, "y": -1.8 }, "demoImages": ["https://placehold.co/800x600/90A4AE/ffffff?text=Decisive+Moment"]
-    },
-    {
-        "id": "vibrant-vibe",
-        "name": { "vi": "27. Sắc Màu Cực Đại", "en": "27. Vibrant Vibe" },
-        "description": { "vi": "Độ bão hòa cao và màu sắc sống động cho những bức ảnh đầy năng lượng.", "en": "High saturation and vivid colors for energetic photos." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "4500K, A7-M0.75",
-        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+8", "Color Phase": "-1" },
-        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-5", "M": "+5", "Y": "+4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#EF5350", "coords": { "x": 1.0, "y": 7.0 }, "demoImages": ["https://placehold.co/800x600/EF5350/ffffff?text=Vibrant+Vibe"]
-    },
-    {
-        "id": "seventies-song",
-        "name": { "vi": "28. Giai Điệu Thập Niên 70", "en": "28. Seventies Song" },
-        "description": { "vi": "Màu sắc ấm áp, vùng tối mềm mại, mang lại cảm giác của những năm 70.", "en": "Warm colors, soft shadows, bringing a 70s vibe." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "4300K, A7-M0.25",
-        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Middle +2", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+3", "Color Phase": "+1" },
-        "colorDepth": { "R": "+1", "G": "+7", "B": "+2", "C": "+2", "M": "+4", "Y": "+2" },
-        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "0", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFAB91", "coords": { "x": -5.2, "y": -2.1 }, "demoImages": ["https://placehold.co/800x600/FFAB91/ffffff?text=Seventies+Song"]
-    },
-    {
-        "id": "heritage",
-        "name": { "vi": "29. Di Sản", "en": "29. Heritage" },
-        "description": { "vi": "Tái tạo tông màu độc đáo của dòng phim Kodachrome huyền thoại.", "en": "Recreates the unique color tones of the legendary Kodachrome film." },
-        "type": "color", "contrast": "medium", "saturation": "medium",
-        "whiteBalance": "4200K, A7-M0.5",
-        "settings": { "Black level": "+8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+12", "Color Phase": "-2" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+4", "C": "+4", "M": "+5", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#F44336", "coords": { "x": 3.3, "y": 6.1 }, "demoImages": ["https://placehold.co/800x600/F44336/ffffff?text=Heritage"]
-    },
-    {
-        "id": "crystal-clear",
-        "name": { "vi": "30. Lam Ngọc Trong Trẻo", "en": "30. Crystal Clear" },
-        "description": { "vi": "Màu sắc trong trẻo và sạch sẽ, đặc trưng của dòng phim dương bản.", "en": "Clean and clear colors, characteristic of slide films." },
-        "type": "color", "contrast": "medium", "saturation": "medium",
-        "whiteBalance": "3600K, A7-M1",
-        "settings": { "Black level": "-4", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
-        "colorDepth": { "R": "+3", "G": "+5", "B": "-4", "C": "+2", "M": "+6", "Y": "+5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#4FC3F7", "coords": { "x": 2.8, "y": -3.5 }, "demoImages": ["https://placehold.co/800x600/4FC3F7/ffffff?text=Crystal+Clear"]
-    },
-    {
-        "id": "infrared-world",
-        "name": { "vi": "31. Thế Giới Hồng Ngoại", "en": "31. Infrared World" },
-        "description": { "vi": "Tái tạo hiệu ứng phim hồng ngoại, tán lá trắng, bầu trời đen.", "en": "Recreates infrared film effect, white foliage, dark skies." },
-        "type": "bw", "contrast": "high", "saturation": "high",
-        "whiteBalance": "AWB, A3",
-        "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "+4" },
-        "colorDepth": { "R": "-7", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFFFFF", "coords": { "x": 8.9, "y": 0.5 }, "demoImages": ["https://placehold.co/800x600/FFFFFF/000000?text=Infrared+World"]
-    },
-    {
-        "id": "tropical-teal",
-        "name": { "vi": "32. Biển Xanh Nhiệt Đới", "en": "32. Tropical Teal" },
-        "description": { "vi": "Bão hòa cao, màu sắc rực rỡ, đặc biệt là xanh dương và xanh lá.", "en": "High saturation, vibrant colors, especially blues and greens." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "7000K, B2-M1",
-        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "Movie", "Saturation": "+25", "Color Phase": "+2" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#0091EA", "coords": { "x": 9.0, "y": 2.0 }, "demoImages": ["https://placehold.co/800x600/0091EA/ffffff?text=Tropical+Teal"]
-    },
-    {
-        "id": "kyoto-greens",
-        "name": { "vi": "33. Phong Cảnh Kyoto", "en": "33. Kyoto Greens" },
-        "description": { "vi": "Độ bão hòa màu cao, đặc biệt là màu xanh lá và xanh dương, lý tưởng cho phong cảnh.", "en": "High color saturation, especially greens and blues, ideal for landscapes." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "3900K, A7-M0.25",
-        "settings": { "Black level": "-8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "-7", "Y": "0" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#388E3C", "coords": { "x": 2.0, "y": -5.0 }, "demoImages": ["https://placehold.co/800x600/388E3C/ffffff?text=Kyoto+Greens"]
-    },
-    {
-        "id": "neutral-canvas",
-        "name": { "vi": "34. Tông Màu Trung Tính", "en": "34. Neutral Canvas" },
-        "description": { "vi": "Tông màu trung tính, độ tương phản thấp, lý tưởng cho việc hậu kỳ.", "en": "Neutral tones, low contrast, ideal for post-processing." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "3900K, A7",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide -5", "Knee": "Manual 75% +3", "Color Mode": "Still", "Saturation": "-6", "Color Phase": "+1" },
-        "colorDepth": { "R": "-2", "G": "+7", "B": "+3", "C": "-5", "M": "-4", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#CFD8DC", "coords": { "x": -7.3, "y": -8.8 }, "demoImages": ["https://placehold.co/800x600/CFD8DC/ffffff?text=Neutral+Canvas"]
-    },
-    {
-        "id": "martian-red",
-        "name": { "vi": "35. Lửa Sao Hỏa", "en": "35. Martian Red" },
-        "description": { "vi": "Tông màu đỏ và cam bao trùm, tạo hiệu ứng độc đáo, nghệ thuật.", "en": "Dominant red and orange tone, creating a unique, artistic effect." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": ">9900K, B3-G2",
-        "notes": { "vi": "Đặt WB tùy chỉnh bằng thẻ màu Teal.", "en": "Set with Custom WB and a Teal Card." },
-        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "ITU709Matrix", "Saturation": "+7", "Color Phase": "-1" },
-        "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "-7", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FF5722", "coords": { "x": -8.0, "y": 6.8 }, "demoImages": ["https://placehold.co/800x600/FF5722/ffffff?text=Martian+Red"]
-    },
-    {
-        "id": "serene-sky",
-        "name": { "vi": "36. Bầu Trời Tĩnh Lặng", "en": "36. Serene Sky" },
-        "description": { "vi": "Phiên bản Kodachrome với tông màu xanh da trời nổi bật và cân bằng trắng ấm.", "en": "A Kodachrome version with prominent sky blue tones and warm white balance." },
-        "type": "color", "contrast": "medium", "saturation": "medium",
-        "whiteBalance": "4000K, A7-M2",
-        "settings": { "Black level": "+6", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+14", "Color Phase": "-3" },
-        "colorDepth": { "R": "0", "G": "+7", "B": "+5", "C": "-2", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#B71C1C", "coords": { "x": 3.8, "y": 5.9 }, "demoImages": ["https://placehold.co/800x600/B71C1C/ffffff?text=Serene+Sky"]
-    },
-    {
-        "id": "teal-nostalgia",
-        "name": { "vi": "37. Hoài Niệm Xanh", "en": "37. Teal Nostalgia" },
-        "description": { "vi": "Tông màu xanh lá và đỏ được xử lý đặc biệt, tạo cảm giác hoài cổ.", "en": "Specially treated green and red tones create a nostalgic feel." },
-        "type": "color", "contrast": "medium", "saturation": "medium",
-        "whiteBalance": "9900K, B6-M0.5",
-        "settings": { "Black level": "+4", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone/Still", "Saturation": "+5", "Color Phase": "+1" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "-4", "C": "-4", "M": "-5", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#80CBC4", "coords": { "x": 1.8, "y": -4.2 }, "demoImages": ["https://placehold.co/800x600/80CBC4/ffffff?text=Teal+Nostalgia"]
-    },
-    {
-        "id": "da-lat-mist",
-        "name": { "vi": "38. Đà Lạt trong sương", "en": "38. Da Lat Mist" },
-        "description": { "vi": "Màu lam lạnh và tương phản cao, gợi cảm giác mờ ảo.", "en": "Cool blue tone with high contrast, evoking a misty feeling." },
-        "type": "color", "contrast": "high", "saturation": "medium",
-        "whiteBalance": "8000K, B2-M2",
-        "notes": { "vi": "Chế độ ban đêm: 2900K, A5-G1", "en": "Nighttime: 2900K, A5-G1" },
-        "settings": { "Black level": "-15", "Gamma": "Cine3", "Black Gamma": "Wide +7", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+20", "Color Phase": "+7" },
-        "colorDepth": { "R": "-5", "G": "-1", "B": "+3", "C": "+4", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#64B5F6", "coords": { "x": 8.5, "y": 1.2 }, "demoImages": ["https://placehold.co/800x600/64B5F6/ffffff?text=Da+Lat+Mist"]
-    },
-    {
-        "id": "maximum-drama",
-        "name": { "vi": "39. Kịch Tính Cực Đại", "en": "39. Maximum Drama" },
-        "description": { "vi": "Tương phản, bão hòa tối đa, tạo cái nhìn đen trắng kịch tính.", "en": "Maximum contrast and saturation, creating a dramatic B&W look." },
-        "type": "bw", "contrast": "high", "saturation": "high",
-        "whiteBalance": "5500K",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +5", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
-        "colorDepth": { "R": "+4", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+7" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#212121", "coords": { "x": 9.8, "y": -9.8 }, "demoImages": ["https://placehold.co/800x600/212121/ffffff?text=Maximum+Drama"]
-    },
-    {
-        "id": "meadow-muse",
-        "name": { "vi": "40. Đồng Cỏ Mộc Châu", "en": "40. Meadow Muse" },
-        "description": { "vi": "Tôn vinh sắc xanh tươi mát của cỏ cây dưới nắng hạ.", "en": "Honors the fresh green tones of plants under the summer sun." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "3700K, A7-M0.5",
-        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-3" },
-        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#81C784", "coords": { "x": -7.1, "y": -8.2 }, "demoImages": ["https://placehold.co/800x600/81C784/ffffff?text=Meadow+Muse"]
-    },
-    {
-        "id": "prismatic",
-        "name": { "vi": "41. Lăng Kính Huyền Ảo", "en": "41. Prismatic" },
-        "description": { "vi": "Màu sắc bão hòa cao, độc đáo, tạo cái nhìn siêu thực.", "en": "Highly saturated, unique colors, creating a surreal look." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "AWB, A3",
-        "settings": { "Black level": "-5", "Gamma": "Cine1-4", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Pro", "Saturation": "+25", "Color Phase": "0" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+5", "Y": "+4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#9C27B0", "coords": { "x": 4.5, "y": 9.5 }, "demoImages": ["https://placehold.co/800x600/9C27B0/ffffff?text=Prismatic"]
-    },
-    {
-        "id": "classic-cadence",
-        "name": { "vi": "42. Giai Điệu Cổ Điển", "en": "42. Classic Cadence" },
-        "description": { "vi": "Tông màu xanh và đỏ được nhấn mạnh, tạo cảm giác cổ điển.", "en": "Emphasized blue and red tones, creating a classic feel." },
-        "type": "color", "contrast": "high", "saturation": "medium",
-        "whiteBalance": "4700K, A7-G0.5",
-        "settings": { "Black level": "-15", "Gamma": "Cine1", "Black Gamma": "Wide -7", "Knee": "Manual 82.5% +4", "Color Mode": "S-Cinetone/Still", "Saturation": "+10", "Color Phase": "+2" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "-7", "C": "-6", "M": "+3", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#C62828", "coords": { "x": 7.4, "y": 5.2 }, "demoImages": ["https://placehold.co/800x600/C62828/ffffff?text=Classic+Cadence"]
-    },
-    {
-        "id": "soft-peach",
-        "name": { "vi": "43. Phấn Hồng Dịu Dàng", "en": "43. Soft Peach" },
-        "description": { "vi": "Tông màu mềm mại và tông da đẹp, phù hợp cho chụp ảnh thời trang và chân dung.", "en": "Soft tones and beautiful skin tones, suitable for fashion and portraits." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "4100K, A7-M0.25",
-        "settings": { "Black level": "-8", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "0" },
-        "colorDepth": { "R": "0", "G": "+2", "B": "+3", "C": "+2", "M": "-7", "Y": "0" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFE0B2", "coords": { "x": -5.8, "y": -3.2 }, "demoImages": ["https://placehold.co/800x600/FFE0B2/000000?text=Soft+Peach"]
-    },
-    {
-        "id": "stone-gray",
-        "name": { "vi": "44. Đá Cuội", "en": "44. Stone Gray" },
-        "description": { "vi": "Dải tông màu xám phong phú với độ chuyển mượt mà.", "en": "Rich range of gray tones with smooth transitions." },
-        "type": "bw", "contrast": "high", "saturation": "low",
-        "whiteBalance": "AWB",
-        "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +4", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "-4", "G": "+1", "B": "+3", "C": "+3", "M": "-4", "Y": "-1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BDBDBD", "coords": { "x": 7.1, "y": -3.1 }, "demoImages": ["https://placehold.co/800x600/BDBDBD/ffffff?text=Stone+Gray"]
-    },
-    {
-        "id": "cosmic-mono",
-        "name": { "vi": "45. Vũ Trụ Đơn Sắc", "en": "45. Cosmic Mono" },
-        "description": { "vi": "Vùng tối sâu, tương phản mạnh, mang lại cái nhìn kịch tính.", "en": "Deep blacks, strong contrast, for a dramatic look." },
-        "type": "bw", "contrast": "high", "saturation": "low",
-        "whiteBalance": "AWB",
-        "settings": { "Black level": "-8", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
-        "colorDepth": { "R": "-4", "G": "+3", "B": "+7", "C": "0", "M": "+7", "Y": "-5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#616161", "coords": { "x": 8.3, "y": -4.0 }, "demoImages": ["https://placehold.co/800x600/616161/ffffff?text=Cosmic+Mono"]
-    },
-    {
-        "id": "magic-spice",
-        "name": { "vi": "46. Gia Vị Ma Thuật", "en": "46. Magic Spice" },
-        "description": { "vi": "Tông màu ấm, ngả vàng đỏ, mang lại cảm giác ấm cúng.", "en": "Warm tone, yellow-red cast, providing a cozy feeling." },
-        "type": "color", "contrast": "high", "saturation": "medium",
-        "whiteBalance": "7000K, B4-M1.25",
-        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+17", "Color Phase": "-1" },
-        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BF360C", "coords": { "x": 6.8, "y": 6.8 }, "demoImages": ["https://placehold.co/800x600/BF360C/ffffff?text=Magic+Spice"]
-    },
-    {
-        "id": "sahara-heat",
-        "name": { "vi": "47. Sa Mạc Sahara", "en": "47. Sahara Heat" },
-        "description": { "vi": "Tông màu vàng cam bão hòa, tái hiện cái nóng của sa mạc.", "en": "Saturated yellow-orange tone, recreating desert heat." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "8000K, A7-G5.5",
-        "settings": { "Black level": "-12", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+7" },
-        "colorDepth": { "R": "+4", "G": "+5", "B": "0", "C": "0", "M": "-3", "Y": "+7" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FF9800", "coords": { "x": 9.4, "y": 8.9 }, "demoImages": ["https://placehold.co/800x600/FF9800/ffffff?text=Sahara+Heat"]
-    },
-    {
-        "id": "timeless-tone",
-        "name": { "vi": "48. Nét Cổ Điển", "en": "48. Timeless Tone" },
-        "description": { "vi": "Tông màu da tự nhiên và độ bão hòa dịu nhẹ, một lựa chọn kinh điển.", "en": "Natural skin tones and mild saturation, a classic choice." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "3900K, A7-M0.75",
-        "settings": { "Black level": "+4", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+14", "Color Phase": "-2" },
-        "colorDepth": { "R": "-3", "G": "+5", "B": "-3", "C": "-3", "M": "-5", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#A1887F", "coords": { "x": -8.1, "y": 4.5 }, "demoImages": ["https://placehold.co/800x600/A1887F/ffffff?text=Timeless+Tone"]
-    },
-    {
-        "id": "saigon-sunset",
-        "name": { "vi": "49. Hoàng Hôn Sài Gòn", "en": "49. Saigon Sunset" },
-        "description": { "vi": "Sắc đỏ và cam đậm, bão hòa cao, tái hiện hoàng hôn.", "en": "Rich red and orange hues, high saturation, recreating sunsets." },
-        "type": "color", "contrast": "low", "saturation": "high",
-        "whiteBalance": "5000K, A2-M1",
-        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+25", "Color Phase": "+2" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "+1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FF8A65", "coords": { "x": -8.3, "y": 8.8 }, "demoImages": ["https://placehold.co/800x600/FF8A65/ffffff?text=Saigon+Sunset"]
-    },
-];
+            {"id":"vektro-100","name":{"vi":"Chiều Tàn","en":"Dusk / Twilight"},"description":{"vi":"Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm.","en":"Vibrant orange of fire and deep shadows."},"type":"color","contrast":"high","saturation":"high","whiteBalance":"4000K, A5-M0.5","settings":{"Black level":"-10","Gamma":"Still","Black Gamma":"Wide -7","Knee":"Manual 92.5% +5","Color Mode":"S-Gamut3.Cine","Saturation":"+20"},"personalityColor":"#E57373","coords":{"x":7.8,"y":8.1}, "demoImages": ["https://placehold.co/800x600/E57373/ffffff?text=Vektro+1", "https://placehold.co/800x600/E57373/dddddd?text=Vektro+2", "https://placehold.co/800x600/E57373/bbbbbb?text=Vektro+3"]},
+            {"id":"senova-light","name":{"vi":"Đà Lạt trong sương","en":"Da Lat Mist"},"description":{"vi":"Màu lam lạnh và tương phản cao, gợi cảm giác mờ ảo.","en":"Cool blue tone with high contrast, evoking a misty feeling."},"type":"color","contrast":"high","saturation":"medium","whiteBalance":"8000K, B2-M2","settings":{"Black level":"-15","Gamma":"Cine3","Black Gamma":"Wide +7","Knee":"Manual 85% +4","Color Mode":"S-Gamut3.Cine","Saturation":"+20"},"personalityColor":"#64B5F6","coords":{"x":8.5,"y":1.2}, "demoImages": ["https://placehold.co/800x600/64B5F6/ffffff?text=Senova+1", "https://placehold.co/800x600/64B5F6/dddddd?text=Senova+2", "https://placehold.co/800x600/64B5F6/bbbbbb?text=Senova+3"]},
+            {"id":"fuji-400h","name":{"vi":"Đồng Cỏ Mộc Châu","en":"Moc Chau Meadow"},"description":{"vi":"Tôn vinh sắc xanh tươi mát của cỏ cây dưới nắng hạ.","en":"Honors the fresh green tones of plants under the summer sun."},"type":"color","contrast":"low","saturation":"low","whiteBalance":"3700K, A7-M0.5","settings":{"Black level":"0","Gamma":"Movie","Black Gamma":"Wide +7","Knee":"Manual 80% +4","Color Mode":"Still","Saturation":"+11"},"personalityColor":"#81C784","coords":{"x":-7.1,"y":-8.2}, "demoImages": ["https://placehold.co/800x600/81C784/ffffff?text=Fuji+1", "https://placehold.co/800x600/81C784/dddddd?text=Fuji+2", "https://placehold.co/800x600/81C784/bbbbbb?text=Fuji+3"]},
+            {"id":"evpro-plus","name":{"vi":"Đông Dương","en":"Indochine"},"description":{"vi":"Màu vàng rực rỡ và bão hòa cao, nắm bắt năng lượng.","en":"Vibrant yellow, high saturation, captures energy."},"type":"color","contrast":"high","saturation":"high","whiteBalance":"4300K, A3.5","settings":{"Black level":"-10","Gamma":"Cine1","Black Gamma":"Middle +7","Knee":"Auto","Color Mode":"S-Gamut3.Cine","Saturation":"+32"},"personalityColor":"#FFD54F","coords":{"x":7.2,"y":7.5}, "demoImages": ["https://placehold.co/800x600/FFD54F/ffffff?text=Evpro+1", "https://placehold.co/800x600/FFD54F/dddddd?text=Evpro+2", "https://placehold.co/800x600/FFD54F/bbbbbb?text=Evpro+3"]},
+            {"id":"ektar-100","name":{"vi":"Hoàng Hôn Sài Gòn","en":"Saigon Sunset"},"description":{"vi":"Sắc đỏ và cam đậm, bão hòa cao, tái hiện hoàng hôn.","en":"Rich red and orange hues, high saturation, recreating sunsets."},"type":"color","contrast":"low","saturation":"high","whiteBalance":"5000K, A2-M1","settings":{"Black level":"+6","Gamma":"Still","Black Gamma":"Wide -7","Knee":"Manual 75% +4","Color Mode":"S-Gamut3.Cine","Saturation":"+25"},"personalityColor":"#FF8A65","coords":{"x":-8.3,"y":8.8}, "demoImages": ["https://placehold.co/800x600/FF8A65/ffffff?text=Ektar+1", "https://placehold.co/800x600/FF8A65/dddddd?text=Ektar+2", "https://placehold.co/800x600/FF8A65/bbbbbb?text=Ektar+3"]},
+            {"id":"kodak-gold-v1","name":{"vi":"Ký Ức Vàng Son","en":"Golden Memories"},"description":{"vi":"Ánh vàng ấm áp đặc trưng, gợi nhớ thập niên 90.","en":"A distinctive warm golden glow, reminiscent of the 90s."},"type":"color","contrast":"medium","saturation":"high","whiteBalance":"8500K, B3-M1.75","settings":{"Black level":"-5","Gamma":"Movie","Black Gamma":"Wide +7","Knee":"Manual 75% +4","Color Mode":"S-Gamut3/S-Gamut","Saturation":"+32"},"personalityColor":"#FFB74D","coords":{"x":-0.5,"y":7.9}, "demoImages": ["https://placehold.co/800x600/FFB74D/ffffff?text=Gold+1", "https://placehold.co/800x600/FFB74D/dddddd?text=Gold+2", "https://placehold.co/800x600/FFB74D/bbbbbb?text=Gold+3"]},
+            {"id":"kodak-portra-400-v2","name":{"vi":"Ngọc Bích","en":"Jade Green"},"description":{"vi":"Tông màu dịu mát với sắc xanh ngọc bích nổi bật.","en":"A cool tone with prominent jade green hues."},"type":"color","contrast":"low","saturation":"low","whiteBalance":"3600K, A7-G1","settings":{"Black level":"+11","Gamma":"Movie","Black Gamma":"Narrow -7","Knee":"Manual 85% +4","Color Mode":"Still","Saturation":"+11"},"personalityColor":"#4DB6AC","coords":{"x":-8.8,"y":-7.2}, "demoImages": ["https://placehold.co/800x600/4DB6AC/ffffff?text=Portra+1", "https://placehold.co/800x600/4DB6AC/dddddd?text=Portra+2", "https://placehold.co/800x600/4DB6AC/bbbbbb?text=Portra+3"]},
+            {"id":"acros-x","name":{"vi":"Than Chì","en":"Graphite Sketch"},"description":{"vi":"Tương phản mạnh và chi tiết sắc nét, như bút than chì.","en":"Strong contrast and sharp details, like a graphite sketch."},"type":"bw","contrast":"high","saturation":"low","whiteBalance":"AWB","settings":{"Black level":"-11","Gamma":"Still","Black Gamma":"Middle -3","Knee":"Manual 85% +5","Color Mode":"Black & White","Saturation":"+15"},"personalityColor":"#9E9E9E","coords":{"x":8.2,"y":-7.5}, "demoImages": ["https://placehold.co/800x600/9E9E9E/ffffff?text=Acros+1", "https://placehold.co/800x600/9E9E9E/dddddd?text=Acros+2", "https://placehold.co/800x600/9E9E9E/bbbbbb?text=Acros+3"]},
+            {"id":"acros-xy","name":{"vi":"Đá Cuội","en":"Pebble Monochrome"},"description":{"vi":"Dải tông màu xám phong phú với độ chuyển mượt mà.","en":"Rich range of gray tones with smooth transitions."},"type":"bw","contrast":"high","saturation":"low","whiteBalance":"AWB","settings":{"Black level":"-10","Gamma":"Still","Black Gamma":"Middle -3","Knee":"Manual 85% +4","Color Mode":"Black & White","Saturation":"+15"},"personalityColor":"#BDBDBD","coords":{"x":7.1,"y":-3.1}, "demoImages": []},
+            {"id":"acros-xr","name":{"vi":"Bóng Tối","en":"Deep Shadow"},"description":{"vi":"Tăng cường độ sâu cho vùng tối, tạo cái nhìn kịch tính.","en":"Enhances the depth of shadows for a dramatic look."},"type":"bw","contrast":"high","saturation":"low","whiteBalance":"AWB","settings":{"Black level":"-15","Gamma":"Still","Black Gamma":"Middle +5","Knee":"Manual 85% +5","Color Mode":"Black & White","Saturation":"+15"},"personalityColor":"#757575","coords":{"x":9.0,"y":5.5}, "demoImages": []},
+            {"id":"acros-xg","name":{"vi":"Tương Phản Gắt","en":"Harsh Contrast"},"description":{"vi":"Tương phản cực cao, làm nổi bật đường nét, hình khối.","en":"Extremely high contrast, emphasizing lines and shapes."},"type":"bw","contrast":"high","saturation":"low","whiteBalance":"AWB","settings":{"Black level":"-15","Gamma":"Still","Black Gamma":"Wide -7","Knee":"Manual 85% +5","Color Mode":"Black & White","Saturation":"+15"},"personalityColor":"#616161","coords":{"x":9.5,"y":-8.0}, "demoImages": []},
+            {"id":"ilford-hp5","name":{"vi":"Khoảnh khắc quyết định","en":"The Decisive Moment"},"description":{"vi":"Tương phản cao, phù hợp nhiếp ảnh tài liệu, nhấn mạnh cảm xúc.","en":"High contrast for documentary, emphasizing emotion."},"type":"bw","contrast":"high","saturation":"low","whiteBalance":"AWB, A3","settings":{"Black level":"-12","Gamma":"Movie","Black Gamma":"Middle -5","Knee":"Manual 75% +4","Color Mode":"Black & White","Saturation":"0"},"personalityColor":"#90A4AE","coords":{"x":7.6,"y":-1.8}, "demoImages": []},
+            {"id":"kodak-tri-x-400","name":{"vi":"Ảnh Cũ","en":"Weathered Photograph"},"description":{"vi":"Tương phản thấp và hạt mịn, tạo cảm giác ảnh cũ.","en":"Low contrast and fine grain, creating the feel of an old photo."},"type":"bw","contrast":"low","saturation":"high","whiteBalance":"5500K, A3-G2","settings":{"Black level":"+3","Gamma":"Cine1","Black Gamma":"Narrow +5","Knee":"Manual 75% +3","Color Mode":"Black & White","Saturation":"+24"},"personalityColor":"#B0BEC5","coords":{"x":-8.1,"y":-6.4}, "demoImages": []},
+            {"id":"classic-chrome","name":{"vi":"Đô Thị","en":"Urban Chrome"},"description":{"vi":"Tông màu trầm, bão hòa thấp và tương phản cao, gai góc.","en":"Subdued tone, low saturation, high contrast for a gritty feel."},"type":"color","contrast":"high","saturation":"low","whiteBalance":"4000K, A7-M0.5","settings":{"Black level":"-7","Gamma":"Still","Black Gamma":"Middle -7","Knee":"Manual 75% +4","Color Mode":"Still","Saturation":"-5"},"personalityColor":"#78909C","coords":{"x":8.1,"y":-8.5}, "demoImages": []},
+            {"id":"fuji-eterna","name":{"vi":"Điệp Vụ Melancholy","en":"Melancholy Mission"},"description":{"vi":"Màu sắc trầm, bão hòa rất thấp, tạo cảm giác điện ảnh.","en":"Subdued colors, very low saturation for a cinematic feel."},"type":"color","contrast":"low","saturation":"low","whiteBalance":"4000K, A7-M0.25","settings":{"Black level":"+7","Gamma":"Movie","Black Gamma":"Wide -5","Knee":"Manual 75% +4","Color Mode":"Still","Saturation":"-5"},"personalityColor":"#A1887F","coords":{"x":-9.2,"y":-9.1}, "demoImages": []}
+        ];
     </script>
 </body>
 </html>
