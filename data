@@ -1,4 +1,4 @@
-cập nhật và tách file data theo dữ liệu mới này: 
+cập nhật và tách file data theo dữ liệu mới này, tạo sẵn file đã tách để tôi có thể cập nhật lên github
 
 const recipesData = [
 
