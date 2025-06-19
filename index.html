@@ -151,10 +151,24 @@
         }
         
         /* Explanation Tab Specifics */
-        .timeline-item { position: relative; padding-bottom: 2rem; padding-left: 2rem; }
-        .timeline-item::before { content: ''; position: absolute; left: 0; top: 0.125rem; width: 1rem; height: 1rem; border-radius: 9999px; background-color: var(--primary-accent); border: 3px solid #bfdbfe; z-index: 10; }
-        .timeline-item::after { content: ''; position: absolute; left: calc(0.5rem - 1px); top: 1rem; bottom: 0; width: 2px; background-color: #93c5fd; }
-        .timeline-item:last-child::after { display: none; }
+        #wbShiftGrid {
+            cursor: crosshair;
+            touch-action: none; /* Prevent scrolling on touch devices */
+            background-image:
+                linear-gradient(to right, rgba(135, 206, 250, 0.3), rgba(255, 165, 0, 0.3)),
+                linear-gradient(to bottom, rgba(144, 238, 144, 0.3), rgba(218, 112, 214, 0.3));
+        }
+        #wbShiftHandle {
+            cursor: grab;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+        }
+        #wbShiftHandle:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
     </style>
 </head>
 <body>
@@ -206,9 +220,7 @@
         </div>
     </div>
     
-    
-
-<div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
         <div id="lightbox-bg" class="absolute inset-0"></div>
         <div class="lightbox-content relative w-full max-w-4xl max-h-full">
             <button id="lightbox-close" class="absolute -top-4 -right-2 md:top-0 md:-right-12 text-white text-5xl font-bold z-10 leading-none p-2">&times;</button>
@@ -303,6 +315,7 @@
             axisSaturation: {vi: "Độ bão hòa (← Thấp | Cao →)", en: "Saturation (← Low | High →)"},
             axisChroma: {vi: "Độ sâu màu (← Thấp | Cao →)", en: "Chroma Depth (← Low | High →)"},
             backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
+            exploreMoreBtn: { vi: 'Khám phá Thư viện Màu', en: 'Explore Color Library' },
 
             // Featured Photos
             featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
@@ -311,28 +324,23 @@
             
             // Tutorial & Explanation
             explainHeader: {vi: "Làm Chủ Màu Sắc Cùng Sony Alpha", en:"Mastering Color with Sony Alpha"},
-            explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh", en:"A comprehensive guide to creating your unique color signature for stills"},
-            explainIntroTitle: {vi: "Picture Profile vs. Creative Style/Look", en:"Picture Profile vs. Creative Style/Look"},
-            explainIntroP: {vi: "Sony cung cấp nhiều công cụ màu sắc, nhưng chúng hoạt động ở các giai đoạn khác nhau. Hiểu rõ sự khác biệt là chìa khóa để khai thác tối đa tiềm năng của máy ảnh.", en:"Sony offers various color tools, but they operate at different stages. Understanding the differences is key to maximizing your camera's potential."},
+            explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh và video", en:"A comprehensive guide to creating your unique color signature for stills and video"},
             pillarsTitle: {vi: "Hai Trụ Cột Sáng Tạo Màu Sắc", en:"The Two Pillars of Color Creation"},
             wbPillarTitle: {vi: "Trụ cột 1: White Balance - Nền Tảng Cảm Xúc", en:"Pillar 1: White Balance - The Emotional Foundation"},
-            ppPillarTitle: {vi: "Trụ cột 2: Picture Profile - Lý Giải Thông Số", en:"Pillar 2: Picture Profile - Parameter Explanations"},
-            ppIntro_new: {vi: "Picture Profile cho phép can thiệp sâu vào nhiều thông số kỹ thuật, mở rộng tiềm năng sáng tạo. Dưới đây là giải thích các thông số cốt lõi:", en: "Picture Profile allows for deep technical adjustments, expanding creative potential. Here are the core parameter explanations:"},
-            gammaSubtitle: {vi: "Các chế độ điều chỉnh tương phản và dải tần nhạy sáng.", en: "Controls for contrast and dynamic range."},
-            colorModeSubtitle: {vi: "Các chế độ màu, nên chọn cùng loại với Gamma để tối ưu.", en: "Color modes, should be matched with Gamma for optimal results."},
-            sCinetoneTitle: {vi: "S-Cinetone: Màu Điện Ảnh Quay-Ăn-Liền", en: "S-Cinetone: The Out-of-the-Box Cinema Look"},
-            sCinetoneDesc: {vi: "Lấy cảm hứng từ máy quay VENICE, S-Cinetone tạo ra màu sắc điện ảnh tự nhiên, tông da dịu nhẹ và độ tương phản vừa phải mà không cần hậu kỳ phức tạp.", en: "Inspired by the VENICE camera, S-Cinetone produces a natural cinematic look with soft skin tones and balanced contrast, without complex post-production."},
-            sCinetoneFeature1: {vi: "Da người đẹp, dịu và tự nhiên.", en: "Beautiful, soft, and natural skin tones."},
-            sCinetoneFeature2: {vi: "Vùng tối (shadow) được nâng nhẹ, vùng sáng (highlight) dễ kiểm soát.", en: "Slightly lifted shadows, well-controlled highlights."},
-            sCinetoneFeature3: {vi: "Không cần hậu kỳ phức tạp như S-Log.", en: "No need for complex grading like S-Log."},
+            ppPillarTitle: {vi: "Lý Giải Thông Số Picture Profile", en:"Picture Profile Deep Dive"},
+            ppIntroText: {vi: "Tuy Picture Profile được áp dụng chủ yếu dành cho video, nhưng hoàn toàn có thể mang đến khả năng can thiệp sâu vào nhiều thông số kỹ thuật chuyên nghiệp, giúp mở rộng tiềm năng sáng tạo ra những cá tính màu sắc riêng. Bạn có thể dùng nó để tái hiện màu phim yêu thích, tạo mood & tone cho buổi chụp, hoặc giả lập một cuộn phim cổ điển.", en:"Although Picture Profile is mainly used for video, it offers deep intervention into many professional parameters, expanding the creative potential for unique color personalities. You can use it to replicate favorite film tones, set the mood & tone for a shoot, or simulate a vintage film roll."},
+            mainParamsTitle: {vi: "Các Thông Số Chính", en: "Key Parameters"},
+            gammaDesc: {vi: "Điều chỉnh đường cong và độ tương phản tổng thể của hình ảnh.", en: "Adjusts the overall tone curve and contrast of the image."},
+            colorModeDesc: {vi: "Xác định loại và mức độ của màu sắc.", en: "Defines the type and level of colors."},
+            detailDesc: {vi: "Điều chỉnh độ sắc nét của hình ảnh.", en: "Adjusts the sharpness of the image."},
+            gammaTableTitle: {vi: "Bảng tra cứu Gamma & Color Mode", en: "Gamma & Color Mode Reference Table"},
+            scinetoneTitle: {vi: "Điểm nhấn S-Cinetone", en: "The S-Cinetone Highlight"},
+            scinetoneDesc: {vi: "Được xem là \"màu điện ảnh ăn liền\", S-Cinetone là một Picture Profile đặc biệt lấy cảm hứng từ máy quay phim VENICE của Sony, cho phép người dùng có được màu sắc đẹp ngay từ máy mà không cần hậu kỳ phức tạp.", en:"Considered an \"out-of-the-box cinematic look\", S-Cinetone is a special Picture Profile inspired by Sony's VENICE cinema camera, allowing users to achieve beautiful colors straight from the camera without complex post-processing."},
             wbKelvinTitle: {vi: "Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo", en: "Kelvin Temperature (K): Creating the Main Tone"},
             wbKelvinDesc: {vi: 'Sử dụng thang đo Kelvin như một nét cọ lớn để "nhuộm" toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.', en: 'Use the Kelvin scale like a broad brush to "tint" the entire frame with warm or cool tones, shaping the photo\'s mood.'},
             wbShiftTitle: {vi: "Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi", en:"Fine-Tuning Grid (A-B/G-M Shift): Adding Subtle Hues"},
-            wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.', en: 'If Kelvin is the broad brush, the grid is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints.'},
+            wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím. Kéo chấm tròn bên dưới để xem sự thay đổi.', en: 'If Kelvin is the broad brush, the grid is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints. Drag the dot below to see the change.'},
             wbShiftExample: {vi: '<span class="font-bold">Ví dụ:</span> Để tạo màu phim cổ, bạn có thể đẩy nhẹ về phía Amber (A) và Green (G).', en:'<span class="font-bold">Example:</span> To create a vintage film look, you might push slightly towards Amber (A) and Green (G).'},
-            ppTechTitle: {vi: "Các Yếu Tố Kỹ Thuật Cốt Lõi", en:"Core Technical Factors"},
-            bitDepthTitle: {vi: "8-bit vs. 10-bit: Sự Khác Biệt Sống Còn", en:"8-bit vs. 10-bit: The Crucial Difference"},
-            bitDepthDesc: {vi: "Độ sâu màu là yếu tố quyết định khả năng chỉnh màu. File 10-bit chứa lượng thông tin màu sắc nhiều hơn 64 lần so với file 8-bit, giúp quá trình chỉnh màu mượt mà, tránh hiện tượng gãy màu (banding) khi xử lý các cảnh quay Log.", en:"Color depth is the deciding factor in color grading flexibility. A 10-bit file contains 64 times more color information than an 8-bit file, enabling smoother grading and preventing banding when processing Log footage."},
             practicalTitle: {vi:"Thực Hành: Tạo Dáng Vẻ Phim Ảnh (Film Look)", en:"Practical Application: Creating a Film Look"},
             practicalDesc: {vi:"Bằng cách kết hợp các công cụ trên, bạn có thể tạo ra vô số màu sắc độc đáo. Dưới đây là quy trình 4 bước để bắt đầu:", en:"By combining these tools, you can create countless unique color looks. Here is a 4-step process to get started:"},
             practicalStep1: {vi: "Chọn Nền Tảng", en:"Choose a Foundation"},
@@ -516,26 +524,20 @@
             
             recipeFormulas: () => `
                 <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                    
                     <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
                         <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
                         <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                        
                         <div id="filtersContainer" class="space-y-4 text-sm mb-4">
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                         </div>
-                        
                         <div id="recipeListContainer" class="space-y-2 pt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
-                        
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                     </aside>
-                    
                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
-                            
-                            <div id="chartsContainer">
+                           <div id="chartsContainer">
                                <div class="text-center mb-10">
                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
                                </div>
@@ -544,11 +546,9 @@
                                    <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
                                </div>
                            </div>
-                           
                            <div id="recipeContent" class="hidden"></div>
                         </div>
                     </main>
-                    
                     <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
                         <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
                         <div class="glass-panel p-6 overflow-y-auto">
@@ -586,45 +586,6 @@
                     </header>
             
                     <main class="space-y-12 md:space-y-20">
-            
-                        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                            <h3 class="text-2xl font-bold mb-4 text-center" data-translate-key="explainIntroTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="explainIntroP"></p>
-                            <div class="overflow-x-auto">
-                                <table class="w-full min-w-[600px] text-left border-collapse">
-                                    <thead>
-                                        <tr class="bg-slate-100">
-                                            <th class="p-4 font-bold border-b-2 border-slate-200">Tiêu chí</th>
-                                            <th class="p-4 font-bold border-b-2 border-slate-200">Creative Style / Look</th>
-                                            <th class="p-4 font-bold border-b-2 border-slate-200">Picture Profile</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Mục đích</td>
-                                            <td class="p-4 border-b border-slate-200">Tạo "look" nhanh, sẵn sàng sử dụng cho ảnh JPEG.</td>
-                                            <td class="p-4 border-b border-slate-200">Kiểm soát sâu tín hiệu video/ảnh để hậu kỳ chuyên nghiệp hoặc tạo "look" tùy biến cao.</td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Đối tượng</td>
-                                            <td class="p-4 border-b border-slate-200">Người dùng phổ thông, nhiếp ảnh gia chụp JPEG.</td>
-                                            <td class="p-4 border-b border-slate-200">Nhà làm phim, người dùng chuyên nghiệp, người thích tùy biến sâu.</td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Mức độ kiểm soát</td>
-                                            <td class="p-4 border-b border-slate-200">Giới hạn (Tương phản, Bão hòa, Sắc nét).</td>
-                                            <td class="p-4 border-b border-slate-200">Rất sâu (Gamma, Black Level, Knee, Color Mode, Detail...).</td>
-                                        </tr>
-                                         <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Giai đoạn áp dụng</td>
-                                            <td class="p-4 border-b border-slate-200">Sau khi xử lý tín hiệu cơ bản, áp dụng lên file JPEG.</td>
-                                            <td class="p-4 border-b border-slate-200">Ngay sau khi cảm biến nhận tín hiệu, trước khi nén.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-            
                         <section>
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="pillarsTitle"></h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -642,73 +603,79 @@
                                     <div>
                                         <h5 class="font-bold text-lg" data-translate-key="wbShiftTitle"></h5>
                                         <p class="text-sm text-gray-600 mb-3" data-translate-key="wbShiftDesc"></p>
-                                        <div class="relative w-full max-w-[250px] mx-auto aspect-square bg-gray-50 border-2 border-gray-200 rounded-md">
-                                            <div class="absolute top-1/2 left-0 w-full h-px bg-gray-300 -translate-y-1/2"></div>
-                                            <div class="absolute left-1/2 top-0 w-px h-full bg-gray-300 -translate-x-1/2"></div>
-                                            <span class="absolute top-1/2 -left-5 -translate-y-1/2 font-bold text-blue-600">B</span>
-                                            <span class="absolute top-1/2 -right-5 -translate-y-1/2 font-bold text-orange-500">A</span>
-                                            <span class="absolute left-1/2 -top-5 -translate-x-1/2 font-bold text-green-600">G</span>
-                                            <span class="absolute left-1/2 -bottom-5 -translate-x-1/2 font-bold text-purple-600">M</span>
-                                            <div class="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-lg" style="top: calc(50% - 6px - (20%)); left: calc(50% - 6px + 30%);"></div>
+                                        <div id="wbShiftContainer" class="relative w-full max-w-[280px] mx-auto aspect-square rounded-md mt-4">
+                                            <div id="wbShiftGrid" class="relative w-full h-full border-2 border-gray-300 rounded-lg overflow-hidden">
+                                                 <div class="absolute top-1/2 left-0 w-full h-px bg-gray-400/70 -translate-y-1/2"></div>
+                                                 <div class="absolute left-1/2 top-0 w-px h-full bg-gray-400/70 -translate-x-1/2"></div>
+                                                 <span class="absolute top-1/2 -left-6 -translate-y-1/2 font-bold text-blue-600">B</span>
+                                                 <span class="absolute top-1/2 -right-6 -translate-y-1/2 font-bold text-orange-500">A</span>
+                                                 <span class="absolute left-1/2 -top-6 -translate-x-1/2 font-bold text-green-600">G</span>
+                                                 <span class="absolute left-1/2 -bottom-6 -translate-x-1/2 font-bold text-purple-600">M</span>
+                                                 <div id="wbShiftHandle" class="w-6 h-6 bg-white rounded-full border-2 border-gray-800 shadow-lg" style="top: 50%; left: 50%;"></div>
+                                            </div>
+                                            <div class="text-center mt-3 font-mono text-lg" id="wbShiftValues">A0 M0</div>
                                         </div>
-                                        <p class="text-xs text-center mt-3 text-gray-500" data-translate-key="wbShiftExample"></p>
                                     </div>
                                 </div>
                                 <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                                     <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
-                                     <p class="text-sm text-gray-700 mb-6 text-center" data-translate-key="ppIntro_new"></p>
-                                     <div class="grid sm:grid-cols-2 gap-x-8 gap-y-6 text-left">
-                                         <div>
-                                             <h5 class="font-semibold text-lg">Gamma</h5>
-                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="gammaSubtitle"></p>
-                                             <ul class="space-y-3 text-sm list-disc list-inside">
-                                                 <li><strong>Movie:</strong> Gamma tiêu chuẩn cho phim, cân bằng tốt.</li>
-                                                 <li><strong>Still:</strong> Gamma cho ảnh tĩnh, tương phản và màu rực hơn.</li>
-                                                 <li><strong>Cine1-4:</strong> Gamma điện ảnh, tăng dải nhạy sáng. Cine4 phổ biến nhất.</li>
-                                                 <li><strong>ITU709:</strong> Gamma chuẩn cho phát sóng HDTV (Rec.709).</li>
-                                                 <li><strong>S-Log2/S-Log3:</strong> Gamma phẳng, tối đa hóa dải nhạy sáng, yêu cầu hậu kỳ màu. S-Log3 tối ưu hơn cho grading.</li>
-                                                 <li><strong>HLG:</strong> Chuẩn HDR, xem trực tiếp trên màn hình HDR.</li>
-                                             </ul>
-                                         </div>
-                                         <div>
-                                             <h5 class="font-semibold text-lg">Color Mode</h5>
-                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="colorModeSubtitle"></p>
-                                             <ul class="space-y-3 text-sm list-disc list-inside">
-                                                 <li><strong>Movie/Still:</strong> Đi kèm với Gamma tương ứng.</li>
-                                                 <li><strong>Cinema:</strong> Tông màu dịu, điện ảnh, dùng với Cine Gamma.</li>
-                                                 <li><strong>Pro:</strong> Màu sắc chân thực, cân bằng.</li>
-                                                 <li><strong>ITU709 Matrix:</strong> Màu theo chuẩn Rec.709.</li>
-                                                 <li><strong>S-Gamut/S-Gamut3.Cine:</strong> Không gian màu rộng cho S-Log. S-Gamut3.Cine dễ hậu kỳ hơn.</li>
-                                                 <li><strong>BT.2020:</strong> Chuẩn màu HDR mới, dùng với HLG.</li>
-                                             </ul>
-                                         </div>
-                                          <div class="sm:col-span-2">
-                                             <h5 class="font-semibold text-lg mt-4" data-translate-key="sCinetoneTitle"></h5>
-                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="sCinetoneDesc"></p>
-                                             <ul class="space-y-2 text-sm list-disc list-inside">
-                                                 <li data-translate-key="sCinetoneFeature1"></li>
-                                                 <li data-translate-key="sCinetoneFeature2"></li>
-                                                 <li data-translate-key="sCinetoneFeature3"></li>
-                                             </ul>
-                                         </div>
+                                     <h4 class="text-xl font-bold mb-4 text-center" data-translate-key="ppPillarTitle"></h4>
+                                     <p class="text-base text-gray-700 mb-6" data-translate-key="ppIntroText"></p>
+                                     <h5 class="font-bold text-lg mb-3" data-translate-key="mainParamsTitle"></h5>
+                                      <div class="space-y-4">
+                                        <div class="p-4 bg-slate-50 rounded-lg">
+                                            <h5 class="font-bold text-lg">Gamma</h5>
+                                            <p class="text-sm text-gray-600" data-translate-key="gammaDesc"></p>
+                                        </div>
+                                        <div class="p-4 bg-slate-50 rounded-lg">
+                                            <h5 class="font-bold text-lg">Color Mode</h5>
+                                            <p class="text-sm text-gray-600" data-translate-key="colorModeDesc"></p>
+                                        </div>
+                                        <div class="p-4 bg-slate-50 rounded-lg">
+                                            <h5 class="font-bold text-lg">Detail</h5>
+                                            <p class="text-sm text-gray-600" data-translate-key="detailDesc"></p>
+                                        </div>
                                      </div>
                                 </div>
                             </div>
                         </section>
             
-                        <section>
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="ppTechTitle"></h3>
-                             <div class="grid grid-cols-1 gap-8">
-                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 max-w-3xl mx-auto w-full">
-                                    <h4 class="text-xl font-bold text-center mb-4" data-translate-key="bitDepthTitle"></h4>
-                                     <p class="text-center text-sm text-gray-600 mb-4" data-translate-key="bitDepthDesc"></p>
-                                    <div class="chart-container h-64 md:h-72">
-                                        <canvas id="bitDepthChart"></canvas>
-                                    </div>
-                                </div>
+                        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="gammaTableTitle"></h3>
+                             <div class="overflow-x-auto">
+                                <table class="w-full min-w-[700px] text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-100">
+                                            <th class="p-4 font-bold border-b-2 border-slate-200">Gamma</th>
+                                            <th class="p-4 font-bold border-b-2 border-slate-200">Mô tả Gamma</th>
+                                            <th class="p-4 font-bold border-b-2 border-slate-200">Color Mode Tương ứng</th>
+                                            <th class="p-4 font-bold border-b-2 border-slate-200">Mô tả Color Mode</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-slate-50"><td class="p-3 border-b border-slate-200 font-semibold">Movie</td><td class="p-3 border-b border-slate-200 text-sm">Gamma tiêu chuẩn cho quay phim, có dải tương phản và màu sắc phù hợp với nhu cầu cơ bản.</td><td class="p-3 border-b border-slate-200 font-semibold">Movie</td><td class="p-3 border-b border-slate-200 text-sm">Tái tạo màu trung tính, phù hợp với gamma Movie.</td></tr>
+                                        <tr class="hover:bg-slate-50"><td class="p-3 border-b border-slate-200 font-semibold">Still</td><td class="p-3 border-b border-slate-200 text-sm">Gamma dùng cho chụp ảnh tĩnh, cho độ tương phản và màu rực hơn.</td><td class="p-3 border-b border-slate-200 font-semibold">Still</td><td class="p-3 border-b border-slate-200 text-sm">Tái tạo màu đậm, rực, phù hợp với ảnh tĩnh.</td></tr>
+                                        <tr class="hover:bg-slate-50"><td class="p-3 border-b border-slate-200 font-semibold">Cine1-4</td><td class="p-3 border-b border-slate-200 text-sm">Gamma kiểu điện ảnh, tăng dải nhạy sáng. Cine4 được dùng phổ biến vì dễ hậu kỳ.</td><td class="p-3 border-b border-slate-200 font-semibold">Cinema</td><td class="p-3 border-b border-slate-200 text-sm">Tông màu dịu, điện ảnh, ít bão hòa màu - thường dùng với Cine Gamma.</td></tr>
+                                        <tr class="hover:bg-slate-50"><td class="p-3 border-b border-slate-200 font-semibold">ITU709</td><td class="p-3 border-b border-slate-200 text-sm">Gamma chuẩn cho phát sóng HDTV, tương đương Rec.709.</td><td class="p-3 border-b border-slate-200 font-semibold">ITU709 Matrix</td><td class="p-3 border-b border-slate-200 text-sm">Màu sắc theo chuẩn Rec.709, dùng với gamma ITU709.</td></tr>
+                                         <tr class="hover:bg-slate-50"><td class="p-3 border-b border-slate-200 font-semibold">S-Log2</td><td class="p-3 border-b border-slate-200 text-sm">Gamma phẳng, mở rộng dynamic range, cần hậu kỳ để khôi phục màu sắc.</td><td class="p-3 border-b border-slate-200 font-semibold">S-Gamut</td><td class="p-3 border-b border-slate-200 text-sm">Không gian màu rộng, dùng với S-Log2.</td></tr>
+                                        <tr class="hover:bg-slate-50"><td class="p-3 border-b border-slate-200 font-semibold">S-Log3</td><td class="p-3 border-b border-slate-200 text-sm">Gamma phẳng hơn S-Log2, tối ưu hơn cho hậu kỳ và grading chính xác.</td><td class="p-3 border-b border-slate-200 font-semibold">S-Gamut3.Cine</td><td class="p-3 border-b border-slate-200 text-sm">Màu rộng hơn, nhưng dễ hậu kỳ hơn S-Gamut, tối ưu với S-Log3 và workflow điện ảnh.</td></tr>
+                                        <tr class="hover:bg-slate-50"><td class="p-3 border-b border-slate-200 font-semibold">HLG</td><td class="p-3 border-b border-slate-200 text-sm">Hybrid Log-Gamma - chuẩn HDR, có thể xem trực tiếp trên màn HDR mà không cần hậu kỳ.</td><td class="p-3 border-b border-slate-200 font-semibold">BT.2020</td><td class="p-3 border-b border-slate-200 text-sm">Chuẩn màu HDR mới, phối hợp tốt với HLG.</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </section>
-            
+
+                        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center" data-translate-key="scinetoneTitle"></h3>
+                             <p class="max-w-3xl mx-auto text-center text-gray-700 mt-2 mb-8" data-translate-key="scinetoneDesc"></p>
+                             <div class="max-w-2xl mx-auto bg-slate-50 rounded-lg p-6">
+                                <ul class="list-disc list-inside space-y-3 text-gray-800">
+                                    <li>Màu da người đẹp, dịu và tự nhiên (trắng hồng, không bị ám vàng hay xanh).</li>
+                                    <li>Vùng tối (shadow) được nâng nhẹ và vùng sáng (highlight) được kiểm soát tốt, dễ chịu.</li>
+                                    <li>Không yêu cầu hậu kỳ phức tạp như khi làm việc với S-Log.</li>
+                                </ul>
+                             </div>
+                        </section>
+
                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center" data-translate-key="practicalTitle"></h3>
                             <p class="max-w-3xl mx-auto text-center text-gray-700 mt-2 mb-8" data-translate-key="practicalDesc"></p>
@@ -731,7 +698,7 @@
                                 </div>
                             </div>
                              <div class="text-center mt-12">
-                                <button id="exploreMoreBtn" class="btn btn-primary py-3 px-8 text-base md:text-lg" data-translate-key="navRecipeFormulas"></button>
+                                <button id="exploreMoreBtn" class="btn btn-primary py-3 px-8 text-base md:text-lg" data-translate-key="exploreMoreBtn"></button>
                             </div>
                         </section>
             
@@ -820,78 +787,64 @@
         }
 
         function renderAllCharts(lang) {
-            destroyAllCharts();
-            const FONT_COLOR = '#374151'; 
-            const GRID_COLOR = '#E5E7EB';    
-            const PALETTE = { blue: '#3b82f6', darkBlue: '#1e3a8a', lightBlue: '#bfdbfe', green: '#22c55e', purple: '#8b5cf6', yellow: '#eab308', gray: '#4b5563', lightGray: '#e5e7eb' };
+            // No charts in the current Explain tab version
+        }
+        
+        function initWbShiftGrid() {
+            const grid = document.getElementById('wbShiftGrid');
+            const handle = document.getElementById('wbShiftHandle');
+            const valuesDisplay = document.getElementById('wbShiftValues');
+            if (!grid || !handle || !valuesDisplay) return;
+
+            let isDragging = false;
+
+            const updateHandle = (x, y) => {
+                const rect = grid.getBoundingClientRect();
+                let newX = Math.max(0, Math.min(rect.width, x - rect.left));
+                let newY = Math.max(0, Math.min(rect.height, y - rect.top));
+
+                handle.style.left = `${newX}px`;
+                handle.style.top = `${newY}px`;
+
+                // Map position to -9 to +9 range
+                const valX = Math.round(((newX / rect.width) * 18) - 9);
+                const valY = Math.round(-(((newY / rect.height) * 18) - 9)); // Y is inverted
+
+                const a_b = valX >= 0 ? `A${valX}` : `B${Math.abs(valX)}`;
+                const g_m = valY >= 0 ? `G${valY}` : `M${Math.abs(valY)}`;
+
+                valuesDisplay.textContent = `${a_b} ${g_m}`;
+            };
             
-            const tooltipTitleCallback = (tooltipItems) => {
-                const item = tooltipItems[0];
-                let label = item.chart.data.labels[item.dataIndex];
-                if (Array.isArray(label)) return label.join(' ');
-                return label;
+            const startDrag = (e) => {
+                isDragging = true;
+                handle.style.transition = 'none';
+                document.body.style.cursor = 'grabbing';
+                const pos = e.touches ? e.touches[0] : e;
+                updateHandle(pos.clientX, pos.clientY);
+            };
+            
+            const drag = (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const pos = e.touches ? e.touches[0] : e;
+                updateHandle(pos.clientX, pos.clientY);
             };
 
-            const defaultChartOptions = (legendPos = 'bottom') => ({
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: legendPos,
-                        labels: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleFont: { size: 14, family: "'Be Vietnam Pro', sans-serif" },
-                        bodyFont: { size: 12, family: "'Be Vietnam Pro', sans-serif" },
-                        callbacks: { title: tooltipTitleCallback }
-                    }
-                },
-                scales: {
-                    y: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { color: GRID_COLOR } },
-                    x: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { display: false } }
-                }
-            });
+            const endDrag = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                handle.style.transition = 'transform 0.1s ease-out';
+                document.body.style.cursor = 'default';
+            };
 
-            const bitDepthCtx = document.getElementById('bitDepthChart')?.getContext('2d');
-            if (bitDepthCtx) {
-                 new Chart(bitDepthCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Video 8-bit', 'Video 10-bit'],
-                        datasets: [{
-                            label: 'Số lượng màu',
-                            data: [16700000, 1070000000],
-                            backgroundColor: [PALETTE.lightBlue, PALETTE.darkBlue],
-                            borderColor: [PALETTE.blue, PALETTE.blue],
-                            borderWidth: 2,
-                            borderRadius: 5
-                        }]
-                    },
-                    options: {
-                        ...defaultChartOptions(),
-                        scales: {
-                            y: {
-                                type: 'logarithmic',
-                                ticks: { color: PALETTE.gray,
-                                    callback: function(value) {
-                                        if (value === 1000000000) return '1 Tỷ màu';
-                                        if (value === 100000000) return '100 Triệu màu';
-                                        if (value === 10000000) return '16.7 Triệu màu';
-                                        return null;
-                                    }
-                                },
-                                grid: { color: PALETTE.lightGray }
-                            },
-                            x: { ticks: { color: PALETTE.gray, font: {size: 14, weight: '600'}}, grid: { display: false } }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { callbacks: { title: tooltipTitleCallback, label: (context) => ` ~${new Intl.NumberFormat('vi-VN').format(context.parsed.y)} màu` } }
-                        }
-                    }
-                });
-            }
+            grid.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+            
+            grid.addEventListener('touchstart', startDrag);
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('touchend', endDrag);
         }
 
         function renderView(viewName) {
@@ -1003,6 +956,7 @@
                 renderInteractiveCharts(state.currentLang);
             } else if (viewName === 'explain') {
                 renderAllCharts(state.currentLang);
+                initWbShiftGrid();
             }
         }
 
@@ -1313,7 +1267,8 @@
         document.addEventListener("DOMContentLoaded", init);
 
         const recipesData = [
-       ];
+            {"id":"vektro-100","name":{"vi":"Chiều Tàn","en":"Dusk / Twilight"},"description":{"vi":"Tái tạo sắc cam rực của lửa và vùng tối sâu thẳm.","en":"Vibrant orange of fire and deep shadows."},"type":"color","contrast":"high","saturation":"high","whiteBalance":"4000K, A5-M0.5","settings":{"Black level":"-10","Gamma":"Still","Black Gamma":"Wide -7","Knee":"Manual 92.5% +5","Color Mode":"S-Gamut3.Cine","Saturation":"+20"},"personalityColor":"#E57373","coords":{"x":7.8,"y":8.1}, "demoImages": ["https://placehold.co/800x600/E57373/ffffff?text=Vektro+1", "https://placehold.co/800x600/E57373/dddddd?text=Vektro+2", "https://placehold.co/800x600/E57373/bbbbbb?text=Vektro+3"]},
+ ];
     </script>
 </body>
 </html>
