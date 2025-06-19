@@ -86,7 +86,6 @@
         .spinner { border: 3px solid rgba(0, 0, 0, 0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: currentColor; animation: spin 1s ease infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* General Modal Styles */
         .modal { z-index: 50; transition: opacity 0.3s ease; }
         .modal-content { transition: transform 0.3s ease; border-radius: 28px; }
         .modal.hidden { opacity: 0; pointer-events: none; }
@@ -104,57 +103,74 @@
         .overflow-y-auto::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
         .overflow-y-auto { scrollbar-width: auto; scrollbar-color: rgba(0, 0, 0, 0.2) transparent; }
 
-        /* Chart & Feature Styles */
         .chart-container { position: relative; margin: auto; height: 280px; width: 100%;}
         @media (min-width: 768px) { .chart-container { height: 320px; } }
         #colorChart, #bwChart { cursor: pointer; }
         
         #mobileNavMenu { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* Lightbox Styles */
-        #lightbox {
-            z-index: 100;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-        #lightbox.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        #lightbox .lightbox-content {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        #lightbox.hidden .lightbox-content {
-            transform: scale(0.95);
-            opacity: 0;
-        }
-        .lightbox-thumb {
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .lightbox-thumb.active {
-            border-color: var(--primary-accent);
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 122, 255, 0.5);
-        }
-        .lightbox-nav-btn {
-            background-color: rgba(0,0,0,0.4);
-            transition: background-color 0.2s ease;
-        }
-        .lightbox-nav-btn:hover {
-            background-color: rgba(0,0,0,0.7);
-        }
-        #lightbox-main-image {
-            transition: opacity 0.2s ease-in-out;
-        }
+        #lightbox { z-index: 100; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+        #lightbox.hidden { opacity: 0; pointer-events: none; }
+        #lightbox .lightbox-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #lightbox.hidden .lightbox-content { transform: scale(0.95); opacity: 0; }
+        .lightbox-thumb { cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; }
+        .lightbox-thumb.active { border-color: var(--primary-accent); transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 122, 255, 0.5); }
+        .lightbox-nav-btn { background-color: rgba(0,0,0,0.4); transition: background-color 0.2s ease; }
+        .lightbox-nav-btn:hover { background-color: rgba(0,0,0,0.7); }
+        #lightbox-main-image { transition: opacity 0.2s ease-in-out; }
         
-        /* Explanation Tab Specifics */
-        .timeline-item { position: relative; padding-bottom: 2rem; padding-left: 2rem; }
-        .timeline-item::before { content: ''; position: absolute; left: 0; top: 0.125rem; width: 1rem; height: 1rem; border-radius: 9999px; background-color: var(--primary-accent); border: 3px solid #bfdbfe; z-index: 10; }
-        .timeline-item::after { content: ''; position: absolute; left: calc(0.5rem - 1px); top: 1rem; bottom: 0; width: 2px; background-color: #93c5fd; }
-        .timeline-item:last-child::after { display: none; }
+        /* --- Explanation Tab & Interactive Grid Styles --- */
+        #abgm-grid-interactive-container {
+            width: 100%;
+            max-width: 300px;
+            margin: auto;
+            touch-action: none; /* Prevent scrolling on touch devices */
+        }
+        #abgm-grid {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background-image: 
+                linear-gradient(to right, rgba(0, 128, 0, 0.2), rgba(255, 255, 255, 0), rgba(255, 0, 255, 0.2)),
+                linear-gradient(to bottom, rgba(255, 165, 0, 0.2), rgba(255, 255, 255, 0), rgba(0, 0, 255, 0.2));
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+        }
+        #abgm-pointer {
+            position: absolute;
+            width: 1rem;
+            height: 1rem;
+            background-color: #ef4444;
+            border: 2px solid white;
+            border-radius: 9999px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transform: translate(-50%, -50%);
+            pointer-events: none; /* So it doesn't interfere with grid clicks */
+        }
+        .pp-infographic-item {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .pp-infographic-item h5 {
+            color: var(--primary-accent);
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+        .pp-infographic-item .param-list li {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+         .pp-infographic-item .param-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #16a34a;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -205,10 +221,8 @@
             <div id="comparisonModalContent" class="p-6 md:p-8 overflow-y-auto prose-comparison"></div>
         </div>
     </div>
-    
-    
 
-<div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
         <div id="lightbox-bg" class="absolute inset-0"></div>
         <div class="lightbox-content relative w-full max-w-4xl max-h-full">
             <button id="lightbox-close" class="absolute -top-4 -right-2 md:top-0 md:-right-12 text-white text-5xl font-bold z-10 leading-none p-2">&times;</button>
@@ -238,11 +252,7 @@
             quizAnswers: {},
             activeFilters: { type: 'all', contrast: 'all', saturation: 'all' },
             isMobileDetailActive: false,
-            lightbox: {
-                isOpen: false,
-                images: [],
-                currentIndex: 0
-            }
+            lightbox: { isOpen: false, images: [], currentIndex: 0 }
         };
 
         const mainContentEl = document.getElementById('mainContent');
@@ -309,40 +319,36 @@
             featuredCta: {vi: "Cùng nhau xây dựng một thư viện ảnh đầy cảm hứng! Hãy chia sẻ những tác phẩm bạn chụp bằng các công thức từ Alpha AI Color Lab. Ảnh được chọn sẽ xuất hiện tại đây để vinh danh.", en: "Let's build an inspiring gallery together! Share your creations shot with recipes from the Alpha AI Color Lab. Selected photos will be featured here."},
             featuredAlbumBtn: {vi: "Xem Album & Đóng góp Ảnh", en: "View Album & Contribute Photos"},
             
-            // Tutorial & Explanation
+            // Explanation Tab
             explainHeader: {vi: "Làm Chủ Màu Sắc Cùng Sony Alpha", en:"Mastering Color with Sony Alpha"},
             explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh", en:"A comprehensive guide to creating your unique color signature for stills"},
-            explainIntroTitle: {vi: "Picture Profile vs. Creative Style/Look", en:"Picture Profile vs. Creative Style/Look"},
-            explainIntroP: {vi: "Sony cung cấp nhiều công cụ màu sắc, nhưng chúng hoạt động ở các giai đoạn khác nhau. Hiểu rõ sự khác biệt là chìa khóa để khai thác tối đa tiềm năng của máy ảnh.", en:"Sony offers various color tools, but they operate at different stages. Understanding the differences is key to maximizing your camera's potential."},
             pillarsTitle: {vi: "Hai Trụ Cột Sáng Tạo Màu Sắc", en:"The Two Pillars of Color Creation"},
             wbPillarTitle: {vi: "Trụ cột 1: White Balance - Nền Tảng Cảm Xúc", en:"Pillar 1: White Balance - The Emotional Foundation"},
-            ppPillarTitle: {vi: "Trụ cột 2: Picture Profile - Lý Giải Thông Số", en:"Pillar 2: Picture Profile - Parameter Explanations"},
-            ppIntro_new: {vi: "Picture Profile cho phép can thiệp sâu vào nhiều thông số kỹ thuật, mở rộng tiềm năng sáng tạo. Dưới đây là giải thích các thông số cốt lõi:", en: "Picture Profile allows for deep technical adjustments, expanding creative potential. Here are the core parameter explanations:"},
-            gammaSubtitle: {vi: "Các chế độ điều chỉnh tương phản và dải tần nhạy sáng.", en: "Controls for contrast and dynamic range."},
-            colorModeSubtitle: {vi: "Các chế độ màu, nên chọn cùng loại với Gamma để tối ưu.", en: "Color modes, should be matched with Gamma for optimal results."},
-            sCinetoneTitle: {vi: "S-Cinetone: Màu Điện Ảnh Quay-Ăn-Liền", en: "S-Cinetone: The Out-of-the-Box Cinema Look"},
-            sCinetoneDesc: {vi: "Lấy cảm hứng từ máy quay VENICE, S-Cinetone tạo ra màu sắc điện ảnh tự nhiên, tông da dịu nhẹ và độ tương phản vừa phải mà không cần hậu kỳ phức tạp.", en: "Inspired by the VENICE camera, S-Cinetone produces a natural cinematic look with soft skin tones and balanced contrast, without complex post-production."},
-            sCinetoneFeature1: {vi: "Da người đẹp, dịu và tự nhiên.", en: "Beautiful, soft, and natural skin tones."},
-            sCinetoneFeature2: {vi: "Vùng tối (shadow) được nâng nhẹ, vùng sáng (highlight) dễ kiểm soát.", en: "Slightly lifted shadows, well-controlled highlights."},
-            sCinetoneFeature3: {vi: "Không cần hậu kỳ phức tạp như S-Log.", en: "No need for complex grading like S-Log."},
+            ppPillarTitle: {vi: "Trụ cột 2: Picture Profile - Tạo Dáng Vẻ Phim Ảnh", en:"Pillar 2: Picture Profile - Crafting the Film Look"},
             wbKelvinTitle: {vi: "Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo", en: "Kelvin Temperature (K): Creating the Main Tone"},
             wbKelvinDesc: {vi: 'Sử dụng thang đo Kelvin như một nét cọ lớn để "nhuộm" toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.', en: 'Use the Kelvin scale like a broad brush to "tint" the entire frame with warm or cool tones, shaping the photo\'s mood.'},
             wbShiftTitle: {vi: "Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi", en:"Fine-Tuning Grid (A-B/G-M Shift): Adding Subtle Hues"},
             wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.', en: 'If Kelvin is the broad brush, the grid is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints.'},
-            wbShiftExample: {vi: '<span class="font-bold">Ví dụ:</span> Để tạo màu phim cổ, bạn có thể đẩy nhẹ về phía Amber (A) và Green (G).', en:'<span class="font-bold">Example:</span> To create a vintage film look, you might push slightly towards Amber (A) and Green (G).'},
-            ppTechTitle: {vi: "Các Yếu Tố Kỹ Thuật Cốt Lõi", en:"Core Technical Factors"},
-            bitDepthTitle: {vi: "8-bit vs. 10-bit: Sự Khác Biệt Sống Còn", en:"8-bit vs. 10-bit: The Crucial Difference"},
-            bitDepthDesc: {vi: "Độ sâu màu là yếu tố quyết định khả năng chỉnh màu. File 10-bit chứa lượng thông tin màu sắc nhiều hơn 64 lần so với file 8-bit, giúp quá trình chỉnh màu mượt mà, tránh hiện tượng gãy màu (banding) khi xử lý các cảnh quay Log.", en:"Color depth is the deciding factor in color grading flexibility. A 10-bit file contains 64 times more color information than an 8-bit file, enabling smoother grading and preventing banding when processing Log footage."},
-            practicalTitle: {vi:"Thực Hành: Tạo Dáng Vẻ Phim Ảnh (Film Look)", en:"Practical Application: Creating a Film Look"},
-            practicalDesc: {vi:"Bằng cách kết hợp các công cụ trên, bạn có thể tạo ra vô số màu sắc độc đáo. Dưới đây là quy trình 4 bước để bắt đầu:", en:"By combining these tools, you can create countless unique color looks. Here is a 4-step process to get started:"},
-            practicalStep1: {vi: "Chọn Nền Tảng", en:"Choose a Foundation"},
-            practicalStep1Desc: {vi: "Bắt đầu với Gamma `Cine4` cho look điện ảnh mềm mại, hoặc `Still` cho độ tương phản cao. Kết hợp với Color Mode như `Pro` hoặc `Cinema`.", en:"Start with a `Cine4` Gamma for a soft, cinematic look, or `Still` for higher contrast. Combine with a Color Mode like `Pro` or `Cinema`."},
-            practicalStep2: {vi: "Tinh Chỉnh Contrast", en:"Refine Contrast"},
-            practicalStep2Desc: {vi: "Sử dụng `Black Level`. Tăng giá trị (+5 đến +10) để \"nâng\" vùng tối, tạo hiệu ứng phai màu (faded) đặc trưng của phim.", en:"Use `Black Level`. Increase the value (+5 to +10) to \"lift\" the shadows, creating a characteristic faded film effect."},
-            practicalStep3: {vi: "Định Hình Màu Sắc", en:"Shape the Colors"},
-            practicalStep3Desc: {vi: "Dùng `Color Depth` & `Color Phase` để điều chỉnh từng kênh màu riêng lẻ. Ví dụ: tăng Đỏ/Vàng cho màu Kodak, hoặc Xanh lá/Lục lam cho màu Fuji.", en:"Use `Color Depth` & `Color Phase` to adjust individual color channels. For example, boost Reds/Yellows for a Kodak look, or Greens/Cyans for a Fuji look."},
-            practicalStep4: {vi: "Hoàn Thiện", en:"Final Touches"},
-            practicalStep4Desc: {vi: "Giảm mạnh `Detail` (ví dụ: -7) để có look mềm mại, hữu cơ. Tinh chỉnh `Saturation` tổng thể cho vừa ý.", en:"Drastically reduce `Detail` (e.g., -7) for a soft, organic look. Adjust the overall `Saturation` to taste."},
+            ppInfographicTitle: {vi: "Quy trình Tinh chỉnh Picture Profile", en:"Picture Profile Adjustment Workflow"},
+            ppInfographicDesc: {vi: "Làm theo các bước sau để thiết lập Picture Profile từ đầu, cho phép bạn kiểm soát hoàn toàn giao diện cuối cùng của hình ảnh.", en:"Follow these steps to set up a Picture Profile from scratch, giving you full control over the final look of your image."},
+            ppItemBlackLevel: {vi: "Black Level", en: "Black Level"},
+            ppItemBlackLevelDesc: {vi: "Điều chỉnh điểm đen. Tăng (+) để nâng vùng tối (tạo look 'faded'), giảm (-) để vùng tối sâu hơn (tăng tương phản).", en: "Adjusts the black point. Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more contrast)."},
+            ppItemGamma: {vi: "Gamma", en: "Gamma"},
+            ppItemGammaDesc: {vi: "Xác định đường cong tương phản & dải nhạy sáng. Đây là nền tảng cho 'look' của bạn.", en: "Defines the contrast curve & dynamic range. This is the foundation of your look."},
+            ppItemBlackGamma: {vi: "Black Gamma", en: "Black Gamma"},
+            ppItemBlackGammaDesc: {vi: "Tinh chỉnh tương phản ở vùng tối. 'Wide' ảnh hưởng vùng rộng hơn, 'Narrow' ảnh hưởng vùng hẹp hơn.", en: "Fine-tunes contrast in the shadow areas. 'Wide' affects a broader range, 'Narrow' affects a smaller range."},
+            ppItemKnee: {vi: "Knee", en: "Knee"},
+            ppItemKneeDesc: {vi: "Kiểm soát vùng sáng (highlight) để tránh bị 'cháy'. Chế độ tự động (Auto) hoạt động tốt, chế độ thủ công (Manual) cho phép kiểm soát chính xác hơn.", en: "Controls the highlights to prevent 'clipping'. Auto mode works well; Manual mode gives precise control."},
+            ppItemColorMode: {vi: "Color Mode", en: "Color Mode"},
+            ppItemColorModeDesc: {vi: "Xác định cách màu sắc được tái tạo. Nên chọn chế độ phù hợp với Gamma đã chọn (ví dụ: Cine4 với Pro/Cinema).", en: "Determines how colors are reproduced. Should be matched with the chosen Gamma (e.g., Cine4 with Pro/Cinema)."},
+            ppItemSaturation: {vi: "Saturation", en: "Saturation"},
+            ppItemSaturationDesc: {vi: "Điều chỉnh độ bão hòa tổng thể của tất cả các màu.", en: "Adjusts the overall intensity of all colors."},
+            ppItemColorPhase: {vi: "Color Phase", en: "Color Phase"},
+            ppItemColorPhaseDesc: {vi: "Xoay trục màu sắc tổng thể. Hữu ích để tinh chỉnh nhẹ toàn bộ tông màu.", en: "Shifts the overall hue of all colors. Useful for subtle, global color tone adjustments."},
+            ppItemColorDepth: {vi: "Color Depth", en: "Color Depth"},
+            ppItemColorDepthDesc: {vi: "Công cụ mạnh mẽ nhất. Tăng/giảm độ bão hòa của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Lục lam, Tím, Vàng).", en: "The most powerful tool. Increases/decreases the saturation of individual color channels (R, G, B, C, M, Y)."},
+            ppItemDetail: {vi: "Detail", en: "Detail"},
+            ppItemDetailDesc: {vi: "Kiểm soát độ sắc nét. Để có 'look' phim mềm mại, hãy giảm mạnh (ví dụ: -7).", en: "Controls the sharpening. For a soft, filmic look, decrease it significantly (e.g., -7)."},
             recallTitle: { vi: 'Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall', en: 'Save & Reuse: Mastering Memory Recall' },
             recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.', en: 'Don\'t waste your effort! Save your recipes to the camera\'s memory for quick recall with a simple turn of a dial.' },
             recallInternalTitle: { vi: 'Bộ Nhớ Trong (1, 2, 3)', en: 'Internal Memory (1, 2, 3)' },
@@ -516,26 +522,20 @@
             
             recipeFormulas: () => `
                 <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                    
                     <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
                         <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
                         <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                        
                         <div id="filtersContainer" class="space-y-4 text-sm mb-4">
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                              <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                         </div>
-                        
                         <div id="recipeListContainer" class="space-y-2 pt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
-                        
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                     </aside>
-                    
                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
-                            
-                            <div id="chartsContainer">
+                           <div id="chartsContainer">
                                <div class="text-center mb-10">
                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
                                </div>
@@ -544,11 +544,9 @@
                                    <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
                                </div>
                            </div>
-                           
                            <div id="recipeContent" class="hidden"></div>
                         </div>
                     </main>
-                    
                     <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
                         <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
                         <div class="glass-panel p-6 overflow-y-auto">
@@ -567,15 +565,9 @@
                     </a>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
                         ${recipesData.slice(0,6).map((recipe) => {
-                            // FIX: Check if demoImages exists and is not empty. If not, create a placeholder.
                             const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
-                            const imgSrc = hasDemoImages
-                                ? recipe.demoImages[0]
-                                : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
-                            
-                            return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb"
-                                data-recipe-id="${recipe.id}"
-                                data-index="0">
+                            const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
+                            return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
                                 <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
                             </div>`;
                         }).join('')}
@@ -592,48 +584,10 @@
                     </header>
             
                     <main class="space-y-12 md:space-y-20">
-            
-                        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                            <h3 class="text-2xl font-bold mb-4 text-center" data-translate-key="explainIntroTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="explainIntroP"></p>
-                            <div class="overflow-x-auto">
-                                <table class="w-full min-w-[600px] text-left border-collapse">
-                                    <thead>
-                                        <tr class="bg-slate-100">
-                                            <th class="p-4 font-bold border-b-2 border-slate-200">Tiêu chí</th>
-                                            <th class="p-4 font-bold border-b-2 border-slate-200">Creative Style / Look</th>
-                                            <th class="p-4 font-bold border-b-2 border-slate-200">Picture Profile</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Mục đích</td>
-                                            <td class="p-4 border-b border-slate-200">Tạo "look" nhanh, sẵn sàng sử dụng cho ảnh JPEG.</td>
-                                            <td class="p-4 border-b border-slate-200">Kiểm soát sâu tín hiệu video/ảnh để hậu kỳ chuyên nghiệp hoặc tạo "look" tùy biến cao.</td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Đối tượng</td>
-                                            <td class="p-4 border-b border-slate-200">Người dùng phổ thông, nhiếp ảnh gia chụp JPEG.</td>
-                                            <td class="p-4 border-b border-slate-200">Nhà làm phim, người dùng chuyên nghiệp, người thích tùy biến sâu.</td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Mức độ kiểm soát</td>
-                                            <td class="p-4 border-b border-slate-200">Giới hạn (Tương phản, Bão hòa, Sắc nét).</td>
-                                            <td class="p-4 border-b border-slate-200">Rất sâu (Gamma, Black Level, Knee, Color Mode, Detail...).</td>
-                                        </tr>
-                                         <tr class="hover:bg-slate-50">
-                                            <td class="p-4 border-b border-slate-200 font-semibold">Giai đoạn áp dụng</td>
-                                            <td class="p-4 border-b border-slate-200">Sau khi xử lý tín hiệu cơ bản, áp dụng lên file JPEG.</td>
-                                            <td class="p-4 border-b border-slate-200">Ngay sau khi cảm biến nhận tín hiệu, trước khi nén.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-            
                         <section>
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="pillarsTitle"></h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- Pillar 1: White Balance -->
                                 <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                                     <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="wbPillarTitle"></h4>
                                     <div class="mb-8">
@@ -648,99 +602,102 @@
                                     <div>
                                         <h5 class="font-bold text-lg" data-translate-key="wbShiftTitle"></h5>
                                         <p class="text-sm text-gray-600 mb-3" data-translate-key="wbShiftDesc"></p>
-                                        <div class="relative w-full max-w-[250px] mx-auto aspect-square bg-gray-50 border-2 border-gray-200 rounded-md">
-                                            <div class="absolute top-1/2 left-0 w-full h-px bg-gray-300 -translate-y-1/2"></div>
-                                            <div class="absolute left-1/2 top-0 w-px h-full bg-gray-300 -translate-x-1/2"></div>
-                                            <span class="absolute top-1/2 -left-5 -translate-y-1/2 font-bold text-blue-600">B</span>
-                                            <span class="absolute top-1/2 -right-5 -translate-y-1/2 font-bold text-orange-500">A</span>
-                                            <span class="absolute left-1/2 -top-5 -translate-x-1/2 font-bold text-green-600">G</span>
-                                            <span class="absolute left-1/2 -bottom-5 -translate-x-1/2 font-bold text-purple-600">M</span>
-                                            <div class="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-lg" style="top: calc(50% - 6px - (20%)); left: calc(50% - 6px + 30%);"></div>
+                                        <div id="abgm-grid-interactive-container">
+                                            <div id="abgm-grid" class="relative">
+                                                <!-- Axes Labels -->
+                                                <span class="absolute top-1/2 -left-5 -translate-y-1/2 font-bold text-blue-600">B</span>
+                                                <span class="absolute top-1/2 -right-5 -translate-y-1/2 font-bold text-amber-600">A</span>
+                                                <span class="absolute left-1/2 -top-5 -translate-x-1/2 font-bold text-green-600">G</span>
+                                                <span class="absolute left-1/2 -bottom-5 -translate-x-1/2 font-bold text-purple-600">M</span>
+                                                <!-- Draggable Pointer -->
+                                                <div id="abgm-pointer" style="top: 50%; left: 50%;"></div>
+                                            </div>
+                                            <div id="abgm-values" class="text-center mt-2 font-mono font-semibold bg-slate-100 p-2 rounded-md">A-B: 0, G-M: 0</div>
                                         </div>
-                                        <p class="text-xs text-center mt-3 text-gray-500" data-translate-key="wbShiftExample"></p>
                                     </div>
                                 </div>
+                                <!-- Pillar 2: Picture Profile (Placeholder for Infographic) -->
                                 <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                                     <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
-                                     <p class="text-sm text-gray-700 mb-6 text-center" data-translate-key="ppIntro_new"></p>
-                                     <div class="grid sm:grid-cols-2 gap-x-8 gap-y-6 text-left">
-                                         <div>
-                                             <h5 class="font-semibold text-lg">Gamma</h5>
-                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="gammaSubtitle"></p>
-                                             <ul class="space-y-3 text-sm list-disc list-inside">
-                                                 <li><strong>Movie:</strong> Gamma tiêu chuẩn cho phim, cân bằng tốt.</li>
-                                                 <li><strong>Still:</strong> Gamma cho ảnh tĩnh, tương phản và màu rực hơn.</li>
-                                                 <li><strong>Cine1-4:</strong> Gamma điện ảnh, tăng dải nhạy sáng. Cine4 phổ biến nhất.</li>
-                                                 <li><strong>ITU709:</strong> Gamma chuẩn cho phát sóng HDTV (Rec.709).</li>
-                                                 <li><strong>S-Log2/S-Log3:</strong> Gamma phẳng, tối đa hóa dải nhạy sáng, yêu cầu hậu kỳ màu. S-Log3 tối ưu hơn cho grading.</li>
-                                                 <li><strong>HLG:</strong> Chuẩn HDR, xem trực tiếp trên màn hình HDR.</li>
-                                             </ul>
-                                         </div>
-                                         <div>
-                                             <h5 class="font-semibold text-lg">Color Mode</h5>
-                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="colorModeSubtitle"></p>
-                                             <ul class="space-y-3 text-sm list-disc list-inside">
-                                                 <li><strong>Movie/Still:</strong> Đi kèm với Gamma tương ứng.</li>
-                                                 <li><strong>Cinema:</strong> Tông màu dịu, điện ảnh, dùng với Cine Gamma.</li>
-                                                 <li><strong>Pro:</strong> Màu sắc chân thực, cân bằng.</li>
-                                                 <li><strong>ITU709 Matrix:</strong> Màu theo chuẩn Rec.709.</li>
-                                                 <li><strong>S-Gamut/S-Gamut3.Cine:</strong> Không gian màu rộng cho S-Log. S-Gamut3.Cine dễ hậu kỳ hơn.</li>
-                                                 <li><strong>BT.2020:</strong> Chuẩn màu HDR mới, dùng với HLG.</li>
-                                             </ul>
-                                         </div>
-                                          <div class="sm:col-span-2">
-                                             <h5 class="font-semibold text-lg mt-4" data-translate-key="sCinetoneTitle"></h5>
-                                             <p class="text-sm text-gray-600 mb-3" data-translate-key="sCinetoneDesc"></p>
-                                             <ul class="space-y-2 text-sm list-disc list-inside">
-                                                 <li data-translate-key="sCinetoneFeature1"></li>
-                                                 <li data-translate-key="sCinetoneFeature2"></li>
-                                                 <li data-translate-key="sCinetoneFeature3"></li>
-                                             </ul>
-                                         </div>
+                                    <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
+                                    <p class="text-sm text-gray-700 mb-6 text-center" data-translate-key="ppInfographicDesc"></p>
+                                     <div class="space-y-4">
+                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">1. <span data-translate-key="ppItemBlackLevel"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemBlackLevelDesc"></p></details>
+                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">2. <span data-translate-key="ppItemGamma"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemGammaDesc"></p></details>
+                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. <span data-translate-key="ppItemBlackGamma"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemBlackGammaDesc"></p></details>
+                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. <span data-translate-key="ppItemKnee"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemKneeDesc"></p></details>
                                      </div>
                                 </div>
                             </div>
                         </section>
-            
-                        <section>
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="ppTechTitle"></h3>
-                             <div class="grid grid-cols-1 gap-8">
-                                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 max-w-3xl mx-auto w-full">
-                                    <h4 class="text-xl font-bold text-center mb-4" data-translate-key="bitDepthTitle"></h4>
-                                     <p class="text-center text-sm text-gray-600 mb-4" data-translate-key="bitDepthDesc"></p>
-                                    <div class="chart-container h-64 md:h-72">
-                                        <canvas id="bitDepthChart"></canvas>
+                        
+                        <!-- NEW UNIFIED PICTURE PROFILE SECTION -->
+                        <section class="bg-gradient-to-b from-slate-100 to-white rounded-2xl shadow-lg p-6 md:p-8">
+                           <h3 class="text-2xl md:text-3xl font-bold text-center" data-translate-key="ppInfographicTitle"></h3>
+                           <p class="max-w-3xl mx-auto text-center text-gray-700 mt-2 mb-10" data-translate-key="ppInfographicDesc"></p>
+
+                           <div class="space-y-6">
+                                <div class="pp-infographic-item">
+                                    <h5 data-translate-key="ppItemBlackLevel"></h5>
+                                    <p class="text-sm text-gray-600 mt-1" data-translate-key="ppItemBlackLevelDesc"></p>
+                                </div>
+                                <div class="text-center text-gray-400 font-bold">↓</div>
+                                <div class="pp-infographic-item">
+                                    <h5 data-translate-key="ppItemGamma"></h5>
+                                    <p class="text-sm text-gray-600 mt-1 mb-3" data-translate-key="ppItemGammaDesc"></p>
+                                    <ul class="text-sm list-none space-y-2 param-list">
+                                        <li><strong>Cine1-4:</strong> Look điện ảnh, tăng dải nhạy sáng. Cine4 phổ biến nhất.</li>
+                                        <li><strong>S-Log2/3:</strong> Phẳng, tối đa hóa DR, CẦN hậu kỳ. S-Log3 tối ưu hơn.</li>
+                                        <li><strong>HLG:</strong> Chuẩn HDR, xem trực tiếp trên TV HDR.</li>
+                                        <li><strong>Still/Movie:</strong> Gamma tiêu chuẩn, tương phản tốt, dùng ngay.</li>
+                                    </ul>
+                                </div>
+                                <div class="text-center text-gray-400 font-bold">↓</div>
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div class="pp-infographic-item">
+                                        <h5 data-translate-key="ppItemBlackGamma"></h5>
+                                        <p class="text-sm text-gray-600 mt-1" data-translate-key="ppItemBlackGammaDesc"></p>
+                                    </div>
+                                    <div class="pp-infographic-item">
+                                        <h5 data-translate-key="ppItemKnee"></h5>
+                                        <p class="text-sm text-gray-600 mt-1" data-translate-key="ppItemKneeDesc"></p>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
-            
-                        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center" data-translate-key="practicalTitle"></h3>
-                            <p class="max-w-3xl mx-auto text-center text-gray-700 mt-2 mb-8" data-translate-key="practicalDesc"></p>
-                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-                                <div class="border-t-4 border-blue-500 rounded-lg p-4 bg-slate-50 shadow-sm">
-                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-blue-500">①</span><span data-translate-key="practicalStep1"></span></h4>
-                                    <p class="text-sm mt-2" data-translate-key="practicalStep1Desc"></p>
+                                <div class="text-center text-gray-400 font-bold">↓</div>
+                                <div class="pp-infographic-item">
+                                    <h5 data-translate-key="ppItemColorMode"></h5>
+                                    <p class="text-sm text-gray-600 mt-1 mb-3" data-translate-key="ppItemColorModeDesc"></p>
+                                     <ul class="text-sm list-none space-y-2 param-list">
+                                        <li><strong>Pro / Cinema:</strong> Màu sắc chân thực hoặc điện ảnh, dùng với Cine Gamma.</li>
+                                        <li><strong>S-Gamut3.Cine:</strong> Không gian màu rộng cho S-Log, dễ hậu kỳ.</li>
+                                        <li><strong>BT.2020:</strong> Chuẩn màu HDR, dùng với HLG.</li>
+                                     </ul>
                                 </div>
-                                <div class="border-t-4 border-green-500 rounded-lg p-4 bg-slate-50 shadow-sm">
-                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-green-500">②</span><span data-translate-key="practicalStep2"></span></h4>
-                                    <p class="text-sm mt-2" data-translate-key="practicalStep2Desc"></p>
+                                <div class="text-center text-gray-400 font-bold">↓</div>
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <div class="pp-infographic-item">
+                                        <h5 data-translate-key="ppItemSaturation"></h5>
+                                        <p class="text-sm text-gray-600 mt-1" data-translate-key="ppItemSaturationDesc"></p>
+                                    </div>
+                                    <div class="pp-infographic-item">
+                                        <h5 data-translate-key="ppItemColorPhase"></h5>
+                                        <p class="text-sm text-gray-600 mt-1" data-translate-key="ppItemColorPhaseDesc"></p>
+                                    </div>
+                                    <div class="pp-infographic-item">
+                                        <h5 data-translate-key="ppItemDetail"></h5>
+                                        <p class="text-sm text-gray-600 mt-1" data-translate-key="ppItemDetailDesc"></p>
+                                    </div>
                                 </div>
-                                 <div class="border-t-4 border-purple-500 rounded-lg p-4 bg-slate-50 shadow-sm">
-                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-purple-500">③</span><span data-translate-key="practicalStep3"></span></h4>
-                                    <p class="text-sm mt-2" data-translate-key="practicalStep3Desc"></p>
+                                <div class="text-center text-gray-400 font-bold">↓</div>
+                                 <div class="pp-infographic-item">
+                                    <h5 data-translate-key="ppItemColorDepth"></h5>
+                                    <p class="text-sm text-gray-600 mt-1" data-translate-key="ppItemColorDepthDesc"></p>
                                 </div>
-                                 <div class="border-t-4 border-orange-500 rounded-lg p-4 bg-slate-50 shadow-sm">
-                                    <h4 class="font-bold text-lg text-slate-800 flex items-center"><span class="text-2xl mr-2 text-orange-500">④</span><span data-translate-key="practicalStep4"></span></h4>
-                                    <p class="text-sm mt-2" data-translate-key="practicalStep4Desc"></p>
-                                </div>
-                            </div>
-                             <div class="text-center mt-12">
+                           </div>
+                           <div class="text-center mt-12">
                                 <button id="exploreMoreBtn" class="btn btn-primary py-3 px-8 text-base md:text-lg" data-translate-key="navRecipeFormulas"></button>
                             </div>
                         </section>
-            
+
                          <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
                              <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="recallDesc"></p>
@@ -767,29 +724,23 @@
         // --- Lightbox Functions ---
         function openLightbox(images, initialIndex = 0) {
             if (!images || images.length === 0) return;
-
             state.lightbox.isOpen = true;
             state.lightbox.images = images;
             state.lightbox.currentIndex = initialIndex;
-            
             const lightboxEl = document.getElementById('lightbox');
             lightboxEl.classList.remove('hidden');
-            
             updateLightboxContent();
         }
 
         function closeLightbox() {
             state.lightbox.isOpen = false;
-            const lightboxEl = document.getElementById('lightbox');
-            lightboxEl.classList.add('hidden');
+            document.getElementById('lightbox').classList.add('hidden');
         }
 
         function updateLightboxContent() {
             if (!state.lightbox.isOpen) return;
-
             const mainImageEl = document.getElementById('lightbox-main-image');
             const thumbnailsContainer = document.getElementById('lightbox-thumbnails');
-
             const newSrc = state.lightbox.images[state.lightbox.currentIndex];
             mainImageEl.style.opacity = '0';
             setTimeout(() => {
@@ -798,24 +749,16 @@
             }, 150);
             
             thumbnailsContainer.innerHTML = state.lightbox.images.map((imgSrc, index) => `
-                <img src="${imgSrc}" 
-                     class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" 
-                     data-index="${index}">
+                <img src="${imgSrc}" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}">
             `).join('');
         }
 
         function navigateLightbox(direction) {
             if (!state.lightbox.isOpen) return;
             const imageCount = state.lightbox.images.length;
-            
             let newIndex = state.lightbox.currentIndex + direction;
-            
-            if (newIndex < 0) {
-                newIndex = imageCount - 1;
-            } else if (newIndex >= imageCount) {
-                newIndex = 0;
-            }
-            
+            if (newIndex < 0) newIndex = imageCount - 1;
+            else if (newIndex >= imageCount) newIndex = 0;
             state.lightbox.currentIndex = newIndex;
             updateLightboxContent();
         }
@@ -825,80 +768,59 @@
             activeCharts = {};
         }
 
-        function renderAllCharts(lang) {
-            destroyAllCharts();
-            const FONT_COLOR = '#374151'; 
-            const GRID_COLOR = '#E5E7EB';    
-            const PALETTE = { blue: '#3b82f6', darkBlue: '#1e3a8a', lightBlue: '#bfdbfe', green: '#22c55e', purple: '#8b5cf6', yellow: '#eab308', gray: '#4b5563', lightGray: '#e5e7eb' };
-            
-            const tooltipTitleCallback = (tooltipItems) => {
-                const item = tooltipItems[0];
-                let label = item.chart.data.labels[item.dataIndex];
-                if (Array.isArray(label)) return label.join(' ');
-                return label;
-            };
+        function initInteractiveGrid() {
+            const grid = document.getElementById('abgm-grid');
+            const pointer = document.getElementById('abgm-pointer');
+            const valuesDisplay = document.getElementById('abgm-values');
+            if (!grid || !pointer || !valuesDisplay) return;
 
-            const defaultChartOptions = (legendPos = 'bottom') => ({
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: legendPos,
-                        labels: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleFont: { size: 14, family: "'Be Vietnam Pro', sans-serif" },
-                        bodyFont: { size: 12, family: "'Be Vietnam Pro', sans-serif" },
-                        callbacks: { title: tooltipTitleCallback }
-                    }
-                },
-                scales: {
-                    y: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { color: GRID_COLOR } },
-                    x: { ticks: { color: FONT_COLOR, font: { family: "'Be Vietnam Pro', sans-serif" } }, grid: { display: false } }
-                }
+            let isDragging = false;
+
+            function updatePosition(clientX, clientY) {
+                const rect = grid.getBoundingClientRect();
+                let x = clientX - rect.left;
+                let y = clientY - rect.top;
+
+                // Clamp position within the grid
+                x = Math.max(0, Math.min(x, rect.width));
+                y = Math.max(0, Math.min(y, rect.height));
+
+                pointer.style.left = `${x}px`;
+                pointer.style.top = `${y}px`;
+
+                // Convert pixel position to A-B/G-M values (-9 to +9)
+                const abValue = Math.round((x / rect.width) * 18 - 9);
+                const gmValue = Math.round(((rect.height - y) / rect.height) * 18 - 9); // Invert Y-axis
+
+                const abLabel = abValue > 0 ? `A${abValue}` : (abValue < 0 ? `B${Math.abs(abValue)}` : '0');
+                const gmLabel = gmValue > 0 ? `G${gmValue}` : (gmValue < 0 ? `M${Math.abs(gmValue)}` : '0');
+
+                valuesDisplay.textContent = `${abLabel}, ${gmLabel}`;
+            }
+
+            grid.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                updatePosition(e.clientX, e.clientY);
+            });
+            
+            grid.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+                e.preventDefault();
             });
 
-            const bitDepthCtx = document.getElementById('bitDepthChart')?.getContext('2d');
-            if (bitDepthCtx) {
-                 new Chart(bitDepthCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Video 8-bit', 'Video 10-bit'],
-                        datasets: [{
-                            label: 'Số lượng màu',
-                            data: [16700000, 1070000000],
-                            backgroundColor: [PALETTE.lightBlue, PALETTE.darkBlue],
-                            borderColor: [PALETTE.blue, PALETTE.blue],
-                            borderWidth: 2,
-                            borderRadius: 5
-                        }]
-                    },
-                    options: {
-                        ...defaultChartOptions(),
-                        scales: {
-                            y: {
-                                type: 'logarithmic',
-                                ticks: { color: PALETTE.gray,
-                                    callback: function(value) {
-                                        if (value === 1000000000) return '1 Tỷ màu';
-                                        if (value === 100000000) return '100 Triệu màu';
-                                        if (value === 10000000) return '16.7 Triệu màu';
-                                        return null;
-                                    }
-                                },
-                                grid: { color: PALETTE.lightGray }
-                            },
-                            x: { ticks: { color: PALETTE.gray, font: {size: 14, weight: '600'}}, grid: { display: false } }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { callbacks: { title: tooltipTitleCallback, label: (context) => ` ~${new Intl.NumberFormat('vi-VN').format(context.parsed.y)} màu` } }
-                        }
-                    }
-                });
-            }
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) updatePosition(e.clientX, e.clientY);
+            });
+            
+             document.addEventListener('touchmove', (e) => {
+                if (isDragging) updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+            });
+
+            document.addEventListener('mouseup', () => { isDragging = false; });
+            document.addEventListener('touchend', () => { isDragging = false; });
         }
+
 
         function renderView(viewName) {
             state.currentView = viewName;
@@ -1008,7 +930,7 @@
                 renderLibraryDetails();
                 renderInteractiveCharts(state.currentLang);
             } else if (viewName === 'explain') {
-                renderAllCharts(state.currentLang);
+                initInteractiveGrid();
             }
         }
 
@@ -1083,18 +1005,23 @@
             recipeContentContainer.classList.remove('hidden');
             if(!isMobile) recipeMainPanel?.classList.remove('hidden');
             
-            const thumbnailsHTML = (recipe.demoImages && recipe.demoImages.length > 0) ? `
-                <div class="my-6">
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        ${recipe.demoImages.map((imgSrc, index) => `
-                            <div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb"
-                                 data-recipe-id="${recipe.id}"
-                                 data-index="${index}">
-                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]} ${index + 1}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>` : '';
+            // --- NEW Thumbnail Logic ---
+            let thumbnailsHTML = '';
+            const images = recipe.demoImages || [];
+            let imageElements = [];
+            // Use existing demo images first
+            images.forEach((imgSrc, index) => {
+                imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}"><img src="${imgSrc}" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"></div>`);
+            });
+            // Fill up to 3 with placeholders
+            const placeholdersNeeded = 3 - imageElements.length;
+            const placeholderColor = recipe.personalityColor ? recipe.personalityColor.substring(1) : 'cccccc';
+            for (let i = 0; i < placeholdersNeeded; i++) {
+                const placeholderIndex = images.length + i;
+                 imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden"><img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover"></div>`);
+            }
+            thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElements.join('')}</div></div>`;
+            // --- END Thumbnail Logic ---
 
             recipeContentContainer.innerHTML = `
                 <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
@@ -1128,7 +1055,6 @@
 
         function renderInteractiveCharts(lang) {
             destroyAllCharts();
-
             const chartDefaultOptions = (yAxisTitleKey) => ({
                 responsive: true,
                 maintainAspectRatio: false,
@@ -1138,9 +1064,7 @@
                     if (elements.length) {
                         const firstPoint = elements[0];
                         const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
-                        if (recipeId) {
-                            handleRecipeSelection(recipeId, 'chart');
-                        }
+                        if (recipeId) { handleRecipeSelection(recipeId, 'chart'); }
                     }
                 },
                 plugins: {
@@ -1150,9 +1074,7 @@
                         titleFont: { size: 14 },
                         bodyFont: { size: 13 },
                         padding: 10,
-                        callbacks: {
-                            label: function(context) { return context.raw.name; }
-                        }
+                        callbacks: { label: function(context) { return context.raw.name; } }
                     }
                 },
                 scales: {
@@ -1206,19 +1128,12 @@
 
         function toggleMobileNav(show) {
             const menu = document.getElementById('mobileNavMenu');
-            if (show) {
-                menu.classList.remove('translate-x-full');
-            } else {
-                menu.classList.add('translate-x-full');
-            }
+            menu.classList.toggle('translate-x-full', !show);
         }
 
         function init() {
-            // Global event listener for the entire app
             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
-
-                // --- Lightbox Handling ---
                 if (state.lightbox.isOpen) {
                     if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) { closeLightbox(); } 
                     else if (target.closest('#lightbox-next')) { navigateLightbox(1); } 
@@ -1228,7 +1143,7 @@
                         state.lightbox.currentIndex = parseInt(thumb.dataset.index);
                         updateLightboxContent();
                     }
-                    return; // Prevent other click handlers when lightbox is open
+                    return;
                 }
 
                 const lightboxTrigger = target.closest('.lightbox-trigger-thumb');
@@ -1241,7 +1156,6 @@
                     return;
                 }
                 
-                // --- General App Click Handlers ---
                 const homeBtn = target.closest('#homeBtn');
                 const navBtn = target.closest('.nav-btn');
                 const mobileNavBtn = target.closest('.nav-btn-mobile');
@@ -1261,7 +1175,6 @@
                 const backToListBtn = target.closest('#backToListBtn');
                 const quizOption = target.closest('.quiz-option');
                 
-                // Nav
                 if (hamburgerBtn) { toggleMobileNav(true); return; }
                 if (closeMobileNavBtn || (target.id === 'mobileNavMenu' && !target.closest('#mobileNavMenu > div'))) { toggleMobileNav(false); return; }
                 if (mobileNavBtn) {
@@ -1273,11 +1186,7 @@
                 if (navBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView(navBtn.dataset.view); return; }
                 if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
                 if (backToListBtn) { state.isMobileDetailActive = false; renderLibraryDetails(); return; }
-                
-                // Language
                 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
-                
-                // Main Actions
                 if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
                 if (compareBtn && !compareBtn.disabled) { handleAiComparison(state.comparisonList[0], state.comparisonList[1]); return; }
                 if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
@@ -1288,8 +1197,6 @@
                     state.isMobileDetailActive = true;
                     await renderView('recipeFormulas'); return; 
                 }
-
-                // Quiz options
                 if (quizOption) {
                     if(!quizOption.classList.contains('selected')) {
                         const group = quizOption.closest('[data-quiz-group]').dataset.quizGroup;
@@ -1304,7 +1211,6 @@
                     return;
                 }
                 
-                // Recipe List Interactions
                 if (recipeItemContent) { handleRecipeSelection(recipeItemContent.dataset.recipeId, 'div'); return; }
                 if (recipeDot) { handleRecipeSelection(recipeDot.dataset.recipeId, 'div'); return; }
                 if (recipeCompareCb) { handleRecipeSelection(recipeCompareCb.dataset.recipeId, 'checkbox'); return; }
