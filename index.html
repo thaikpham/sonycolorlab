@@ -121,6 +121,12 @@
         .infographic { background-color: #f8f9fa; }
         .flowchart-step { position: relative; padding: 1.5rem; background-color: white; border-radius: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
         .flowchart-arrow { color: #cbd5e1; }
+        
+        /* Chart Styles */
+        .chart-container { position: relative; margin: auto; height: 280px; width: 100%;}
+        @media (min-width: 768px) { .chart-container { height: 320px; } }
+        #colorChart, #bwChart { cursor: pointer; }
+
     </style>
 </head>
 <body>
@@ -256,6 +262,9 @@
             comparisonLoading: {vi: "AI đang phân tích và so sánh...", en: "AI is analyzing and comparing..."},
             colorChartTitle: {vi: "Biểu đồ Màu", en: "Color Chart"},
             bwChartTitle: {vi: "Biểu đồ Đơn sắc (B&W)", en: "Monochrome (B&W) Chart"},
+            axisTonality: {vi: "Tương phản (← Mềm | Cứng →)", en: "Tonality (← Soft | Hard →)"},
+            axisSaturation: {vi: "Độ bão hòa (← Thấp | Cao →)", en: "Saturation (← Low | High →)"},
+            axisChroma: {vi: "Độ sâu màu (← Thấp | Cao →)", en: "Chroma Depth (← Low | High →)"},
             backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
             exploreMoreBtn: { vi: 'Khám phá Thư viện Màu', en: 'Explore Color Library' },
 
@@ -414,10 +423,7 @@
             </div>`,
             
             quiz: () => {
-                if (state.quizStep >= 4) return '';
-                const q = [
-                    { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] }
-                ][state.quizStep];
+                const q = { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] };
                 const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
                 return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
                     <div class="w-full max-w-4xl text-center px-4" data-quiz-group="${q.id}">
@@ -442,7 +448,7 @@
                     </aside>
                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
-                           <div id="chartsContainer">
+                            <div id="chartsContainer">
                                <div class="text-center mb-10">
                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
                                </div>
@@ -475,7 +481,7 @@
                             <div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb"
                                 data-recipe-id="${recipe.id}"
                                 data-index="0">
-                                <img src="${recipe.demoImages[0]}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
+                                <img src="${recipe.demoImages[0]}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/800x600/cccccc/ffffff?text=Image';">
                             </div>
                         `).join('')}
                     </div>
@@ -525,7 +531,7 @@
                                     <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><div class="flex justify-around w-full h-16 items-end gap-1"><div class="w-4 rounded-t-sm bg-red-500" style="height: 60%"></div><div class="w-4 rounded-t-sm bg-green-500" style="height: 80%"></div><div class="w-4 rounded-t-sm bg-blue-500" style="height: 50%"></div><div class="w-4 rounded-t-sm bg-cyan-500" style="height: 70%"></div><div class="w-4 rounded-t-sm bg-purple-500" style="height: 40%"></div><div class="w-4 rounded-t-sm bg-yellow-500" style="height: 90%"></div></div></div>
                                 </div>
                                  <!-- Detail -->
-                                <div class="param-card flex flex-col col-span-1 md:col-span-2 lg:col-span-1">
+                                <div class="param-card flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
                                     <div class="p-6"><h4 class="text-2xl font-bold" data-translate-key="detailTitleExplain"></h4><p class="text-gray-600 mt-1" data-translate-key="detailDesc"></p></div>
                                     <div class="infographic p-6 flex-grow flex items-center justify-center mt-auto"><div class="w-full text-center"><span class="text-6xl font-serif text-gray-400">A</span><span class="text-6xl font-serif font-bold text-gray-800 ml-8">A</span></div></div>
                                 </div>
@@ -563,6 +569,7 @@
                 const currentContent = mainContentEl.children[0];
                 if (currentContent) {
                     currentContent.classList.add('view-transition-out');
+                    destroyAllCharts();
                     currentContent.addEventListener('animationend', () => {
                         mainContentEl.innerHTML = viewTemplates[viewName]();
                         attachViewEventListeners(viewName);
@@ -603,6 +610,8 @@
             }
             renderLibraryList();
             renderLibraryDetails();
+            if (activeCharts.color) activeCharts.color.update();
+            if (activeCharts.bw) activeCharts.bw.update();
         }
 
         async function handleAiComparison(id1, id2, recipe2Obj = null) {
@@ -659,6 +668,7 @@
             if (viewName === 'recipeFormulas') {
                 renderLibraryList();    
                 renderLibraryDetails();
+                renderInteractiveCharts(state.currentLang);
             }
         }
 
@@ -695,84 +705,164 @@
             const recipeListPanel = document.getElementById('recipeListPanel');
             const recipeMainPanel = document.getElementById('recipeMainPanel');
             const recipeDetailPanelMobile = document.getElementById('recipeDetailPanelMobile');
-
-            if (isMobile) {
-                if(state.isMobileDetailActive) {
-                    recipeListPanel.classList.add('hidden');
-                    recipeDetailPanelMobile.classList.remove('hidden');
-                } else {
-                    recipeListPanel.classList.remove('hidden');
-                    recipeDetailPanelMobile.classList.add('hidden');
-                }
-            } else {
-                recipeListPanel?.classList.remove('hidden');
-                recipeDetailPanelMobile?.classList.add('hidden');
-            }
-
             const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
-
-            let recipeContentContainer, chartsContainer;
-            if (isMobile && state.isMobileDetailActive) {
-                recipeContentContainer = document.getElementById('recipeContentMobile');
-                chartsContainer = null;
-            } else {
-                recipeContentContainer = document.getElementById('recipeContent');
-                chartsContainer = document.getElementById('chartsContainer');
-            }
-
-            if (!recipeContentContainer) return;
-
-            if (!recipe) {    
-                if (chartsContainer) chartsContainer.classList.remove('hidden');
-                recipeContentContainer.classList.add('hidden');
-                if(!isMobile) recipeMainPanel?.classList.remove('hidden');
-                return;    
-            }
-            if (chartsContainer) chartsContainer.classList.add('hidden');
-            recipeContentContainer.classList.remove('hidden');
-            if(!isMobile) recipeMainPanel?.classList.remove('hidden');
             
-            const thumbnailsHTML = (recipe.demoImages && recipe.demoImages.length > 0) ? `
+            const createDetailHTML = (recipe) => {
+                const thumbnailsHTML = (recipe.demoImages && recipe.demoImages.length > 0) ? `
                 <div class="my-6">
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                         ${recipe.demoImages.map((imgSrc, index) => `
                             <div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb"
                                  data-recipe-id="${recipe.id}"
                                  data-index="${index}">
-                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]} ${index + 1}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
+                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]} ${index + 1}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/800x600/cccccc/ffffff?text=Image';">
                             </div>
                         `).join('')}
                     </div>
                 </div>` : '';
 
-            recipeContentContainer.innerHTML = `
-                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
-                <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
-                ${thumbnailsHTML}
-                <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
-                <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                    <details open class="group">
-                        <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
-                            <span data-translate-key="tutorialTitle"></span>
-                            <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </summary>
-                        <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
-                            <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div>
-                            <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
-                            <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
-                            <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
-                        </div>
-                    </details>
-                </div>
-                <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
-                    <div class="glass-panel p-4 md:p-6 -mx-2">
-                        <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
-                        <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
-                        <div id="aiResultContainer"></div>
+                return `
+                    <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+                    <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
+                    ${thumbnailsHTML}
+                    <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
+                    <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
+                        <details open class="group">
+                            <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
+                                <span data-translate-key="tutorialTitle"></span>
+                                <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </summary>
+                            <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
+                                <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p></div>
+                                <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
+                                <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
+                                <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
+                            </div>
+                        </details>
                     </div>
-                </div>`;
+                    <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
+                        <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
+                        <div class="glass-panel p-4 md:p-6 -mx-2">
+                            <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
+                            <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
+                            <div id="aiResultContainer"></div>
+                        </div>
+                    </div>`;
+            }
+
+            if (isMobile) {
+                if(state.isMobileDetailActive) {
+                    recipeListPanel.classList.add('hidden');
+                    recipeDetailPanelMobile.classList.remove('hidden');
+                    if (recipe) {
+                         document.getElementById('recipeContentMobile').innerHTML = createDetailHTML(recipe);
+                    }
+                } else {
+                    recipeListPanel.classList.remove('hidden');
+                    recipeDetailPanelMobile.classList.add('hidden');
+                }
+            } else {
+                 const chartsContainer = document.getElementById('chartsContainer');
+                 const recipeContent = document.getElementById('recipeContent');
+                 if (recipe) {
+                    chartsContainer.classList.add('hidden');
+                    recipeContent.classList.remove('hidden');
+                    recipeContent.innerHTML = createDetailHTML(recipe);
+                 } else {
+                    chartsContainer.classList.remove('hidden');
+                    recipeContent.classList.add('hidden');
+                 }
+            }
             applyTranslations();
+        }
+        
+        function destroyAllCharts() {
+            Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
+            activeCharts = {};
+        }
+
+        function renderInteractiveCharts(lang) {
+            destroyAllCharts();
+
+            const chartDefaultOptions = (yAxisTitleKey) => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                onClick: (e) => {
+                    const chart = e.chart;
+                    const elements = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                    if (elements.length) {
+                        const firstPoint = elements[0];
+                        const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
+                        if (recipeId) {
+                            handleRecipeSelection(recipeId, 'chart');
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: { size: 14, family: "'Be Vietnam Pro', sans-serif" },
+                        bodyFont: { size: 13, family: "'Be Vietnam Pro', sans-serif" },
+                        padding: 10,
+                        callbacks: {
+                            label: function(context) { return context.raw.name; }
+                        }
+                    }
+                },
+                scales: {
+                    x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t('axisTonality') } },
+                    y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
+                }
+            });
+            
+            const colorCtx = document.getElementById('colorChart')?.getContext('2d');
+            if (colorCtx) {
+                const colorData = recipesData
+                    .filter(r => r.type === 'color' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number')
+                    .map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
+                
+                activeCharts.color = new Chart(colorCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            data: colorData,
+                            pointBackgroundColor: colorData.map(d => {
+                                const recipe = recipesData.find(r => r.id === d.id);
+                                return recipe ? recipe.personalityColor : '#CCCCCC';
+                            }),
+                            pointBorderColor: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? '#007AFF' : 'rgba(255, 255, 255, 0.8)'),
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
+                            pointHoverRadius: 11
+                        }]
+                    },
+                    options: chartDefaultOptions('axisSaturation')
+                });
+            }
+
+            const bwCtx = document.getElementById('bwChart')?.getContext('2d');
+            if (bwCtx) {
+                const bwData = recipesData
+                    .filter(r => r.type === 'bw' && r.coords && typeof r.coords.x === 'number' && typeof r.coords.y === 'number')
+                    .map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
+
+                activeCharts.bw = new Chart(bwCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            data: bwData,
+                            pointBackgroundColor: '#475569',
+                            pointBorderColor: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? '#007AFF' : 'rgba(255, 255, 255, 0.8)'),
+                            pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
+                            pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
+                            pointHoverRadius: 11,
+                            pointHoverBorderWidth: 3
+                        }]
+                    },
+                    options: chartDefaultOptions('axisChroma')
+                });
+            }
         }
 
         function toggleMobileNav(show) {
@@ -802,7 +892,7 @@
                 if (lightboxTrigger) {
                     const recipeId = lightboxTrigger.dataset.recipeId;
                     const recipe = recipesData.find(r => r.id === recipeId);
-                    if (recipe && recipe.demoImages) {
+                    if (recipe && recipe.demoImages && recipe.demoImages.length > 0) {
                          openLightbox(recipe.demoImages, parseInt(lightboxTrigger.dataset.index));
                     }
                     return;
@@ -876,7 +966,7 @@
 
         document.addEventListener("DOMContentLoaded", init);
 
-const recipesData = [
+        const recipesData = [
     {
         "id": "pro-portrait",
         "name": { "vi": "1. Chân Dung Hoàn Hảo", "en": "1. Pro Portrait" },
@@ -886,7 +976,7 @@ const recipesData = [
         "settings": { "Black level": "+6", "Gamma": "S-Cinetone/Cine4", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+30", "Color Phase": "-2" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+3", "C": "+5", "M": "+3", "Y": "-3" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFB74D", "coords": { "x": 5.0, "y": 5.0 }
+        "personalityColor": "#FFB74D", "coords": { "x": 5.0, "y": 5.0 }, "demoImages": ["https://placehold.co/800x600/FFB74D/ffffff?text=Pro+Portrait"]
     },
     {
         "id": "classic-ortho",
@@ -897,7 +987,7 @@ const recipesData = [
         "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "105% +5", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "+7", "G": "+7", "B": "-7", "C": "-7", "M": "+7", "Y": "+7" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BDBDBD", "coords": { "x": 7.4, "y": -4.5 }
+        "personalityColor": "#BDBDBD", "coords": { "x": 7.4, "y": -4.5 }, "demoImages": ["https://placehold.co/800x600/BDBDBD/ffffff?text=Classic+Ortho"]
     },
     {
         "id": "emerald-night",
@@ -908,7 +998,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 105% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+5" },
         "colorDepth": { "R": "+5", "G": "-1", "B": "+2", "C": "+5", "M": "+5", "Y": "+3" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#00695C", "coords": { "x": 7.7, "y": -6.5 }
+        "personalityColor": "#00695C", "coords": { "x": 7.7, "y": -6.5 }, "demoImages": ["https://placehold.co/800x600/00695C/ffffff?text=Emerald+Night"]
     },
     {
         "id": "deep-ink",
@@ -919,7 +1009,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Middle +5", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "-6", "G": "+1", "B": "+5", "C": "+4", "M": "-6", "Y": "-2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#757575", "coords": { "x": 9.0, "y": 5.5 }
+        "personalityColor": "#757575", "coords": { "x": 9.0, "y": 5.5 }, "demoImages": ["https://placehold.co/800x600/757575/ffffff?text=Deep+Ink"]
     },
     {
         "id": "acid-green",
@@ -930,7 +1020,7 @@ const recipesData = [
         "settings": { "Black level": "-6", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+32", "Color Phase": "0" },
         "colorDepth": { "R": "+3", "G": "+7", "B": "+2", "C": "+7", "M": "-5", "Y": "-4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#8BC34A", "coords": { "x": 1.5, "y": -8.0 }
+        "personalityColor": "#8BC34A", "coords": { "x": 1.5, "y": -8.0 }, "demoImages": ["https://placehold.co/800x600/8BC34A/ffffff?text=Acid+Green"]
     },
     {
         "id": "timeworn-grain",
@@ -942,7 +1032,7 @@ const recipesData = [
         "settings": { "Black level": "+3", "Gamma": "Cine1", "Black Gamma": "Narrow +5", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
         "colorDepth": { "R": "+3", "G": "+3", "B": "+3", "C": "+2", "M": "+3", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#B0BEC5", "coords": { "x": -8.1, "y": -6.4 }
+        "personalityColor": "#B0BEC5", "coords": { "x": -8.1, "y": -6.4 }, "demoImages": ["https://placehold.co/800x600/B0BEC5/ffffff?text=Timeworn+Grain"]
     },
     {
         "id": "jungle-jade",
@@ -953,7 +1043,7 @@ const recipesData = [
         "settings": { "Black level": "-2", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "ITU709Matrix", "Saturation": "+18", "Color Phase": "-3" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#2E7D32", "coords": { "x": 7.5, "y": -7.0 }
+        "personalityColor": "#2E7D32", "coords": { "x": 7.5, "y": -7.0 }, "demoImages": ["https://placehold.co/800x600/2E7D32/ffffff?text=Jungle+Jade"]
     },
     {
         "id": "classic-negative",
@@ -964,7 +1054,7 @@ const recipesData = [
         "settings": { "Black level": "-10", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+16", "Color Phase": "+2" },
         "colorDepth": { "R": "+5", "G": "+7", "B": "-6", "C": "-5", "M": "+7", "Y": "-4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#2196F3", "coords": { "x": 6.5, "y": 3.0 }
+        "personalityColor": "#2196F3", "coords": { "x": 6.5, "y": 3.0 }, "demoImages": ["https://placehold.co/800x600/2196F3/ffffff?text=Classic+Negative"]
     },
     {
         "id": "autumn-portrait",
@@ -976,7 +1066,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "S-Log2/S-Log3", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "+3" },
         "colorDepth": { "R": "+3", "G": "+5", "B": "+5", "C": "+7", "M": "+7", "Y": "-3" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#D7CCC8", "coords": { "x": -2.2, "y": 6.5 }
+        "personalityColor": "#D7CCC8", "coords": { "x": -2.2, "y": 6.5 }, "demoImages": ["https://placehold.co/800x600/D7CCC8/ffffff?text=Autumn+Portrait"]
     },
     {
         "id": "blue-velvet",
@@ -987,7 +1077,7 @@ const recipesData = [
         "settings": { "Black level": "0", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-3" },
         "colorDepth": { "R": "+4", "G": "+5", "B": "-4", "C": "-4", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#5C6BC0", "coords": { "x": -7.5, "y": 2.5 }
+        "personalityColor": "#5C6BC0", "coords": { "x": -7.5, "y": 2.5 }, "demoImages": ["https://placehold.co/800x600/5C6BC0/ffffff?text=Blue+Velvet"]
     },
     {
         "id": "urban-drama",
@@ -998,7 +1088,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "+2", "G": "-4", "B": "-1", "C": "+2", "M": "-1", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#616161", "coords": { "x": 9.5, "y": -8.0 }
+        "personalityColor": "#616161", "coords": { "x": 9.5, "y": -8.0 }, "demoImages": ["https://placehold.co/800x600/616161/ffffff?text=Urban+Drama"]
     },
     {
         "id": "sandy-street",
@@ -1009,7 +1099,7 @@ const recipesData = [
         "settings": { "Black level": "0", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+25", "Color Phase": "+3" },
         "colorDepth": { "R": "+3", "G": "+7", "B": "0", "C": "0", "M": "+5", "Y": "+3" },
         "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 5", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFD54F", "coords": { "x": -6.5, "y": 7.7 }
+        "personalityColor": "#FFD54F", "coords": { "x": -6.5, "y": 7.7 }, "demoImages": ["https://placehold.co/800x600/FFD54F/ffffff?text=Sandy+Street"]
     },
     {
         "id": "berlin-tone",
@@ -1020,7 +1110,7 @@ const recipesData = [
         "settings": { "Black level": "-9", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+6", "Color Phase": "+2" },
         "colorDepth": { "R": "+3", "G": "+7", "B": "+3", "C": "-5", "M": "+3", "Y": "-2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#8D6E63", "coords": { "x": 1.5, "y": 2.5 }
+        "personalityColor": "#8D6E63", "coords": { "x": 1.5, "y": 2.5 }, "demoImages": ["https://placehold.co/800x600/8D6E63/ffffff?text=Berlin+Tone"]
     },
     {
         "id": "indochine-sunshine",
@@ -1031,7 +1121,7 @@ const recipesData = [
         "settings": { "Black level": "-10", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Auto", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+5" },
         "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "-2", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFD54F", "coords": { "x": 7.2, "y": 7.5 }
+        "personalityColor": "#FFD54F", "coords": { "x": 7.2, "y": 7.5 }, "demoImages": ["https://placehold.co/800x600/FFD54F/ffffff?text=Indochine+Sunshine"]
     },
     {
         "id": "lemon-peel",
@@ -1042,7 +1132,7 @@ const recipesData = [
         "settings": { "Black level": "+4", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "-4" },
         "colorDepth": { "R": "-1", "G": "+7", "B": "0", "C": "-3", "M": "-4", "Y": "-2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FDD835", "coords": { "x": -5.5, "y": 5.0 }
+        "personalityColor": "#FDD835", "coords": { "x": -5.5, "y": 5.0 }, "demoImages": ["https://placehold.co/800x600/FDD835/ffffff?text=Lemon+Peel"]
     },
     {
         "id": "faded-chrome",
@@ -1053,7 +1143,7 @@ const recipesData = [
         "settings": { "Black level": "+3", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
         "colorDepth": { "R": "+5", "G": "+5", "B": "+7", "C": "+2", "M": "+7", "Y": "-4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#E0E0E0", "coords": { "x": -7.8, "y": -5.5 }
+        "personalityColor": "#E0E0E0", "coords": { "x": -7.8, "y": -5.5 }, "demoImages": ["https://placehold.co/800x600/E0E0E0/ffffff?text=Faded+Chrome"]
     },
     {
         "id": "golden-era",
@@ -1064,7 +1154,7 @@ const recipesData = [
         "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3/S-Gamut", "Saturation": "+32", "Color Phase": "+6" },
         "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFB74D", "coords": { "x": -0.5, "y": 7.9 }
+        "personalityColor": "#FFB74D", "coords": { "x": -0.5, "y": 7.9 }, "demoImages": ["https://placehold.co/800x600/FFB74D/ffffff?text=Golden+Era"]
     },
     {
         "id": "phoenix-fire",
@@ -1075,7 +1165,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 105% +5", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+1" },
         "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#F44336", "coords": { "x": 9.6, "y": 9.2 }
+        "personalityColor": "#F44336", "coords": { "x": 9.6, "y": 9.2 }, "demoImages": ["https://placehold.co/800x600/F44336/ffffff?text=Phoenix+Fire"]
     },
     {
         "id": "faded-rose",
@@ -1086,7 +1176,7 @@ const recipesData = [
         "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Pro", "Saturation": "+25", "Color Phase": "+2" },
         "colorDepth": { "R": "-1", "G": "0", "B": "0", "C": "-3", "M": "+5", "Y": "-1" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#E91E63", "coords": { "x": -7.0, "y": 7.2 }
+        "personalityColor": "#E91E63", "coords": { "x": -7.0, "y": 7.2 }, "demoImages": ["https://placehold.co/800x600/E91E63/ffffff?text=Faded+Rose"]
     },
     {
         "id": "crisp-air",
@@ -1097,7 +1187,7 @@ const recipesData = [
         "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+30", "Color Phase": "+2" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "-5", "M": "-3", "Y": "-4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#29B6F6", "coords": { "x": 3.5, "y": 2.0 }
+        "personalityColor": "#29B6F6", "coords": { "x": 3.5, "y": 2.0 }, "demoImages": ["https://placehold.co/800x600/29B6F6/ffffff?text=Crisp+Air"]
     },
     {
         "id": "cotton-candy",
@@ -1108,7 +1198,7 @@ const recipesData = [
         "settings": { "Black level": "-4", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+27", "Color Phase": "-3" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+4", "M": "+2", "Y": "-5" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#EC407A", "coords": { "x": 6.0, "y": 9.0 }
+        "personalityColor": "#EC407A", "coords": { "x": 6.0, "y": 9.0 }, "demoImages": ["https://placehold.co/800x600/EC407A/ffffff?text=Cotton+Candy"]
     },
     {
         "id": "faded-sunshine",
@@ -1119,7 +1209,7 @@ const recipesData = [
         "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+14", "Color Phase": "-3" },
         "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-7", "M": "-4", "Y": "-1" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFF176", "coords": { "x": -5.0, "y": 6.5 }
+        "personalityColor": "#FFF176", "coords": { "x": -5.0, "y": 6.5 }, "demoImages": ["https://placehold.co/800x600/FFF176/ffffff?text=Faded+Sunshine"]
     },
     {
         "id": "graphite-sketch",
@@ -1130,7 +1220,7 @@ const recipesData = [
         "settings": { "Black level": "-11", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "-1", "G": "+1", "B": "-1", "C": "+3", "M": "-3", "Y": "-1" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#9E9E9E", "coords": { "x": 8.2, "y": -7.5 }
+        "personalityColor": "#9E9E9E", "coords": { "x": 8.2, "y": -7.5 }, "demoImages": ["https://placehold.co/800x600/9E9E9E/ffffff?text=Graphite+Sketch"]
     },
     {
         "id": "ember-glow",
@@ -1141,7 +1231,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 92.5% +5", "Color Mode": "S-Gamut3.Cine", "Saturation": "+27", "Color Phase": "+6" },
         "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "+2", "Y": "+1" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#E57373", "coords": { "x": 7.8, "y": 8.1 }
+        "personalityColor": "#E57373", "coords": { "x": 7.8, "y": 8.1 }, "demoImages": ["https://placehold.co/800x600/E57373/ffffff?text=Ember+Glow"]
     },
     {
         "id": "daydream",
@@ -1152,7 +1242,7 @@ const recipesData = [
         "settings": { "Black level": "-5", "Gamma": "Cine1 or Cine4", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+25", "Color Phase": "+3" },
         "colorDepth": { "R": "-2", "G": "+5", "B": "-2", "C": "+3", "M": "+3", "Y": "-1" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFCC80", "coords": { "x": 3.0, "y": 8.5 }
+        "personalityColor": "#FFCC80", "coords": { "x": 3.0, "y": 8.5 }, "demoImages": ["https://placehold.co/800x600/FFCC80/ffffff?text=Daydream"]
     },
     {
         "id": "decisive-moment",
@@ -1163,7 +1253,7 @@ const recipesData = [
         "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -5", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
         "colorDepth": { "R": "0", "G": "+3", "B": "0", "C": "+2", "M": "+3", "Y": "0" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#90A4AE", "coords": { "x": 7.6, "y": -1.8 }
+        "personalityColor": "#90A4AE", "coords": { "x": 7.6, "y": -1.8 }, "demoImages": ["https://placehold.co/800x600/90A4AE/ffffff?text=Decisive+Moment"]
     },
     {
         "id": "vibrant-vibe",
@@ -1174,7 +1264,7 @@ const recipesData = [
         "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+8", "Color Phase": "-1" },
         "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-5", "M": "+5", "Y": "+4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#EF5350", "coords": { "x": 1.0, "y": 7.0 }
+        "personalityColor": "#EF5350", "coords": { "x": 1.0, "y": 7.0 }, "demoImages": ["https://placehold.co/800x600/EF5350/ffffff?text=Vibrant+Vibe"]
     },
     {
         "id": "seventies-song",
@@ -1185,7 +1275,7 @@ const recipesData = [
         "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Middle +2", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+3", "Color Phase": "+1" },
         "colorDepth": { "R": "+1", "G": "+7", "B": "+2", "C": "+2", "M": "+4", "Y": "+2" },
         "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "0", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFAB91", "coords": { "x": -5.2, "y": -2.1 }
+        "personalityColor": "#FFAB91", "coords": { "x": -5.2, "y": -2.1 }, "demoImages": ["https://placehold.co/800x600/FFAB91/ffffff?text=Seventies+Song"]
     },
     {
         "id": "heritage",
@@ -1196,7 +1286,7 @@ const recipesData = [
         "settings": { "Black level": "+8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+12", "Color Phase": "-2" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+4", "C": "+4", "M": "+5", "Y": "+3" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#F44336", "coords": { "x": 3.3, "y": 6.1 }
+        "personalityColor": "#F44336", "coords": { "x": 3.3, "y": 6.1 }, "demoImages": ["https://placehold.co/800x600/F44336/ffffff?text=Heritage"]
     },
     {
         "id": "crystal-clear",
@@ -1207,7 +1297,7 @@ const recipesData = [
         "settings": { "Black level": "-4", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
         "colorDepth": { "R": "+3", "G": "+5", "B": "-4", "C": "+2", "M": "+6", "Y": "+5" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#4FC3F7", "coords": { "x": 2.8, "y": -3.5 }
+        "personalityColor": "#4FC3F7", "coords": { "x": 2.8, "y": -3.5 }, "demoImages": ["https://placehold.co/800x600/4FC3F7/ffffff?text=Crystal+Clear"]
     },
     {
         "id": "infrared-world",
@@ -1218,7 +1308,7 @@ const recipesData = [
         "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "+4" },
         "colorDepth": { "R": "-7", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-5" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFFFFF", "coords": { "x": 8.9, "y": 0.5 }
+        "personalityColor": "#FFFFFF", "coords": { "x": 8.9, "y": 0.5 }, "demoImages": ["https://placehold.co/800x600/FFFFFF/000000?text=Infrared+World"]
     },
     {
         "id": "tropical-teal",
@@ -1229,7 +1319,7 @@ const recipesData = [
         "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "Movie", "Saturation": "+25", "Color Phase": "+2" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#0091EA", "coords": { "x": 9.0, "y": 2.0 }
+        "personalityColor": "#0091EA", "coords": { "x": 9.0, "y": 2.0 }, "demoImages": ["https://placehold.co/800x600/0091EA/ffffff?text=Tropical+Teal"]
     },
     {
         "id": "kyoto-greens",
@@ -1240,7 +1330,7 @@ const recipesData = [
         "settings": { "Black level": "-8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "-7", "Y": "0" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#388E3C", "coords": { "x": 2.0, "y": -5.0 }
+        "personalityColor": "#388E3C", "coords": { "x": 2.0, "y": -5.0 }, "demoImages": ["https://placehold.co/800x600/388E3C/ffffff?text=Kyoto+Greens"]
     },
     {
         "id": "neutral-canvas",
@@ -1251,7 +1341,7 @@ const recipesData = [
         "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide -5", "Knee": "Manual 75% +3", "Color Mode": "Still", "Saturation": "-6", "Color Phase": "+1" },
         "colorDepth": { "R": "-2", "G": "+7", "B": "+3", "C": "-5", "M": "-4", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#CFD8DC", "coords": { "x": -7.3, "y": -8.8 }
+        "personalityColor": "#CFD8DC", "coords": { "x": -7.3, "y": -8.8 }, "demoImages": ["https://placehold.co/800x600/CFD8DC/ffffff?text=Neutral+Canvas"]
     },
     {
         "id": "martian-red",
@@ -1263,7 +1353,7 @@ const recipesData = [
         "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "ITU709Matrix", "Saturation": "+7", "Color Phase": "-1" },
         "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "-7", "Y": "-2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FF5722", "coords": { "x": -8.0, "y": 6.8 }
+        "personalityColor": "#FF5722", "coords": { "x": -8.0, "y": 6.8 }, "demoImages": ["https://placehold.co/800x600/FF5722/ffffff?text=Martian+Red"]
     },
     {
         "id": "serene-sky",
@@ -1274,7 +1364,7 @@ const recipesData = [
         "settings": { "Black level": "+6", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+14", "Color Phase": "-3" },
         "colorDepth": { "R": "0", "G": "+7", "B": "+5", "C": "-2", "M": "+3", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#B71C1C", "coords": { "x": 3.8, "y": 5.9 }
+        "personalityColor": "#B71C1C", "coords": { "x": 3.8, "y": 5.9 }, "demoImages": ["https://placehold.co/800x600/B71C1C/ffffff?text=Serene+Sky"]
     },
     {
         "id": "teal-nostalgia",
@@ -1285,7 +1375,7 @@ const recipesData = [
         "settings": { "Black level": "+4", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone/Still", "Saturation": "+5", "Color Phase": "+1" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "-4", "C": "-4", "M": "-5", "Y": "+3" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#80CBC4", "coords": { "x": 1.8, "y": -4.2 }
+        "personalityColor": "#80CBC4", "coords": { "x": 1.8, "y": -4.2 }, "demoImages": ["https://placehold.co/800x600/80CBC4/ffffff?text=Teal+Nostalgia"]
     },
     {
         "id": "da-lat-mist",
@@ -1297,7 +1387,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Cine3", "Black Gamma": "Wide +7", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+20", "Color Phase": "+7" },
         "colorDepth": { "R": "-5", "G": "-1", "B": "+3", "C": "+4", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#64B5F6", "coords": { "x": 8.5, "y": 1.2 }
+        "personalityColor": "#64B5F6", "coords": { "x": 8.5, "y": 1.2 }, "demoImages": ["https://placehold.co/800x600/64B5F6/ffffff?text=Da+Lat+Mist"]
     },
     {
         "id": "maximum-drama",
@@ -1308,7 +1398,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +5", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
         "colorDepth": { "R": "+4", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+7" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#212121", "coords": { "x": 9.8, "y": -9.8 }
+        "personalityColor": "#212121", "coords": { "x": 9.8, "y": -9.8 }, "demoImages": ["https://placehold.co/800x600/212121/ffffff?text=Maximum+Drama"]
     },
     {
         "id": "meadow-muse",
@@ -1319,7 +1409,7 @@ const recipesData = [
         "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-3" },
         "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#81C784", "coords": { "x": -7.1, "y": -8.2 }
+        "personalityColor": "#81C784", "coords": { "x": -7.1, "y": -8.2 }, "demoImages": ["https://placehold.co/800x600/81C784/ffffff?text=Meadow+Muse"]
     },
     {
         "id": "prismatic",
@@ -1330,7 +1420,7 @@ const recipesData = [
         "settings": { "Black level": "-5", "Gamma": "Cine1-4", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Pro", "Saturation": "+25", "Color Phase": "0" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+5", "Y": "+4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#9C27B0", "coords": { "x": 4.5, "y": 9.5 }
+        "personalityColor": "#9C27B0", "coords": { "x": 4.5, "y": 9.5 }, "demoImages": ["https://placehold.co/800x600/9C27B0/ffffff?text=Prismatic"]
     },
     {
         "id": "classic-cadence",
@@ -1341,7 +1431,7 @@ const recipesData = [
         "settings": { "Black level": "-15", "Gamma": "Cine1", "Black Gamma": "Wide -7", "Knee": "Manual 82.5% +4", "Color Mode": "S-Cinetone/Still", "Saturation": "+10", "Color Phase": "+2" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "-7", "C": "-6", "M": "+3", "Y": "+3" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#C62828", "coords": { "x": 7.4, "y": 5.2 }
+        "personalityColor": "#C62828", "coords": { "x": 7.4, "y": 5.2 }, "demoImages": ["https://placehold.co/800x600/C62828/ffffff?text=Classic+Cadence"]
     },
     {
         "id": "soft-peach",
@@ -1352,7 +1442,7 @@ const recipesData = [
         "settings": { "Black level": "-8", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "0" },
         "colorDepth": { "R": "0", "G": "+2", "B": "+3", "C": "+2", "M": "-7", "Y": "0" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFE0B2", "coords": { "x": -5.8, "y": -3.2 }
+        "personalityColor": "#FFE0B2", "coords": { "x": -5.8, "y": -3.2 }, "demoImages": ["https://placehold.co/800x600/FFE0B2/000000?text=Soft+Peach"]
     },
     {
         "id": "stone-gray",
@@ -1363,7 +1453,7 @@ const recipesData = [
         "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +4", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "-4", "G": "+1", "B": "+3", "C": "+3", "M": "-4", "Y": "-1" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BDBDBD", "coords": { "x": 7.1, "y": -3.1 }
+        "personalityColor": "#BDBDBD", "coords": { "x": 7.1, "y": -3.1 }, "demoImages": ["https://placehold.co/800x600/BDBDBD/ffffff?text=Stone+Gray"]
     },
     {
         "id": "cosmic-mono",
@@ -1374,7 +1464,7 @@ const recipesData = [
         "settings": { "Black level": "-8", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
         "colorDepth": { "R": "-4", "G": "+3", "B": "+7", "C": "0", "M": "+7", "Y": "-5" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#616161", "coords": { "x": 8.3, "y": -4.0 }
+        "personalityColor": "#616161", "coords": { "x": 8.3, "y": -4.0 }, "demoImages": ["https://placehold.co/800x600/616161/ffffff?text=Cosmic+Mono"]
     },
     {
         "id": "magic-spice",
@@ -1385,7 +1475,7 @@ const recipesData = [
         "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+17", "Color Phase": "-1" },
         "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BF360C", "coords": { "x": 6.8, "y": 6.8 }
+        "personalityColor": "#BF360C", "coords": { "x": 6.8, "y": 6.8 }, "demoImages": ["https://placehold.co/800x600/BF360C/ffffff?text=Magic+Spice"]
     },
     {
         "id": "sahara-heat",
@@ -1396,7 +1486,7 @@ const recipesData = [
         "settings": { "Black level": "-12", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+7" },
         "colorDepth": { "R": "+4", "G": "+5", "B": "0", "C": "0", "M": "-3", "Y": "+7" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FF9800", "coords": { "x": 9.4, "y": 8.9 }
+        "personalityColor": "#FF9800", "coords": { "x": 9.4, "y": 8.9 }, "demoImages": ["https://placehold.co/800x600/FF9800/ffffff?text=Sahara+Heat"]
     },
     {
         "id": "timeless-tone",
@@ -1407,7 +1497,7 @@ const recipesData = [
         "settings": { "Black level": "+4", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+14", "Color Phase": "-2" },
         "colorDepth": { "R": "-3", "G": "+5", "B": "-3", "C": "-3", "M": "-5", "Y": "-2" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#A1887F", "coords": { "x": -8.1, "y": 4.5 }
+        "personalityColor": "#A1887F", "coords": { "x": -8.1, "y": 4.5 }, "demoImages": ["https://placehold.co/800x600/A1887F/ffffff?text=Timeless+Tone"]
     },
     {
         "id": "saigon-sunset",
@@ -1418,386 +1508,8 @@ const recipesData = [
         "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+25", "Color Phase": "+2" },
         "colorDepth": { "R": "-3", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "+1" },
         "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FF8A65", "coords": { "x": -8.3, "y": 8.8 }
+        "personalityColor": "#FF8A65", "coords": { "x": -8.3, "y": 8.8 }, "demoImages": ["https://placehold.co/800x600/FF8A65/ffffff?text=Saigon+Sunset"]
     },
-    {
-        "id": "gritty-reportage",
-        "name": { "vi": "50. Phóng Sự Hạt Mịn", "en": "50. Gritty Reportage" },
-        "description": { "vi": "Tái tạo cấu trúc hạt phim đặc trưng cho ảnh tài liệu thiếu sáng.", "en": "Recreates film grain structure for low-light documentary." },
-        "type": "bw", "contrast": "medium", "saturation": "low",
-        "whiteBalance": "AWB",
-        "settings": { "Black level": "-11", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Manual 82.5% +0", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
-        "colorDepth": { "R": "+3", "G": "+2", "B": "+7", "C": "+7", "M": "+4", "Y": "-5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#9E9E9E", "coords": { "x": 0.5, "y": -7.0 }
-    },
-    {
-        "id": "emerald-punch",
-        "name": { "vi": "51. Lục Bảo Sắc Nét", "en": "51. Emerald Punch" },
-        "description": { "vi": "Một biến thể của Provia với độ tương phản cao hơn và màu sắc mạnh mẽ hơn.", "en": "A variation of Provia with higher contrast and stronger colors." },
-        "type": "color", "contrast": "high", "saturation": "low",
-        "whiteBalance": "4000K, A6.5-M1.75",
-        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 80% +3", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "-2" },
-        "colorDepth": { "R": "-2", "G": "+7", "B": "+7", "C": "+5", "M": "+3", "Y": "+1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#689F38", "coords": { "x": 7.2, "y": -6.8 }
-    },
-    {
-        "id": "moonlit-nocturne",
-        "name": { "vi": "52. Dạ Khúc Ánh Trăng", "en": "52. Moonlit Nocturne" },
-        "description": { "vi": "Màu sắc lạnh, ám xanh tím, tĩnh lặng và bí ẩn của đêm trăng.", "en": "Cool colors, blue-purple cast, quiet and mysterious moonlight." },
-        "type": "color", "contrast": "medium", "saturation": "low",
-        "whiteBalance": "8600K, B2.5-M3",
-        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 82.5% +4", "Color Mode": "Still", "Saturation": "-8", "Color Phase": "+1" },
-        "colorDepth": { "R": "-6", "G": "+7", "B": "+1", "C": "+3", "M": "+7", "Y": "+5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#7986CB", "coords": { "x": -3.0, "y": 1.5 }
-    },
-    {
-        "id": "true-life",
-        "name": { "vi": "53. Đời Thường Chân Thực", "en": "53. True Life" },
-        "description": { "vi": "Tái tạo màu sắc chân thực với độ bão hòa vừa phải.", "en": "Reproduces true-to-life colors with moderate saturation." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "3900K, A7",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide +2", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
-        "colorDepth": { "R": "-2", "G": "+7", "B": "+4", "C": "+2", "M": "-4", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BDBDBD", "coords": { "x": -4.5, "y": 3.5 }
-    },
-    {
-        "id": "pencil-sketch",
-        "name": { "vi": "54. Phác Họa Chì", "en": "54. Pencil Sketch" },
-        "description": { "vi": "Độ sắc nét cao, hạt phim mịn, tạo ảnh đen trắng chi tiết, sạch sẽ.", "en": "High sharpness, fine grain, creating detailed, clean B&W images." },
-        "type": "bw", "contrast": "high", "saturation": "low",
-        "whiteBalance": "AWB, B3-G0.25",
-        "settings": { "Black level": "-12", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 82% +5", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
-        "colorDepth": { "R": "-1", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BDBDBD", "coords": { "x": 7.9, "y": -9.0 }
-    },
-    {
-        "id": "melancholy-mood",
-        "name": { "vi": "55. Điệp Vụ U Sầu", "en": "55. Melancholy Mood" },
-        "description": { "vi": "Màu sắc trầm, bão hòa rất thấp, tạo cảm giác điện ảnh.", "en": "Subdued colors, very low saturation for a cinematic feel." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "4000K, A7-M0.25",
-        "settings": { "Black level": "+7", "Gamma": "Movie", "Black Gamma": "Wide -5", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+1" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-2", "C": "+6", "M": "+4", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#A1887F", "coords": { "x": -9.2, "y": -9.1 }
-    },
-    {
-        "id": "amethyst",
-        "name": { "vi": "56. Thạch Anh Tím", "en": "56. Amethyst" },
-        "description": { "vi": "Độ bão hòa và tương phản cao, tạo màu sắc sống động và chuẩn xác.", "en": "High saturation and contrast, creating vivid and accurate colors." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "3500K, A7-G1.5",
-        "settings": { "Black level": "+1", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+2" },
-        "colorDepth": { "R": "+4", "G": "+1", "B": "+7", "C": "+1", "M": "+7", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#673AB7", "coords": { "x": 9.1, "y": 7.8 }
-    },
-    {
-        "id": "blue-dream",
-        "name": { "vi": "57. Giấc Mơ Lam", "en": "57. Blue Dream" },
-        "description": { "vi": "Tông màu lạnh, ám xanh, bão hòa cao, siêu thực và mơ màng.", "en": "A cool, blue-tinted tone, high saturation, surreal and dreamy." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "4000K, A7-M1",
-        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide -5", "Knee": "Manual 87.5% +3", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
-        "colorDepth": { "R": "-3", "G": "-2", "B": "+3", "C": "+7", "M": "-3", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#64B5F6", "coords": { "x": 8.0, "y": 9.0 }
-    },
-    {
-        "id": "summer-verdure",
-        "name": { "vi": "58. Xanh Mát Mùa Hè", "en": "58. Summer Verdure" },
-        "description": { "vi": "Tái tạo màu sắc trung thực và sống động của phim Fuji Provia.", "en": "Recreates the true and vivid colors of Fuji Provia film." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "4000K, A7-M0.25",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+1" },
-        "colorDepth": { "R": "+1", "G": "+7", "B": "0", "C": "+3", "M": "+2", "Y": "+1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#81C784", "coords": { "x": -6.5, "y": -7.0 }
-    },
-    {
-        "id": "pro-grade",
-        "name": { "vi": "59. Sắc Màu Chuyên Nghiệp", "en": "59. Pro Grade" },
-        "description": { "vi": "Màu sắc cân bằng, bão hòa tốt, cho kết quả chuyên nghiệp.", "en": "Well-balanced, saturated colors for professional results." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "3900K, A7-G1.5",
-        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
-        "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto 90% High", "Color Mode": "Rec.709", "Saturation": "+22", "Color Phase": "+1" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+3", "C": "-4", "M": "-2", "Y": "+5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#03A9F4", "coords": { "x": 7.0, "y": 1.0 }
-    },
-    {
-        "id": "morning-dew",
-        "name": { "vi": "60. Nắng Ban Mai", "en": "60. Morning Dew" },
-        "description": { "vi": "Màu sắc tinh tế và hạt mịn, hoàn hảo cho chụp chân dung ngoài trời.", "en": "Subtle colors and fine grain, perfect for outdoor portraits." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "4200K, A7-M1",
-        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+7", "Color Phase": "+3" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#BCAAA4", "coords": { "x": -7.5, "y": -4.8 }
-    },
-    {
-        "id": "noir-film",
-        "name": { "vi": "61. Phim Đen Trắng Cũ", "en": "61. Noir Film" },
-        "description": { "vi": "Tương phản cao, hạt phim rõ rệt, tái hiện cảm giác phim đen trắng cổ điển.", "en": "High contrast, distinct film grain, recreating the feel of classic B&W movies." },
-        "type": "bw", "contrast": "high", "saturation": "high",
-        "whiteBalance": "5500K",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "+7", "Y": "+1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#757575", "coords": { "x": 8.8, "y": -5.0 }
-    },
-    {
-        "id": "summer-vision",
-        "name": { "vi": "62. Thị Giác Mùa Hè", "en": "62. Summer Vision" },
-        "description": { "vi": "Màu sắc rực rỡ, ấm áp, hoàn hảo cho ánh sáng ban ngày.", "en": "Vibrant, warm colors, perfect for daylight." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "3300K, A7-G0.75",
-        "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+32", "Color Phase": "+2" },
-        "colorDepth": { "R": "+4", "G": "+7", "B": "-6", "C": "+4", "M": "+6", "Y": "+5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFEB3B", "coords": { "x": 8.6, "y": 9.3 }
-    },
-    {
-        "id": "crimson-flashback",
-        "name": { "vi": "63. Hồi Ức", "en": "63. Crimson Flashback" },
-        "description": { "vi": "Một biến thể khác của Kodachrome với tông màu ấm và tương phản nhẹ.", "en": "Another variation of Kodachrome with warm tones and soft contrast." },
-        "type": "color", "contrast": "high", "saturation": "medium",
-        "whiteBalance": "4500K, A7-M0.5",
-        "settings": { "Black level": "-10", "Gamma": "Cine1", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+17", "Color Phase": "0" },
-        "colorDepth": { "R": "+2", "G": "+6", "B": "+2", "C": "+7", "M": "+7", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#D32F2F", "coords": { "x": 7.0, "y": 6.8 }
-    },
-    {
-        "id": "vintage-reel",
-        "name": { "vi": "64. Thước Phim Cũ", "en": "64. Vintage Reel" },
-        "description": { "vi": "Tông màu điện ảnh, vùng tối được nâng, màu sắc ám xanh.", "en": "Cinematic tone with lifted shadows and a blue cast." },
-        "type": "color", "contrast": "medium", "saturation": "low",
-        "whiteBalance": "AWB White Priority, A2-G0.25",
-        "settings": { "Black level": "-2", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+12", "Color Phase": "-1" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-5", "C": "+5", "M": "-5", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#A1887F", "coords": { "x": -2.0, "y": -8.5 }
-    },
-    {
-        "id": "retro-memory",
-        "name": { "vi": "65. Ký Ức Hoài Niệm", "en": "65. Retro Memory" },
-        "description": { "vi": "Tông màu ấm áp và hoài cổ, gợi nhớ những cuộn phim xưa.", "en": "A warm and nostalgic tone, reminiscent of old film rolls." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "4000K, A7-G1",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +5", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+4" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFB74D", "coords": { "x": 2.5, "y": 8.5 }
-    },
-    {
-        "id": "arctic-mint",
-        "name": { "vi": "66. Bạc Hà Mát Lạnh", "en": "66. Arctic Mint" },
-        "description": { "vi": "Tông màu lạnh, sắc xanh bạc hà đặc trưng, tươi mát, trong lành.", "en": "Cool tone, characteristic mint green hue, fresh and clean." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "4600K, A7-M1.5",
-        "settings": { "Black level": "-8", "Gamma": "Cine1", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+20", "Color Phase": "-4" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "-5", "C": "-5", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#00BCD4", "coords": { "x": 7.3, "y": -1.5 }
-    },
-    {
-        "id": "festive-warmth",
-        "name": { "vi": "67. Giáng Sinh Ấm Áp", "en": "67. Festive Warmth" },
-        "description": { "vi": "Tông màu ấm, sắc đỏ và xanh lá đặc trưng, không khí lễ hội.", "en": "Warm tone, characteristic red and green hues, festive atmosphere." },
-        "type": "color", "contrast": "high", "saturation": "medium",
-        "whiteBalance": "AWB, A5-G0.25",
-        "settings": { "Black level": "-7", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "105% +5", "Color Mode": "Still", "Saturation": "+13", "Color Phase": "+4" },
-        "colorDepth": { "R": "+3", "G": "+7", "B": "-4", "C": "-5", "M": "+4", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#EF5350", "coords": { "x": 6.9, "y": 6.0 }
-    },
-    {
-        "id": "street-wanderer",
-        "name": { "vi": "68. Phố Đêm Không Ngủ", "en": "68. Street Wanderer" },
-        "description": { "vi": "Độ tương phản cao, hạt rõ, hoàn hảo cho khoảnh khắc chân thực.", "en": "High contrast, pronounced grain, perfect for authentic moments." },
-        "type": "bw", "contrast": "high", "saturation": "high",
-        "whiteBalance": "5500K, A3-G2",
-        "notes": { "vi": "Tắt Giảm nhiễu cho JPG. Chụp ISO 1600+ để tăng hạt.", "en": "Turn Off Noise Reduction for JPG. Shoot ISO 1600 or higher to increase Granularity." },
-        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 77.5% +2", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
-        "colorDepth": { "R": "-4", "G": "-1", "B": "+6", "C": "+5", "M": "-3", "Y": "-3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#424242", "coords": { "x": 9.3, "y": -3.5 }
-    },
-    {
-        "id": "mossy-earth",
-        "name": { "vi": "69. Rêu Phong", "en": "69. Mossy Earth" },
-        "description": { "vi": "Tông màu xanh rêu, nâu đất, tạo cảm giác cổ kính, trầm mặc.", "en": "Moss-green, earthy-brown tone, creating an ancient feel." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "5300K, A7-M0.75",
-        "settings": { "Black level": "+3", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "0" },
-        "colorDepth": { "R": "+3", "G": "+5", "B": "-3", "C": "-3", "M": "-3", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#795548", "coords": { "x": -6.8, "y": -7.8 }
-    },
-    {
-        "id": "neon-night",
-        "name": { "vi": "70. Ánh Đèn Neon", "en": "70. Neon Night" },
-        "description": { "vi": "Tối ưu cho ánh sáng yếu, tạo quầng sáng và màu sắc đặc trưng của cảnh đêm.", "en": "Optimized for low light, creating halation and characteristic colors of night scenes." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "2700K, A7-M1.25",
-        "settings": { "Black level": "+3", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+5" },
-        "colorDepth": { "R": "-5", "G": "-7", "B": "-7", "C": "+3", "M": "-7", "Y": "-5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#F06292", "coords": { "x": -9.0, "y": 4.0 }
-    },
-    {
-        "id": "urban-grit",
-        "name": { "vi": "71. Phố Xá Lạnh Lùng", "en": "71. Urban Grit" },
-        "description": { "vi": "Tông màu trầm, bão hòa thấp, tương phản cao, gai góc.", "en": "Subdued tone, low saturation, high contrast for a gritty feel." },
-        "type": "color", "contrast": "high", "saturation": "low",
-        "whiteBalance": "4000K, A7-M0.5",
-        "settings": { "Black level": "-7", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+2" },
-        "colorDepth": { "R": "-4", "G": "+7", "B": "+2", "C": "+3", "M": "-6", "Y": "-1" },
-        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#78909C", "coords": { "x": 8.1, "y": -8.5 }
-    },
-    {
-        "id": "indigo-night",
-        "name": { "vi": "72. Đêm Lam Tím", "en": "72. Indigo Night" },
-        "description": { "vi": "Màu xanh chàm, tím sâu, tối ưu cho cảnh đêm, huyền ảo.", "en": "Deep indigo and violet, optimized for night scenes, magical." },
-        "type": "color", "contrast": "medium", "saturation": "low",
-        "whiteBalance": "2500K, B4-G2.5",
-        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 82.5% +4", "Color Mode": "Still", "Saturation": "-10", "Color Phase": "+7" },
-        "colorDepth": { "R": "-6", "G": "+7", "B": "+1", "C": "+3", "M": "+7", "Y": "+5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#311B92", "coords": { "x": -2.5, "y": 0.5 }
-    },
-    {
-        "id": "gilded-honey",
-        "name": { "vi": "73. Mật Ong Hoàng Kim", "en": "73. Gilded Honey" },
-        "description": { "vi": "Một phiên bản khác của Kodak Gold với tông màu ấm và độ bão hòa cao.", "en": "Another version of Kodak Gold with warm tones and high saturation." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "4600K, A7-G1.25",
-        "settings": { "Black level": "+2", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+25", "Color Phase": "+5" },
-        "colorDepth": { "R": "+3", "G": "-3", "B": "-5", "C": "-3", "M": "+3", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFC107", "coords": { "x": -1.5, "y": 8.2 }
-    },
-    {
-        "id": "citrus-zest",
-        "name": { "vi": "74. Trà Chanh Phố Cổ", "en": "74. Citrus Zest" },
-        "description": { "vi": "Tông màu vàng chanh và xanh lá cây nhẹ, tạo cảm giác tươi mới.", "en": "Light lemon-yellow and green tone, creating a fresh feeling." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "4500K, A7-M2",
-        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 80% +4", "Color Mode": "Still/Pro", "Saturation": "+14", "Color Phase": "-3" },
-        "colorDepth": { "R": "+2", "G": "+5", "B": "-7", "C": "+4", "M": "-6", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#CDDC39", "coords": { "x": -6.0, "y": 6.0 }
-    },
-    {
-        "id": "golden-dune",
-        "name": { "vi": "75. Cồn Cát Vàng", "en": "75. Golden Dune" },
-        "description": { "vi": "Màu vàng cát ấm áp, bão hòa cao, gợi hình ảnh cồn cát.", "en": "Warm, highly saturated sandy yellow, evoking dunes." },
-        "type": "color", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "AWB, A2-G1.75",
-        "settings": { "Black level": "+4", "Gamma": "S-Cinetone", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+3" },
-        "colorDepth": { "R": "+3", "G": "+7", "B": "+4", "C": "-5", "M": "-3", "Y": "-3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFA000", "coords": { "x": 4.0, "y": 8.0 }
-    },
-    {
-        "id": "minimalist-mono",
-        "name": { "vi": "76. Đơn Sắc Tối Giản", "en": "76. Minimalist Mono" },
-        "description": { "vi": "Tương phản cao, vùng đen sâu, tập trung vào hình khối, đường nét.", "en": "High contrast, deep blacks, focusing on shapes and lines." },
-        "type": "bw", "contrast": "high", "saturation": "high",
-        "whiteBalance": "5500K",
-        "settings": { "Black level": "-15", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "+28", "Color Phase": "0" },
-        "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#616161", "coords": { "x": 8.7, "y": -6.8 }
-    },
-    {
-        "id": "cinema-sun",
-        "name": { "vi": "77. Nắng Vàng Điện Ảnh", "en": "77. Cinema Sun" },
-        "description": { "vi": "Bão hòa cao, tông màu ấm, giả lập màu phim điện ảnh ban ngày.", "en": "High saturation, warm tone, simulates daylight cinematic film." },
-        "type": "color", "contrast": "low", "saturation": "high",
-        "whiteBalance": "3700K, A7-G1",
-        "settings": { "Black level": "+9", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+3" },
-        "colorDepth": { "R": "0", "G": "+3", "B": "+2", "C": "+2", "M": "-3", "Y": "+1" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FF8F00", "coords": { "x": -6.0, "y": 8.3 }
-    },
-    {
-        "id": "neo-noir",
-        "name": { "vi": "78. Đơn Sắc Tương Lai", "en": "78. Neo Noir" },
-        "description": { "vi": "Đen trắng hiện đại, tương phản cân bằng, vừa cổ điển vừa vị lai.", "en": "Modern B&W, balanced contrast, both classic and futuristic." },
-        "type": "bw", "contrast": "medium", "saturation": "high",
-        "whiteBalance": "6000K, B2.5-M1.5",
-        "settings": { "Black level": "+2", "Gamma": "Cine1-4", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
-        "colorDepth": { "R": "-4", "G": "+5", "B": "+4", "C": "0", "M": "-5", "Y": "-3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#757575", "coords": { "x": 2.0, "y": -6.0 }
-    },
-    {
-        "id": "jade-whisper",
-        "name": { "vi": "79. Ngọc Bích", "en": "79. Jade Whisper" },
-        "description": { "vi": "Tông màu dịu mát với sắc xanh ngọc bích nổi bật.", "en": "A cool tone with prominent jade green hues." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "3600K, A7-G1",
-        "settings": { "Black level": "+11", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 85% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-4" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "+2", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "-7", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 5", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#4DB6AC", "coords": { "x": -8.8, "y": -7.2 }
-    },
-    {
-        "id": "24k-gold",
-        "name": { "vi": "80. Vàng 24K", "en": "80. 24K Gold" },
-        "description": { "vi": "Tông vàng kim loại ấm áp, sang trọng, cho cảnh đêm lấp lánh.", "en": "Warm, luxurious metallic gold tone for sparkling night scenes." },
-        "type": "color", "contrast": "low", "saturation": "medium",
-        "whiteBalance": "5500K, A7-M0.75",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+18", "Color Phase": "+7" },
-        "colorDepth": { "R": "+5", "G": "-1", "B": "+2", "C": "+5", "M": "+5", "Y": "-5" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFB300", "coords": { "x": -4.0, "y": 7.0 }
-    },
-    {
-        "id": "muted-teal",
-        "name": { "vi": "81. Xanh Trầm Lặng", "en": "81. Muted Teal" },
-        "description": { "vi": "Tông màu teal trầm, bão hòa thấp, tạo cảm giác yên tĩnh.", "en": "A subdued, low-saturation teal tone, creating a quiet feel." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "whiteBalance": "7000K, B1-M1",
-        "settings": { "Black level": "+7", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 80% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+10", "Color Phase": "+7" },
-        "colorDepth": { "R": "0", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "-3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#4DB6AC", "coords": { "x": -8.5, "y": -2.5 }
-    },
-    {
-        "id": "cinema-ruby",
-        "name": { "vi": "82. Hồng Ngọc Điện Ảnh", "en": "82. Cinema Ruby" },
-        "description": { "vi": "Màu sắc sống động, tương phản cao, mang lại cái nhìn điện ảnh hiện đại.", "en": "Vivid colors, high contrast, providing a modern cinematic look." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "3900K, A7",
-        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
-        "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto", "Color Mode": "BT.2020", "Saturation": "+32", "Color Phase": "+7" },
-        "colorDepth": { "R": "-4", "G": "-1", "B": "+5", "C": "+4", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#E91E63", "coords": { "x": 9.2, "y": 6.5 }
-    },
-    {
-        "id": "golden-city",
-        "name": { "vi": "83. Thành Phố Vàng", "en": "83. Golden City" },
-        "description": { "vi": "Tông màu vàng ấm áp, tối ưu cho ánh sáng đèn tungsten.", "en": "Warm golden tone, optimized for tungsten lighting." },
-        "type": "color", "contrast": "high", "saturation": "high",
-        "whiteBalance": "4700K, A7-G1.25",
-        "notes": { "vi": "Tắt Gamma Assist!", "en": "Turn Off Gamma Assist!" },
-        "settings": { "Black level": "-15", "Gamma": "S-Log2 or S-Log3", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "ITU709Matrix", "Saturation": "+32", "Color Phase": "+5" },
-        "colorDepth": { "R": "+1", "G": "+7", "B": "-7", "C": "-7", "M": "+5", "Y": "+3" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-        "personalityColor": "#FFC107", "coords": { "x": 8.4, "y": 8.4 }
-    }
 ];
     </script>
 </body>
