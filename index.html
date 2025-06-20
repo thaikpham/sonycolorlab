@@ -438,15 +438,86 @@
             state.isAILoading = true;
             try {
                 await new Promise(resolve => setTimeout(resolve, delay));
+
                 if (prompt.includes("Recommend TWO recipes")) {
-                    const idx1 = Math.floor(Math.random() * recipesData.length);
-                    let idx2 = Math.floor(Math.random() * recipesData.length);
-                    while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
-                    const mockRecipe1 = recipesData[idx1]; const mockRecipe2 = recipesData[idx2];
-                    return [
-                        { recipeId: mockRecipe1.id, moodDescription: mockRecipe1.description[state.currentLang] },
-                        { recipeId: mockRecipe2.id, moodDescription: mockRecipe2.description[state.currentLang] }
-                    ];
+                    // --- FIX: Robust JSON extraction ---
+                    const startIndex = prompt.indexOf('{');
+                    const endIndex = prompt.indexOf('}') + 1; // Find the first '}' after the start
+                    const preferencesString = prompt.substring(startIndex, endIndex);
+                    const preferences = JSON.parse(preferencesString);
+                    // --- END FIX ---
+
+                    // --- Smart Filtering Logic ---
+                    let filteredRecipes = recipesData;
+
+                    // 1. Primary filter: Photo Type (Color vs B&W) - THIS IS CRITICAL
+                    if (preferences.photoType) {
+                        filteredRecipes = filteredRecipes.filter(r => r.type === preferences.photoType);
+                    }
+
+                    // 2. Secondary filters: Contrast and Saturation
+                    // Create a pool of recipes that match secondary filters if available
+                    let secondaryFilteredPool = filteredRecipes;
+                    if (preferences.contrast) {
+                        secondaryFilteredPool = secondaryFilteredPool.filter(r => r.contrast.toLowerCase() === preferences.contrast.toLowerCase());
+                    }
+                    if (preferences.saturation) {
+                        // This question is only relevant for color photos
+                         if(preferences.photoType === 'color'){
+                              secondaryFilteredPool = secondaryFilteredPool.filter(r => r.saturation.toLowerCase() === preferences.saturation.toLowerCase());
+                         }
+                    }
+
+                    // If the secondary pool has enough candidates, use it. Otherwise, fall back to the primary pool.
+                    if (secondaryFilteredPool.length < 2) {
+                        console.log("Not enough specific matches, falling back to primary type filter.");
+                    } else {
+                        filteredRecipes = secondaryFilteredPool;
+                    }
+                    
+                    // --- Selection Logic with Fallbacks ---
+                    if (filteredRecipes.length > 0) {
+                        const idx1 = Math.floor(Math.random() * filteredRecipes.length);
+                        const recipe1 = filteredRecipes[idx1];
+                        let recipe2 = null;
+
+                        if (filteredRecipes.length > 1) {
+                            // Find a different recipe from the same filtered pool
+                            let idx2 = Math.floor(Math.random() * filteredRecipes.length);
+                            while (idx1 === idx2) {
+                                idx2 = Math.floor(Math.random() * filteredRecipes.length);
+                            }
+                            recipe2 = filteredRecipes[idx2];
+                        } else {
+                            // If only one recipe matches, get a second one from the main data pool,
+                            // ensuring it's of the same type (color/bw) but not the same recipe.
+                            const fallbackPool = recipesData.filter(r => r.type === preferences.photoType && r.id !== recipe1.id);
+                            if (fallbackPool.length > 0) {
+                                recipe2 = fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
+                            }
+                        }
+
+                        // If after all that, we still don't have recipe2, grab any other recipe as a last resort
+                        if (!recipe2) {
+                             const lastResortPool = recipesData.filter(r => r.id !== recipe1.id);
+                             recipe2 = lastResortPool[Math.floor(Math.random() * lastResortPool.length)];
+                        }
+                        
+                        return [
+                            { recipeId: recipe1.id, moodDescription: recipe1.description[state.currentLang] },
+                            { recipeId: recipe2.id, moodDescription: recipe2.description[state.currentLang] }
+                        ];
+
+                    } else {
+                        // Absolute fallback if no recipes even match the primary type
+                        const idx1 = Math.floor(Math.random() * recipesData.length);
+                        let idx2 = Math.floor(Math.random() * recipesData.length);
+                        while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
+                        return [
+                            { recipeId: recipesData[idx1].id, moodDescription: recipesData[idx1].description[state.currentLang] },
+                            { recipeId: recipesData[idx2].id, moodDescription: recipesData[idx2].description[state.currentLang] }
+                        ];
+                    }
                 }
                 if (prompt.includes("Original Recipe")) {
                     const originalId = prompt.match(/ID: (.*?)\)/)[1];
@@ -536,7 +607,15 @@
             
             quiz: () => {
                 if (state.quizStep >= quizQuestions.length) return '';
-                const q = quizQuestions[state.quizStep];
+                let q = quizQuestions[state.quizStep];
+
+                // Dynamically skip saturation question if user chose B&W
+                if (q.id === 'saturation' && state.quizAnswers.photoType === 'bw') {
+                    state.quizStep++;
+                    q = quizQuestions[state.quizStep];
+                    if (!q) return ''; // End of quiz
+                }
+
                 const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
                 const gridCols = q.options.length > 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2';
                 return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
@@ -1253,9 +1332,18 @@
                         state.quizAnswers[group] = quizOption.dataset.value;
                         document.querySelectorAll(`[data-quiz-group="${group}"] .quiz-option`).forEach(opt => opt.classList.remove('selected'));
                         quizOption.classList.add('selected');
-                        setTimeout(() => {
-                            state.quizStep++;
-                            if (state.quizStep >= quizQuestions.length) handleQuizSubmit(); else renderView('quiz');
+                        setTimeout(async () => {
+                            let nextStep = state.quizStep + 1;
+                            // Logic to skip saturation question for B&W
+                            if (quizQuestions[nextStep]?.id === 'saturation' && state.quizAnswers.photoType === 'bw') {
+                                nextStep++;
+                            }
+                            state.quizStep = nextStep;
+                            if (state.quizStep >= quizQuestions.length) {
+                                await handleQuizSubmit();
+                            } else {
+                                await renderView('quiz');
+                            }
                         }, 250);
                     }
                     return;
