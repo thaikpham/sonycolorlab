@@ -265,7 +265,7 @@
             navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
             navExplain: {vi:"Giải thích", en:"Guide"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
-            footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Developed by Sony Alpha Vietnam. AI features powered by Google Gemini."},
+            footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Powered by Sony Alpha Vietnam. AI Features by Google Gemini."},
 
             // Home / Quiz
             landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
@@ -805,7 +805,9 @@
             
             grid.addEventListener('touchstart', (e) => {
                 isDragging = true;
-                updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+                if(e.touches.length > 0) {
+                    updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+                }
                 e.preventDefault();
             });
 
@@ -814,7 +816,9 @@
             });
             
              document.addEventListener('touchmove', (e) => {
-                if (isDragging) updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+                if (isDragging && e.touches.length > 0) {
+                     updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+                }
             });
 
             document.addEventListener('mouseup', () => { isDragging = false; });
@@ -926,6 +930,7 @@
         
         function attachViewEventListeners(viewName) {
             if (viewName === 'recipeFormulas') {
+                document.getElementById('searchInput')?.addEventListener('input', renderLibraryList);
                 renderLibraryList();    
                 renderLibraryDetails();
                 renderInteractiveCharts(state.currentLang);
@@ -1005,23 +1010,32 @@
             recipeContentContainer.classList.remove('hidden');
             if(!isMobile) recipeMainPanel?.classList.remove('hidden');
             
-            // --- NEW Thumbnail Logic ---
-            let thumbnailsHTML = '';
-            const images = recipe.demoImages || [];
-            let imageElements = [];
-            // Use existing demo images first
-            images.forEach((imgSrc, index) => {
-                imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}"><img src="${imgSrc}" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"></div>`);
-            });
-            // Fill up to 3 with placeholders
-            const placeholdersNeeded = 3 - imageElements.length;
-            const placeholderColor = recipe.personalityColor ? recipe.personalityColor.substring(1) : 'cccccc';
-            for (let i = 0; i < placeholdersNeeded; i++) {
-                const placeholderIndex = images.length + i;
-                 imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden"><img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover"></div>`);
+            // --- Thumbnail Logic (revised for robustness) ---
+            let imageElementsHTML = '';
+            const recipeImages = recipe.demoImages || [];
+            
+            // Generate clickable thumbnails for existing images
+            let existingImageThumbnails = recipeImages.map((imgSrc, index) => `
+                <div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}">
+                    <img src="${imgSrc}" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
+                </div>
+            `).join('');
+            
+            // Generate non-clickable placeholders if less than 3 images exist
+            const placeholdersNeeded = 3 - recipeImages.length;
+            let placeholderThumbnails = '';
+            if (placeholdersNeeded > 0) {
+                const placeholderColor = recipe.personalityColor ? recipe.personalityColor.substring(1) : 'cccccc';
+                for (let i = 0; i < placeholdersNeeded; i++) {
+                    const placeholderIndex = recipeImages.length + i;
+                    placeholderThumbnails += `
+                        <div class="bg-gray-200 group rounded-xl overflow-hidden">
+                            <img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover">
+                        </div>`;
+                }
             }
-            thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElements.join('')}</div></div>`;
-            // --- END Thumbnail Logic ---
+            imageElementsHTML = existingImageThumbnails + placeholderThumbnails;
+            const thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElementsHTML}</div></div>`;
 
             recipeContentContainer.innerHTML = `
                 <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
@@ -1224,16 +1238,6 @@
 
         document.addEventListener("DOMContentLoaded", init);
 
-/**
- * Dữ liệu các công thức màu cho máy ảnh.
- *
- * Lưu ý:
- * - Mỗi đối tượng trong mảng đại diện cho một công thức màu.
- * - Trường 'id' được tạo tự động bằng cách chuyển đổi tên tiếng Anh 'en' (bỏ đi số thứ tự)
- * thành chữ thường và thay thế khoảng trắng bằng dấu gạch ngang.
- * Ví dụ: "1. Pro Portrait" => "pro-portrait".
- * - Dữ liệu này được thiết kế để dễ dàng tích hợp vào các ứng dụng web.
- */
 const recipesData = [
     {
         "id": "pro-portrait",
