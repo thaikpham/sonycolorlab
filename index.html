@@ -415,9 +415,13 @@
             quizQ8A1: {vi: "Cao (Rực rỡ)", en: "High (Vibrant)"},
             quizQ8A2: {vi: "Thấp (Nhẹ nhàng)", en: "Low (Subtle)"},
             quizQ8A3: {vi: "Trung bình", en: "Medium"},
+            quizQ9: {vi: "Bạn thích thể loại ảnh nào?", en: "Which photo type do you prefer?"},
+            quizQ9A1: {vi: "Ảnh Màu", en: "Color Photo"},
+            quizQ9A2: {vi: "Ảnh Trắng Đen", en: "B&W Photo"},
         };
         
         const quizQuestions = [
+            { id: 'photoType', title: 'quizQ9', options: ['quizQ9A1', 'quizQ9A2'], values: ['color', 'bw'] },
             { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] },
             { id: 'plan', title: 'quizQ2', options: ['quizQ2A1', 'quizQ2A2', 'quizQ2A3', 'quizQ2A4'], values: ['Portrait', 'Landscape', 'Street', 'Everyday'] },
             { id: 'mood', title: 'quizQ3', options: ['quizQ3A1', 'quizQ3A2', 'quizQ3A3', 'quizQ3A4'], values: ['Happy', 'Contemplative', 'Dynamic', 'Peaceful'] },
@@ -466,15 +470,24 @@
         }
         
         // --- UTILITY & HELPER FUNCTIONS ---
-        function t(key) { return translations[key]?.[state.currentLang] || key; }
+        function t(key, lang = state.currentLang) {
+            if (key.endsWith('_html')) {
+                return translations[key]?.[lang] || '';
+            }
+            return translations[key]?.[lang] || key;
+        }
         
         function applyTranslations() {
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.dataset.translateKey;
-                if (translations[key] && translations[key][state.currentLang]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
-                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
-                    else { el.innerHTML = t(key); }
+                const translation = t(key);
+
+                if (key.endsWith('_html')) {
+                    el.innerHTML = translation;
+                } else if (translations[key] && translations[key][state.currentLang]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = translation; }    
+                    else if (el.tagName === 'OPTION') { el.textContent = translation; }    
+                    else { el.innerHTML = translation; }
                 }
             });
             document.querySelectorAll('#mainNav .nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
