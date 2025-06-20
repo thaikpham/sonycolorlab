@@ -349,12 +349,26 @@
             ppItemColorDepthDesc: {vi: "Công cụ mạnh mẽ nhất. Tăng/giảm độ bão hòa của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Lục lam, Tím, Vàng).", en: "The most powerful tool. Increases/decreases the saturation of individual color channels (R, G, B, C, M, Y)."},
             ppItemDetail: {vi: "Detail", en: "Detail"},
             ppItemDetailDesc: {vi: "Kiểm soát độ sắc nét. Để có 'look' phim mềm mại, hãy giảm mạnh (ví dụ: -7).", en: "Controls the sharpening. For a soft, filmic look, decrease it significantly (e.g., -7)."},
+            
             recallTitle: { vi: 'Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall', en: 'Save & Reuse: Mastering Memory Recall' },
             recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.', en: 'Don\'t waste your effort! Save your recipes to the camera\'s memory for quick recall with a simple turn of a dial.' },
             recallInternalTitle: { vi: 'Bộ Nhớ Trong (1, 2, 3)', en: 'Internal Memory (1, 2, 3)' },
-            recallInternalDesc: { vi: 'Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.', en: 'Saves directly to the camera. Quickest access via the mode dial. Ideal for your daily-use recipes.' },
+            recallInternalDesc_html: { 
+                vi: `<div class="text-left"><p class="font-semibold">Cách làm đúng trong 3 bước:</p><ol class="list-decimal list-inside space-y-2 mt-2"><li><strong>Cài Đặt:</strong> Xoay bánh xe chế độ sang M, A, S, hoặc P. Chỉnh tất cả thông số bạn muốn (khẩu độ, tốc độ, ISO, WB, v.v.).</li><li><strong>Vào Menu Lưu:</strong> Bấm nút MENU. Tìm mục Lưu trữ (Memory). Chọn vị trí bạn muốn lưu vào (1, 2, hoặc 3).</li><li><strong>Xác Nhận Ghi Đè:</strong> Máy sẽ hỏi "Ghi đè?" (Overwrite?). Chọn OK hoặc Enter. Đây là bước quan trọng nhất để lưu vĩnh viễn.</li></ol><p class="mt-3 text-xs text-gray-600">Xong! Bây giờ, mỗi khi xoay bánh xe về 1, 2, hoặc 3, máy sẽ gọi đúng cài đặt bạn đã lưu. Muốn cập nhật một cài đặt cũ? Chỉ cần lặp lại đúng 3 bước trên và lưu đè vào vị trí cũ.</p></div>`,
+                en: `<div class="text-left"><p class="font-semibold">The correct way in 3 steps:</p><ol class="list-decimal list-inside space-y-2 mt-2"><li><strong>Set Up:</strong> Turn the mode dial to M, A, S, or P. Adjust all desired settings (aperture, shutter speed, ISO, WB, etc.).</li><li><strong>Enter Save Menu:</strong> Press the MENU button. Find the Memory setting. Select the location you want to save to (1, 2, or 3).</li><li><strong>Confirm Overwrite:</strong> The camera will ask "Overwrite?". Select OK or Enter. This is the most crucial step to save permanently.</li></ol><p class="mt-3 text-xs text-gray-600">Done! Now, whenever you turn the dial to 1, 2, or 3, the camera will recall your saved settings. To update an old setting, just repeat these 3 steps and overwrite the old position.</p></div>`
+            },
             recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, M2, M3, M4)' },
-            recallCardDesc: { vi: 'Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.', en: 'Saves as a file on your memory card. Extremely useful for backups or transferring recipes to another Sony camera body.' },
+            recallCardSaveTitle: { vi: 'Cách 1: Lưu Cài Đặt VÀO Thẻ Nhớ (M1-M4)', en: 'Method 1: Save Settings TO Memory Card (M1-M4)' },
+            recallCardSaveDesc_html: {
+                vi: `<ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Cài Đặt:</strong> Như trước, hãy xoay bánh xe sang chế độ M, A, S, hoặc P. Chỉnh tất cả thông số bạn muốn lưu.</li><li><strong>Vào Menu Lưu:</strong> Bấm nút MENU. Tìm mục Lưu trữ (Memory). Chọn một trong các vị trí có biểu tượng thẻ nhớ: M1, M2, M3, hoặc M4.</li><li><strong>Xác Nhận Lưu:</strong> Máy sẽ hỏi bạn có muốn lưu vào vị trí này không. Chọn OK hoặc Enter.</li></ol><p class="mt-3 text-xs text-gray-600">Xong! Cài đặt của bạn giờ đã được lưu thành một file trên thẻ nhớ, sẵn sàng để sao lưu hoặc dùng cho máy khác.</p>`,
+                en: `<ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Set Up:</strong> As before, turn the mode dial to M, A, S, or P and adjust all desired settings.</li><li><strong>Enter Save Menu:</strong> Press MENU. Find the Memory setting. Select one of the locations with a card icon: M1, M2, M3, or M4.</li><li><strong>Confirm Save:</strong> The camera will ask if you want to save to this location. Select OK or Enter.</li></ol><p class="mt-3 text-xs text-gray-600">Done! Your settings are now saved as a file on the memory card, ready for backup or use on another camera.</p>`
+            },
+            recallCardLoadTitle: { vi: 'Cách 2: Tải Cài Đặt TỪ Thẻ Nhớ Vào Máy', en: 'Method 2: Load Settings FROM Memory Card' },
+            recallCardLoadDesc_html: {
+                vi: `<p class="mb-3 text-sm text-gray-600 text-left">Đây là cách để bạn nạp lại cài đặt từ file đã lưu trên thẻ, hoặc chép cài đặt sang một thân máy Sony tương thích khác.</p><ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Cắm Thẻ Nhớ:</strong> Đảm bảo thẻ nhớ chứa file cài đặt đã ở trong máy ảnh.</li><li><strong>Vào Menu Tải:</strong> Bấm nút MENU. Tìm mục Tái sử dụng hoặc Gọi lại (Recall). Chọn vị trí bạn đã lưu trên thẻ nhớ (M1, M2, M3, hoặc M4).</li><li><strong>Xác Nhận Tải:</strong> Máy sẽ hiển thị thông báo "Tải cài đặt?" (Load settings?). Chọn OK hoặc Enter.</li></ol>`,
+                en: `<p class="mb-3 text-sm text-gray-600 text-left">This is how you reload settings from a saved file on the card, or copy settings to another compatible Sony body.</p><ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Insert Card:</strong> Ensure the memory card containing the settings file is in the camera.</li><li><strong>Enter Load Menu:</strong> Press MENU. Find the Recall setting. Select the location you saved on the memory card (M1, M2, M3, or M4).</li><li><strong>Confirm Load:</strong> The camera will display "Load settings?". Select OK or Enter.</li></ol>`
+            },
+
             tutorialTitle: { vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide" },
             tutorialStep1Title: { vi: "Bước 1: Tìm Picture Profile", en: "Step 1: Find Picture Profile" },
             tutorialStep1P1: { vi: "Trong Menu, tìm đến mục <strong>Color/Tone</strong> (biểu tượng hồng) → <strong>Picture Profile</strong>.", en: "In the Menu, navigate to the <strong>Color/Tone</strong> section (pink icon) → <strong>Picture Profile</strong>." },
@@ -701,14 +715,23 @@
                          <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
                              <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="recallDesc"></p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                                <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4>
-                                    <p class="text-sm" data-translate-key="recallInternalDesc"></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                                <div class="bg-slate-50 rounded-lg p-6 border">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-3 text-center" data-translate-key="recallInternalTitle"></h4>
+                                    <div data-translate-key="recallInternalDesc_html"></div>
                                 </div>
-                                <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4>
-                                    <p class="text-sm" data-translate-key="recallCardDesc"></p>
+                                <div class="bg-slate-50 rounded-lg p-6 border">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-3 text-center" data-translate-key="recallCardTitle"></h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800" data-translate-key="recallCardSaveTitle"></h5>
+                                            <div data-translate-key="recallCardSaveDesc_html"></div>
+                                        </div>
+                                        <div class="border-t pt-4">
+                                             <h5 class="font-semibold text-gray-800" data-translate-key="recallCardLoadTitle"></h5>
+                                             <div data-translate-key="recallCardLoadDesc_html"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                          </section>
