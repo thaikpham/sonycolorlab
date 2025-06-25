@@ -605,11 +605,23 @@
             creativeLooks: () => {
                 const looks = ['ST', 'PT', 'NT', 'VV', 'VV2', 'FL', 'IN', 'SH', 'BW', 'SE'];
                 const params = ['contrast', 'highlights', 'shadows', 'fading', 'saturation', 'sharpness', 'sharpness_range', 'clarity'];
-                const lookColors = { ST: '888888', PT: 'E5B4B4', NT: 'AAAAAA', VV: 'FF4444', VV2: 'FF6600', FL: '6CA6C1', IN: 'D6C6B2', SH: 'F0EAD6', BW: '444444', SE: 'A07C5B' };
+                
+                const creativeLookDetails = {
+                    ST: { img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=400&q=80&fit=crop' },
+                    PT: { img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&h=400&q=80&fit=crop' },
+                    NT: { img: 'https://images.unsplash.com/photo-1487260211189-670c54da5aca?w=600&h=400&q=80&fit=crop' },
+                    VV: { img: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=600&h=400&q=80&fit=crop' },
+                    VV2: { img: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=400&q=80&fit=crop' },
+                    FL: { img: 'https://images.unsplash.com/photo-1517673132405-a56a62b18caf?w=600&h=400&q=80&fit=crop' },
+                    IN: { img: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600&h=400&q=80&fit=crop' },
+                    SH: { img: 'https://images.unsplash.com/photo-1528352382898-958521a02139?w=600&h=400&q=80&fit=crop' },
+                    BW: { img: 'https://images.unsplash.com/photo-1492447166138-502f78a19cc5?w=600&h=400&q=80&fit=crop&grayscale' },
+                    SE: { img: 'https://images.unsplash.com/photo-1501426026826-31c667bdf23d?w=600&h=400&q=80&fit=crop' }
+                };
 
                 const looksHTML = looks.map(look => `
                     <div class="bg-white rounded-xl shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
-                        <img src="https://placehold.co/600x400/${lookColors[look]}/FFFFFF?text=${look}" alt="Creative Look ${look}" class="w-full h-48 object-cover">
+                        <img src="${creativeLookDetails[look].img}" alt="Creative Look ${look}" class="w-full h-48 object-cover">
                         <div class="p-5">
                             <h4 class="font-bold text-lg" data-translate-key="cl_${look}_name"></h4>
                             <p class="text-sm text-gray-600 mt-1" data-translate-key="cl_${look}_desc"></p>
