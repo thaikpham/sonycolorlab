@@ -185,6 +185,7 @@
             <div class="flex items-center gap-2 md:gap-4">
                  <nav id="mainNav" class="hidden md:flex items-center gap-6">
                     <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
+                    <button data-view="creativeLooks" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                     <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                     <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
                  </nav>
@@ -206,6 +207,7 @@
             <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
             <nav class="mt-16 flex flex-col gap-6 text-center">
                 <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
+                <button data-view="creativeLooks" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
                 <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
                 <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
             </nav>
@@ -262,10 +264,11 @@
             // General
             headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
             navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
+            navCreativeLooks: {vi:"Creative Look", en:"Creative Look"},
             navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
-            navExplain: {vi:"Giải thích", en:"Guide"},
+            navExplain: {vi:"Giải thích (PP)", en:"Guide (PP)"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
-            footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Powered by Sony Alpha Vietnam. AI Features by Google Gemini."},
+            footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Developed by Sony Alpha Vietnam. AI features powered by Google Gemini."},
 
             // Home / Quiz
             landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
@@ -276,7 +279,7 @@
             loadingAnalyze: {vi: "Đang phân tích lựa chọn...", en: "Analyzing your choices..."},
             
             // Recipe Formulas
-            sidebarTitle: {vi: "Công thức màu", en: "Color Recipes"},
+            sidebarTitle: {vi: "Công thức Picture Profile", en: "Picture Profile Recipes"},
             searchInputPlaceholder: {vi: "🔍 Tìm công thức...", en: "🔍 Search recipes..."},
             filterType: {vi: "Loại", en: "Type"},
             filterTypeColor: {vi: "Màu", en: "Color"},
@@ -293,7 +296,7 @@
             sortSaturationHL: {vi: "Bão hòa: Cao-Thấp", en: "Saturation: High-Low"},
             compareBtn: {vi: "So sánh bằng AI", en: "Compare with AI"},
             recipeDetailWelcomeTitle: {vi: "Thư viện màu Tương tác", en: "Interactive Color Library"},
-            recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan. Nhấp vào một điểm trên biểu đồ hoặc một công thức trong danh sách để xem chi tiết.", en: "Explore color recipes visually. Click a point on the chart or a recipe in the list to see details."},
+            recipeDetailWelcomeText: {vi: "Khám phá các công thức màu Picture Profile một cách trực quan. Nhấp vào một điểm trên biểu đồ hoặc một công thức trong danh sách để xem chi tiết.", en: "Explore Picture Profile color recipes visually. Click a point on the chart or a recipe in the list to see details."},
             whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
             recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
             colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
@@ -318,7 +321,51 @@
             featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
             featuredCta: {vi: "Cùng nhau xây dựng một thư viện ảnh đầy cảm hứng! Hãy chia sẻ những tác phẩm bạn chụp bằng các công thức từ Alpha AI Color Lab. Ảnh được chọn sẽ xuất hiện tại đây để vinh danh.", en: "Let's build an inspiring gallery together! Share your creations shot with recipes from the Alpha AI Color Lab. Selected photos will be featured here."},
             featuredAlbumBtn: {vi: "Xem Album & Đóng góp Ảnh", en: "View Album & Contribute Photos"},
+            contributeTitle: {vi: "Hoặc Tải lên Ảnh của Bạn", en: "Or Upload Your Photo"},
+            contributeDesc: {vi: "Tải lên ảnh của bạn để chia sẻ ẩn danh. (Chỉ mang tính minh hoạ, ảnh sẽ không được lưu trữ).", en: "Upload your photo to share anonymously. (For demonstration purposes only, photos will not be saved)."},
+            uploadBtn: {vi: "Chọn Ảnh từ Máy tính", en: "Choose Photo From Computer"},
             
+            // Creative Looks
+            creativeLookHeader: {vi: "Khám Phá Creative Look", en: "Exploring Creative Looks"},
+            creativeLookSubtitle: {vi: "Tạo nên thần thái cho bức ảnh ngay tại máy với 10 tuỳ chọn Creative Look có sẵn và khả năng tuỳ chỉnh sâu. Đây là tính năng mới hơn so với Creative Style trên các dòng máy cũ.", en: "Instantly create the mood for your photos in-camera with 10 pre-set Creative Looks and deep customization options. This is a newer feature compared to Creative Style on older models."},
+            customParamsTitle: {vi: "Các thông số tuỳ chỉnh", en: "Customizable Parameters"},
+            cl_ST_name: {vi: "ST: Tiêu chuẩn", en:"ST: Standard"},
+            cl_ST_desc: {vi: "Màu tiêu chuẩn cho đa dạng chủ thể và bối cảnh.", en:"The standard finish for a wide range of subjects and scenes."},
+            cl_PT_name: {vi: "PT: Chân dung", en:"PT: Portrait"},
+            cl_PT_desc: {vi: "Tái tạo tông màu da mềm mại, lý tưởng cho chụp chân dung.", en:"For capturing skin in a soft tone, ideally suited for shooting portraits."},
+            cl_NT_name: {vi: "NT: Trung tính", en:"NT: Neutral"},
+            cl_NT_desc: {vi: "Độ bão hòa và sắc nét thấp hơn, phù hợp cho ảnh cần hậu kỳ.", en:"Lower saturation and sharpness for shooting images before they are to be processed."},
+            cl_VV_name: {vi: "VV: Rực rỡ", en:"VV: Vivid"},
+            cl_VV_desc: {vi: "Tăng cường độ bão hòa và tương phản để tạo ấn tượng mạnh.", en:"Saturation and contrast are heightened for a striking impression of colorful scenes and subjects."},
+            cl_VV2_name: {vi: "VV2: Rực rỡ 2", en:"VV2: Vivid 2"},
+            cl_VV2_desc: {vi: "Tạo ra ảnh trong và sáng với màu sắc sống động. Hiệu quả với chủ thể nhiều màu sắc.", en:"Creates a highly clear image with bright and vibrant colours. Effective for colourful subjects."},
+            cl_FL_name: {vi: "FL: Giả lập phim", en:"FL: Film-like"},
+            cl_FL_desc: {vi: "Tạo cảm giác như phim điện ảnh với màu sắc điềm tĩnh và bầu trời ấn tượng.", en:"For a film-like expression with calm colours and a stunning sky."},
+            cl_IN_name: {vi: "IN: Chụp lấy ngay", en:"IN: Instant Camera"},
+            cl_IN_desc: {vi: "Tạo cảm giác hoài cổ như ảnh chụp từ máy ảnh lấy liền.", en:"For a nostalgic expression like photos from an instant camera."},
+            cl_SH_name: {vi: "SH: Soft High-key", en:"SH: Soft High-key"},
+            cl_SH_desc: {vi: "Tạo không khí trong trẻo, tươi sáng, mềm mại và nhẹ nhàng.", en:"For creating a bright, transparent, soft, and gentle atmosphere."},
+            cl_BW_name: {vi: "BW: Đen trắng", en:"BW: Black & White"},
+            cl_BW_desc: {vi: "Tạo ảnh đơn sắc không bao giờ lỗi thời.", en:"For creating a timeless Black & White image."},
+            cl_SE_name: {vi: "SE: Nâu đỏ", en:"SE: Sepia"},
+            cl_SE_desc: {vi: "Tạo ảnh màu nâu đỏ cổ điển.", en:"For creating an archaic Sepia image."},
+            cl_param_contrast: {vi: "Tương phản (Contrast)", en: "Contrast"},
+            cl_param_contrast_desc: {vi: "Giá trị càng cao, sự khác biệt giữa vùng sáng và tối càng được nhấn mạnh.", en:"The higher the value, the more the difference between light and dark is emphasized."},
+            cl_param_highlights: {vi: "Vùng sáng (Highlights)", en: "Highlights"},
+            cl_param_highlights_desc: {vi: "Điều chỉnh độ sáng của các vùng sáng.", en:"Adjusts the brightness of the bright areas."},
+            cl_param_shadows: {vi: "Vùng tối (Shadows)", en: "Shadows"},
+            cl_param_shadows_desc: {vi: "Điều chỉnh độ tối của các vùng tối.", en:"Adjusts the darkness of the dark areas."},
+            cl_param_fading: {vi: "Độ bạc màu (Fading)", en: "Fading"},
+            cl_param_fading_desc: {vi: "Giá trị càng cao, hiệu ứng bạc màu càng rõ rệt.", en:"The higher the value, the more the faded-out effect is applied."},
+            cl_param_saturation: {vi: "Bão hòa (Saturation)", en: "Saturation"},
+            cl_param_saturation_desc: {vi: "Giá trị càng cao, màu sắc càng sống động.", en:"The higher the value, the more vivid the colours."},
+            cl_param_sharpness: {vi: "Độ nét (Sharpness)", en: "Sharpness"},
+            cl_param_sharpness_desc: {vi: "Điều chỉnh đường viền. Giá trị càng cao, đường viền càng được làm nổi bật.", en:"Adjusts the outline. The higher the value, the more the outlines are accentuated."},
+            cl_param_sharpness_range: {vi: "Phạm vi nét (Sharpness Range)", en: "Sharpness Range"},
+            cl_param_sharpness_range_desc: {vi: "Điều chỉnh phạm vi áp dụng độ nét.", en:"Adjusts the range to which sharpness is applied."},
+            cl_param_clarity: {vi: "Độ trong (Clarity)", en: "Clarity"},
+            cl_param_clarity_desc: {vi: "Giá trị càng cao, độ trong của ảnh càng được tăng cường.", en:"The higher the value, the more the clarity is enhanced."},
+
             // Explanation Tab
             explainHeader: {vi: "Làm Chủ Màu Sắc Cùng Sony Alpha", en:"Mastering Color with Sony Alpha"},
             explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh", en:"A comprehensive guide to creating your unique color signature for stills"},
@@ -349,26 +396,12 @@
             ppItemColorDepthDesc: {vi: "Công cụ mạnh mẽ nhất. Tăng/giảm độ bão hòa của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Lục lam, Tím, Vàng).", en: "The most powerful tool. Increases/decreases the saturation of individual color channels (R, G, B, C, M, Y)."},
             ppItemDetail: {vi: "Detail", en: "Detail"},
             ppItemDetailDesc: {vi: "Kiểm soát độ sắc nét. Để có 'look' phim mềm mại, hãy giảm mạnh (ví dụ: -7).", en: "Controls the sharpening. For a soft, filmic look, decrease it significantly (e.g., -7)."},
-            
             recallTitle: { vi: 'Lưu Trữ & Tái Sử Dụng: Làm Chủ Memory Recall', en: 'Save & Reuse: Mastering Memory Recall' },
             recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.', en: 'Don\'t waste your effort! Save your recipes to the camera\'s memory for quick recall with a simple turn of a dial.' },
             recallInternalTitle: { vi: 'Bộ Nhớ Trong (1, 2, 3)', en: 'Internal Memory (1, 2, 3)' },
-            recallInternalDesc_html: { 
-                vi: `<div class="text-left"><p class="font-semibold">Cách làm đúng trong 3 bước:</p><ol class="list-decimal list-inside space-y-2 mt-2"><li><strong>Cài Đặt:</strong> Xoay bánh xe chế độ sang M, A, S, hoặc P. Chỉnh tất cả thông số bạn muốn (khẩu độ, tốc độ, ISO, WB, v.v.).</li><li><strong>Vào Menu Lưu:</strong> Bấm nút MENU. Tìm mục Lưu trữ: Menu/Shooting/4.Shooting Mode/Camera Set Memory. Chọn vị trí bạn muốn lưu vào (1, 2, hoặc 3).</li><li><strong>Xác Nhận Ghi Đè:</strong> Máy sẽ hỏi "Ghi đè?" (Overwrite?). Chọn OK hoặc Enter. Đây là bước quan trọng nhất để lưu vĩnh viễn.</li></ol><p class="mt-3 text-xs text-gray-600">Xong! Bây giờ, mỗi khi xoay bánh xe về 1, 2, hoặc 3, máy sẽ gọi đúng cài đặt bạn đã lưu. Muốn cập nhật một cài đặt cũ? Chỉ cần lặp lại đúng 3 bước trên và lưu đè vào vị trí cũ.</p></div>`,
-                en: `<div class="text-left"><p class="font-semibold">The correct way in 3 steps:</p><ol class="list-decimal list-inside space-y-2 mt-2"><li><strong>Set Up:</strong> Turn the mode dial to M, A, S, or P. Adjust all desired settings (aperture, shutter speed, ISO, WB, etc.).</li><li><strong>Enter Save Menu:</strong> Press the Menu/Shooting/4.Shooting Mode/Camera Set Memory. Select the location you want to save to (1, 2, or 3).</li><li><strong>Confirm Overwrite:</strong> The camera will ask "Overwrite?". Select OK or Enter. This is the most crucial step to save permanently.</li></ol><p class="mt-3 text-xs text-gray-600">Done! Now, whenever you turn the dial to 1, 2, or 3, the camera will recall your saved settings. To update an old setting, just repeat these 3 steps and overwrite the old position.</p></div>`
-            },
+            recallInternalDesc: { vi: 'Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.', en: 'Saves directly to the camera. Quickest access via the mode dial. Ideal for your daily-use recipes.' },
             recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, M2, M3, M4)' },
-            recallCardSaveTitle: { vi: 'Cách 1: Lưu Cài Đặt VÀO Thẻ Nhớ (M1-M4)', en: 'Method 1: Save Settings TO Memory Card (M1-M4)' },
-            recallCardSaveDesc_html: {
-                vi: `<ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Cài Đặt:</strong> Như trước, hãy xoay bánh xe sang chế độ M, A, S, hoặc P. Chỉnh tất cả thông số bạn muốn lưu.</li><li><strong>Vào Menu Lưu:</strong> Bấm nút MENU. Tìm mục Lưu trữ Menu/Shooting/4.Shooting Mode/Camera Set Memory. Chọn một trong các vị trí có biểu tượng thẻ nhớ: M1, M2, M3, hoặc M4.</li><li><strong>Xác Nhận Lưu:</strong> Máy sẽ hỏi bạn có muốn lưu vào vị trí này không. Chọn OK hoặc Enter.</li></ol><p class="mt-3 text-xs text-gray-600">Xong! Cài đặt của bạn giờ đã được lưu thành một file trên thẻ nhớ, sẵn sàng để sao lưu hoặc dùng cho máy khác.</p>`,
-                en: `<ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Set Up:</strong> As before, turn the mode dial to M, A, S, or P and adjust all desired settings.</li><li><strong>Enter Save Menu:</strong> Press MENU. Find the Memory setting: Menu/Shooting/4.Shooting Mode/Camera Set Memory. Select one of the locations with a card icon: M1, M2, M3, or M4.</li><li><strong>Confirm Save:</strong> The camera will ask if you want to save to this location. Select OK or Enter.</li></ol><p class="mt-3 text-xs text-gray-600">Done! Your settings are now saved as a file on the memory card, ready for backup or use on another camera.</p>`
-            },
-            recallCardLoadTitle: { vi: 'Cách 2: Tải Cài Đặt TỪ Thẻ Nhớ Vào Máy', en: 'Method 2: Load Settings FROM Memory Card' },
-            recallCardLoadDesc_html: {
-                vi: `<p class="mb-3 text-sm text-gray-600 text-left">Đây là cách để bạn nạp lại cài đặt từ file đã lưu trên thẻ, hoặc chép cài đặt sang một thân máy Sony tương thích khác.</p><ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Cắm Thẻ Nhớ:</strong> Đảm bảo thẻ nhớ chứa file cài đặt đã ở trong máy ảnh.</li><li><strong>Vào Menu Tải:</strong> Bấm nút MENU. Tìm mục Tái sử dụng hoặc Gọi lại (Recall). Chọn vị trí bạn đã lưu trên thẻ nhớ (M1, M2, M3, hoặc M4).</li><li><strong>Xác Nhận Tải:</strong> Máy sẽ hiển thị thông báo "Tải cài đặt?" (Load settings?). Chọn OK hoặc Enter.</li></ol>`,
-                en: `<p class="mb-3 text-sm text-gray-600 text-left">This is how you reload settings from a saved file on the card, or copy settings to another compatible Sony body.</p><ol class="list-decimal list-inside space-y-2 text-left"><li><strong>Insert Card:</strong> Ensure the memory card containing the settings file is in the camera.</li><li><strong>Enter Load Menu:</strong> Press MENU. Find the Recall setting. Select the location you saved on the memory card (M1, M2, M3, or M4).</li><li><strong>Confirm Load:</strong> The camera will display "Load settings?". Select OK or Enter.</li></ol>`
-            },
-
+            recallCardDesc: { vi: 'Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.', en: 'Saves as a file on your memory card. Extremely useful for backups or transferring recipes to another Sony camera body.' },
             tutorialTitle: { vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide" },
             tutorialStep1Title: { vi: "Bước 1: Tìm Picture Profile", en: "Step 1: Find Picture Profile" },
             tutorialStep1P1: { vi: "Trong Menu, tìm đến mục <strong>Color/Tone</strong> (biểu tượng hồng) → <strong>Picture Profile</strong>.", en: "In the Menu, navigate to the <strong>Color/Tone</strong> section (pink icon) → <strong>Picture Profile</strong>." },
@@ -380,17 +413,17 @@
             tutorialStep4P1: { vi: "Thoát khỏi Picture Profile, vào mục <strong>White Balance</strong> và chỉnh theo nhiệt độ K và WB Shift được ghi trong công thức.", en: "Exit Picture Profile, go to <strong>White Balance</strong>, and adjust the Kelvin temperature and WB Shift as specified in the recipe." },
 
             // Quiz Questions
-            quizQ1: {vi: "Phong cách ảnh mà bạn muốn?", en: "Your aesthetic?"},    
+            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"},    
             quizQ1A1: {vi: "Cổ điển", en: "Classic"},    
             quizQ1A2: {vi: "Hiện đại", en: "Modern"},    
             quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"},    
             quizQ1A4: {vi: "Nghệ thuật", en: "Artistic"},
-            quizQ2: {vi: "Hôm nay bạn chụp gì?", en: "Today's shoot plan?"},    
+            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"},    
             quizQ2A1: {vi: "Chân dung", en: "Portraits"},    
             quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"},    
             quizQ2A3: {vi: "Đường phố", en: "Street"},    
             quizQ2A4: {vi: "Đời thường", en: "Everyday"},
-            quizQ3: {vi: "Cảm xúc cho bộ ảnh?", en: "The mood of the photoshoot?"},    
+            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"},    
             quizQ3A1: {vi: "Vui vẻ", en: "Happy"},    
             quizQ3A2: {vi: "Trầm tư", en: "Contemplative"},    
             quizQ3A3: {vi: "Năng động", en: "Dynamic"},    
@@ -415,13 +448,9 @@
             quizQ8A1: {vi: "Cao (Rực rỡ)", en: "High (Vibrant)"},
             quizQ8A2: {vi: "Thấp (Nhẹ nhàng)", en: "Low (Subtle)"},
             quizQ8A3: {vi: "Trung bình", en: "Medium"},
-            quizQ9: {vi: "Bạn thích thể loại ảnh nào?", en: "Which photo type do you prefer?"},
-            quizQ9A1: {vi: "Ảnh Màu", en: "Color Photo"},
-            quizQ9A2: {vi: "Ảnh Trắng Đen", en: "B&W Photo"},
         };
         
         const quizQuestions = [
-            { id: 'photoType', title: 'quizQ9', options: ['quizQ9A1', 'quizQ9A2'], values: ['color', 'bw'] },
             { id: 'aesthetic', title: 'quizQ1', options: ['quizQ1A1', 'quizQ1A2', 'quizQ1A3', 'quizQ1A4'], values: ['Vintage', 'Modern', 'Cinematic', 'Artistic'] },
             { id: 'plan', title: 'quizQ2', options: ['quizQ2A1', 'quizQ2A2', 'quizQ2A3', 'quizQ2A4'], values: ['Portrait', 'Landscape', 'Street', 'Everyday'] },
             { id: 'mood', title: 'quizQ3', options: ['quizQ3A1', 'quizQ3A2', 'quizQ3A3', 'quizQ3A4'], values: ['Happy', 'Contemplative', 'Dynamic', 'Peaceful'] },
@@ -438,86 +467,15 @@
             state.isAILoading = true;
             try {
                 await new Promise(resolve => setTimeout(resolve, delay));
-
                 if (prompt.includes("Recommend TWO recipes")) {
-                    // --- FIX: Robust JSON extraction ---
-                    const startIndex = prompt.indexOf('{');
-                    const endIndex = prompt.indexOf('}') + 1; // Find the first '}' after the start
-                    const preferencesString = prompt.substring(startIndex, endIndex);
-                    const preferences = JSON.parse(preferencesString);
-                    // --- END FIX ---
-
-                    // --- Smart Filtering Logic ---
-                    let filteredRecipes = recipesData;
-
-                    // 1. Primary filter: Photo Type (Color vs B&W) - THIS IS CRITICAL
-                    if (preferences.photoType) {
-                        filteredRecipes = filteredRecipes.filter(r => r.type === preferences.photoType);
-                    }
-
-                    // 2. Secondary filters: Contrast and Saturation
-                    // Create a pool of recipes that match secondary filters if available
-                    let secondaryFilteredPool = filteredRecipes;
-                    if (preferences.contrast) {
-                        secondaryFilteredPool = secondaryFilteredPool.filter(r => r.contrast.toLowerCase() === preferences.contrast.toLowerCase());
-                    }
-                    if (preferences.saturation) {
-                        // This question is only relevant for color photos
-                         if(preferences.photoType === 'color'){
-                              secondaryFilteredPool = secondaryFilteredPool.filter(r => r.saturation.toLowerCase() === preferences.saturation.toLowerCase());
-                         }
-                    }
-
-                    // If the secondary pool has enough candidates, use it. Otherwise, fall back to the primary pool.
-                    if (secondaryFilteredPool.length < 2) {
-                        console.log("Not enough specific matches, falling back to primary type filter.");
-                    } else {
-                        filteredRecipes = secondaryFilteredPool;
-                    }
-                    
-                    // --- Selection Logic with Fallbacks ---
-                    if (filteredRecipes.length > 0) {
-                        const idx1 = Math.floor(Math.random() * filteredRecipes.length);
-                        const recipe1 = filteredRecipes[idx1];
-                        let recipe2 = null;
-
-                        if (filteredRecipes.length > 1) {
-                            // Find a different recipe from the same filtered pool
-                            let idx2 = Math.floor(Math.random() * filteredRecipes.length);
-                            while (idx1 === idx2) {
-                                idx2 = Math.floor(Math.random() * filteredRecipes.length);
-                            }
-                            recipe2 = filteredRecipes[idx2];
-                        } else {
-                            // If only one recipe matches, get a second one from the main data pool,
-                            // ensuring it's of the same type (color/bw) but not the same recipe.
-                            const fallbackPool = recipesData.filter(r => r.type === preferences.photoType && r.id !== recipe1.id);
-                            if (fallbackPool.length > 0) {
-                                recipe2 = fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
-                            }
-                        }
-
-                        // If after all that, we still don't have recipe2, grab any other recipe as a last resort
-                        if (!recipe2) {
-                             const lastResortPool = recipesData.filter(r => r.id !== recipe1.id);
-                             recipe2 = lastResortPool[Math.floor(Math.random() * lastResortPool.length)];
-                        }
-                        
-                        return [
-                            { recipeId: recipe1.id, moodDescription: recipe1.description[state.currentLang] },
-                            { recipeId: recipe2.id, moodDescription: recipe2.description[state.currentLang] }
-                        ];
-
-                    } else {
-                        // Absolute fallback if no recipes even match the primary type
-                        const idx1 = Math.floor(Math.random() * recipesData.length);
-                        let idx2 = Math.floor(Math.random() * recipesData.length);
-                        while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
-                        return [
-                            { recipeId: recipesData[idx1].id, moodDescription: recipesData[idx1].description[state.currentLang] },
-                            { recipeId: recipesData[idx2].id, moodDescription: recipesData[idx2].description[state.currentLang] }
-                        ];
-                    }
+                    const idx1 = Math.floor(Math.random() * recipesData.length);
+                    let idx2 = Math.floor(Math.random() * recipesData.length);
+                    while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
+                    const mockRecipe1 = recipesData[idx1]; const mockRecipe2 = recipesData[idx2];
+                    return [
+                        { recipeId: mockRecipe1.id, moodDescription: mockRecipe1.description[state.currentLang] },
+                        { recipeId: mockRecipe2.id, moodDescription: mockRecipe2.description[state.currentLang] }
+                    ];
                 }
                 if (prompt.includes("Original Recipe")) {
                     const originalId = prompt.match(/ID: (.*?)\)/)[1];
@@ -541,24 +499,15 @@
         }
         
         // --- UTILITY & HELPER FUNCTIONS ---
-        function t(key, lang = state.currentLang) {
-            if (key.endsWith('_html')) {
-                return translations[key]?.[lang] || '';
-            }
-            return translations[key]?.[lang] || key;
-        }
+        function t(key) { return translations[key]?.[state.currentLang] || key; }
         
         function applyTranslations() {
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.dataset.translateKey;
-                const translation = t(key);
-
-                if (key.endsWith('_html')) {
-                    el.innerHTML = translation;
-                } else if (translations[key] && translations[key][state.currentLang]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = translation; }    
-                    else if (el.tagName === 'OPTION') { el.textContent = translation; }    
-                    else { el.innerHTML = translation; }
+                if (translations[key] && translations[key][state.currentLang]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
+                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
+                    else { el.innerHTML = t(key); }
                 }
             });
             document.querySelectorAll('#mainNav .nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
@@ -607,15 +556,7 @@
             
             quiz: () => {
                 if (state.quizStep >= quizQuestions.length) return '';
-                let q = quizQuestions[state.quizStep];
-
-                // Dynamically skip saturation question if user chose B&W
-                if (q.id === 'saturation' && state.quizAnswers.photoType === 'bw') {
-                    state.quizStep++;
-                    q = quizQuestions[state.quizStep];
-                    if (!q) return ''; // End of quiz
-                }
-
+                const q = quizQuestions[state.quizStep];
                 const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
                 const gridCols = q.options.length > 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2';
                 return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
@@ -661,6 +602,51 @@
                     </div>
                 </div>`,
             
+            creativeLooks: () => {
+                const looks = ['ST', 'PT', 'NT', 'VV', 'VV2', 'FL', 'IN', 'SH', 'BW', 'SE'];
+                const params = ['contrast', 'highlights', 'shadows', 'fading', 'saturation', 'sharpness', 'sharpness_range', 'clarity'];
+                const lookColors = { ST: '888888', PT: 'E5B4B4', NT: 'AAAAAA', VV: 'FF4444', VV2: 'FF6600', FL: '6CA6C1', IN: 'D6C6B2', SH: 'F0EAD6', BW: '444444', SE: 'A07C5B' };
+
+                const looksHTML = looks.map(look => `
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
+                        <img src="https://placehold.co/600x400/${lookColors[look]}/FFFFFF?text=${look}" alt="Creative Look ${look}" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h4 class="font-bold text-lg" data-translate-key="cl_${look}_name"></h4>
+                            <p class="text-sm text-gray-600 mt-1" data-translate-key="cl_${look}_desc"></p>
+                        </div>
+                    </div>`).join('');
+
+                const paramsHTML = params.map(param => `
+                    <div class="bg-blue-50/50 p-4 rounded-lg">
+                        <h5 class="font-semibold text-blue-800" data-translate-key="cl_param_${param.replace('_', '')}"></h5>
+                        <p class="text-sm text-blue-700/80" data-translate-key="cl_param_${param.replace('_', '')}_desc"></p>
+                    </div>`).join('');
+
+                return `
+                <div id="creativeLooksView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
+                    <div class="max-w-7xl mx-auto">
+                        <header class="text-center mb-10 md:mb-12">
+                            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="creativeLookHeader"></h1>
+                            <h2 class="text-base md:text-lg text-slate-600 max-w-3xl mx-auto" data-translate-key="creativeLookSubtitle"></h2>
+                        </header>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            ${looksHTML}
+                        </div>
+
+                        <section class="mt-12 md:mt-16 bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="customParamsTitle"></h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+                               ${paramsHTML}
+                            </div>
+                        </section>
+                         <footer class="text-center text-sm text-gray-500 pt-8 mt-12 border-t">
+                            <p data-translate-key="footerText"></p>
+                        </footer>
+                    </div>
+                </div>`;
+            },
+            
             featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
                 <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
                     <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
@@ -677,6 +663,15 @@
                                 <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
                             </div>`;
                         }).join('')}
+                    </div>
+                    <div class="mt-12 pt-10 border-t border-gray-900/10">
+                      <h3 class="text-xl md:text-2xl font-bold" data-translate-key="contributeTitle"></h3>
+                      <p class="text-neutral-600 mt-2 max-w-xl mx-auto" data-translate-key="contributeDesc"></p>
+                      <label class="btn btn-secondary mt-6 py-3 px-8 bg-gray-200 text-black hover:bg-gray-300 cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span data-translate-key="uploadBtn"></span>
+                        <input type="file" class="hidden" accept="image/jpeg, image/png" id="photoUploadInput">
+                      </label>
                     </div>
                 </div>
             </div>`,
@@ -807,23 +802,14 @@
                          <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
                              <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="recallDesc"></p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                                <div class="bg-slate-50 rounded-lg p-6 border">
-                                    <h4 class="text-xl font-bold text-slate-700 mb-3 text-center" data-translate-key="recallInternalTitle"></h4>
-                                    <div data-translate-key="recallInternalDesc_html"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                <div class="bg-slate-100 rounded-lg p-6 text-center">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4>
+                                    <p class="text-sm" data-translate-key="recallInternalDesc"></p>
                                 </div>
-                                <div class="bg-slate-50 rounded-lg p-6 border">
-                                    <h4 class="text-xl font-bold text-slate-700 mb-3 text-center" data-translate-key="recallCardTitle"></h4>
-                                    <div class="space-y-4">
-                                        <div>
-                                            <h5 class="font-semibold text-gray-800" data-translate-key="recallCardSaveTitle"></h5>
-                                            <div data-translate-key="recallCardSaveDesc_html"></div>
-                                        </div>
-                                        <div class="border-t pt-4">
-                                             <h5 class="font-semibold text-gray-800" data-translate-key="recallCardLoadTitle"></h5>
-                                             <div data-translate-key="recallCardLoadDesc_html"></div>
-                                        </div>
-                                    </div>
+                                <div class="bg-slate-100 rounded-lg p-6 text-center">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4>
+                                    <p class="text-sm" data-translate-key="recallCardDesc"></p>
                                 </div>
                             </div>
                          </section>
@@ -920,9 +906,7 @@
             
             grid.addEventListener('touchstart', (e) => {
                 isDragging = true;
-                if(e.touches.length > 0) {
-                    updatePosition(e.touches[0].clientX, e.touches[0].clientY);
-                }
+                updatePosition(e.touches[0].clientX, e.touches[0].clientY);
                 e.preventDefault();
             });
 
@@ -931,9 +915,7 @@
             });
             
              document.addEventListener('touchmove', (e) => {
-                if (isDragging && e.touches.length > 0) {
-                     updatePosition(e.touches[0].clientX, e.touches[0].clientY);
-                }
+                if (isDragging) updatePosition(e.touches[0].clientX, e.touches[0].clientY);
             });
 
             document.addEventListener('mouseup', () => { isDragging = false; });
@@ -1045,7 +1027,6 @@
         
         function attachViewEventListeners(viewName) {
             if (viewName === 'recipeFormulas') {
-                document.getElementById('searchInput')?.addEventListener('input', renderLibraryList);
                 renderLibraryList();    
                 renderLibraryDetails();
                 renderInteractiveCharts(state.currentLang);
@@ -1125,32 +1106,23 @@
             recipeContentContainer.classList.remove('hidden');
             if(!isMobile) recipeMainPanel?.classList.remove('hidden');
             
-            // --- Thumbnail Logic (revised for robustness) ---
-            let imageElementsHTML = '';
-            const recipeImages = recipe.demoImages || [];
-            
-            // Generate clickable thumbnails for existing images
-            let existingImageThumbnails = recipeImages.map((imgSrc, index) => `
-                <div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}">
-                    <img src="${imgSrc}" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
-                </div>
-            `).join('');
-            
-            // Generate non-clickable placeholders if less than 3 images exist
-            const placeholdersNeeded = 3 - recipeImages.length;
-            let placeholderThumbnails = '';
-            if (placeholdersNeeded > 0) {
-                const placeholderColor = recipe.personalityColor ? recipe.personalityColor.substring(1) : 'cccccc';
-                for (let i = 0; i < placeholdersNeeded; i++) {
-                    const placeholderIndex = recipeImages.length + i;
-                    placeholderThumbnails += `
-                        <div class="bg-gray-200 group rounded-xl overflow-hidden">
-                            <img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover">
-                        </div>`;
-                }
+            // --- NEW Thumbnail Logic ---
+            let thumbnailsHTML = '';
+            const images = recipe.demoImages || [];
+            let imageElements = [];
+            // Use existing demo images first
+            images.forEach((imgSrc, index) => {
+                imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}"><img src="${imgSrc}" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"></div>`);
+            });
+            // Fill up to 3 with placeholders
+            const placeholdersNeeded = 3 - imageElements.length;
+            const placeholderColor = recipe.personalityColor ? recipe.personalityColor.substring(1) : 'cccccc';
+            for (let i = 0; i < placeholdersNeeded; i++) {
+                const placeholderIndex = images.length + i;
+                 imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden"><img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover"></div>`);
             }
-            imageElementsHTML = existingImageThumbnails + placeholderThumbnails;
-            const thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElementsHTML}</div></div>`;
+            thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElements.join('')}</div></div>`;
+            // --- END Thumbnail Logic ---
 
             recipeContentContainer.innerHTML = `
                 <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
@@ -1261,8 +1233,11 @@
         }
 
         function init() {
+            // Main click handler using event delegation
             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
+                
+                // Lightbox navigation
                 if (state.lightbox.isOpen) {
                     if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) { closeLightbox(); } 
                     else if (target.closest('#lightbox-next')) { navigateLightbox(1); } 
@@ -1272,37 +1247,19 @@
                         state.lightbox.currentIndex = parseInt(thumb.dataset.index);
                         updateLightboxContent();
                     }
-                    return;
+                    return; // Prevent other handlers when lightbox is open
                 }
 
+                // --- General Navigation & Actions ---
                 const lightboxTrigger = target.closest('.lightbox-trigger-thumb');
-                if (lightboxTrigger) {
-                    const recipeId = lightboxTrigger.dataset.recipeId;
-                    const recipe = recipesData.find(r => r.id === recipeId);
-                    if (recipe && recipe.demoImages && recipe.demoImages.length > 0) {
-                         openLightbox(recipe.demoImages, parseInt(lightboxTrigger.dataset.index));
-                    }
-                    return;
-                }
-                
                 const homeBtn = target.closest('#homeBtn');
                 const navBtn = target.closest('.nav-btn');
                 const mobileNavBtn = target.closest('.nav-btn-mobile');
                 const langBtn = target.closest('.lang-btn');
                 const startQuizBtn = target.closest('#startQuizBtn');
-                const compareBtn = target.closest('#compareBtn');
-                const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
-                const closeModalBtn = target.closest('#closeComparisonModalBtn');
-                const aiTuningBtn = target.closest('#aiTuningBtn');
-                const quizChoice = target.closest('.quiz-choice-option');
                 const exploreMoreBtn = target.closest('#exploreMoreBtn');
                 const hamburgerBtn = target.closest('#hamburgerBtn');
                 const closeMobileNavBtn = target.closest('#closeMobileNavBtn');
-                const recipeItemContent = target.closest('.recipe-item-content');
-                const recipeDot = target.closest('.recipe-dot');
-                const recipeCompareCb = target.closest('.recipe-compare-cb');
-                const backToListBtn = target.closest('#backToListBtn');
-                const quizOption = target.closest('.quiz-option');
                 
                 if (hamburgerBtn) { toggleMobileNav(true); return; }
                 if (closeMobileNavBtn || (target.id === 'mobileNavMenu' && !target.closest('#mobileNavMenu > div'))) { toggleMobileNav(false); return; }
@@ -1314,49 +1271,74 @@
                 if (homeBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('home'); return; }
                 if (navBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView(navBtn.dataset.view); return; }
                 if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
-                if (backToListBtn) { state.isMobileDetailActive = false; renderLibraryDetails(); return; }
                 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
+
+                // --- View-specific Actions ---
+
+                // Quiz Actions
+                const quizOption = target.closest('.quiz-option');
+                const quizChoice = target.closest('.quiz-choice-option');
                 if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
-                if (compareBtn && !compareBtn.disabled) { handleAiComparison(state.comparisonList[0], state.comparisonList[1]); return; }
-                if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
-                if (closeModalBtn) { document.getElementById('comparisonModal').classList.add('hidden'); return; }
-                if (aiTuningBtn) { handleAiAdjustment(aiTuningBtn); return; }
-                if (quizChoice) { 
-                    state.selectedRecipeId = quizChoice.dataset.recipeId; 
-                    state.isMobileDetailActive = true;
-                    await renderView('recipeFormulas'); return; 
-                }
                 if (quizOption) {
                     if(!quizOption.classList.contains('selected')) {
                         const group = quizOption.closest('[data-quiz-group]').dataset.quizGroup;
                         state.quizAnswers[group] = quizOption.dataset.value;
                         document.querySelectorAll(`[data-quiz-group="${group}"] .quiz-option`).forEach(opt => opt.classList.remove('selected'));
                         quizOption.classList.add('selected');
-                        setTimeout(async () => {
-                            let nextStep = state.quizStep + 1;
-                            // Logic to skip saturation question for B&W
-                            if (quizQuestions[nextStep]?.id === 'saturation' && state.quizAnswers.photoType === 'bw') {
-                                nextStep++;
-                            }
-                            state.quizStep = nextStep;
-                            if (state.quizStep >= quizQuestions.length) {
-                                await handleQuizSubmit();
-                            } else {
-                                await renderView('quiz');
-                            }
+                        setTimeout(() => {
+                            state.quizStep++;
+                            if (state.quizStep >= quizQuestions.length) handleQuizSubmit(); else renderView('quiz');
                         }, 250);
                     }
                     return;
                 }
-                
-                if (recipeItemContent) { handleRecipeSelection(recipeItemContent.dataset.recipeId, 'div'); return; }
-                if (recipeDot) { handleRecipeSelection(recipeDot.dataset.recipeId, 'div'); return; }
+                 if (quizChoice) { 
+                    state.selectedRecipeId = quizChoice.dataset.recipeId; 
+                    state.isMobileDetailActive = true;
+                    await renderView('recipeFormulas'); return; 
+                }
+
+                // Recipe Library Actions
+                const recipeItemContent = target.closest('.recipe-item-content');
+                const recipeDot = target.closest('.recipe-dot');
+                const recipeCompareCb = target.closest('.recipe-compare-cb');
+                const compareBtn = target.closest('#compareBtn');
+                const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
+                const aiTuningBtn = target.closest('#aiTuningBtn');
+                const backToListBtn = target.closest('#backToListBtn');
+                const closeModalBtn = target.closest('#closeComparisonModalBtn');
+
+                if (recipeItemContent || recipeDot) { handleRecipeSelection(target.closest('[data-recipe-id]').dataset.recipeId, 'div'); return; }
                 if (recipeCompareCb) { handleRecipeSelection(recipeCompareCb.dataset.recipeId, 'checkbox'); return; }
+                if (compareBtn && !compareBtn.disabled) { handleAiComparison(state.comparisonList[0], state.comparisonList[1]); return; }
+                if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
+                if (aiTuningBtn) { handleAiAdjustment(aiTuningBtn); return; }
+                if (backToListBtn) { state.isMobileDetailActive = false; renderLibraryDetails(); return; }
+                if (closeModalBtn) { document.getElementById('comparisonModal').classList.add('hidden'); return; }
+                if (lightboxTrigger) {
+                    const recipeId = lightboxTrigger.dataset.recipeId;
+                    const recipe = recipesData.find(r => r.id === recipeId);
+                    if (recipe && recipe.demoImages && recipe.demoImages.length > 0) {
+                         openLightbox(recipe.demoImages, parseInt(lightboxTrigger.dataset.index));
+                    }
+                    return;
+                }
+
+                // Filters
                 if (document.getElementById('filtersContainer')?.contains(target)) { handleFilterClick(e); return; }
             });
             
+            // Search input listener
+            document.body.addEventListener('input', (e) => {
+                if (e.target.id === 'searchInput') {
+                    renderLibraryList();
+                }
+            });
+            
+            // Resize listener
             window.addEventListener('resize', () => { if(state.currentView === 'recipeFormulas') renderLibraryDetails(); });
             
+            // Initial render
             renderView('home');
         }
 
