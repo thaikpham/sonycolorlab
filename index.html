@@ -67,9 +67,10 @@
         .lang-btn.active { box-shadow: 0 0 0 2.5px var(--primary-accent); }
         .lang-btn svg { width: 1.5rem; height: 1.5rem; }
         
-        .landing-title { font-size: clamp(2.5rem, 8vw, 4.8rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
-        .quiz-question-title { font-size: clamp(1.8rem, 6vw, 3.5rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
-        .landing-subtitle { font-size: clamp(1rem, 4vw, 1.35rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
+        /* --- FONT SIZE ADJUSTMENTS --- */
+        .landing-title { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
+        .quiz-question-title { font-size: clamp(1.7rem, 5vw, 3rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
+        .landing-subtitle { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
         
         .view-transition { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
@@ -181,6 +182,7 @@
             <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                 <span data-translate-key="headerTitle" class="hidden sm:inline"></span>
+                <span class="ml-2 text-[10px] font-bold text-white bg-gradient-to-r from-purple-500 via-blue-500 to-teal-400 px-2.5 py-1 rounded-full uppercase tracking-wider self-center shadow-md">Beta</span>
             </button>
             <div class="flex items-center gap-2 md:gap-4">
                  <nav id="mainNav" class="hidden md:flex items-center gap-6">
@@ -329,6 +331,24 @@
             creativeLookHeader: {vi: "Khám Phá Creative Look", en: "Exploring Creative Looks"},
             creativeLookSubtitle: {vi: "Tạo nên thần thái cho bức ảnh ngay tại máy với 10 tuỳ chọn Creative Look có sẵn và khả năng tuỳ chỉnh sâu. Đây là tính năng mới hơn so với Creative Style trên các dòng máy cũ.", en: "Instantly create the mood for your photos in-camera with 10 pre-set Creative Looks and deep customization options. This is a newer feature compared to Creative Style on older models."},
             customParamsTitle: {vi: "Các thông số tuỳ chỉnh", en: "Customizable Parameters"},
+            recipeSuggestionsTitle: {vi: "Công thức Gợi ý", en: "Recipe Suggestions"},
+            cl_base: {vi: "Nền", en: "Base"},
+            cl_recipe_cinematic_name: {vi: "Dáng vẻ Điện ảnh", en: "Cinematic Look"},
+            cl_recipe_cinematic_desc: {vi: "Giảm tương phản và độ nét để tạo cảm giác mềm mại, điện ảnh.", en: "Reduces contrast and sharpness for a soft, cinematic feel."},
+            cl_recipe_vibrant_name: {vi: "Phong cảnh Rực rỡ", en: "Vibrant Landscape"},
+            cl_recipe_vibrant_desc: {vi: "Tăng cường màu sắc và độ trong để cảnh vật thêm sống động.", en: "Enhances color and clarity to make landscapes more vivid."},
+            cl_recipe_soft_portrait_name: {vi: "Chân dung Mềm mại", en: "Soft Portrait"},
+            cl_recipe_soft_portrait_desc: {vi: "Làm dịu da và giảm tương phản để có một bức chân dung nịnh mắt.", en: "Softens skin and reduces contrast for a flattering portrait."},
+            cl_recipe_teal_orange_name: {vi: "Hoài niệm Xanh & Cam", en: "Teal & Orange Nostalgia"},
+            cl_recipe_teal_orange_desc: {vi: "Tạo phong cách điện ảnh hiện đại với tông màu xanh ở vùng tối và cam ở vùng sáng.", en: "Creates a modern cinematic style with teal tones in the shadows and orange in the highlights."},
+            cl_recipe_dramatic_mono_name: {vi: "Kịch tính Đơn sắc", en: "Dramatic Monochrome"},
+            cl_recipe_dramatic_mono_desc: {vi: "Ảnh đen trắng tương phản cao, vùng tối sâu, phù hợp kiến trúc và đường phố.", en: "High-contrast B&W with deep shadows, great for architecture and street."},
+            cl_recipe_golden_hour_name: {vi: "Ánh nắng Mật ong", en: "Golden Hour Glow"},
+            cl_recipe_golden_hour_desc: {vi: "Tông màu ấm, mềm mại, tái tạo ánh sáng vàng óng của giờ vàng.", en: "A warm, soft tone that recreates the golden light of the magic hour."},
+            cl_recipe_urban_cool_name: {vi: "Đô thị Lạnh lùng", en: "Urban Cool"},
+            cl_recipe_urban_cool_desc: {vi: "Màu lạnh, hơi giảm bão hoà, mang lại vẻ đẹp hiện đại, sạch sẽ cho cảnh thành phố.", en: "A cool, slightly desaturated look that brings a modern, clean feel to city scenes."},
+            cl_recipe_vibrant_summer_name: {vi: "Mùa hè Rực rỡ", en: "Vibrant Summer"},
+            cl_recipe_vibrant_summer_desc: {vi: "Tăng cường độ bão hoà của các màu nóng, tạo cảm giác năng động, tươi vui của mùa hè.", en: "Boosts the saturation of warm colors for an energetic, joyful summer vibe."},
             cl_ST_name: {vi: "ST: Tiêu chuẩn", en:"ST: Standard"},
             cl_ST_desc: {vi: "Màu tiêu chuẩn cho đa dạng chủ thể và bối cảnh.", en:"The standard finish for a wide range of subjects and scenes."},
             cl_PT_name: {vi: "PT: Chân dung", en:"PT: Portrait"},
@@ -605,7 +625,6 @@
             creativeLooks: () => {
                 const looks = ['ST', 'PT', 'NT', 'VV', 'VV2', 'FL', 'IN', 'SH', 'BW', 'SE'];
                 const params = ['contrast', 'highlights', 'shadows', 'fading', 'saturation', 'sharpness', 'sharpness_range', 'clarity'];
-                
                 const creativeLookDetails = {
                     ST: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/12/ST-00000431.jpg' },
                     PT: { img: 'https://sony.scene7.com/is/image/sonyglobalsolutions/02_PT_sample1?$columnSlideShow$' },
@@ -618,10 +637,20 @@
                     BW: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/08/BW2-scaled.jpeg' },
                     SE: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/11/1-Satheeshan-Thiyagaraja_SE_-3-7-600433AWB-2048x1365.jpg' }
                 };
+                const suggestedRecipes = [
+                    { nameKey: 'cl_recipe_cinematic_name', descKey: 'cl_recipe_cinematic_desc', base: 'FL', settings: { Contrast: -2, Highlights: -1, Shadows: +1, Fade: 2, Saturation: -1, Sharpness: -2, Clarity: 0 } },
+                    { nameKey: 'cl_recipe_vibrant_name', descKey: 'cl_recipe_vibrant_desc', base: 'VV2', settings: { Contrast: +2, Highlights: 0, Shadows: 0, Fade: 0, Saturation: +3, Sharpness: +1, Clarity: +2 } },
+                    { nameKey: 'cl_recipe_soft_portrait_name', descKey: 'cl_recipe_soft_portrait_desc', base: 'PT', settings: { Contrast: -3, Highlights: +1, Shadows: +2, Fade: 1, Saturation: 0, Sharpness: -4, Clarity: +1 } },
+                    { nameKey: 'cl_recipe_teal_orange_name', descKey: 'cl_recipe_teal_orange_desc', base: 'FL', settings: { Contrast: +1, Highlights: -2, Shadows: +3, Fade: 3, Saturation: -2, Sharpness: -1, Clarity: 0 } },
+                    { nameKey: 'cl_recipe_dramatic_mono_name', descKey: 'cl_recipe_dramatic_mono_desc', base: 'BW', settings: { Contrast: +5, Highlights: -2, Shadows: -4, Fade: 0, Saturation: 0, Sharpness: +3, Clarity: +2 } },
+                    { nameKey: 'cl_recipe_golden_hour_name', descKey: 'cl_recipe_golden_hour_desc', base: 'ST', settings: { Contrast: -2, Highlights: 0, Shadows: +4, Fade: 2, Saturation: +2, Sharpness: -3, Clarity: 0 } },
+                    { nameKey: 'cl_recipe_urban_cool_name', descKey: 'cl_recipe_urban_cool_desc', base: 'NT', settings: { Contrast: +2, Highlights: -1, Shadows: -2, Fade: 1, Saturation: -3, Sharpness: +2, Clarity: +1 } },
+                    { nameKey: 'cl_recipe_vibrant_summer_name', descKey: 'cl_recipe_vibrant_summer_desc', base: 'VV2', settings: { Contrast: +1, Highlights: 0, Shadows: 0, Fade: 0, Saturation: +4, Sharpness: 0, Clarity: +3 } }
+                ];
 
                 const looksHTML = looks.map(look => `
                     <div class="bg-white rounded-xl shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
-                        <img src="${creativeLookDetails[look].img}" alt="Creative Look ${look}" class="w-full h-48 object-cover">
+                        <img src="${creativeLookDetails[look].img}" alt="Creative Look ${look}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/757575?text=Image+Not+Found';">
                         <div class="p-5">
                             <h4 class="font-bold text-lg" data-translate-key="cl_${look}_name"></h4>
                             <p class="text-sm text-gray-600 mt-1" data-translate-key="cl_${look}_desc"></p>
@@ -634,6 +663,24 @@
                         <p class="text-sm text-blue-700/80" data-translate-key="cl_param_${param.replace('_', '')}_desc"></p>
                     </div>`).join('');
 
+                const recipesHTML = suggestedRecipes.map(recipe => `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                         <div class="p-5">
+                            <h4 class="text-xl font-bold" data-translate-key="${recipe.nameKey}"></h4>
+                            <p class="text-sm text-gray-600 mt-1 mb-4" data-translate-key="${recipe.descKey}"></p>
+                            <div class="text-sm font-semibold text-white bg-blue-500 inline-block px-3 py-1 rounded-full mb-4"><span data-translate-key="cl_base"></span>: ${recipe.base}</div>
+                            <ul class="text-sm space-y-2">
+                                ${Object.entries(recipe.settings).map(([key, value]) => `
+                                    <li class="flex justify-between items-center">
+                                        <span class="text-gray-700">${key}</span>
+                                        <span class="font-bold text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">${value > 0 ? '+' : ''}${value}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `).join('');
+
                 return `
                 <div id="creativeLooksView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
                     <div class="max-w-7xl mx-auto">
@@ -645,6 +692,13 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             ${looksHTML}
                         </div>
+                        
+                        <section class="mt-12 md:mt-16">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="recipeSuggestionsTitle"></h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                ${recipesHTML}
+                            </div>
+                        </section>
 
                         <section class="mt-12 md:mt-16 bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="customParamsTitle"></h3>
