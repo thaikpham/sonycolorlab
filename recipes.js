@@ -1,4 +1,4 @@
-export const recipesData = [
+const recipesData = [
     {
         "id": "scl-01-vintage-memory",
         "name": { "vi": "SCL-01: Ký Ức Vintage", "en": "SCL-01: Vintage Memory" },
