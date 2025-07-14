@@ -68,7 +68,6 @@
         .lang-btn.active { box-shadow: 0 0 0 2.5px var(--primary-accent); }
         .lang-btn svg { width: 1.5rem; height: 1.5rem; }
         
-        /* --- FONT SIZE ADJUSTMENTS --- */
         .landing-title { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
         .quiz-question-title { font-size: clamp(1.7rem, 5vw, 3rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
         .landing-subtitle { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
@@ -121,12 +120,11 @@
         .lightbox-nav-btn:hover { background-color: rgba(0,0,0,0.7); }
         #lightbox-main-image { transition: opacity 0.2s ease-in-out; }
         
-        /* --- Explanation Tab & Interactive Grid Styles --- */
         #abgm-grid-interactive-container {
             width: 100%;
             max-width: 300px;
             margin: auto;
-            touch-action: none; /* Prevent scrolling on touch devices */
+            touch-action: none; 
         }
         #abgm-grid {
             position: relative;
@@ -148,7 +146,7 @@
             border-radius: 9999px;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             transform: translate(-50%, -50%);
-            pointer-events: none; /* So it doesn't interfere with grid clicks */
+            pointer-events: none;
         }
         .pp-infographic-item {
             background-color: #ffffff;
@@ -174,6 +172,15 @@
             font-weight: bold;
         }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGB56ZKQD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-QKGB56ZKQD');
+    </script>
 </head>
 <body>
     <div id="bg-blurs"><div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div></div>
@@ -186,9 +193,7 @@
                 <span class="ml-2 text-[10px] font-bold text-white bg-gradient-to-r from-purple-500 via-blue-500 to-teal-400 px-2.5 py-1 rounded-full uppercase tracking-wider self-center shadow-md">Beta</span>
             </button>
             <div class="flex items-center gap-2 md:gap-4">
-                 <!-- NEW: Updated Desktop Navigation with Dropdown -->
                  <nav id="mainNav" class="hidden md:flex items-center gap-2">
-                    <!-- Dropdown cho Picture Profile -->
                     <div class="relative" id="pp-dropdown-container">
                         <button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100">
                             <span data-translate-key="navPictureProfile"></span>
@@ -200,7 +205,6 @@
                             <button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
                         </div>
                     </div>
-                    <!-- Nút riêng cho Creative Look -->
                     <div class="relative">
                         <button data-view="creativeLooks" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navCreativeLooks"></button>
                     </div>
@@ -285,7 +289,6 @@
             navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
             navExplain: {vi:"Giải thích (PP)", en:"Guide (PP)"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
-            // UPDATED: Footer text
             footerText: {vi: "Phát triển bởi Sony Alpha Vietnam.", en: "Developed by Sony Alpha Vietnam."},
 
             // Home / Quiz
@@ -403,7 +406,6 @@
             cl_param_clarity_desc: {vi: "Giá trị càng cao, độ trong của ảnh càng được tăng cường.", en:"The higher the value, the more the clarity is enhanced."},
 
             // Explanation Tab
-            // NEW: Manifesto/Letter Content
             manifestoTitle: { vi: "Gửi những người bạn đồng hành sáng tạo,", en: "To our creative companions," },
             manifestoBody1: { vi: "Chúng tôi hiểu rằng, đối với mỗi người cầm máy, màu sắc không chỉ là một thông số kỹ thuật. Đó là một phần của câu chuyện, là cảm xúc, và là ngôn ngữ không lời bạn dùng để giao tiếp với thế giới.", en: "We understand that, for every photographer, color is more than just a technical parameter. It's part of the story, it's emotion, and it's the non-verbal language you use to communicate with the world." },
             manifestoBody2: { vi: "Có lẽ bạn, cũng như chúng tôi, đã từng trăn trở trên hành trình đi tìm một màu sắc \"độc nhất\" của riêng mình. Một hành trình thường bắt đầu bằng việc cố gắng tái tạo một công thức có sẵn. Nhưng chúng tôi tin rằng tiềm năng sáng tạo của bạn không nên bị giới hạn trong bất kỳ khuôn khổ nào.", en: "Perhaps you, like us, have wrestled with the journey to find a 'unique' color of your own. A journey that often begins by trying to replicate a pre-existing formula. But we believe your creative potential should not be confined to any framework." },
@@ -511,7 +513,6 @@
             { id: 'saturation', title: 'quizQ8', options: ['quizQ8A1', 'quizQ8A2', 'quizQ8A3'], values: ['High', 'Low', 'Medium'] }
         ];
         
-        // --- API CALLS (MOCKS) ---
         async function callAIApi(prompt, delay = 1000) {
             if (state.isAILoading) return;
             state.isAILoading = true;
@@ -548,7 +549,6 @@
             }
         }
         
-        // --- UTILITY & HELPER FUNCTIONS ---
         function t(key) { return translations[key]?.[state.currentLang] || key; }
         
         function applyTranslations() {
@@ -560,7 +560,6 @@
                     else { el.innerHTML = t(key); }
                 }
             });
-            // Specific for new nav
             document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
                 const key = 'nav' + btn.dataset.view.charAt(0).toUpperCase() + btn.dataset.view.slice(1);
                 btn.textContent = t(key);
@@ -599,7 +598,6 @@
             });
         }
         
-        // --- VIEW RENDERING LOGIC ---
         const viewTemplates = {
             home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
                 <h1 data-translate-key="landingTitle" class="landing-title"></h1>
@@ -778,7 +776,6 @@
             explain: () => `
             <div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-50 text-gray-800">
                 <div class="container mx-auto p-4 sm:p-6 md:p-12">
-                    <!-- NEW: Manifesto Section -->
                     <section class="mb-12 md:mb-16 bg-white rounded-2xl shadow-lg p-6 md:p-10">
                         <div class="max-w-3xl mx-auto text-lg text-gray-700 leading-relaxed">
                             <h2 class="font-semibold text-2xl mb-6" data-translate-key="manifestoTitle"></h2>
@@ -799,7 +796,6 @@
                     </header>
             
                     <main class="space-y-12 md:space-y-20">
-                        <!-- Quick Setup Guide -->
                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="tutorialTitle"></h3>
                             <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
@@ -827,7 +823,6 @@
                             </div>
                         </section>
 
-                        <!-- Two Pillars -->
                         <section>
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="pillarsTitle"></h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -870,7 +865,6 @@
                             </div>
                         </section>
                         
-                        <!-- Workflow -->
                         <section class="bg-gradient-to-b from-slate-100 to-white rounded-2xl shadow-lg p-6 md:p-8">
                            <h3 class="text-2xl md:text-3xl font-bold text-center" data-translate-key="ppInfographicTitle"></h3>
                            <p class="max-w-3xl mx-auto text-center text-gray-700 mt-2 mb-10" data-translate-key="ppInfographicDesc"></p>
@@ -927,7 +921,6 @@
             </div>`
         };
 
-        // --- Lightbox Functions ---
         function openLightbox(images, initialIndex = 0) {
             if (!images || images.length === 0) return;
             state.lightbox.isOpen = true;
@@ -987,16 +980,14 @@
                 let x = clientX - rect.left;
                 let y = clientY - rect.top;
 
-                // Clamp position within the grid
                 x = Math.max(0, Math.min(x, rect.width));
                 y = Math.max(0, Math.min(y, rect.height));
 
                 pointer.style.left = `${x}px`;
                 pointer.style.top = `${y}px`;
 
-                // Convert pixel position to A-B/G-M values (-9 to +9)
                 const abValue = Math.round((x / rect.width) * 18 - 9);
-                const gmValue = Math.round(((rect.height - y) / rect.height) * 18 - 9); // Invert Y-axis
+                const gmValue = Math.round(((rect.height - y) / rect.height) * 18 - 9); 
 
                 const abLabel = abValue > 0 ? `A${abValue}` : (abValue < 0 ? `B${Math.abs(abValue)}` : '0');
                 const gmLabel = gmValue > 0 ? `G${gmValue}` : (gmValue < 0 ? `M${Math.abs(gmValue)}` : '0');
@@ -1029,7 +1020,6 @@
 
 
         function renderView(viewName) {
-            state.currentView = viewName;
             return new Promise(resolve => {
                 const currentContent = mainContentEl.children[0];
                 if (currentContent) {
@@ -1140,7 +1130,6 @@
             }
         }
 
-        // --- RENDER & INITIALIZATION ---
         function renderLibraryList() {
             const container = document.getElementById('recipeListContainer'); if (!container) return;
             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
@@ -1211,15 +1200,12 @@
             recipeContentContainer.classList.remove('hidden');
             if(!isMobile) recipeMainPanel?.classList.remove('hidden');
             
-            // --- NEW Thumbnail Logic ---
             let thumbnailsHTML = '';
             const images = recipe.demoImages || [];
             let imageElements = [];
-            // Use existing demo images first
             images.forEach((imgSrc, index) => {
                 imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}"><img src="${imgSrc}" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"></div>`);
             });
-            // Fill up to 3 with placeholders
             const placeholdersNeeded = 3 - imageElements.length;
             const placeholderColor = recipe.personalityColor ? recipe.personalityColor.substring(1) : 'cccccc';
             for (let i = 0; i < placeholdersNeeded; i++) {
@@ -1227,7 +1213,6 @@
                  imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden"><img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover"></div>`);
             }
             thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElements.join('')}</div></div>`;
-            // --- END Thumbnail Logic ---
 
             recipeContentContainer.innerHTML = `
                 <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
@@ -1337,7 +1322,6 @@
             menu.classList.toggle('translate-x-full', !show);
         }
 
-        // NEW: Dropdown menu logic
         function handleDropdownNav() {
             const container = document.getElementById('pp-dropdown-container');
             const btn = document.getElementById('pp-dropdown-btn');
@@ -1379,11 +1363,9 @@
 
 
         function init() {
-            // Main click handler using event delegation
             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
                 
-                // Lightbox navigation
                 if (state.lightbox.isOpen) {
                     if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) { closeLightbox(); } 
                     else if (target.closest('#lightbox-next')) { navigateLightbox(1); } 
@@ -1393,13 +1375,12 @@
                         state.lightbox.currentIndex = parseInt(thumb.dataset.index);
                         updateLightboxContent();
                     }
-                    return; // Prevent other handlers when lightbox is open
+                    return; 
                 }
 
-                // --- General Navigation & Actions ---
                 const lightboxTrigger = target.closest('.lightbox-trigger-thumb');
                 const homeBtn = target.closest('#homeBtn');
-                const navBtn = target.closest('.nav-btn'); // Catches dropdown items and standalone buttons
+                const navBtn = target.closest('.nav-btn'); 
                 const mobileNavBtn = target.closest('.nav-btn-mobile');
                 const langBtn = target.closest('.lang-btn');
                 const startQuizBtn = target.closest('#startQuizBtn');
@@ -1416,7 +1397,6 @@
                 }
                 if (homeBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('home'); return; }
                 if (navBtn) { 
-                    // Close dropdown if an item is clicked
                     const dropdownMenu = document.getElementById('pp-dropdown-menu');
                     if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
                         dropdownMenu.classList.add('opacity-0', 'scale-95', 'hidden');
@@ -1430,9 +1410,6 @@
                 if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
                 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
 
-                // --- View-specific Actions ---
-
-                // Quiz Actions
                 const quizOption = target.closest('.quiz-option');
                 const quizChoice = target.closest('.quiz-choice-option');
                 if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
@@ -1455,7 +1432,6 @@
                     await renderView('recipeFormulas'); return; 
                 }
 
-                // Recipe Library Actions
                 const recipeItemContent = target.closest('.recipe-item-content');
                 const recipeDot = target.closest('.recipe-dot');
                 const recipeCompareCb = target.closest('.recipe-compare-cb');
@@ -1481,23 +1457,18 @@
                     return;
                 }
 
-                // Filters
                 if (document.getElementById('filtersContainer')?.contains(target)) { handleFilterClick(e); return; }
             });
             
-            // Search input listener
             document.body.addEventListener('input', (e) => {
                 if (e.target.id === 'searchInput') {
                     renderLibraryList();
                 }
             });
             
-            // Resize listener
             window.addEventListener('resize', () => { if(state.currentView === 'recipeFormulas') renderLibraryDetails(); });
             
-            // Initial render
             renderView('home');
-            // Init dropdown logic
             handleDropdownNav();
         }
 
