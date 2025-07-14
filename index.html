@@ -538,76 +538,7 @@
         
         // Maintainability: Tách dữ liệu ra khỏi logic chính.
         // Trong một ứng dụng lớn hơn, tệp này nên được tải từ một tệp JSON riêng.
-        const recipesData = [
-            {
-                "id": "scl-01-vintage-memory",
-                "name": { "vi": "SCL-01: Ký Ức Vintage", "en": "SCL-01: Vintage Memory" },
-                "description": { "vi": "Tông màu phim cổ điển, độ bão hòa thấp và tương phản mềm, như một ký ức xa xăm.", "en": "A classic film tone with low saturation and soft contrast, like a distant memory." },
-                "type": "color", "contrast": "low", "saturation": "low",
-                "whiteBalance": "8600K, B2.5-M3",
-                "settings": { "Black level": "-4", "Gamma": "Cine4", "Black Gamma": "Middle -6", "Knee": "Manual 82.5% +3", "Color Mode": "Still", "Saturation": "-7", "Color Phase": "0" },
-                "colorDepth": { "R": "-5", "G": "+6", "B": "0", "C": "+2", "M": "+6", "Y": "+4" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+1", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "6", "Hi-Light Detail": "3" },
-                "personalityColor": "#a1887f", "coords": { "x": -6.5, "y": -5.5 },
-                "demoImages": ["https://images.unsplash.com/photo-1524222717473-730000096953?q=80&w=2070&auto=format&fit=crop", "https://images.unsplash.com/photo-1506377711776-dbdc2f2a2a2a?q=80&w=1974&auto=format&fit=crop"]
-            },
-            {
-                "id": "scl-02-emerald-dream",
-                "name": { "vi": "SCL-02: Giấc Mơ Lục Bảo", "en": "SCL-02: Emerald Dream" },
-                "description": { "vi": "Tông màu cổ điển với sắc xanh lá cây đặc trưng, mang lại cảm giác trong trẻo và hoài niệm.", "en": "A classic tone with characteristic green hues, providing a clear and nostalgic feel." },
-                "type": "color", "contrast": "low", "saturation": "low",
-                "whiteBalance": "3700K, A7-M0.5",
-                "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +6", "Knee": "Manual 80% +3", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-2" },
-                "colorDepth": { "R": "-3", "G": "+6", "B": "-2", "C": "-2", "M": "-4", "Y": "-2" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+1", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "6", "Hi-Light Detail": "3" },
-                "personalityColor": "#66bb6a", "coords": { "x": -3.0, "y": -0.5 },
-                "demoImages": ["https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop", "https://images.unsplash.com/photo-1476231682828-37e571bc172f?q=80&w=1974&auto=format&fit=crop"]
-            },
-            {
-                "id": "scl-03-urban-cool",
-                "name": { "vi": "SCL-03: Đô Thị Lạnh", "en": "SCL-03: Urban Cool" },
-                "description": { "vi": "Màu xanh lạnh, hiện đại, phù hợp với kiến trúc và cảnh quan thành phố.", "en": "A cool, modern blue tone, suitable for architecture and cityscapes." },
-                "type": "color", "contrast": "medium", "saturation": "medium",
-                "whiteBalance": "7500K, B4-M1",
-                "settings": { "Black level": "+2", "Gamma": "Cine1", "Black Gamma": "Narrow +2", "Knee": "Auto", "Color Mode": "Pro", "Saturation": "0", "Color Phase": "+1" },
-                "colorDepth": { "R": "0", "G": "-2", "B": "+4", "C": "+3", "M": "-3", "Y": "-2" },
-                "detailSettings": { "Level": "-5" },
-                "personalityColor": "#5c6bc0", "coords": { "x": 2.0, "y": 1.5 },
-                "demoImages": ["https://images.unsplash.com/photo-1505722134657-12b083e0d832?q=80&w=1974&auto=format&fit=crop", "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop"]
-            },
-            {
-                "id": "scl-04-golden-hour",
-                "name": { "vi": "SCL-04: Giờ Vàng", "en": "SCL-04: Golden Hour" },
-                "description": { "vi": "Tông màu ấm áp, rực rỡ, tái tạo ánh sáng của hoàng hôn.", "en": "A warm, vibrant tone that reproduces the light of sunset." },
-                "type": "color", "contrast": "medium", "saturation": "high",
-                "whiteBalance": "4200K, A5-M2",
-                "settings": { "Black level": "-2", "Gamma": "Still", "Black Gamma": "Middle +1", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "-1" },
-                "colorDepth": { "R": "+5", "G": "+1", "B": "-4", "C": "-2", "M": "+3", "Y": "+6" },
-                "detailSettings": { "Level": "-3" },
-                "personalityColor": "#ffb74d", "coords": { "x": 1.0, "y": 7.0 },
-                "demoImages": ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop", "https://images.unsplash.com/photo-1542282416-250a25590f55?q=80&w=2070&auto=format&fit=crop"]
-            },
-            {
-                "id": "scl-bw-01-noir",
-                "name": { "vi": "SCL-BW01: Phim Đen", "en": "SCL-BW01: Noir" },
-                "description": { "vi": "Trắng đen tương phản cao, vùng tối sâu, mang lại cảm giác kịch tính.", "en": "High-contrast black and white with deep shadows, creating a dramatic feel." },
-                "type": "bw", "contrast": "high", "saturation": "low",
-                "whiteBalance": "5500K",
-                "settings": { "Black level": "-8", "Gamma": "Cine2", "Black Gamma": "Narrow -7", "Knee": "Manual 95% +2", "Color Mode": "B/W", "Saturation": "0", "Color Phase": "0" },
-                "detailSettings": { "Level": "+3" },
-                "personalityColor": "#424242", "coords": { "x": 8.0, "y": 0 }
-            },
-             {
-                "id": "scl-bw-02-soft-mono",
-                "name": { "vi": "SCL-BW02: Đơn Sắc Mềm", "en": "SCL-BW02: Soft Mono" },
-                "description": { "vi": "Trắng đen tương phản thấp, chuyển tông mượt mà, phù hợp chân dung và tĩnh vật.", "en": "Low-contrast black and white with smooth tonal transitions, ideal for portraits and still life." },
-                "type": "bw", "contrast": "low", "saturation": "low",
-                "whiteBalance": "6000K",
-                "settings": { "Black level": "+5", "Gamma": "Cine4", "Black Gamma": "Wide +5", "Knee": "Auto", "Color Mode": "B/W", "Saturation": "0", "Color Phase": "0" },
-                "detailSettings": { "Level": "-7" },
-                "personalityColor": "#9e9e9e", "coords": { "x": -7.0, "y": 0 }
-            }
-        ];
+import { recipesData } from './recipes.js';
 
 
         // =================================================================
