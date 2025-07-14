@@ -17,6 +17,9 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     
+    <!-- Tải dữ liệu công thức trước script chính -->
+    <script src="./recipes.js" defer></script>
+
     <style>
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
@@ -288,11 +291,12 @@
         </div>
     </div>
 
-    <script type="module">
+    <script>
         // --- Code Quality: Thêm comments để phân chia các khu vực logic ---
         // =================================================================
         // 1. STATE & CONFIGURATION
         // =================================================================
+        
         const state = {
             currentLang: 'vi',
             currentView: 'home',
@@ -536,10 +540,6 @@
             { id: 'saturation', title: 'quizQ8', options: ['quizQ8A1', 'quizQ8A2', 'quizQ8A3'], values: ['High', 'Low', 'Medium'] }
         ];
         
-        // Maintainability: Tách dữ liệu ra khỏi logic chính.
-        // Trong một ứng dụng lớn hơn, tệp này nên được tải từ một tệp JSON riêng.
-
-
         // =================================================================
         // 2. API & DATA HANDLING
         // =================================================================
