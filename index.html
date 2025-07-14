@@ -186,11 +186,24 @@
                 <span class="ml-2 text-[10px] font-bold text-white bg-gradient-to-r from-purple-500 via-blue-500 to-teal-400 px-2.5 py-1 rounded-full uppercase tracking-wider self-center shadow-md">Beta</span>
             </button>
             <div class="flex items-center gap-2 md:gap-4">
-                 <nav id="mainNav" class="hidden md:flex items-center gap-6">
-                     <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
-                     <button data-view="creativeLooks" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
-                     <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
-                     <button data-view="explain" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors"></button>
+                 <!-- NEW: Updated Desktop Navigation with Dropdown -->
+                 <nav id="mainNav" class="hidden md:flex items-center gap-2">
+                    <!-- Dropdown cho Picture Profile -->
+                    <div class="relative" id="pp-dropdown-container">
+                        <button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100">
+                            <span data-translate-key="navPictureProfile"></span>
+                            <svg class="w-4 h-4 transition-transform" id="pp-dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95">
+                            <button data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
+                            <button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
+                            <button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
+                        </div>
+                    </div>
+                    <!-- Nút riêng cho Creative Look -->
+                    <div class="relative">
+                        <button data-view="creativeLooks" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navCreativeLooks"></button>
+                    </div>
                  </nav>
                 <div class="flex items-center gap-2">
                     <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
@@ -209,10 +222,10 @@
         <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
             <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
             <nav class="mt-16 flex flex-col gap-6 text-center">
-                <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
-                <button data-view="creativeLooks" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
-                <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
-                <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2"></button>
+                <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navRecipeFormulas"></button>
+                <button data-view="creativeLooks" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navCreativeLooks"></button>
+                <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navFeaturedPhotos"></button>
+                <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navExplain"></button>
             </nav>
         </div>
     </div>
@@ -266,12 +279,14 @@
         const translations = {
             // General
             headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
+            navPictureProfile: {vi: "Picture Profile", en: "Picture Profile"},
             navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
             navCreativeLooks: {vi:"Creative Look", en:"Creative Look"},
             navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
             navExplain: {vi:"Giải thích (PP)", en:"Guide (PP)"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
-            footerText: {vi: "Phát triển bởi Sony Alpha Vietnam. Tính năng AI cung cấp bởi Google Gemini.", en: "Developed by Sony Alpha Vietnam. AI features powered by Google Gemini."},
+            // UPDATED: Footer text
+            footerText: {vi: "Phát triển bởi Sony Alpha Vietnam.", en: "Developed by Sony Alpha Vietnam."},
 
             // Home / Quiz
             landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
@@ -388,6 +403,17 @@
             cl_param_clarity_desc: {vi: "Giá trị càng cao, độ trong của ảnh càng được tăng cường.", en:"The higher the value, the more the clarity is enhanced."},
 
             // Explanation Tab
+            // NEW: Manifesto/Letter Content
+            manifestoTitle: { vi: "Gửi những người bạn đồng hành sáng tạo,", en: "To our creative companions," },
+            manifestoBody1: { vi: "Chúng tôi hiểu rằng, đối với mỗi người cầm máy, màu sắc không chỉ là một thông số kỹ thuật. Đó là một phần của câu chuyện, là cảm xúc, và là ngôn ngữ không lời bạn dùng để giao tiếp với thế giới.", en: "We understand that, for every photographer, color is more than just a technical parameter. It's part of the story, it's emotion, and it's the non-verbal language you use to communicate with the world." },
+            manifestoBody2: { vi: "Có lẽ bạn, cũng như chúng tôi, đã từng trăn trở trên hành trình đi tìm một màu sắc \"độc nhất\" của riêng mình. Một hành trình thường bắt đầu bằng việc cố gắng tái tạo một công thức có sẵn. Nhưng chúng tôi tin rằng tiềm năng sáng tạo của bạn không nên bị giới hạn trong bất kỳ khuôn khổ nào.", en: "Perhaps you, like us, have wrestled with the journey to find a 'unique' color of your own. A journey that often begins by trying to replicate a pre-existing formula. But we believe your creative potential should not be confined to any framework." },
+            manifestoBody3: { vi: "Vì vậy, tại Alpha AI Color Lab, chúng tôi theo đuổi một triết lý khác biệt: <strong>Không tạo ra những bản sao, mà kiến tạo nên những dấu ấn màu sắc mang đậm tính cá nhân.</strong>", en: "Therefore, at Alpha AI Color Lab, we pursue a different philosophy: <strong>We don't create copies; we build personalized color signatures.</strong>" },
+            manifestoBody4: { vi: "Dự án này không ra đời để \"giả lập\" một màu phim cụ thể nào. Thay vào đó, chúng tôi xem công cụ Picture Profile mạnh mẽ của Sony như một bảng màu vô hạn. Các chuyên gia của chúng tôi đã dành tâm huyết nghiên cứu, không phải để \"sao chép\", mà để \"sáng tác\" — khai phá những khả năng tiềm ẩn, tạo ra các sắc thái và sự chuyển màu độc đáo mà bạn khó có thể tìm thấy ở nơi khác.", en: "This project was not born to 'emulate' any specific film stock. Instead, we see Sony's powerful Picture Profile tool as an infinite creative palette. Our experts have dedicated their efforts to research, not to 'imitate', but to 'compose'—unlocking hidden potentials to create unique shades and color transitions that you'd be hard-pressed to find elsewhere." },
+            manifestoBody5: { vi: "Mỗi công thức bạn tìm thấy tại đây không phải là một bộ lọc có sẵn. Đó là một tác phẩm nguyên bản, được thiết kế đầy chủ ý để giúp bạn khẳng định ngôn ngữ hình ảnh độc đáo của riêng mình.", en: "Every recipe you find here is not a pre-made filter. It is an original work, intentionally designed to help you assert your own unique visual language." },
+            manifestoBody6: { vi: "Mục tiêu cuối cùng của chúng tôi là trao cho bạn quyền năng định hình câu chuyện bằng màu sắc, truyền thêm cảm hứng cho mỗi khung hình ngay từ khoảnh khắc bấm máy.", en: "Our ultimate goal is to empower you to shape your own narrative with color, inspiring every frame from the moment you press the shutter." },
+            manifestoBody7: { vi: "Hãy ngừng tìm kiếm một vẻ ngoài có sẵn. Hãy bắt đầu hành trình kiến tạo nên dấu ấn của riêng bạn.", en: "Stop searching for a ready-made look. Start the journey of creating your own signature." },
+            manifestoSignature: { vi: "Trân trọng,<br><strong>Sony Alpha Vietnam.</strong>", en: "Sincerely,<br><strong>Sony Alpha Vietnam.</strong>" },
+            
             explainHeader: {vi: "Làm Chủ Màu Sắc Cùng Sony Alpha", en:"Mastering Color with Sony Alpha"},
             explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh", en:"A comprehensive guide to creating your unique color signature for stills"},
             pillarsTitle: {vi: "Hai Trụ Cột Sáng Tạo Màu Sắc", en:"The Two Pillars of Color Creation"},
@@ -534,8 +560,11 @@
                     else { el.innerHTML = t(key); }
                 }
             });
-            document.querySelectorAll('#mainNav .nav-btn').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
-            document.querySelectorAll('#mobileNavMenu .nav-btn-mobile').forEach(btn => btn.textContent = t('nav'+btn.dataset.view.charAt(0).toUpperCase()+btn.dataset.view.slice(1)));
+            // Specific for new nav
+            document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
+                const key = 'nav' + btn.dataset.view.charAt(0).toUpperCase() + btn.dataset.view.slice(1);
+                btn.textContent = t(key);
+            });
             document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
             document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
         }
@@ -749,6 +778,21 @@
             explain: () => `
             <div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-50 text-gray-800">
                 <div class="container mx-auto p-4 sm:p-6 md:p-12">
+                    <!-- NEW: Manifesto Section -->
+                    <section class="mb-12 md:mb-16 bg-white rounded-2xl shadow-lg p-6 md:p-10">
+                        <div class="max-w-3xl mx-auto text-lg text-gray-700 leading-relaxed">
+                            <h2 class="font-semibold text-2xl mb-6" data-translate-key="manifestoTitle"></h2>
+                            <p class="mb-4" data-translate-key="manifestoBody1"></p>
+                            <p class="mb-4" data-translate-key="manifestoBody2"></p>
+                            <p class="mb-6 font-semibold text-xl text-center text-blue-600 py-4" data-translate-key="manifestoBody3"></p>
+                            <p class="mb-4" data-translate-key="manifestoBody4"></p>
+                            <p class="mb-4" data-translate-key="manifestoBody5"></p>
+                            <p class="mb-6" data-translate-key="manifestoBody6"></p>
+                            <p class="mb-8 font-bold" data-translate-key="manifestoBody7"></p>
+                            <p class="text-right" data-translate-key="manifestoSignature"></p>
+                        </div>
+                    </section>
+
                     <header class="text-center mb-12 md:mb-16 pt-4 md:pt-8">
                         <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="explainHeader"></h1>
                         <h2 class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="explainSubtitle"></h2>
@@ -1293,6 +1337,47 @@
             menu.classList.toggle('translate-x-full', !show);
         }
 
+        // NEW: Dropdown menu logic
+        function handleDropdownNav() {
+            const container = document.getElementById('pp-dropdown-container');
+            const btn = document.getElementById('pp-dropdown-btn');
+            const menu = document.getElementById('pp-dropdown-menu');
+            const chevron = document.getElementById('pp-dropdown-chevron');
+
+            if (!container || !btn || !menu) return;
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = menu.classList.contains('hidden');
+                if (isHidden) {
+                    menu.classList.remove('hidden');
+                    setTimeout(() => {
+                        menu.classList.remove('opacity-0', 'scale-95');
+                        chevron.style.transform = 'rotate(180deg)';
+                    }, 10);
+                } else {
+                    menu.classList.add('opacity-0', 'scale-95');
+                    chevron.style.transform = 'rotate(0deg)';
+                    menu.addEventListener('transitionend', () => {
+                        menu.classList.add('hidden');
+                    }, { once: true });
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!container.contains(e.target)) {
+                    menu.classList.add('opacity-0', 'scale-95');
+                    chevron.style.transform = 'rotate(0deg)';
+                    if (!menu.classList.contains('hidden')) {
+                        menu.addEventListener('transitionend', () => {
+                            menu.classList.add('hidden');
+                        }, { once: true });
+                    }
+                }
+            });
+        }
+
+
         function init() {
             // Main click handler using event delegation
             document.body.addEventListener('click', async (e) => {
@@ -1314,7 +1399,7 @@
                 // --- General Navigation & Actions ---
                 const lightboxTrigger = target.closest('.lightbox-trigger-thumb');
                 const homeBtn = target.closest('#homeBtn');
-                const navBtn = target.closest('.nav-btn');
+                const navBtn = target.closest('.nav-btn'); // Catches dropdown items and standalone buttons
                 const mobileNavBtn = target.closest('.nav-btn-mobile');
                 const langBtn = target.closest('.lang-btn');
                 const startQuizBtn = target.closest('#startQuizBtn');
@@ -1330,7 +1415,18 @@
                     await renderView(mobileNavBtn.dataset.view); return;
                 }
                 if (homeBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('home'); return; }
-                if (navBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView(navBtn.dataset.view); return; }
+                if (navBtn) { 
+                    // Close dropdown if an item is clicked
+                    const dropdownMenu = document.getElementById('pp-dropdown-menu');
+                    if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
+                        dropdownMenu.classList.add('opacity-0', 'scale-95', 'hidden');
+                        document.getElementById('pp-dropdown-chevron').style.transform = 'rotate(0deg)';
+                    }
+                    state.selectedRecipeId = null; 
+                    state.isMobileDetailActive = false; 
+                    await renderView(navBtn.dataset.view); 
+                    return; 
+                }
                 if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
                 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
 
@@ -1401,6 +1497,8 @@
             
             // Initial render
             renderView('home');
+            // Init dropdown logic
+            handleDropdownNav();
         }
 
         document.addEventListener("DOMContentLoaded", init);
