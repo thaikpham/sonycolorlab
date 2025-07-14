@@ -1,22 +1,17 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO: Thêm thẻ meta description để mô tả nội dung trang cho công cụ tìm kiếm -->
-    <meta name="description" content="Khám phá, tạo và so sánh các công thức màu Picture Profile cho máy ảnh Sony Alpha với sự trợ giúp của AI. Tìm màu sắc đặc trưng của riêng bạn.">
-    
     <title>Sony AI Color Lab Web-App</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z' stroke='%231d1d1f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3C/path%3E%3C/svg%3E">
-    
-    <!-- Performance: Sử dụng 'defer' để các script không chặn việc render HTML -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- OPTIMIZATION: Defer non-critical scripts to speed up initial page load -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-
     <style>
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
@@ -42,11 +37,11 @@
             --text-secondary: #6e6e73;
         }
         
-        .glass-panel {    
-            background: var(--glass-bg);    
-            backdrop-filter: blur(40px) saturate(180%);    
-            -webkit-backdrop-filter: blur(40px) saturate(180%);    
-            border: 1px solid var(--glass-border);    
+        .glass-panel {   
+            background: var(--glass-bg);   
+            backdrop-filter: blur(40px) saturate(180%);   
+            -webkit-backdrop-filter: blur(40px) saturate(180%);   
+            border: 1px solid var(--glass-border);   
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
             border-radius: 24px;
         }
@@ -54,10 +49,10 @@
             .glass-panel { border-radius: 28px; }
         }
 
-        .recipe-item.selected {    
-            background-color: rgba(0, 122, 255, 0.1);    
-            border-left: 4px solid var(--primary-accent);    
-            color: var(--text-primary);    
+        .recipe-item.selected {   
+            background-color: rgba(0, 122, 255, 0.1);   
+            border-left: 4px solid var(--primary-accent);   
+            color: var(--text-primary);   
             transform: translateX(4px);
             box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
         }
@@ -83,17 +78,7 @@
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
 
-        /* Accessibility: Thêm outline khi focus vào các phần tử tương tác */
-        .quiz-option, .quiz-choice-option, .lightbox-trigger-thumb, .btn, .nav-btn, .lang-btn, .recipe-item-content {
-             outline: 2px solid transparent;
-             outline-offset: 2px;
-             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .quiz-option:focus-visible, .quiz-choice-option:focus-visible, .lightbox-trigger-thumb:focus-visible, .btn:focus-visible, .nav-btn:focus-visible, .lang-btn:focus-visible, .recipe-item-content:focus-visible {
-             outline-color: var(--primary-accent);
-        }
-
-        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1.25rem; border-radius: 1.25rem; cursor: pointer; font-weight: 600; font-size: 1.1rem; text-align: center; }
+        .quiz-option { background-color: rgba(0,0,0,0.03); border: 2px solid transparent; padding: 1.25rem; border-radius: 1.25rem; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; font-size: 1.1rem; text-align: center; }
         .quiz-option:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.07); }
         .quiz-option.selected { border-color: var(--primary-accent); background-color: rgba(0, 122, 255, 0.1); color: var(--primary-accent); }
         
@@ -111,7 +96,7 @@
         #comparisonModalContent { background-color: #f0f9ff; border-radius: 0 0 28px 28px; }
         .prose-comparison h3 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); border-bottom: 2px solid var(--primary-accent); padding-bottom: 0.5rem; }
 
-        .quiz-choice-option { cursor: pointer; background: rgba(255,255,255,0.7); border-radius: 20px;}
+        .quiz-choice-option { cursor: pointer; transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; background: rgba(255,255,255,0.7); border-radius: 20px;}
         .quiz-choice-option:hover { transform: scale(1.03); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
 
         .overflow-y-auto::-webkit-scrollbar { width: 10px; }
@@ -130,7 +115,7 @@
         #lightbox.hidden { opacity: 0; pointer-events: none; }
         #lightbox .lightbox-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         #lightbox.hidden .lightbox-content { transform: scale(0.95); opacity: 0; }
-        .lightbox-thumb { cursor: pointer; border: 2px solid transparent; }
+        .lightbox-thumb { cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; }
         .lightbox-thumb.active { border-color: var(--primary-accent); transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 122, 255, 0.5); }
         .lightbox-nav-btn { background-color: rgba(0,0,0,0.4); transition: background-color 0.2s ease; }
         .lightbox-nav-btn:hover { background-color: rgba(0,0,0,0.7); }
@@ -187,6 +172,51 @@
             color: #16a34a;
             font-weight: bold;
         }
+
+        /* Styles for the new Color Tool */
+        .upload-box {
+            border: 2px dashed #d1d5db;
+            transition: all 0.2s ease-in-out;
+        }
+        .upload-box.dragover {
+            border-color: var(--primary-accent);
+            background-color: rgba(0, 122, 255, 0.05);
+        }
+        #comparison-slider-container {
+            position: relative;
+            overflow: hidden;
+        }
+        #after-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%; /* Initial slider position */
+            overflow: hidden;
+            border-right: 2px solid white;
+            resize: horizontal;
+        }
+        #after-image-container img {
+            height: 100%;
+            width: 100%;
+            max-width: none;
+            object-fit: cover;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        #slider-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: white;
+            cursor: ew-resize;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
     </style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGB56ZKQD"></script>
@@ -198,89 +228,79 @@
       gtag('config', 'G-QKGB56ZKQD');
     </script>
 </head>
-<body class="bg-slate-50">
+<body>
     <div id="bg-blurs"><div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div></div>
     
     <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
-        <!-- Maintainability: Sử dụng thẻ <header> cho phần đầu trang -->
         <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
-            <!-- Accessibility: Thêm aria-label cho nút chỉ có icon -->
-            <button id="homeBtn" aria-label="Go to homepage" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                 <span data-translate-key="headerTitle" class="hidden sm:inline"></span>
                 <span class="ml-2 text-[10px] font-bold text-white bg-gradient-to-r from-purple-500 via-blue-500 to-teal-400 px-2.5 py-1 rounded-full uppercase tracking-wider self-center shadow-md">Beta</span>
             </button>
             <div class="flex items-center gap-2 md:gap-4">
-                <!-- Maintainability: Sử dụng thẻ <nav> cho khu vực điều hướng chính -->
-                <nav id="mainNav" class="hidden md:flex items-center gap-2" aria-label="Main navigation">
+                 <nav id="mainNav" class="hidden md:flex items-center gap-2">
                     <div class="relative" id="pp-dropdown-container">
-                        <button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100" aria-haspopup="true" aria-expanded="false">
+                        <button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100">
                             <span data-translate-key="navPictureProfile"></span>
                             <svg class="w-4 h-4 transition-transform" id="pp-dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        <div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95" role="menu">
-                            <button role="menuitem" data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
-                            <button role="menuitem" data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
-                            <button role="menuitem" data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
+                        <div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95">
+                            <button data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
+                            <button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
+                            <button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
                         </div>
                     </div>
+                    <!-- NEW: Color Tool Tab -->
                     <div class="relative">
-                        <button data-view="creativeLooks" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navCreativeLooks"></button>
+                        <button data-view="colorTool" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navColorTool"></button>
                     </div>
-                </nav>
+                 </nav>
                 <div class="flex items-center gap-2">
-                    <!-- Accessibility: Thêm aria-label cho các nút ngôn ngữ -->
-                    <button id="langEN" class="lang-btn" aria-label="Switch to English"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
-                    <button id="langVI" class="lang-btn" aria-label="Chuyển sang tiếng Việt"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
+                    <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
+                    <button id="langVI" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
                 </div>
-                <!-- Accessibility: Thêm aria-label cho nút hamburger -->
-                <button id="hamburgerBtn" class="md:hidden p-2 rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-gray-500" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
+                <button id="hamburgerBtn" class="md:hidden p-2 rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-gray-500">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
             </div>
         </header>
         
-        <!-- Maintainability: Sử dụng thẻ <main> cho nội dung chính của trang -->
-        <main id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></main>
+        <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
     </div>
     
     <div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
         <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
-            <!-- Accessibility: Thêm aria-label cho nút đóng -->
-            <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2" aria-label="Close menu">&times;</button>
-            <nav class="mt-16 flex flex-col gap-6 text-center" aria-label="Mobile navigation">
+            <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
+            <nav class="mt-16 flex flex-col gap-6 text-center">
                 <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navRecipeFormulas"></button>
-                <button data-view="creativeLooks" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navCreativeLooks"></button>
+                <button data-view="colorTool" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navColorTool"></button>
                 <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navFeaturedPhotos"></button>
                 <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navExplain"></button>
             </nav>
         </div>
     </div>
 
-    <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="comparisonModalTitle">
+    <div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col">
             <div class="p-4 md:p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
                 <h2 id="comparisonModalTitle" class="text-xl md:text-2xl font-bold"></h2>
-                <!-- Accessibility: Thêm aria-label cho nút đóng -->
-                <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10" aria-label="Close comparison modal">&times;</button>
+                <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
             </div>
             <div id="comparisonModalContent" class="p-6 md:p-8 overflow-y-auto prose-comparison"></div>
         </div>
     </div>
 
-    <div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300" role="dialog" aria-modal="true">
+    <div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
         <div id="lightbox-bg" class="absolute inset-0"></div>
         <div class="lightbox-content relative w-full max-w-4xl max-h-full">
-             <!-- Accessibility: Thêm aria-label cho nút đóng -->
-            <button id="lightbox-close" class="absolute -top-4 -right-2 md:top-0 md:-right-12 text-white text-5xl font-bold z-10 leading-none p-2" aria-label="Close image viewer">&times;</button>
+            <button id="lightbox-close" class="absolute -top-4 -right-2 md:top-0 md:-right-12 text-white text-5xl font-bold z-10 leading-none p-2">&times;</button>
             <div class="relative">
-                <!-- Accessibility: alt text sẽ được cập nhật bằng JS -->
-                <img id="lightbox-main-image" src="" alt="Ảnh xem chi tiết" class="w-full h-auto max-h-[75vh] object-contain rounded-lg shadow-2xl bg-black/50">
-                <!-- Accessibility: Thêm aria-label cho các nút điều hướng -->
-                <button id="lightbox-prev" class="lightbox-nav-btn absolute top-1/2 left-2 md:-left-16 -translate-y-1/2 p-2 md:p-3 rounded-full text-white" aria-label="Previous image">
+                <img id="lightbox-main-image" src="" alt="Ảnh demo công thức" class="w-full h-auto max-h-[75vh] object-contain rounded-lg shadow-2xl bg-black/50">
+                <button id="lightbox-prev" class="lightbox-nav-btn absolute top-1/2 left-2 md:-left-16 -translate-y-1/2 p-2 md:p-3 rounded-full text-white">
                     <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                <button id="lightbox-next" class="lightbox-nav-btn absolute top-1/2 right-2 md:-right-16 -translate-y-1/2 p-2 md:p-3 rounded-full text-white" aria-label="Next image">
+                <button id="lightbox-next" class="lightbox-nav-btn absolute top-1/2 right-2 md:-right-16 -translate-y-1/2 p-2 md:p-3 rounded-full text-white">
                     <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
@@ -288,127 +308,8 @@
         </div>
     </div>
 
-    <script>
-        // --- Code Quality: Thêm comments để phân chia các khu vực logic ---
-        // =================================================================
-        // 1. DATA & CONFIGURATION
-        // =================================================================
-        
-        const recipesData = [
-            {
-                "id": "scl-01-vintage-memory",
-                "name": { "vi": "SCL-01: Ký Ức Vintage", "en": "SCL-01: Vintage Memory" },
-                "description": { "vi": "Tông màu phim cổ điển, độ bão hòa thấp và tương phản mềm, như một ký ức xa xăm.", "en": "A classic film tone with low saturation and soft contrast, like a distant memory." },
-                "type": "color", "contrast": "low", "saturation": "low",
-                "whiteBalance": "8600K, B2.5-M3",
-                "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 82.5% +4", "Color Mode": "Still", "Saturation": "-8", "Color Phase": "+1" },
-                "colorDepth": { "R": "-6", "G": "+7", "B": "+1", "C": "+3", "M": "+7", "Y": "+5" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#a1887f", "coords": { "x": -7.5, "y": -6.5 },
-                "demoImages": ["https://images.unsplash.com/photo-1524222717473-730000096953?q=80&w=2070&auto=format&fit=crop", "https://images.unsplash.com/photo-1506377711776-dbdc2f2a2a2a?q=80&w=1974&auto=format&fit=crop"]
-            },
-            {
-                "id": "scl-02-emerald-dream",
-                "name": { "vi": "SCL-02: Giấc Mơ Lục Bảo", "en": "SCL-02: Emerald Dream" },
-                "description": { "vi": "Tông màu cổ điển với sắc xanh lá cây đặc trưng, mang lại cảm giác trong trẻo và hoài niệm.", "en": "A classic tone with characteristic green hues, providing a clear and nostalgic feel." },
-                "type": "color", "contrast": "low", "saturation": "low",
-                "whiteBalance": "3700K, A7-M0.5",
-                "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-3" },
-                "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#66bb6a", "coords": { "x": -4.0, "y": -1.5 },
-                "demoImages": ["https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop", "https://images.unsplash.com/photo-1476231682828-37e571bc172f?q=80&w=1974&auto=format&fit=crop"]
-            },
-            {
-                "id": "scl-03-neon-noir",
-                "name": { "vi": "SCL-03: Đêm Màu", "en": "SCL-03: Neon Noir" },
-                "description": { "vi": "Tông màu xanh lá cây đậm chất điện ảnh, lý tưởng cho những cảnh đêm huyền ảo và rực rỡ.", "en": "A cinematic green tone, ideal for magical and vibrant night scenes." },
-                "type": "color", "contrast": "high", "saturation": "high",
-                "whiteBalance": "3000K, A7-G7",
-                "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide +7", "Knee": "Manual 105% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+32", "Color Phase": "+5" },
-                "colorDepth": { "R": "+5", "G": "-1", "B": "+2", "C": "+5", "M": "+5", "Y": "+3" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#880e4f", "coords": { "x": 8.5, "y": 9.0 }
-            },
-            {
-                "id": "scl-04-urban-shadows",
-                "name": { "vi": "SCL-04: Bóng Đô Thị", "en": "SCL-04: Urban Shadows" },
-                "description": { "vi": "Đen trắng tương phản cao, vùng tối sâu và chi tiết, hoàn hảo cho kiến trúc và đường phố.", "en": "High-contrast black and white with deep, detailed shadows, perfect for architecture and street." },
-                "type": "bw", "contrast": "high", "saturation": "low",
-                "whiteBalance": "AWB",
-                "settings": { "Black level": "-10", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +4", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
-                "colorDepth": { "R": "-4", "G": "+1", "B": "+3", "C": "+3", "M": "-4", "Y": "-1" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#616161", "coords": { "x": 6.0, "y": -3.0 }
-            },
-            {
-                "id": "scl-05-faded-canvas",
-                "name": { "vi": "SCL-05: Vải Bạc Màu", "en": "SCL-05: Faded Canvas" },
-                "description": { "vi": "Đen trắng với hiệu ứng 'faded', vùng tối được nâng lên tạo cảm giác hoài niệm, mơ màng.", "en": "Black and white with a 'faded' effect, where shadows are lifted to create a nostalgic, dreamy feel." },
-                "type": "bw", "contrast": "low", "saturation": "medium",
-                "whiteBalance": "AWB",
-                "settings": { "Black level": "+3", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
-                "colorDepth": { "R": "+5", "G": "+5", "B": "+7", "C": "+2", "M": "+7", "Y": "-4" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#9e9e9e", "coords": { "x": -4.0, "y": 0.0 }
-            },
-            {
-                "id": "scl-06-sun-drenched",
-                "name": { "vi": "SCL-06: Nắng Đượm", "en": "SCL-06: Sun-drenched" },
-                "description": { "vi": "Tông màu ấm áp của cồn cát dưới ánh nắng, mang đậm cảm giác hoài cổ và tự do.", "en": "The warm tones of sunlit dunes, carrying a deep sense of nostalgia and freedom." },
-                "type": "color", "contrast": "medium", "saturation": "high",
-                "whiteBalance": "AWB, A2-G1.75",
-                "settings": { "Black level": "+4", "Gamma": "S-Cinetone", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+3" },
-                "colorDepth": { "R": "+3", "G": "+7", "B": "+4", "C": "-5", "M": "-3", "Y": "-3" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#ffb300", "coords": { "x": 1.5, "y": 9.5 }
-            },
-            {
-                "id": "scl-07-silver-screen",
-                "name": { "vi": "SCL-07: Màn Bạc", "en": "SCL-07: Silver Screen" },
-                "description": { "vi": "Đen trắng tương phản cao, mô phỏng những thước phim điện ảnh kinh điển, sắc nét.", "en": "High-contrast black and white, simulating classic, sharp motion picture film." },
-                "type": "bw", "contrast": "high", "saturation": "high",
-                "whiteBalance": "5500K",
-                "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
-                "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "+7", "Y": "+1" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#424242", "coords": { "x": 9.0, "y": 8.0 }
-            },
-            {
-                "id": "scl-08-meadow-lullaby",
-                "name": { "vi": "SCL-08: Ru Đồng", "en": "SCL-08: Meadow Lullaby" },
-                "description": { "vi": "Tông màu ấm áp, mềm mại, gợi cảm giác của ánh nắng ban mai trên một đồng cỏ yên bình.", "en": "A warm, soft tone that evokes the feeling of morning sun on a peaceful meadow." },
-                "type": "color", "contrast": "low", "saturation": "medium",
-                "whiteBalance": "4200K, A7-M2",
-                "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+14", "Color Phase": "-3" },
-                "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-7", "M": "-4", "Y": "-1" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#fff176", "coords": { "x": -7.0, "y": 4.5 }
-            },
-            {
-                "id": "scl-09-crimson-peak",
-                "name": { "vi": "SCL-09: Đỉnh Thẫm", "en": "SCL-09: Crimson Peak" },
-                "description": { "vi": "Màu sắc mạnh mẽ, tương phản cao, với tông đỏ và cam được nhấn mạnh, tạo nên sự kịch tính.", "en": "Strong colors with high contrast, with emphasized red and orange tones, creating a dramatic effect." },
-                "type": "color", "contrast": "high", "saturation": "high",
-                "whiteBalance": "8500K, B3.5-G1",
-                "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 105% +5", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+1" },
-                "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#e53935", "coords": { "x": 9.5, "y": 9.5 }
-            },
-            {
-                "id": "scl-10-golden-ember",
-                "name": { "vi": "SCL-10: Tàn Tro Vàng", "en": "SCL-10: Golden Ember" },
-                "description": { "vi": "Tái tạo ánh sáng vàng óng và mềm mại của buổi hoàng hôn, mang lại cảm giác ấm áp và lãng mạn.", "en": "Recreates the golden, soft light of sunset, providing a warm and romantic feel." },
-                "type": "color", "contrast": "medium", "saturation": "high",
-                "whiteBalance": "5000K, A2-M1",
-                "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+25", "Color Phase": "+2" },
-                "colorDepth": { "R": "-3", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "+1" },
-                "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
-                "personalityColor": "#e57373", "coords": { "x": 4.5, "y": 6.0 }
-            }
-        ];
-        
+    <script type="module">
+        // --- STATE & CONFIGURATION ---
         const state = {
             currentLang: 'vi',
             currentView: 'home',
@@ -420,26 +321,48 @@
             quizAnswers: {},
             activeFilters: { type: 'all', contrast: 'all', saturation: 'all' },
             isMobileDetailActive: false,
-            lightbox: { isOpen: false, images: [], currentIndex: 0 }
+            lightbox: { isOpen: false, images: [], currentIndex: 0 },
+            colorTool: {
+                referenceImage: null,
+                sourceImage: null,
+                palette: [],
+                isGraded: false,
+            }
         };
 
-        let mainContentEl;
+        const mainContentEl = document.getElementById('mainContent');
         let activeCharts = {};
-
-        // Security: Cấu hình Marked.js để loại bỏ HTML nguy hiểm.
-        // Trong một ứng dụng thực tế, nên sử dụng một thư viện chuyên dụng như DOMPurify.
-        // marked.use({ renderer: new marked.Renderer(), gfm: true, breaks: false, pedantic: false });
 
         const translations = {
             // General
             headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
             navPictureProfile: {vi: "Picture Profile", en: "Picture Profile"},
             navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-            navCreativeLooks: {vi:"Creative Look", en:"Creative Look"},
+            navColorTool: {vi: "Công cụ tạo màu", en: "Color Tool"}, // New
             navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
             navExplain: {vi:"Giải thích (PP)", en:"Guide (PP)"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
             footerText: {vi: "Phát triển bởi Sony Alpha Vietnam.", en: "Developed by Sony Alpha Vietnam."},
+
+            // Color Tool
+            colorToolTitle: {vi: "Công Cụ Tạo Màu AI", en: "AI Color Tool"},
+            colorToolSubtitle: {vi: "Bắt màu từ ảnh tham khảo và tạo file LUT (.CUBE) cho máy ảnh Sony của bạn.", en: "Match colors from a reference image and create a LUT file (.CUBE) for your Sony camera."},
+            uploadReferenceTitle: {vi: "1. Tải lên ảnh tham khảo", en: "1. Upload Reference Image"},
+            uploadReferenceDesc: {vi: "Chọn một ảnh có màu sắc bạn yêu thích.", en: "Choose an image with a color palette you love."},
+            uploadSourceTitle: {vi: "2. Tải lên ảnh của bạn", en: "2. Upload Your Image"},
+            uploadSourceDesc: {vi: "Chọn ảnh bạn muốn áp dụng màu mới.", en: "Choose the photo you want to apply the new look to."},
+            uploadBtnText: {vi: "Chọn ảnh...", en: "Choose image..."},
+            extractedPaletteTitle: {vi: "Bảng màu được trích xuất", en: "Extracted Palette"},
+            previewTitle: {vi: "Xem trước & Tải về", en: "Preview & Export"},
+            beforeLabel: {vi: "Trước", en: "Before"},
+            afterLabel: {vi: "Sau", en: "After"},
+            generateLutBtn: {vi: "Tạo & Tải về .CUBE LUT", en: "Generate & Download .CUBE LUT"},
+            lutWorkflowTitle: {vi: "Cách sử dụng LUT với Sony Creators' App", en: "How to use LUTs with Sony Creators' App"},
+            lutStep1: {vi: "<strong>Bước 1:</strong> Tải file .CUBE vừa tạo về máy tính hoặc điện thoại của bạn.", en: "<strong>Step 1:</strong> Download the generated .CUBE file to your computer or phone."},
+            lutStep2: {vi: "<strong>Bước 2:</strong> Kết nối máy ảnh Sony với máy tính/điện thoại và mở ứng dụng Sony Creators' App.", en: "<strong>Step 2:</strong> Connect your Sony camera to your computer/phone and open the Sony Creators' App."},
+            lutStep3: {vi: "<strong>Bước 3:</strong> Trong Creators' App, tìm đến mục quản lý LUTs (User LUTs) và chọn 'Import'.", en: "<strong>Step 3:</strong> In the Creators' App, navigate to the LUTs management section (User LUTs) and select 'Import'."},
+            lutStep4: {vi: "<strong>Bước 4:</strong> Chọn file .CUBE bạn đã tải về để nạp vào một trong các vị trí User LUT (U1-U16) trên máy ảnh.", en: "<strong>Step 4:</strong> Select the .CUBE file you downloaded to load it into one of the User LUT slots (U1-U16) on your camera."},
+            lutStep5: {vi: "<strong>Bước 5:</strong> Trên máy ảnh, vào Picture Profile, chọn một PP bất kỳ và ở mục 'LUT/Look', chọn User LUT tương ứng (ví dụ: U1).", en: "<strong>Step 5:</strong> On your camera, go to Picture Profile, select any PP, and in the 'LUT/Look' setting, choose the corresponding User LUT (e.g., U1)."},
 
             // Home / Quiz
             landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
@@ -496,64 +419,16 @@
             contributeDesc: {vi: "Tải lên ảnh của bạn để chia sẻ ẩn danh. (Chỉ mang tính minh hoạ, ảnh sẽ không được lưu trữ).", en: "Upload your photo to share anonymously. (For demonstration purposes only, photos will not be saved)."},
             uploadBtn: {vi: "Chọn Ảnh từ Máy tính", en: "Choose Photo From Computer"},
             
-            // Creative Looks
-            creativeLookHeader: {vi: "Khám Phá Creative Look", en: "Exploring Creative Looks"},
-            creativeLookSubtitle: {vi: "Tạo nên thần thái cho bức ảnh ngay tại máy với 10 tuỳ chọn Creative Look có sẵn và khả năng tuỳ chỉnh sâu. Đây là tính năng mới hơn so với Creative Style trên các dòng máy cũ.", en: "Instantly create the mood for your photos in-camera with 10 pre-set Creative Looks and deep customization options. This is a newer feature compared to Creative Style on older models."},
-            customParamsTitle: {vi: "Các thông số tuỳ chỉnh", en: "Customizable Parameters"},
-            recipeSuggestionsTitle: {vi: "Công thức Gợi ý", en: "Recipe Suggestions"},
-            cl_base: {vi: "Nền", en: "Base"},
-            cl_recipe_cinematic_name: {vi: "Dáng vẻ Điện ảnh", en: "Cinematic Look"},
-            cl_recipe_cinematic_desc: {vi: "Giảm tương phản và độ nét để tạo cảm giác mềm mại, điện ảnh.", en: "Reduces contrast and sharpness for a soft, cinematic feel."},
-            cl_recipe_vibrant_name: {vi: "Phong cảnh Rực rỡ", en: "Vibrant Landscape"},
-            cl_recipe_vibrant_desc: {vi: "Tăng cường màu sắc và độ trong để cảnh vật thêm sống động.", en: "Enhances color and clarity to make landscapes more vivid."},
-            cl_recipe_soft_portrait_name: {vi: "Chân dung Mềm mại", en: "Soft Portrait"},
-            cl_recipe_soft_portrait_desc: {vi: "Làm dịu da và giảm tương phản để có một bức chân dung nịnh mắt.", en: "Softens skin and reduces contrast for a flattering portrait."},
-            cl_recipe_teal_orange_name: {vi: "Hoài niệm Xanh & Cam", en: "Teal & Orange Nostalgia"},
-            cl_recipe_teal_orange_desc: {vi: "Tạo phong cách điện ảnh hiện đại với tông màu xanh ở vùng tối và cam ở vùng sáng.", en: "Creates a modern cinematic style with teal tones in the shadows and orange in the highlights."},
-            cl_recipe_dramatic_mono_name: {vi: "Kịch tính Đơn sắc", en: "Dramatic Monochrome"},
-            cl_recipe_dramatic_mono_desc: {vi: "Ảnh đen trắng tương phản cao, vùng tối sâu, phù hợp kiến trúc và đường phố.", en: "High-contrast B&W with deep shadows, great for architecture and street."},
-            cl_recipe_golden_hour_name: {vi: "Ánh nắng Mật ong", en: "Golden Hour Glow"},
-            cl_recipe_golden_hour_desc: {vi: "Tông màu ấm, mềm mại, tái tạo ánh sáng vàng óng của giờ vàng.", en: "A warm, soft tone that recreates the golden light of the magic hour."},
-            cl_recipe_urban_cool_name: {vi: "Đô thị Lạnh lùng", en: "Urban Cool"},
-            cl_recipe_urban_cool_desc: {vi: "Màu lạnh, hơi giảm bão hoà, mang lại vẻ đẹp hiện đại, sạch sẽ cho cảnh thành phố.", en: "A cool, slightly desaturated look that brings a modern, clean feel to city scenes."},
-            cl_recipe_vibrant_summer_name: {vi: "Mùa hè Rực rỡ", en: "Vibrant Summer"},
-            cl_recipe_vibrant_summer_desc: {vi: "Tăng cường độ bão hoà của các màu nóng, tạo cảm giác năng động, tươi vui của mùa hè.", en: "Boosts the saturation of warm colors for an energetic, joyful summer vibe."},
-            cl_ST_name: {vi: "ST: Tiêu chuẩn", en:"ST: Standard"},
-            cl_ST_desc: {vi: "Màu tiêu chuẩn cho đa dạng chủ thể và bối cảnh.", en:"The standard finish for a wide range of subjects and scenes."},
-            cl_PT_name: {vi: "PT: Chân dung", en:"PT: Portrait"},
-            cl_PT_desc: {vi: "Tái tạo tông màu da mềm mại, lý tưởng cho chụp chân dung.", en:"For capturing skin in a soft tone, ideally suited for shooting portraits."},
-            cl_NT_name: {vi: "NT: Trung tính", en:"NT: Neutral"},
-            cl_NT_desc: {vi: "Độ bão hòa và sắc nét thấp hơn, phù hợp cho ảnh cần hậu kỳ.", en:"Lower saturation and sharpness for shooting images before they are to be processed."},
-            cl_VV_name: {vi: "VV: Rực rỡ", en:"VV: Vivid"},
-            cl_VV_desc: {vi: "Tăng cường độ bão hòa và tương phản để tạo ấn tượng mạnh.", en:"Saturation and contrast are heightened for a striking impression of colorful scenes and subjects."},
-            cl_VV2_name: {vi: "VV2: Rực rỡ 2", en:"VV2: Vivid 2"},
-            cl_VV2_desc: {vi: "Tạo ra ảnh trong và sáng với màu sắc sống động. Hiệu quả với chủ thể nhiều màu sắc.", en:"Creates a highly clear image with bright and vibrant colours. Effective for colourful subjects."},
-            cl_FL_name: {vi: "FL: Giả lập phim", en:"FL: Film-like"},
-            cl_FL_desc: {vi: "Tạo cảm giác như phim điện ảnh với màu sắc điềm tĩnh và bầu trời ấn tượng.", en:"For a film-like expression with calm colours and a stunning sky."},
-            cl_IN_name: {vi: "IN: Chụp lấy ngay", en:"IN: Instant Camera"},
-            cl_IN_desc: {vi: "Tạo cảm giác hoài cổ như ảnh chụp từ máy ảnh lấy liền.", en:"For a nostalgic expression like photos from an instant camera."},
-            cl_SH_name: {vi: "SH: Soft High-key", en:"SH: Soft High-key"},
-            cl_SH_desc: {vi: "Tạo không khí trong trẻo, tươi sáng, mềm mại và nhẹ nhàng.", en:"For creating a bright, transparent, soft, and gentle atmosphere."},
-            cl_BW_name: {vi: "BW: Đen trắng", en:"BW: Black & White"},
-            cl_BW_desc: {vi: "Tạo ảnh đơn sắc không bao giờ lỗi thời.", en:"For creating a timeless Black & White image."},
-            cl_SE_name: {vi: "SE: Nâu đỏ", en:"SE: Sepia"},
-            cl_SE_desc: {vi: "Tạo ảnh màu nâu đỏ cổ điển.", en:"For creating an archaic Sepia image."},
-            cl_param_contrast: {vi: "Tương phản (Contrast)", en: "Contrast"},
-            cl_param_contrast_desc: {vi: "Giá trị càng cao, sự khác biệt giữa vùng sáng và tối càng được nhấn mạnh.", en:"The higher the value, the more the difference between light and dark is emphasized."},
-            cl_param_highlights: {vi: "Vùng sáng (Highlights)", en: "Highlights"},
-            cl_param_highlights_desc: {vi: "Điều chỉnh độ sáng của các vùng sáng.", en:"Adjusts the brightness of the bright areas."},
-            cl_param_shadows: {vi: "Vùng tối (Shadows)", en: "Shadows"},
-            cl_param_shadows_desc: {vi: "Điều chỉnh độ tối của các vùng tối.", en:"Adjusts the darkness of the dark areas."},
-            cl_param_fading: {vi: "Độ bạc màu (Fading)", en: "Fading"},
-            cl_param_fading_desc: {vi: "Giá trị càng cao, hiệu ứng bạc màu càng rõ rệt.", en:"The higher the value, the more the faded-out effect is applied."},
-            cl_param_saturation: {vi: "Bão hòa (Saturation)", en: "Saturation"},
-            cl_param_saturation_desc: {vi: "Giá trị càng cao, màu sắc càng sống động.", en:"The higher the value, the more vivid the colours."},
-            cl_param_sharpness: {vi: "Độ nét (Sharpness)", en: "Sharpness"},
-            cl_param_sharpness_desc: {vi: "Điều chỉnh đường viền. Giá trị càng cao, đường viền càng được làm nổi bật.", en:"Adjusts the outline. The higher the value, the more the outlines are accentuated."},
-            cl_param_sharpness_range: {vi: "Phạm vi nét (Sharpness Range)", en: "Sharpness Range"},
-            cl_param_sharpness_range_desc: {vi: "Điều chỉnh phạm vi áp dụng độ nét.", en:"Adjusts the range to which sharpness is applied."},
-            cl_param_clarity: {vi: "Độ trong (Clarity)", en: "Clarity"},
-            cl_param_clarity_desc: {vi: "Giá trị càng cao, độ trong của ảnh càng được tăng cường.", en:"The higher the value, the more the clarity is enhanced."},
+            // Explanation Tab
+            manifestoTitle: { vi: "Gửi những người bạn đồng hành sáng tạo,", en: "To our creative companions," },
+            manifestoBody1: { vi: "Chúng tôi hiểu rằng, đối với mỗi người cầm máy, màu sắc không chỉ là một thông số kỹ thuật. Đó là một phần của câu chuyện, là cảm xúc, và là ngôn ngữ không lời bạn dùng để giao tiếp với thế giới.", en: "We understand that, for every photographer, color is more than just a technical parameter. It's part of the story, it's emotion, and it's the non-verbal language you use to communicate with the world." },
+            manifestoBody2: { vi: "Có lẽ bạn, cũng như chúng tôi, đã từng trăn trở trên hành trình đi tìm một màu sắc \"độc nhất\" của riêng mình. Một hành trình thường bắt đầu bằng việc cố gắng tái tạo một công thức có sẵn. Nhưng chúng tôi tin rằng tiềm năng sáng tạo của bạn không nên bị giới hạn trong bất kỳ khuôn khổ nào.", en: "Perhaps you, like us, have wrestled with the journey to find a 'unique' color of your own. A journey that often begins by trying to replicate a pre-existing formula. But we believe your creative potential should not be confined to any framework." },
+            manifestoBody3: { vi: "Vì vậy, tại Alpha AI Color Lab, chúng tôi theo đuổi một triết lý khác biệt: <strong>Không tạo ra những bản sao, mà kiến tạo nên những dấu ấn màu sắc mang đậm tính cá nhân.</strong>", en: "Therefore, at Alpha AI Color Lab, we pursue a different philosophy: <strong>We don't create copies; we build personalized color signatures.</strong>" },
+            manifestoBody4: { vi: "Dự án này không ra đời để \"giả lập\" một màu phim cụ thể nào. Thay vào đó, chúng tôi xem công cụ Picture Profile mạnh mẽ của Sony như một bảng màu vô hạn. Các chuyên gia của chúng tôi đã dành tâm huyết nghiên cứu, không phải để \"sao chép\", mà để \"sáng tác\" — khai phá những khả năng tiềm ẩn, tạo ra các sắc thái và sự chuyển màu độc đáo mà bạn khó có thể tìm thấy ở nơi khác.", en: "This project was not born to 'emulate' any specific film stock. Instead, we see Sony's powerful Picture Profile tool as an infinite creative palette. Our experts have dedicated their efforts to research, not to 'imitate', but to 'compose'—unlocking hidden potentials to create unique shades and color transitions that you'd be hard-pressed to find elsewhere." },
+            manifestoBody5: { vi: "Mỗi công thức bạn tìm thấy tại đây không phải là một bộ lọc có sẵn. Đó là một tác phẩm nguyên bản, được thiết kế đầy chủ ý để giúp bạn khẳng định ngôn ngữ hình ảnh độc đáo của riêng mình.", en: "Every recipe you find here is not a pre-made filter. It is an original work, intentionally designed to help you assert your own unique visual language." },
+            manifestoBody6: { vi: "Mục tiêu cuối cùng của chúng tôi là trao cho bạn quyền năng định hình câu chuyện bằng màu sắc, truyền thêm cảm hứng cho mỗi khung hình ngay từ khoảnh khắc bấm máy.", en: "Our ultimate goal is to empower you to shape your own narrative with color, inspiring every frame from the moment you press the shutter." },
+            manifestoBody7: { vi: "Hãy ngừng tìm kiếm một vẻ ngoài có sẵn. Hãy bắt đầu hành trình kiến tạo nên dấu ấn của riêng bạn.", en: "Stop searching for a ready-made look. Start the journey of creating your own signature." },
+            manifestoSignature: { vi: "Trân trọng,<br><strong>Sony Alpha Vietnam.</strong>", en: "Sincerely,<br><strong>Sony Alpha Vietnam.</strong>" },
             
             explainHeader: {vi: "Làm Chủ Màu Sắc Cùng Sony Alpha", en:"Mastering Color with Sony Alpha"},
             explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh", en:"A comprehensive guide to creating your unique color signature for stills"},
@@ -604,20 +479,20 @@
             exposureNoteDesc: { vi: "Hầu hết các công thức được tối ưu khi chụp ở mức phơi sáng 0EV với chế độ đo sáng 'Toàn màn hình trung bình' (Entire Screen Avg.). Các công thức dựa trên S-Log có thể cần tăng phơi sáng (overexpose) để có kết quả tốt nhất.", en: "Most recipes are optimized for 0EV exposure with 'Entire Screen Avg.' metering mode. Recipes based on S-Log may require overexposure for best results." },
 
             // Quiz Questions
-            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"},    
-            quizQ1A1: {vi: "Cổ điển", en: "Classic"},    
-            quizQ1A2: {vi: "Hiện đại", en: "Modern"},    
-            quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"},    
+            quizQ1: {vi: "Gu thẩm mỹ của bạn?", en: "Your aesthetic?"},   
+            quizQ1A1: {vi: "Cổ điển", en: "Classic"},   
+            quizQ1A2: {vi: "Hiện đại", en: "Modern"},   
+            quizQ1A3: {vi: "Điện ảnh", en: "Cinematic"},   
             quizQ1A4: {vi: "Nghệ thuật", en: "Artistic"},
-            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"},    
-            quizQ2A1: {vi: "Chân dung", en: "Portraits"},    
-            quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"},    
-            quizQ2A3: {vi: "Đường phố", en: "Street"},    
+            quizQ2: {vi: "Kế hoạch chụp hôm nay?", en: "Today's shoot plan?"},   
+            quizQ2A1: {vi: "Chân dung", en: "Portraits"},   
+            quizQ2A2: {vi: "Phong cảnh", en: "Landscapes"},   
+            quizQ2A3: {vi: "Đường phố", en: "Street"},   
             quizQ2A4: {vi: "Đời thường", en: "Everyday"},
-            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"},    
-            quizQ3A1: {vi: "Vui vẻ", en: "Happy"},    
-            quizQ3A2: {vi: "Trầm tư", en: "Contemplative"},    
-            quizQ3A3: {vi: "Năng động", en: "Dynamic"},    
+            quizQ3: {vi: "Tâm trạng lúc này?", en: "Current mood?"},   
+            quizQ3A1: {vi: "Vui vẻ", en: "Happy"},   
+            quizQ3A2: {vi: "Trầm tư", en: "Contemplative"},   
+            quizQ3A3: {vi: "Năng động", en: "Dynamic"},   
             quizQ3A4: {vi: "Bình yên", en: "Peaceful"},
             quizQ4: {vi: "Bạn thích du lịch đến đâu?", en: "Where do you like to travel?"},
             quizQ4A1: {vi: "Biển xanh", en: "Beaches"},
@@ -652,32 +527,16 @@
             { id: 'saturation', title: 'quizQ8', options: ['quizQ8A1', 'quizQ8A2', 'quizQ8A3'], values: ['High', 'Low', 'Medium'] }
         ];
         
-        // =================================================================
-        // 2. API & DATA HANDLING
-        // =================================================================
-
-        /**
-         * Simulates a call to an AI API.
-         * @param {string} prompt - The prompt to send to the AI.
-         * @param {number} delay - The simulated network delay in milliseconds.
-         * @returns {Promise<any>} - The simulated AI response.
-         */
         async function callAIApi(prompt, delay = 1000) {
             if (state.isAILoading) return;
             state.isAILoading = true;
-            updateUIAfterAILoading(); // Show spinner immediately
-
             try {
-                // Simulate network delay
                 await new Promise(resolve => setTimeout(resolve, delay));
-                
-                // Mock different API responses based on the prompt
                 if (prompt.includes("Recommend TWO recipes")) {
                     const idx1 = Math.floor(Math.random() * recipesData.length);
                     let idx2 = Math.floor(Math.random() * recipesData.length);
                     while (idx1 === idx2) { idx2 = Math.floor(Math.random() * recipesData.length); }
-                    const mockRecipe1 = recipesData[idx1]; 
-                    const mockRecipe2 = recipesData[idx2];
+                    const mockRecipe1 = recipesData[idx1]; const mockRecipe2 = recipesData[idx2];
                     return [
                         { recipeId: mockRecipe1.id, moodDescription: mockRecipe1.description[state.currentLang] },
                         { recipeId: mockRecipe2.id, moodDescription: mockRecipe2.description[state.currentLang] }
@@ -697,37 +556,21 @@
                     return `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
                 }
             } catch (error) {
-                console.error("AI API call failed:", error); 
-                return null;
+                console.error("AI API call failed:", error); return null;
             } finally {
                 state.isAILoading = false;
-                updateUIAfterAILoading(); // Hide spinner
+                updateUIAfterAILoading();
             }
         }
         
-        // =================================================================
-        // 3. UTILITY & TRANSLATION FUNCTIONS
-        // =================================================================
-
-        /**
-         * Gets the translation for a given key in the current language.
-         * @param {string} key - The translation key.
-         * @returns {string} - The translated string.
-         */
-        function t(key) { 
-            return translations[key]?.[state.currentLang] || key; 
-        }
+        function t(key) { return translations[key]?.[state.currentLang] || key; }
         
-        /**
-         * Applies all translations to the current DOM.
-         */
         function applyTranslations() {
-            document.documentElement.lang = state.currentLang;
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.dataset.translateKey;
                 if (translations[key] && translations[key][state.currentLang]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
-                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }   
+                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }   
                     else { el.innerHTML = t(key); }
                 }
             });
@@ -739,33 +582,18 @@
             document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
         }
 
-        // =================================================================
-        // 4. RENDER FUNCTIONS & VIEW TEMPLATES
-        // =================================================================
-
-        /**
-         * Creates an HTML grid for recipe settings.
-         * @param {object} settings - The settings object.
-         * @returns {string} - The generated HTML string.
-         */
         function createSettingsGrid(settings) {
             if (!settings) return '';
             return Object.entries(settings).map(([key, value]) => `<div class="flex flex-col"><span class="text-xs text-neutral-500">${key}</span><span class="font-semibold text-lg">${value}</span></div>`).join('');
         };
 
-        /**
-         * Creates the full HTML for a single recipe's details.
-         * @param {object} recipe - The recipe object.
-         * @param {boolean} isMainView - Flag for different styling.
-         * @returns {string} - The generated HTML string.
-         */
         function createFullRecipeHTML(recipe, isMainView = false) {
             const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
-            const noteHTML = (recipe.notes && recipe.notes[state.currentLang])    
+            const noteHTML = (recipe.notes && recipe.notes[state.currentLang])   
                 ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-xl">
-                            <p class="font-bold" data-translate-key="noteTitle"></p>
-                            <p>${recipe.notes[state.currentLang]}</p>
-                        </div>` : '';
+                        <p class="font-bold" data-translate-key="noteTitle"></p>
+                        <p>${recipe.notes[state.currentLang]}</p>
+                      </div>` : '';
 
             return `${noteHTML}<div class="space-y-6 mt-6">
                 <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
@@ -775,24 +603,15 @@
             </div>`;
         }
 
-        /**
-         * Updates UI elements that show a loading state.
-         */
         function updateUIAfterAILoading() {
-            document.querySelectorAll('button').forEach(btn => {
-                if (state.isAILoading && btn.id === 'aiTuningBtn' && state.currentView === 'recipeFormulas' && state.selectedRecipeId) {
-                    btn.disabled = true;
-                    btn.dataset.originalText = btn.innerHTML;
-                    btn.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
-                } else if (!state.isAILoading && btn.dataset.originalText) {
-                    btn.innerHTML = btn.dataset.originalText;
+            document.querySelectorAll('button:disabled').forEach(btn => {
+                if (btn.querySelector('.spinner')) {
+                    btn.innerHTML = btn.dataset.originalText || '';
                     btn.disabled = false;
-                    delete btn.dataset.originalText;
                 }
             });
         }
         
-        // --- View Templates ---
         const viewTemplates = {
             home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
                 <h1 data-translate-key="landingTitle" class="landing-title"></h1>
@@ -803,8 +622,7 @@
             quiz: () => {
                 if (state.quizStep >= quizQuestions.length) return '';
                 const q = quizQuestions[state.quizStep];
-                // Accessibility: Added role="button" and tabindex="0" to make divs keyboard-focusable
-                const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}" role="button" tabindex="0"><span data-translate-key="${optKey}"></span></div>`).join('');
+                const optionsHTML = q.options.map((optKey, index) => `<div class="quiz-option" data-value="${q.values[index]}"><span data-translate-key="${optKey}"></span></div>`).join('');
                 const gridCols = q.options.length > 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2';
                 return `<div id="quizView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 view-transition">
                     <div class="w-full max-w-4xl text-center px-4" data-quiz-group="${q.id}">
@@ -818,20 +636,20 @@
                 <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
                     <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
                         <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2>
-                        <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder" aria-label="Search recipes">
+                        <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                         <div id="filtersContainer" class="space-y-4 text-sm mb-4">
-                            <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                            <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                            <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                             <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                         </div>
                         <div id="recipeListContainer" class="space-y-2 pt-4 border-t flex-grow overflow-y-auto pr-2 -mr-3"></div>
                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0"></div>
                     </aside>
-                    <section id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex" aria-labelledby="recipe-main-panel-heading">
+                    <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
                            <div id="chartsContainer">
                                <div class="text-center mb-10">
-                                   <h2 id="recipe-main-panel-heading" class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                                   <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
                                </div>
                                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                                    <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
@@ -840,106 +658,93 @@
                            </div>
                            <div id="recipeContent" class="hidden"></div>
                         </div>
-                    </section>
-                    <section id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden" aria-label="Recipe details">
+                    </main>
+                    <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
                         <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
                         <div class="glass-panel p-6 overflow-y-auto">
                            <div id="recipeContentMobile"></div>
                         </div>
-                    </section>
+                    </div>
                 </div>`,
             
-            creativeLooks: () => {
-                const looks = ['ST', 'PT', 'NT', 'VV', 'VV2', 'FL', 'IN', 'SH', 'BW', 'SE'];
-                const params = ['contrast', 'highlights', 'shadows', 'fading', 'saturation', 'sharpness', 'sharpness_range', 'clarity'];
-                const creativeLookDetails = {
-                    ST: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/12/ST-00000431.jpg' },
-                    PT: { img: 'https://sony.scene7.com/is/image/sonyglobalsolutions/02_PT_sample1?$columnSlideShow$' },
-                    NT: { img: 'https://sony.scene7.com/is/image/sonyglobalsolutions/03_NT_sample1?$columnSlideShow$' },
-                    VV: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/08/DSC00213-2048x1536.jpg' },
-                    VV2: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/06/VV2_SEL2450G_DSC00638_compressed-2048x1365.jpg' },
-                    FL: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/06/FL_SEL2450G_DSC02112_compressed-2048x1365.jpg' },
-                    IN: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/09/DSC01031-2048x1365.jpg' },
-                    SH: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/08/jomnot_SH_01-2048x1365.jpg' },
-                    BW: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/08/BW2-scaled.jpeg' },
-                    SE: { img: 'https://www.sony-asia.com/microsite/rmdc/creativelooks/wp-content/uploads/2024/11/1-Satheeshan-Thiyagaraja_SE_-3-7-600433AWB-2048x1365.jpg' }
-                };
-                const suggestedRecipes = [
-                    { nameKey: 'cl_recipe_cinematic_name', descKey: 'cl_recipe_cinematic_desc', base: 'FL', settings: { Contrast: -2, Highlights: -1, Shadows: +1, Fade: 2, Saturation: -1, Sharpness: -2, Clarity: 0 } },
-                    { nameKey: 'cl_recipe_vibrant_name', descKey: 'cl_recipe_vibrant_desc', base: 'VV2', settings: { Contrast: +2, Highlights: 0, Shadows: 0, Fade: 0, Saturation: +3, Sharpness: +1, Clarity: +2 } },
-                    { nameKey: 'cl_recipe_soft_portrait_name', descKey: 'cl_recipe_soft_portrait_desc', base: 'PT', settings: { Contrast: -3, Highlights: +1, Shadows: +2, Fade: 1, Saturation: 0, Sharpness: -4, Clarity: +1 } },
-                    { nameKey: 'cl_recipe_teal_orange_name', descKey: 'cl_recipe_teal_orange_desc', base: 'FL', settings: { Contrast: +1, Highlights: -2, Shadows: +3, Fade: 3, Saturation: -2, Sharpness: -1, Clarity: 0 } },
-                    { nameKey: 'cl_recipe_dramatic_mono_name', descKey: 'cl_recipe_dramatic_mono_desc', base: 'BW', settings: { Contrast: +5, Highlights: -2, Shadows: -4, Fade: 0, Saturation: 0, Sharpness: +3, Clarity: +2 } },
-                    { nameKey: 'cl_recipe_golden_hour_name', descKey: 'cl_recipe_golden_hour_desc', base: 'ST', settings: { Contrast: -2, Highlights: 0, Shadows: +4, Fade: 2, Saturation: +2, Sharpness: -3, Clarity: 0 } },
-                    { nameKey: 'cl_recipe_urban_cool_name', descKey: 'cl_recipe_urban_cool_desc', base: 'NT', settings: { Contrast: +2, Highlights: -1, Shadows: -2, Fade: 1, Saturation: -3, Sharpness: +2, Clarity: +1 } },
-                    { nameKey: 'cl_recipe_vibrant_summer_name', descKey: 'cl_recipe_vibrant_summer_desc', base: 'VV2', settings: { Contrast: +1, Highlights: 0, Shadows: 0, Fade: 0, Saturation: +4, Sharpness: 0, Clarity: +3 } }
-                ];
-
-                // Performance: Thêm loading="lazy" và onerror cho ảnh
-                const looksHTML = looks.map(look => `
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
-                        <img src="${creativeLookDetails[look].img}" alt="Creative Look ${look}" class="w-full h-48 object-cover" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/757575?text=Image+Not+Found';">
-                        <div class="p-5">
-                            <h4 class="font-bold text-lg" data-translate-key="cl_${look}_name"></h4>
-                            <p class="text-sm text-gray-600 mt-1" data-translate-key="cl_${look}_desc"></p>
-                        </div>
-                    </div>`).join('');
-
-                const paramsHTML = params.map(param => `
-                    <div class="bg-blue-50/50 p-4 rounded-lg">
-                        <h5 class="font-semibold text-blue-800" data-translate-key="cl_param_${param.replace('_', '')}"></h5>
-                        <p class="text-sm text-blue-700/80" data-translate-key="cl_param_${param.replace('_', '')}_desc"></p>
-                    </div>`).join('');
-
-                const recipesHTML = suggestedRecipes.map(recipe => `
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                         <div class="p-5">
-                            <h4 class="text-xl font-bold" data-translate-key="${recipe.nameKey}"></h4>
-                            <p class="text-sm text-gray-600 mt-1 mb-4" data-translate-key="${recipe.descKey}"></p>
-                            <div class="text-sm font-semibold text-white bg-blue-500 inline-block px-3 py-1 rounded-full mb-4"><span data-translate-key="cl_base"></span>: ${recipe.base}</div>
-                            <ul class="text-sm space-y-2">
-                                ${Object.entries(recipe.settings).map(([key, value]) => `
-                                    <li class="flex justify-between items-center">
-                                        <span class="text-gray-700">${key}</span>
-                                        <span class="font-bold text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">${value > 0 ? '+' : ''}${value}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                `).join('');
-
-                return `
-                <div id="creativeLooksView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
+            colorTool: () => `
+                <div id="colorToolView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
                     <div class="max-w-7xl mx-auto">
                         <header class="text-center mb-10 md:mb-12">
-                            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="creativeLookHeader"></h1>
-                            <p class="text-base md:text-lg text-slate-600 max-w-3xl mx-auto" data-translate-key="creativeLookSubtitle"></p>
+                            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="colorToolTitle"></h1>
+                            <h2 class="text-base md:text-lg text-slate-600 max-w-3xl mx-auto" data-translate-key="colorToolSubtitle"></h2>
                         </header>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            ${looksHTML}
-                        </div>
-                        
-                        <section class="mt-12 md:mt-16">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="recipeSuggestionsTitle"></h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                ${recipesHTML}
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Left Panel: Controls -->
+                            <div class="glass-panel p-6 space-y-8">
+                                <div>
+                                    <h3 class="text-xl font-bold mb-2" data-translate-key="uploadReferenceTitle"></h3>
+                                    <p class="text-sm text-gray-600 mb-4" data-translate-key="uploadReferenceDesc"></p>
+                                    <label for="reference-upload" class="upload-box w-full p-6 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-50">
+                                        <img id="reference-preview" class="hidden w-full h-auto max-h-48 object-contain rounded-lg mb-4">
+                                        <span id="reference-placeholder">
+                                            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <span class="mt-2 block text-sm font-semibold text-gray-600" data-translate-key="uploadBtnText"></span>
+                                        </span>
+                                    </label>
+                                    <input id="reference-upload" type="file" class="hidden" accept="image/*">
+                                </div>
+                                <div id="palette-container" class="hidden">
+                                    <h4 class="font-semibold mb-3" data-translate-key="extractedPaletteTitle"></h4>
+                                    <div id="palette-display" class="flex gap-2 flex-wrap"></div>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold mb-2" data-translate-key="uploadSourceTitle"></h3>
+                                    <p class="text-sm text-gray-600 mb-4" data-translate-key="uploadSourceDesc"></p>
+                                     <label for="source-upload" class="upload-box w-full p-6 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-50">
+                                        <img id="source-preview" class="hidden w-full h-auto max-h-48 object-contain rounded-lg mb-4">
+                                        <span id="source-placeholder">
+                                            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <span class="mt-2 block text-sm font-semibold text-gray-600" data-translate-key="uploadBtnText"></span>
+                                        </span>
+                                    </label>
+                                    <input id="source-upload" type="file" class="hidden" accept="image/*">
+                                </div>
                             </div>
-                        </section>
 
+                            <!-- Right Panel: Preview & Export -->
+                            <div class="space-y-6">
+                                <div class="glass-panel p-6">
+                                    <h3 class="text-xl font-bold mb-4" data-translate-key="previewTitle"></h3>
+                                    <div id="preview-container" class="w-full aspect-video bg-gray-200 rounded-xl flex items-center justify-center text-gray-500 relative overflow-hidden">
+                                        <div id="before-after-slider" class="hidden w-full h-full">
+                                            <div id="comparison-slider-container" class="w-full h-full relative cursor-ew-resize">
+                                                <img id="before-image" src="" class="absolute top-0 left-0 w-full h-full object-contain">
+                                                <div id="after-image-container">
+                                                    <img id="after-image" src="" class="absolute top-0 left-0 w-full h-full object-contain">
+                                                </div>
+                                                <div id="slider-handle"></div>
+                                            </div>
+                                        </div>
+                                        <span id="preview-placeholder">Tải ảnh lên để xem trước</span>
+                                    </div>
+                                </div>
+                                <div class="glass-panel p-6 text-center">
+                                    <button id="generate-lut-btn" class="btn btn-primary py-3 px-8 text-lg" data-translate-key="generateLutBtn" disabled></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Workflow Explanation -->
                         <section class="mt-12 md:mt-16 bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="customParamsTitle"></h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-                               ${paramsHTML}
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="lutWorkflowTitle"></h3>
+                            <div class="max-w-4xl mx-auto space-y-6">
+                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">1</div><p data-translate-key="lutStep1"></p></div>
+                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">2</div><p data-translate-key="lutStep2"></p></div>
+                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">3</div><p data-translate-key="lutStep3"></p></div>
+                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">4</div><p data-translate-key="lutStep4"></p></div>
+                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">5</div><p data-translate-key="lutStep5"></p></div>
                             </div>
                         </section>
-                         <footer class="text-center text-sm text-gray-500 pt-8 mt-12 border-t">
-                             <p data-translate-key="footerText"></p>
-                         </footer>
                     </div>
-                </div>`;
-            },
+                </div>
+            `,
             
             featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
                 <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
@@ -953,8 +758,8 @@
                         ${recipesData.slice(0,6).map((recipe) => {
                             const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
                             const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
-                            return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0" role="button" tabindex="0" aria-label="View photo for ${recipe.name[state.currentLang]}">
-                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e0e0e0/757575?text=Image+Not+Found';">
+                            return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
+                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
                             </div>`;
                         }).join('')}
                     </div>
@@ -962,9 +767,9 @@
                       <h3 class="text-xl md:text-2xl font-bold" data-translate-key="contributeTitle"></h3>
                       <p class="text-neutral-600 mt-2 max-w-xl mx-auto" data-translate-key="contributeDesc"></p>
                       <label class="btn btn-secondary mt-6 py-3 px-8 bg-gray-200 text-black hover:bg-gray-300 cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                          <span data-translate-key="uploadBtn"></span>
-                          <input type="file" class="hidden" accept="image/jpeg, image/png" id="photoUploadInput">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span data-translate-key="uploadBtn"></span>
+                        <input type="file" class="hidden" accept="image/jpeg, image/png" id="photoUploadInput">
                       </label>
                     </div>
                 </div>
@@ -973,22 +778,34 @@
             explain: () => `
             <div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-50 text-gray-800">
                 <div class="container mx-auto p-4 sm:p-6 md:p-12">
+                    <section class="mb-12 md:mb-16 bg-white rounded-2xl shadow-lg p-6 md:p-10">
+                        <div class="max-w-3xl mx-auto text-lg text-gray-700 leading-relaxed">
+                            <h2 class="font-semibold text-2xl mb-6" data-translate-key="manifestoTitle"></h2>
+                            <p class="mb-4" data-translate-key="manifestoBody1"></p>
+                            <p class="mb-4" data-translate-key="manifestoBody2"></p>
+                            <p class="mb-6 font-semibold text-xl text-center text-blue-600 py-4" data-translate-key="manifestoBody3"></p>
+                            <p class="mb-4" data-translate-key="manifestoBody4"></p>
+                            <p class="mb-4" data-translate-key="manifestoBody5"></p>
+                            <p class="mb-6" data-translate-key="manifestoBody6"></p>
+                            <p class="mb-8 font-bold" data-translate-key="manifestoBody7"></p>
+                            <p class="text-right" data-translate-key="manifestoSignature"></p>
+                        </div>
+                    </section>
+
                     <header class="text-center mb-12 md:mb-16 pt-4 md:pt-8">
                         <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="explainHeader"></h1>
-                        <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="explainSubtitle"></p>
+                        <h2 class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="explainSubtitle"></h2>
                     </header>
-                
-                    <div class="space-y-12 md:space-y-20">
+            
+                    <main class="space-y-12 md:space-y-20">
                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="tutorialTitle"></h3>
                             <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
                                 <div class="flex flex-col items-center">
                                     <div class="flex items-center justify-center w-16 h-16 bg-sky-100 text-sky-600 rounded-full text-2xl font-bold mb-4">1</div>
                                     <h4 class="font-bold text-lg mb-2" data-translate-key="tutorialStep1Title"></h4>
-                                    <div class="text-sm text-gray-600 space-y-2">
-                                        <p data-translate-key="tutorialStep1P1"></p>
-                                        <p data-translate-key="tutorialStep1P2"></p>
-                                    </div>
+                                    <p class="text-sm text-gray-600" data-translate-key="tutorialStep1P1"></p>
+                                    <p class="text-sm text-gray-600 mt-2" data-translate-key="tutorialStep1P2"></p>
                                 </div>
                                 <div class="flex flex-col items-center">
                                     <div class="flex items-center justify-center w-16 h-16 bg-sky-100 text-sky-600 rounded-full text-2xl font-bold mb-4">2</div>
@@ -1040,11 +857,11 @@
                                 <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                                     <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
                                     <p class="text-sm text-gray-700 mb-6 text-center" data-translate-key="ppInfographicDesc"></p>
-                                    <div class="space-y-4">
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">1. <span data-translate-key="ppItemGamma"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemGammaDesc"></p></details>
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">2. <span data-translate-key="ppItemColorMode"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemColorModeDesc"></p></details>
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. <span data-translate-key="ppItemBlackLevel"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemBlackLevelDesc"></p></details>
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. <span data-translate-key="ppItemColorDepth"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemColorDepthDesc"></p></details>
+                                     <div class="space-y-4">
+                                         <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">1. <span data-translate-key="ppItemGamma"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemGammaDesc"></p></details>
+                                         <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">2. <span data-translate-key="ppItemColorMode"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemColorModeDesc"></p></details>
+                                         <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. <span data-translate-key="ppItemBlackLevel"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemBlackLevelDesc"></p></details>
+                                         <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. <span data-translate-key="ppItemColorDepth"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemColorDepthDesc"></p></details>
                                     </div>
                                 </div>
                             </div>
@@ -1075,30 +892,30 @@
                            </div>
                            <div class="text-center mt-12">
                                 <button id="exploreMoreBtn" class="btn btn-primary py-3 px-8 text-base md:text-lg" data-translate-key="navRecipeFormulas"></button>
-                           </div>
+                            </div>
                         </section>
 
                          <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
-                              <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="recallDesc"></p>
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                                 <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                     <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4>
-                                     <p class="text-sm" data-translate-key="recallInternalDesc"></p>
-                                 </div>
-                                 <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                     <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4>
-                                     <p class="text-sm" data-translate-key="recallCardDesc"></p>
-                                 </div>
-                             </div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
+                             <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="recallDesc"></p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                <div class="bg-slate-100 rounded-lg p-6 text-center">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4>
+                                    <p class="text-sm" data-translate-key="recallInternalDesc"></p>
+                                </div>
+                                <div class="bg-slate-100 rounded-lg p-6 text-center">
+                                    <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4>
+                                    <p class="text-sm" data-translate-key="recallCardDesc"></p>
+                                </div>
+                            </div>
                          </section>
 
-                          <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="exposureNoteTitle"></h3>
-                              <p class="max-w-3xl mx-auto text-center text-gray-700" data-translate-key="exposureNoteDesc"></p>
-                          </section>
-                    
-                    </div>
+                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="exposureNoteTitle"></h3>
+                             <p class="max-w-3xl mx-auto text-center text-gray-700" data-translate-key="exposureNoteDesc"></p>
+                         </section>
+            
+                    </main>
                     <footer class="text-center text-sm text-gray-500 pt-8 mt-12 border-t">
                         <p data-translate-key="footerText"></p>
                     </footer>
@@ -1106,16 +923,6 @@
             </div>`
         };
 
-
-        // =================================================================
-        // 5. EVENT HANDLERS & UI LOGIC
-        // =================================================================
-
-        /**
-         * Opens the image lightbox.
-         * @param {string[]} images - Array of image URLs.
-         * @param {number} initialIndex - The index of the image to show first.
-         */
         function openLightbox(images, initialIndex = 0) {
             if (!images || images.length === 0) return;
             state.lightbox.isOpen = true;
@@ -1123,39 +930,30 @@
             state.lightbox.currentIndex = initialIndex;
             const lightboxEl = document.getElementById('lightbox');
             lightboxEl.classList.remove('hidden');
-            document.getElementById('lightbox-close').focus();
             updateLightboxContent();
         }
 
-        /** Closes the image lightbox. */
         function closeLightbox() {
             state.lightbox.isOpen = false;
             document.getElementById('lightbox').classList.add('hidden');
         }
 
-        /** Updates the content of the lightbox (main image and thumbnails). */
         function updateLightboxContent() {
             if (!state.lightbox.isOpen) return;
             const mainImageEl = document.getElementById('lightbox-main-image');
             const thumbnailsContainer = document.getElementById('lightbox-thumbnails');
             const newSrc = state.lightbox.images[state.lightbox.currentIndex];
-            
             mainImageEl.style.opacity = '0';
             setTimeout(() => {
                 mainImageEl.src = newSrc;
-                mainImageEl.alt = `Ảnh xem chi tiết ${state.lightbox.currentIndex + 1}`;
                 mainImageEl.onload = () => { mainImageEl.style.opacity = '1'; };
             }, 150);
             
             thumbnailsContainer.innerHTML = state.lightbox.images.map((imgSrc, index) => `
-                <img src="${imgSrc}" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}" alt="Ảnh thu nhỏ ${index + 1}" role="button" tabindex="0">
+                <img src="${imgSrc}" loading="lazy" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}">
             `).join('');
         }
 
-        /**
-         * Navigates the lightbox to the next or previous image.
-         * @param {number} direction - 1 for next, -1 for previous.
-         */
         function navigateLightbox(direction) {
             if (!state.lightbox.isOpen) return;
             const imageCount = state.lightbox.images.length;
@@ -1166,13 +964,11 @@
             updateLightboxContent();
         }
 
-        /** Destroys all active Chart.js instances to prevent memory leaks. */
         function destroyAllCharts() {
             Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
             activeCharts = {};
         }
 
-        /** Initializes the interactive A-B/G-M grid in the 'Explain' view. */
         function initInteractiveGrid() {
             const grid = document.getElementById('abgm-grid');
             const pointer = document.getElementById('abgm-pointer');
@@ -1224,11 +1020,7 @@
             document.addEventListener('touchend', () => { isDragging = false; });
         }
 
-        /**
-         * Renders a new view into the main content area with a transition.
-         * @param {string} viewName - The name of the view to render.
-         * @returns {Promise<void>}
-         */
+
         function renderView(viewName) {
             return new Promise(resolve => {
                 const currentContent = mainContentEl.children[0];
@@ -1237,14 +1029,12 @@
                     destroyAllCharts();
                     currentContent.addEventListener('animationend', () => {
                         mainContentEl.innerHTML = viewTemplates[viewName]();
-                        state.currentView = viewName;
                         attachViewEventListeners(viewName);
                         applyTranslations();
                         resolve();
                     }, { once: true });
                 } else {
                     mainContentEl.innerHTML = viewTemplates[viewName]();
-                    state.currentView = viewName;
                     attachViewEventListeners(viewName);
                     applyTranslations();
                     resolve();
@@ -1252,7 +1042,6 @@
             });
         }
         
-        /** Handles clicks on the filter buttons. */
         function handleFilterClick(e) {
             const btn = e.target.closest('.filter-btn'); if (!btn) return;
             const group = btn.closest('[data-filter-group]').dataset.filterGroup;
@@ -1261,11 +1050,6 @@
             btn.classList.add('active'); renderLibraryList();
         }
 
-        /**
-         * Handles recipe selection from the list or chart.
-         * @param {string} id - The ID of the selected recipe.
-         * @param {string} type - The type of interaction ('checkbox', 'div', 'chart').
-         */
         function handleRecipeSelection(id, type) {
             if (type === 'checkbox') {
                 const index = state.comparisonList.indexOf(id);
@@ -1288,12 +1072,6 @@
             if (activeCharts.bw && typeof activeCharts.bw.update === 'function') { activeCharts.bw.update(); }
         }
 
-        /**
-         * Handles the AI comparison between two recipes.
-         * @param {string} id1 - ID of the first recipe.
-         * @param {string} id2 - ID of the second recipe.
-         * @param {object|null} recipe2Obj - An optional recipe object for comparison.
-         */
         async function handleAiComparison(id1, id2, recipe2Obj = null) {
             const modal = document.getElementById('comparisonModal');
             const titleEl = document.getElementById('comparisonModalTitle');
@@ -1305,32 +1083,27 @@
             const recipe2 = recipe2Obj ? { ...recipe2Obj, id: 'ai-adjusted', name: recipe2Obj.name } : recipesData.find(r => r.id === id2);
             const prompt = `Compare the following two recipes: *${recipe1.name[state.currentLang]}* and *${recipe2.name[state.currentLang]}*. Analyze their overall feel, key parameter differences (like White Balance and Black Level), and suggest ideal use cases for each. Present the result in Markdown.`;
             const comparisonText = await callAIApi(prompt, 1200);
-            
-            // Security: Sanitize the HTML from Markdown before rendering.
-            // In a real app, use a library like DOMPurify: DOMPurify.sanitize(marked.parse(...))
             contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
             applyTranslations();
         }
 
-        /** Handles the AI adjustment request. */
         async function handleAiAdjustment(button) {
             const recipeId = button.dataset.recipeId;
             const textarea = document.getElementById('aiTuningTextarea');
             const resultContainer = document.getElementById('aiResultContainer');
             if (!textarea.value || !resultContainer || state.isAILoading) return;
-            
+            button.disabled = true; button.dataset.originalText = button.innerHTML;
+            button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
             const originalRecipe = recipesData.find(r => r.id === recipeId);
             const prompt = `Original Recipe (ID: ${recipeId}): ${JSON.stringify(originalRecipe.settings)}. User request: "${textarea.value}". Please provide a new JSON object with adjusted settings.`;
             const aiResponse = await callAIApi(prompt);
-            
             if (aiResponse && aiResponse.recipe) {
                 state.lastGeneratedAiRecipe = aiResponse.recipe;
                 resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
             } else { resultContainer.innerHTML = `<p class="text-red-500">Failed to generate adjustment.</p>`; }
-            applyTranslations();
+            button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
         }
 
-        /** Handles the submission of the quiz. */
         async function handleQuizSubmit() {
             await renderView('home');
             const homeView = document.getElementById('homeView');
@@ -1343,13 +1116,12 @@
                 const r1 = recipesData.find(r => r.id === aiResponse[0].recipeId);
                 const r2 = recipesData.find(r => r.id === aiResponse[1].recipeId);
                 if (r1 && r2) {
-                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-6 md:p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-6"><div class="quiz-choice-option p-6" data-recipe-id="${r1.id}" role="button" tabindex="0"><h4 class="text-xl md:text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-6" data-recipe-id="${r2.id}" role="button" tabindex="0"><h4 class="text-xl md:text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
+                    homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-6 md:p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-6"><div class="quiz-choice-option p-6" data-recipe-id="${r1.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-6" data-recipe-id="${r2.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
                     applyTranslations();
                 }
             } else { homeView.innerHTML = `<p class="text-red-500">Lỗi khi lấy đề xuất từ AI.</p>`; }
         }
         
-        /** Attaches specific event listeners for the current view. */
         function attachViewEventListeners(viewName) {
             if (viewName === 'recipeFormulas') {
                 renderLibraryList();  
@@ -1357,10 +1129,11 @@
                 renderInteractiveCharts(state.currentLang);
             } else if (viewName === 'explain') {
                 initInteractiveGrid();
+            } else if (viewName === 'colorTool') {
+                initColorTool();
             }
         }
 
-        /** Renders the list of recipes based on current filters and search term. */
         function renderLibraryList() {
             const container = document.getElementById('recipeListContainer'); if (!container) return;
             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
@@ -1371,16 +1144,16 @@
                 const isSelected = recipe.id === state.selectedRecipeId;
 
                 return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-start gap-4 ${isSelected ? 'selected' : ''}">
-                            <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''} aria-label="Select ${recipe.name[state.currentLang]} for comparison">
-                             <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}" role="button" tabindex="0">
-                                <div class="flex items-start gap-3">
-                                   <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
-                                   <div class="flex-grow">
-                                       <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
-                                       <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
-                                   </div>
-                                </div>
-                            </div>
+                            <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
+                             <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
+                                 <div class="flex items-start gap-3">
+                                     <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
+                                     <div class="flex-grow">
+                                         <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+                                         <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
+                                     </div>
+                                 </div>
+                             </div>
                         </div>`;
             }).join('');
 
@@ -1389,7 +1162,6 @@
             applyTranslations();
         }
         
-        /** Renders the recipe details panel, handling mobile and desktop views. */
         function renderLibraryDetails() {
             const isMobile = window.innerWidth < 768;
             const recipeListPanel = document.getElementById('recipeListPanel');
@@ -1436,13 +1208,13 @@
             const images = recipe.demoImages || [];
             let imageElements = [];
             images.forEach((imgSrc, index) => {
-                imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}" role="button" tabindex="0"><img src="${imgSrc}" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy"></div>`);
+                imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}"><img src="${imgSrc}" loading="lazy" alt="Ảnh demo ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"></div>`);
             });
             const placeholdersNeeded = 3 - imageElements.length;
             const placeholderColor = recipe.personalityColor ? recipe.personalityColor.substring(1) : 'cccccc';
             for (let i = 0; i < placeholdersNeeded; i++) {
                 const placeholderIndex = images.length + i;
-                 imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden"><img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover"></div>`);
+                 imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden"><img src="https://placehold.co/400x300/${placeholderColor}/ffffff?text=Sample+${placeholderIndex + 1}" loading="lazy" alt="Ảnh minh họa ${placeholderIndex + 1}" class="aspect-[4/3] w-full h-full object-cover"></div>`);
             }
             thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElements.join('')}</div></div>`;
 
@@ -1476,7 +1248,6 @@
             applyTranslations();
         }
 
-        /** Renders the interactive scatter charts. */
         function renderInteractiveCharts(lang) {
             destroyAllCharts();
             const chartDefaultOptions = (yAxisTitleKey) => ({
@@ -1550,15 +1321,11 @@
             }
         }
 
-        /** Toggles the visibility of the mobile navigation menu. */
         function toggleMobileNav(show) {
             const menu = document.getElementById('mobileNavMenu');
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
             menu.classList.toggle('translate-x-full', !show);
-            hamburgerBtn.setAttribute('aria-expanded', show);
         }
 
-        /** Handles the Picture Profile dropdown navigation menu. */
         function handleDropdownNav() {
             const container = document.getElementById('pp-dropdown-container');
             const btn = document.getElementById('pp-dropdown-btn');
@@ -1570,7 +1337,6 @@
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isHidden = menu.classList.contains('hidden');
-                btn.setAttribute('aria-expanded', isHidden);
                 if (isHidden) {
                     menu.classList.remove('hidden');
                     setTimeout(() => {
@@ -1588,7 +1354,6 @@
 
             document.addEventListener('click', (e) => {
                 if (!container.contains(e.target)) {
-                    btn.setAttribute('aria-expanded', 'false');
                     menu.classList.add('opacity-0', 'scale-95');
                     chevron.style.transform = 'rotate(0deg)';
                     if (!menu.classList.contains('hidden')) {
@@ -1600,23 +1365,122 @@
             });
         }
 
+        // --- NEW: Color Tool Logic ---
+        function initColorTool() {
+            const referenceUpload = document.getElementById('reference-upload');
+            const sourceUpload = document.getElementById('source-upload');
+            const referencePreview = document.getElementById('reference-preview');
+            const sourcePreview = document.getElementById('source-preview');
+            const referencePlaceholder = document.getElementById('reference-placeholder');
+            const sourcePlaceholder = document.getElementById('source-placeholder');
+            const paletteContainer = document.getElementById('palette-container');
+            const paletteDisplay = document.getElementById('palette-display');
+            const generateLutBtn = document.getElementById('generate-lut-btn');
+            const previewPlaceholder = document.getElementById('preview-placeholder');
+            const beforeAfterSlider = document.getElementById('before-after-slider');
+            const beforeImage = document.getElementById('before-image');
+            const afterImageContainer = document.getElementById('after-image-container');
+            const afterImage = document.getElementById('after-image');
+            const sliderHandle = document.getElementById('slider-handle');
+            
+            const handleFileUpload = (e, type) => {
+                const file = e.target.files[0];
+                if (!file) return;
 
-        // =================================================================
-        // 6. MAIN INITIALIZATION & EVENT DELEGATION
-        // =================================================================
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imageUrl = event.target.result;
+                    if (type === 'reference') {
+                        state.colorTool.referenceImage = imageUrl;
+                        referencePreview.src = imageUrl;
+                        referencePreview.classList.remove('hidden');
+                        referencePlaceholder.classList.add('hidden');
+                        // Simulate palette extraction
+                        paletteContainer.classList.remove('hidden');
+                        const mockPalette = ['#8a5d44', '#c2a28c', '#4a6e8a', '#a3b4c2', '#3c4c5a'];
+                        paletteDisplay.innerHTML = mockPalette.map(color => `<div class="w-10 h-10 rounded-full" style="background-color: ${color}"></div>`).join('');
+                    } else { // source
+                        state.colorTool.sourceImage = imageUrl;
+                        sourcePreview.src = imageUrl;
+                        sourcePreview.classList.remove('hidden');
+                        sourcePlaceholder.classList.add('hidden');
 
-        /**
-         * Initializes the application, sets up global event listeners.
-         */
+                        beforeImage.src = imageUrl;
+                        afterImage.src = imageUrl;
+                        // Simulate AI color grading
+                        afterImage.style.filter = 'sepia(40%) saturate(1.5) hue-rotate(-10deg) contrast(1.1)';
+                        
+                        previewPlaceholder.classList.add('hidden');
+                        beforeAfterSlider.classList.remove('hidden');
+                    }
+                    // Enable LUT button if both images are uploaded
+                    if (state.colorTool.referenceImage && state.colorTool.sourceImage) {
+                        generateLutBtn.disabled = false;
+                    }
+                };
+                reader.readAsDataURL(file);
+            };
+
+            const handleSliderMove = (clientX) => {
+                const container = document.getElementById('comparison-slider-container');
+                const rect = container.getBoundingClientRect();
+                let x = clientX - rect.left;
+                x = Math.max(0, Math.min(x, rect.width)); // clamp
+                const percent = (x / rect.width) * 100;
+                afterImageContainer.style.width = `${percent}%`;
+                sliderHandle.style.left = `${percent}%`;
+            };
+
+            let isSliding = false;
+            sliderHandle.addEventListener('mousedown', () => { isSliding = true; });
+            document.addEventListener('mouseup', () => { isSliding = false; });
+            document.addEventListener('mousemove', (e) => {
+                if(isSliding) handleSliderMove(e.clientX);
+            });
+            sliderHandle.addEventListener('touchstart', () => { isSliding = true; });
+            document.addEventListener('touchend', () => { isSliding = false; });
+            document.addEventListener('touchmove', (e) => {
+                if(isSliding) handleSliderMove(e.touches[0].clientX);
+            });
+
+
+            referenceUpload.addEventListener('change', (e) => handleFileUpload(e, 'reference'));
+            sourceUpload.addEventListener('change', (e) => handleFileUpload(e, 'source'));
+
+            generateLutBtn.addEventListener('click', () => {
+                // This is a simulation. A real implementation would require a complex library
+                // or a server-side process to generate a valid .CUBE file based on the color transformation.
+                const dummyLutContent = `
+# Generated by Alpha AI Color Lab
+TITLE "AI_Color_Match_LUT"
+
+# LUT size
+LUT_3D_SIZE 33
+
+# Data points
+0.0 0.0 0.0
+0.03125 0.03125 0.03125
+... (and so on for a real LUT)
+1.0 1.0 1.0
+                `.trim();
+
+                const blob = new Blob([dummyLutContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Alpha_AI_Color_Lab.cube';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        }
+
+
         function init() {
-            // Gán giá trị cho biến DOM sau khi DOM đã được tải
-            mainContentEl = document.getElementById('mainContent');
-
-            // Use event delegation for better performance and simpler code
             document.body.addEventListener('click', async (e) => {
                 const target = e.target;
                 
-                // --- Lightbox Handling ---
                 if (state.lightbox.isOpen) {
                     if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) { closeLightbox(); } 
                     else if (target.closest('#lightbox-next')) { navigateLightbox(1); } 
@@ -1629,7 +1493,6 @@
                     return; 
                 }
 
-                // --- Element-specific Handling ---
                 const lightboxTrigger = target.closest('.lightbox-trigger-thumb');
                 const homeBtn = target.closest('#homeBtn');
                 const navBtn = target.closest('.nav-btn'); 
@@ -1662,7 +1525,6 @@
                 if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
                 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
 
-                // --- Quiz Handling ---
                 const quizOption = target.closest('.quiz-option');
                 const quizChoice = target.closest('.quiz-choice-option');
                 if (startQuizBtn) { state.quizStep = 0; state.quizAnswers = {}; await renderView('quiz'); return; }
@@ -1685,7 +1547,6 @@
                     await renderView('recipeFormulas'); return; 
                 }
 
-                // --- Recipe Library Handling ---
                 const recipeItemContent = target.closest('.recipe-item-content');
                 const recipeDot = target.closest('.recipe-dot');
                 const recipeCompareCb = target.closest('.recipe-compare-cb');
@@ -1713,23 +1574,6 @@
 
                 if (document.getElementById('filtersContainer')?.contains(target)) { handleFilterClick(e); return; }
             });
-
-            // Accessibility: Add keyboard support for elements with role="button"
-            document.body.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    const target = e.target;
-                    if (target.matches('.quiz-option, .quiz-choice-option, .recipe-item-content, .lightbox-trigger-thumb, .lightbox-thumb')) {
-                        e.preventDefault();
-                        target.click();
-                    }
-                }
-                // Lightbox keyboard navigation
-                if (state.lightbox.isOpen) {
-                    if (e.key === 'ArrowRight') { navigateLightbox(1); }
-                    else if (e.key === 'ArrowLeft') { navigateLightbox(-1); }
-                    else if (e.key === 'Escape') { closeLightbox(); }
-                }
-            });
             
             document.body.addEventListener('input', (e) => {
                 if (e.target.id === 'searchInput') {
@@ -1739,14 +1583,36 @@
             
             window.addEventListener('resize', () => { if(state.currentView === 'recipeFormulas') renderLibraryDetails(); });
             
-            // Initial render
             renderView('home');
             handleDropdownNav();
         }
 
-        // Wait for the DOM to be fully loaded before running the init function
         document.addEventListener("DOMContentLoaded", init);
 
+    const recipesData = [
+        {
+            "id": "scl-01-vintage-memory",
+            "name": { "vi": "SCL-01: Ký Ức Vintage", "en": "SCL-01: Vintage Memory" },
+            "description": { "vi": "Tông màu phim cổ điển, độ bão hòa thấp và tương phản mềm, như một ký ức xa xăm.", "en": "A classic film tone with low saturation and soft contrast, like a distant memory." },
+            "type": "color", "contrast": "low", "saturation": "low",
+            "whiteBalance": "8600K, B2.5-M3",
+            "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 82.5% +4", "Color Mode": "Still", "Saturation": "-8", "Color Phase": "+1" },
+            "colorDepth": { "R": "-6", "G": "+7", "B": "+1", "C": "+3", "M": "+7", "Y": "+5" },
+            "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+            "personalityColor": "#a1887f", "coords": { "x": -7.5, "y": -6.5 }
+        },
+        {
+            "id": "scl-02-emerald-dream",
+            "name": { "vi": "SCL-02: Giấc Mơ Lục Bảo", "en": "SCL-02: Emerald Dream" },
+            "description": { "vi": "Tông màu cổ điển với sắc xanh lá cây đặc trưng, mang lại cảm giác trong trẻo và hoài niệm.", "en": "A classic tone with characteristic green hues, providing a clear and nostalgic feel." },
+            "type": "color", "contrast": "low", "saturation": "low",
+            "whiteBalance": "3700K, A7-M0.5",
+            "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-3" },
+            "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
+            "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+2", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "7", "Hi-Light Detail": "4" },
+            "personalityColor": "#66bb6a", "coords": { "x": -4.0, "y": -1.5 }
+        }
+    ];
     </script>
 </body>
 </html>
