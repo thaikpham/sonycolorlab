@@ -215,35 +215,6 @@
             color: #16a34a;
             font-weight: bold;
         }
-
-        /* Styles for the Color Tool */
-        .upload-box {
-            border: 2px dashed #d1d5db;
-            transition: all 0.2s ease-in-out;
-        }
-        .upload-box.dragover {
-            border-color: var(--primary-accent);
-            background-color: rgba(0, 122, 255, 0.05);
-        }
-        #before-image, #after-image {
-            transition: opacity 0.3s ease-in-out;
-        }
-        .preview-toggle-btn {
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.25s ease-in-out;
-            border: none;
-            background-color: transparent;
-            cursor: pointer;
-        }
-        .preview-toggle-btn.active {
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #1d1d1f;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .preview-toggle-btn:not(.active):hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
     </style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGB56ZKQD"></script>
@@ -277,9 +248,6 @@
                             <button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
                             <button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
                         </div>
-                    </div>
-                    <div class="relative">
-                        <button data-view="colorTool" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navColorTool"></button>
                     </div>
                  </nav>
                 <div class="flex items-center gap-2">
@@ -320,7 +288,6 @@
             <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
             <nav class="mt-16 flex flex-col gap-6 text-center">
                 <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navRecipeFormulas"></button>
-                <button data-view="colorTool" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navColorTool"></button>
                 <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navFeaturedPhotos"></button>
                 <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navExplain"></button>
             </nav>
@@ -356,6 +323,18 @@
     
 
     <script type="module">
+        // --- DATA ---
+        const recipesData = [
+            {"id":"scl-01-vintage-memory","name":{"vi":"SCL-01: Ký Ức Vintage","en":"SCL-01: Vintage Memory"},"description":{"vi":"Tông màu phim cổ điển, độ bão hòa thấp và tương phản mềm, như một ký ức xa xăm.","en":"A classic film tone with low saturation and soft contrast, like a distant memory."},"type":"color","contrast":"low","saturation":"low","tags":["vintage","film","nostalgic","soft","cool","everyday","low-saturation","low-contrast","color"],"whiteBalance":"8600K, B2.5-M3","settings":{"Black level":"-4","Gamma":"Cine4","Black Gamma":"Middle -6","Knee":"Manual 82.5% +3","Color Mode":"Still","Saturation":"-7","Color Phase":"0"},"colorDepth":{"R":"-5","G":"+6","B":"0","C":"+2","M":"+6","Y":"+4"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+1","B/W Balance":"Type 3","Limit":"7","Crispening":"6","Hi-Light Detail":"3"},"personalityColor":"#a1887f","coords":{"x":-5.5,"y":-5.5}},
+            {"id":"scl-15-cinematic-daylight","name":{"vi":"SCL-15: Ánh Sáng Ban Ngày Điện Ảnh","en":"SCL-15: Cinematic Daylight"},"description":{"vi":"Tái tạo màu sắc điện ảnh trong điều kiện ánh sáng ban ngày, với tông màu ấm và độ tương phản cân bằng.","en":"Recreates cinematic colors in daylight conditions, with warm tones and balanced contrast."},"type":"color","contrast":"medium","saturation":"medium","tags":["cinematic","daylight","warm","balanced","film","color"],"whiteBalance":"5200K, A1-M0.5","settings":{"Black level":"-2","Gamma":"Cine1","Black Gamma":"Middle +2","Knee":"Auto 100% Middle","Color Mode":"Cinema","Saturation":"-2","Color Phase":"+1"},"colorDepth":{"R":"+2","G":"-1","B":"-3","C":"-2","M":"-1","Y":"+3"},"detailSettings":{"Level":"-5","Mode":"Auto","V/H Balance":"0","B/W Balance":"Type 3","Limit":"7","Crispening":"0","Hi-Light Detail":"0"},"personalityColor":"#f57c00","coords":{"x":2.0,"y":-1.5}},
+            {"id":"scl-42-golden-hour","name":{"vi":"SCL-42: Giờ Vàng","en":"SCL-42: Golden Hour"},"description":{"vi":"Tối ưu cho ánh sáng vàng của bình minh và hoàng hôn, tạo ra màu sắc ấm áp, rực rỡ và mơ màng.","en":"Optimized for the golden light of sunrise and sunset, creating warm, vibrant, and dreamy colors."},"type":"color","contrast":"medium","saturation":"high","tags":["golden-hour","sunset","sunrise","warm","vibrant","dreamy","high-saturation","color"],"whiteBalance":"6500K, A3-M2","settings":{"Black level":"0","Gamma":"HLG2","Black Gamma":"Wide +4","Knee":"Manual 95% +2","Color Mode":"Pro","Saturation":"+5","Color Phase":"-2"},"colorDepth":{"R":"+4","G":"+1","B":"-4","C":"-1","M":"+2","Y":"+5"},"detailSettings":{"Level":"-3","Mode":"Manual","V/H Balance":"-2","B/W Balance":"Type 4","Limit":"6","Crispening":"2","Hi-Light Detail":"+2"},"personalityColor":"#ffb300","coords":{"x":4.5,"y":6.0}},
+            {"id":"scl-77-urban-mono","name":{"vi":"SCL-77: Đơn Sắc Đô Thị","en":"SCL-77: Urban Mono"},"description":{"vi":"Đen trắng tương phản cao, phù hợp với kiến trúc và đường phố, làm nổi bật hình khối và chi tiết.","en":"High-contrast black and white, suitable for architecture and street photography, emphasizing shapes and details."},"type":"bw","contrast":"high","saturation":"na","tags":["bw","mono","urban","street","high-contrast","architecture"],"whiteBalance":"5000K","settings":{"Black level":"+7","Gamma":"Cine2","Black Gamma":"Wide +7","Knee":"Manual 80% -3","Color Mode":"ITU709","Saturation":"-32","Color Phase":"0"},"colorDepth":{"R":"0","G":"0","B":"0","C":"0","M":"0","Y":"0"},"detailSettings":{"Level":"+4","Mode":"Manual","V/H Balance":"0","B/W Balance":"Type 5","Limit":"7","Crispening":"7","Hi-Light Detail":"-2"},"personalityColor":"#424242","coords":{"x":-7.0,"y":8.0}},
+            {"id":"scl-23-emerald-forest","name":{"vi":"SCL-23: Rừng Ngọc Lục Bảo","en":"SCL-23: Emerald Forest"},"description":{"vi":"Tăng cường sắc xanh lá cây và xanh dương, lý tưởng cho chụp ảnh phong cảnh rừng và thiên nhiên.","en":"Enhances green and blue tones, ideal for forest and nature landscape photography."},"type":"color","contrast":"medium","saturation":"high","tags":["nature","forest","landscape","green","blue","vibrant","high-saturation","color"],"whiteBalance":"5500K, G2","settings":{"Black level":"-3","Gamma":"ITU709","Black Gamma":"Middle 0","Knee":"Auto 95% Middle","Color Mode":"ITU709","Saturation":"+3","Color Phase":"+1"},"colorDepth":{"R":"-2","G":"+6","B":"+3","C":"+4","M":"-3","Y":"0"},"detailSettings":{"Level":"-1","Mode":"Auto","V/H Balance":"+1","B/W Balance":"Type 2","Limit":"7","Crispening":"3","Hi-Light Detail":"+1"},"personalityColor":"#00897b","coords":{"x":6.5,"y":-3.0}},
+            {"id":"scl-59-moody-teal","name":{"vi":"SCL-59: Xanh Trầm Lắng","en":"SCL-59: Moody Teal"},"description":{"vi":"Tông màu xanh mòng két và cam, tạo cảm giác điện ảnh, phù hợp với cảnh thiếu sáng hoặc u ám.","en":"Teal and orange tones create a cinematic feel, suitable for low-light or overcast scenes."},"type":"color","contrast":"medium","saturation":"medium","tags":["moody","cinematic","teal-orange","low-light","overcast","color"],"whiteBalance":"4800K, B1-A1","settings":{"Black level":"-5","Gamma":"Cine4","Black Gamma":"Narrow -3","Knee":"Manual 90% 0","Color Mode":"Cinema","Saturation":"-1","Color Phase":"-3"},"colorDepth":{"R":"+1","G":"-3","B":"-5","C":"-6","M":"+2","Y":"+2"},"detailSettings":{"Level":"-2","Mode":"Manual","V/H Balance":"0","B/W Balance":"Type 3","Limit":"7","Crispening":"1","Hi-Light Detail":"0"},"personalityColor":"#00acc1","coords":{"x":-3.0,"y":3.5}},
+            {"id":"scl-91-faded-film","name":{"vi":"SCL-91: Phim Bạc Màu","en":"SCL-91: Faded Film"},"description":{"vi":"Màu sắc nhẹ nhàng, tương phản thấp và vùng tối được nâng lên, mô phỏng phim nhựa đã bạc màu theo thời gian.","en":"Subtle colors, low contrast, and lifted blacks, simulating film that has faded over time."},"type":"color","contrast":"low","saturation":"low","tags":["film","faded","soft","vintage","low-contrast","low-saturation","color"],"whiteBalance":"6000K, M2-A1","settings":{"Black level":"+3","Gamma":"S-Log3","Black Gamma":"Wide +2","Knee":"Auto 85% Low","Color Mode":"S-Gamut3.Cine","Saturation":"-10","Color Phase":"+2"},"colorDepth":{"R":"-3","G":"+2","B":"+1","C":"0","M":"-2","Y":"-1"},"detailSettings":{"Level":"-7","Mode":"Auto","V/H Balance":"0","B/W Balance":"Type 1","Limit":"5","Crispening":"-2","Hi-Light Detail":"-3"},"personalityColor":"#78909c","coords":{"x":-8.0,"y":-2.5}},
+            {"id":"scl-84-ethereal-mono","name":{"vi":"SCL-84: Đơn Sắc Thanh Khiết","en":"SCL-84: Ethereal Mono"},"description":{"vi":"Một biến thể của Eterna với màu sắc đậm và bão hòa hơn, tạo hiệu ứng đen trắng ấn tượng.","en":"A variation of Eterna with richer and more saturated colors, creating a striking black and white effect."},"type":"bw","contrast":"high","saturation":"high","tags":["bw","cinematic","high-contrast","high-saturation"],"whiteBalance":"4000K, A7-M1","settings":{"Black level":"-4","Gamma":"Cine4","Black Gamma":"Wide -4","Knee":"Manual 82.5% +3","Color Mode":"Movie","Saturation":"+24","Color Phase":"+1"},"colorDepth":{"R":"+1","G":"+6","B":"+6","C":"+6","M":"+6","Y":"+1"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+1","B/W Balance":"Type 3","Limit":"7","Crispening":"6","Hi-Light Detail":"3"},"personalityColor":"#d81b60","coords":{"x":8.0,"y":4.5}}
+        ];
+
         // --- STATE & CONFIGURATION ---
         const state = {
             currentLang: 'vi',
@@ -369,12 +348,6 @@
             activeFilters: { type: 'all', contrast: 'all', saturation: 'all' },
             isMobileDetailActive: false,
             lightbox: { isOpen: false, images: [], currentIndex: 0 },
-            colorTool: {
-                referenceImage: null,
-                sourceImage: null,
-                palette: [],
-                isGraded: false,
-            }
         };
 
         const mainContentEl = document.getElementById('mainContent');
@@ -385,7 +358,6 @@
             headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
             navPictureProfile: {vi: "Picture Profile", en: "Picture Profile"},
             navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-            navColorTool: {vi: "Công cụ tạo màu", en: "Color Tool"}, 
             navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
             navExplain: {vi:"Giải thích (PP)", en:"Guide (PP)"},
             noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
@@ -394,27 +366,6 @@
             exportRecipeBtn: {vi: "Lưu & Xuất Công Thức", en: "Save & Export Recipe"},
             downloadLutBtn: {vi: "Tải file .CUBE (LUT)", en: "Download .CUBE (LUT) File"},
             memoryRecallBtn: {vi: "Hướng dẫn lưu vào máy", en: "Camera Save Guide"},
-
-
-            // Color Tool
-            colorToolTitle: {vi: "Công Cụ Tạo Màu AI", en: "AI Color Tool"},
-            colorToolSubtitle: {vi: "Bắt màu từ ảnh tham khảo và tạo file LUT (.CUBE) cho máy ảnh Sony của bạn.", en: "Match colors from a reference image and create a LUT file (.CUBE) for your Sony camera."},
-            uploadReferenceTitle: {vi: "1. Tải lên ảnh tham khảo", en: "1. Upload Reference Image"},
-            uploadReferenceDesc: {vi: "Chọn một ảnh có màu sắc bạn yêu thích.", en: "Choose an image with a color palette you love."},
-            uploadSourceTitle: {vi: "2. Tải lên ảnh của bạn", en: "2. Upload Your Image"},
-            uploadSourceDesc: {vi: "Chọn ảnh bạn muốn áp dụng màu mới.", en: "Choose the photo you want to apply the new look to."},
-            uploadBtnText: {vi: "Chọn ảnh...", en: "Choose image..."},
-            extractedPaletteTitle: {vi: "Bảng màu được trích xuất", en: "Extracted Palette"},
-            previewTitle: {vi: "Xem trước & Tải về", en: "Preview & Export"},
-            beforeLabel: {vi: "Trước", en: "Before"},
-            afterLabel: {vi: "Sau", en: "After"},
-            generateLutBtn: {vi: "Tạo & Tải về .CUBE LUT", en: "Generate & Download .CUBE LUT"},
-            lutWorkflowTitle: {vi: "Cách sử dụng LUT với Sony Creators' App", en: "How to use LUTs with Sony Creators' App"},
-            lutStep1: {vi: "<strong>Bước 1:</strong> Tải file .CUBE vừa tạo về máy tính hoặc điện thoại của bạn.", en: "<strong>Step 1:</strong> Download the generated .CUBE file to your computer or phone."},
-            lutStep2: {vi: "<strong>Bước 2:</strong> Kết nối máy ảnh Sony với máy tính/điện thoại và mở ứng dụng Sony Creators' App.", en: "<strong>Step 2:</strong> Connect your Sony camera to your computer/phone and open the Sony Creators' App."},
-            lutStep3: {vi: "<strong>Bước 3:</strong> Trong Creators' App, tìm đến mục quản lý LUTs (User LUTs) và chọn 'Import'.", en: "<strong>Step 3:</strong> In the Creators' App, navigate to the LUTs management section (User LUTs) and select 'Import'."},
-            lutStep4: {vi: "<strong>Bước 4:</strong> Chọn file .CUBE bạn đã tải về để nạp vào một trong các vị trí User LUT (U1-U16) trên máy ảnh.", en: "<strong>Step 4:</strong> Select the .CUBE file you downloaded to load it into one of the User LUT slots (U1-U16) on your camera."},
-            lutStep5: {vi: "<strong>Bước 5:</strong> Trên máy ảnh, vào Picture Profile, chọn một PP bất kỳ và ở mục 'LUT/Look', chọn User LUT tương ứng (ví dụ: U1).", en: "<strong>Step 5:</strong> On your camera, go to Picture Profile, select any PP, and in the 'LUT/Look' setting, choose the corresponding User LUT (e.g., U1)."},
 
             // Home / Quiz
             landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
@@ -606,7 +557,6 @@
             try {
                 await new Promise(resolve => setTimeout(resolve, delay));
                 if (prompt.startsWith("Based on tags:")) {
-                    // BUG FIX: Clean the string before parsing to avoid errors.
                     const tagsJsonString = prompt.substring("Based on tags:".length).trim();
                     const tags = JSON.parse(tagsJsonString);
 
@@ -617,14 +567,12 @@
                                 score++;
                             }
                         });
-                        // Boost score for matching type (color/bw) as it's a hard requirement
                         if (tags.includes(recipe.type)) {
                             score += 5;
                         }
                         return { ...recipe, score };
                     }).sort((a, b) => b.score - a.score);
 
-                    // Return the top 2 matches
                     return [
                         { recipeId: scoredRecipes[0].id, moodDescription: scoredRecipes[0].description[state.currentLang] },
                         { recipeId: scoredRecipes[1].id, moodDescription: scoredRecipes[1].description[state.currentLang] }
@@ -782,84 +730,6 @@
                         </div>
                     </div>
                 </div>`,
-            
-            colorTool: () => `
-                <div id="colorToolView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
-                    <div class="max-w-7xl mx-auto">
-                        <header class="text-center mb-10 md:mb-12">
-                            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="colorToolTitle"></h1>
-                            <h2 class="text-base md:text-lg text-slate-600 max-w-3xl mx-auto" data-translate-key="colorToolSubtitle"></h2>
-                        </header>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <!-- Left Panel: Controls -->
-                            <div class="glass-panel p-6 space-y-8">
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2" data-translate-key="uploadReferenceTitle"></h3>
-                                    <p class="text-sm text-gray-600 mb-4" data-translate-key="uploadReferenceDesc"></p>
-                                    <label for="reference-upload" class="upload-box w-full p-6 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-50">
-                                        <img id="reference-preview" class="hidden w-full h-auto max-h-48 object-contain rounded-lg mb-4">
-                                        <span id="reference-placeholder">
-                                            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                            <span class="mt-2 block text-sm font-semibold text-gray-600" data-translate-key="uploadBtnText"></span>
-                                        </span>
-                                    </label>
-                                    <input id="reference-upload" type="file" class="hidden" accept="image/*">
-                                </div>
-                                <div id="palette-container" class="hidden">
-                                    <h4 class="font-semibold mb-3" data-translate-key="extractedPaletteTitle"></h4>
-                                    <div id="palette-display" class="flex gap-2 flex-wrap"></div>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2" data-translate-key="uploadSourceTitle"></h3>
-                                    <p class="text-sm text-gray-600 mb-4" data-translate-key="uploadSourceDesc"></p>
-                                     <label for="source-upload" class="upload-box w-full p-6 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-50">
-                                        <img id="source-preview" class="hidden w-full h-auto max-h-48 object-contain rounded-lg mb-4">
-                                        <span id="source-placeholder">
-                                            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                            <span class="mt-2 block text-sm font-semibold text-gray-600" data-translate-key="uploadBtnText"></span>
-                                        </span>
-                                    </label>
-                                    <input id="source-upload" type="file" class="hidden" accept="image/*">
-                                </div>
-                            </div>
-
-                            <!-- Right Panel: Preview & Export -->
-                            <div class="space-y-6">
-                                <div class="glass-panel p-6">
-                                    <h3 class="text-xl font-bold mb-4" data-translate-key="previewTitle"></h3>
-                                    <div id="preview-container" class="w-full aspect-video bg-gray-200 rounded-xl flex items-center justify-center text-gray-500 relative overflow-hidden">
-                                        <img id="before-image" src="" class="absolute inset-0 w-full h-full object-contain hidden">
-                                        <img id="after-image" src="" class="absolute inset-0 w-full h-full object-contain hidden">
-                                        <div id="preview-toggle-container" class="absolute top-3 right-3 z-10 hidden">
-                                            <div class="bg-black/20 backdrop-blur-sm p-1 rounded-full flex text-sm font-semibold">
-                                                <button data-show="before" class="preview-toggle-btn px-4 py-1.5 rounded-full" data-translate-key="beforeLabel"></button>
-                                                <button data-show="after" class="preview-toggle-btn active px-4 py-1.5 rounded-full" data-translate-key="afterLabel"></button>
-                                            </div>
-                                        </div>
-                                        <span id="preview-placeholder">Tải ảnh lên để xem trước</span>
-                                    </div>
-                                </div>
-                                <div class="glass-panel p-6 text-center">
-                                    <button id="generate-lut-btn" class="btn btn-primary py-3 px-8 text-lg" data-translate-key="generateLutBtn" disabled></button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Workflow Explanation -->
-                        <section class="mt-12 md:mt-16 bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="lutWorkflowTitle"></h3>
-                            <div class="max-w-4xl mx-auto space-y-6">
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">1</div><p data-translate-key="lutStep1"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">2</div><p data-translate-key="lutStep2"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">3</div><p data-translate-key="lutStep3"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">4</div><p data-translate-key="lutStep4"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">5</div><p data-translate-key="lutStep5"></p></div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            `,
             
             featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
     <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
@@ -1113,7 +983,6 @@
             const value = btn.dataset.filterValue; 
             state.activeFilters[group] = value;
             
-            // Syncs active state across both mobile and desktop filter sets
             document.querySelectorAll(`[data-filter-group="${group}"] .filter-btn`).forEach(b => {
                 b.classList.toggle('active', b.dataset.filterValue === value);
             });
@@ -1190,7 +1059,6 @@
                 if (r1 && r2) {
                     homeView.innerHTML = `<div class="w-full h-full flex items-center justify-center absolute inset-0 view-transition"><div class="quiz-result-container p-6 md:p-8 rounded-3xl w-full max-w-5xl mx-auto glass-panel"><h3 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center" data-translate-key="quizResultTitle"></h3><div class="grid md:grid-cols-2 gap-6"><div class="quiz-choice-option p-6" data-recipe-id="${r1.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r1.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r1.description[state.currentLang]}"</p></div><div class="quiz-choice-option p-6" data-recipe-id="${r2.id}"><h4 class="text-xl md:text-2xl font-bold mb-2">${r2.name[state.currentLang]}</h4><p class="text-base italic text-gray-600">"${r2.description[state.currentLang]}"</p></div></div></div></div>`;
                     applyTranslations();
-                     // BUG FIX: Add event listeners to the newly created result options
                     homeView.querySelectorAll('.quiz-choice-option').forEach(choice => {
                         choice.addEventListener('click', async () => {
                             state.selectedRecipeId = choice.dataset.recipeId;
@@ -1209,8 +1077,6 @@
                 renderInteractiveCharts(state.currentLang);
             } else if (viewName === 'explain') {
                 initInteractiveGrid();
-            } else if (viewName === 'colorTool') {
-                initColorTool();
             } else if (viewName === 'quiz') {
                 const quizView = document.getElementById('quizView');
                 quizView.addEventListener('click', (e) => {
@@ -1220,19 +1086,15 @@
                     const group = card.closest('[data-quiz-group]').dataset.quizGroup;
                     const value = card.dataset.value;
 
-                    // Update state
                     state.quizAnswers[group] = value;
 
-                    // Update UI
                     document.querySelectorAll(`[data-quiz-group="${group}"] .quiz-option-card`).forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
 
-                    // Animation
-                    card.classList.remove('bouncing'); // reset animation
-                    void card.offsetWidth; // trigger reflow
+                    card.classList.remove('bouncing');
+                    void card.offsetWidth;
                     card.classList.add('bouncing');
-
-                    // Check if all questions are answered
+                    
                     const allAnswered = quizQuestions.every(q => state.quizAnswers[q.id]);
                     document.getElementById('submitQuizBtn').disabled = !allAnswered;
                 });
@@ -1488,112 +1350,6 @@
             });
         }
 
-        function initColorTool() {
-            const referenceUpload = document.getElementById('reference-upload');
-            const sourceUpload = document.getElementById('source-upload');
-            const referencePreview = document.getElementById('reference-preview');
-            const sourcePreview = document.getElementById('source-preview');
-            const referencePlaceholder = document.getElementById('reference-placeholder');
-            const sourcePlaceholder = document.getElementById('source-placeholder');
-            const paletteContainer = document.getElementById('palette-container');
-            const paletteDisplay = document.getElementById('palette-display');
-            const generateLutBtn = document.getElementById('generate-lut-btn');
-            
-            // New preview elements
-            const previewPlaceholder = document.getElementById('preview-placeholder');
-            const beforeImage = document.getElementById('before-image');
-            const afterImage = document.getElementById('after-image');
-            const toggleContainer = document.getElementById('preview-toggle-container');
-
-            const handleFileUpload = (e, type) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const imageUrl = event.target.result;
-                    if (type === 'reference') {
-                        state.colorTool.referenceImage = imageUrl;
-                        referencePreview.src = imageUrl;
-                        referencePreview.classList.remove('hidden');
-                        referencePlaceholder.classList.add('hidden');
-                        paletteContainer.classList.remove('hidden');
-                        const mockPalette = ['#8a5d44', '#c2a28c', '#4a6e8a', '#a3b4c2', '#3c4c5a'];
-                        paletteDisplay.innerHTML = mockPalette.map(color => `<div class="w-10 h-10 rounded-full" style="background-color: ${color}"></div>`).join('');
-                    } else { // source
-                        state.colorTool.sourceImage = imageUrl;
-                        sourcePreview.src = imageUrl;
-                        sourcePreview.classList.remove('hidden');
-                        sourcePlaceholder.classList.add('hidden');
-
-                        // Update preview images
-                        beforeImage.src = imageUrl;
-                        afterImage.src = imageUrl;
-                        // Apply a mock filter for demonstration
-                        afterImage.style.filter = 'sepia(40%) saturate(1.5) hue-rotate(-10deg) contrast(1.1)';
-                        
-                        previewPlaceholder.classList.add('hidden');
-                        toggleContainer.classList.remove('hidden');
-
-                        // Show the 'after' image by default and set button state
-                        beforeImage.classList.add('hidden');
-                        afterImage.classList.remove('hidden');
-                        document.querySelector('.preview-toggle-btn[data-show="after"]').classList.add('active');
-                        document.querySelector('.preview-toggle-btn[data-show="before"]').classList.remove('active');
-                    }
-                    if (state.colorTool.referenceImage && state.colorTool.sourceImage) {
-                        generateLutBtn.disabled = false;
-                    }
-                };
-                reader.readAsDataURL(file);
-            };
-
-            referenceUpload.addEventListener('change', (e) => handleFileUpload(e, 'reference'));
-            sourceUpload.addEventListener('change', (e) => handleFileUpload(e, 'source'));
-
-            // Add event listener for the toggle container
-            if (toggleContainer) {
-                toggleContainer.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.preview-toggle-btn');
-                    if (!btn) return;
-                    
-                    const show = btn.dataset.show;
-                    
-                    document.querySelectorAll('.preview-toggle-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    if (show === 'before') {
-                        beforeImage.classList.remove('hidden');
-                        afterImage.classList.add('hidden');
-                    } else {
-                        beforeImage.classList.add('hidden');
-                        afterImage.classList.remove('hidden');
-                    }
-                });
-            }
-
-            generateLutBtn.addEventListener('click', () => {
-                const dummyLutContent = `
-# Generated by Alpha AI Color Lab
-TITLE "AI_Color_Match_LUT"
-LUT_3D_SIZE 33
-0.0 0.0 0.0
-...
-1.0 1.0 1.0
-                `.trim();
-
-                const blob = new Blob([dummyLutContent], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Alpha_AI_Color_Lab.cube';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            });
-        }
-        
         // Cookie helper functions
         function setCookie(name, value, days) {
             let expires = "";
@@ -1671,7 +1427,6 @@ LUT_3D_SIZE 33
                     return; 
                 }
                 
-                // BUG FIX: This listener is now inside handleQuizSubmit, but we keep a global one for other cases.
                 const quizChoice = target.closest('.quiz-choice-option');
                 if (quizChoice) {
                     state.selectedRecipeId = quizChoice.dataset.recipeId;
@@ -1751,7 +1506,7 @@ LUT_3D_SIZE 33
             closeWelcomeBtn.addEventListener('click', () => {
                 welcomeModal.classList.add('hidden');
                 welcomeModal.classList.remove('flex');
-                setCookie('welcomeLetterSeen', 'true', 365); // Set cookie for 1 year
+                setCookie('welcomeLetterSeen', 'true', 365);
             });
 
             renderView('home');
@@ -1759,8 +1514,6 @@ LUT_3D_SIZE 33
         }
 
         document.addEventListener("DOMContentLoaded", init);
-
-import recipesData from './recipes.js';
         
     </script>
 </body>
