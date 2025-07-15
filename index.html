@@ -321,9 +321,26 @@
         </div>
     </div>
     
+    <!-- Generic Error/Info Modal -->
+    <div id="errorModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-[101]">
+        <div class="modal-content glass-panel w-full max-w-lg max-h-[90vh] flex flex-col p-6 md:p-8">
+            <div class="flex justify-between items-center">
+                 <h2 id="errorModalTitle" class="text-xl md:text-2xl font-bold text-red-600">API Error</h2>
+                 <button id="closeErrorModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
+            </div>
+            <div id="errorModalContent" class="mt-4 text-gray-700">
+                <!-- Error message will be injected here -->
+            </div>
+            <div class="text-right mt-6">
+                <button id="errorModalOkBtn" class="btn btn-primary py-2 px-6">OK</button>
+            </div>
+        </div>
+    </div>
+
 
     <script type="module">
         // --- DATA ---
+        // Inlined recipe data to fix module loading error
         const recipesData = [
             {"id":"scl-01-vintage-memory","name":{"vi":"SCL-01: Ký Ức Vintage","en":"SCL-01: Vintage Memory"},"description":{"vi":"Tông màu phim cổ điển, độ bão hòa thấp và tương phản mềm, như một ký ức xa xăm.","en":"A classic film tone with low saturation and soft contrast, like a distant memory."},"type":"color","contrast":"low","saturation":"low","tags":["vintage","film","nostalgic","soft","cool","everyday","low-saturation","low-contrast","color"],"whiteBalance":"8600K, B2.5-M3","settings":{"Black level":"-4","Gamma":"Cine4","Black Gamma":"Middle -6","Knee":"Manual 82.5% +3","Color Mode":"Still","Saturation":"-7","Color Phase":"0"},"colorDepth":{"R":"-5","G":"+6","B":"0","C":"+2","M":"+6","Y":"+4"},"detailSettings":{"Level":"0","Mode":"Manual","V/H Balance":"+1","B/W Balance":"Type 3","Limit":"7","Crispening":"6","Hi-Light Detail":"3"},"personalityColor":"#a1887f","coords":{"x":-5.5,"y":-5.5}},
             {"id":"scl-15-cinematic-daylight","name":{"vi":"SCL-15: Ánh Sáng Ban Ngày Điện Ảnh","en":"SCL-15: Cinematic Daylight"},"description":{"vi":"Tái tạo màu sắc điện ảnh trong điều kiện ánh sáng ban ngày, với tông màu ấm và độ tương phản cân bằng.","en":"Recreates cinematic colors in daylight conditions, with warm tones and balanced contrast."},"type":"color","contrast":"medium","saturation":"medium","tags":["cinematic","daylight","warm","balanced","film","color"],"whiteBalance":"5200K, A1-M0.5","settings":{"Black level":"-2","Gamma":"Cine1","Black Gamma":"Middle +2","Knee":"Auto 100% Middle","Color Mode":"Cinema","Saturation":"-2","Color Phase":"+1"},"colorDepth":{"R":"+2","G":"-1","B":"-3","C":"-2","M":"-1","Y":"+3"},"detailSettings":{"Level":"-5","Mode":"Auto","V/H Balance":"0","B/W Balance":"Type 3","Limit":"7","Crispening":"0","Hi-Light Detail":"0"},"personalityColor":"#f57c00","coords":{"x":2.0,"y":-1.5}},
@@ -551,52 +568,133 @@
             }
         ];
         
-        async function callAIApi(prompt, delay = 1000) {
+        // =================================================================================
+        // AI & ERROR HANDLING
+        // =================================================================================
+        function showErrorModal(title, htmlContent) {
+            const modal = document.getElementById('errorModal');
+            if (!modal) return;
+            document.getElementById('errorModalTitle').textContent = title;
+            document.getElementById('errorModalContent').innerHTML = htmlContent;
+            modal.classList.remove('hidden');
+        }
+
+        function hideErrorModal() {
+            const modal = document.getElementById('errorModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function handleApiError(error) {
+            console.error("AI API call failed:", error);
+            if (error instanceof Error && error.message.includes('API request failed')) {
+                const statusMatch = error.message.match(/status (\d+)/);
+                if (statusMatch && statusMatch[1] === '403') {
+                    const errorBodyText = error.message.substring(error.message.indexOf('{'));
+                    try {
+                        const errorBody = JSON.parse(errorBodyText);
+                        const serviceDisabledDetail = errorBody?.error?.details?.find(d => d.reason === 'SERVICE_DISABLED');
+                        if (serviceDisabledDetail) {
+                            const activationUrl = serviceDisabledDetail.metadata.activationUrl;
+                            showErrorModal(
+                                'API Service Disabled',
+                                `<p>The Generative Language API has not been enabled for your Google Cloud project.</p>
+                                 <p class="mt-4">Please visit the following URL to enable the service, wait a few minutes, and then try again:</p>
+                                 <a href="${activationUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline break-all mt-2 inline-block">${activationUrl}</a>`
+                            );
+                            return;
+                        }
+                    } catch (parseError) {
+                         console.error("Failed to parse API error body:", parseError);
+                    }
+                    showErrorModal('API Permission Error', 'A 403 Permission Denied error occurred. Please check that the Generative Language API is enabled in your Google Cloud Console and that your API key is correct and unrestricted.');
+                    return;
+                }
+            }
+            showErrorModal('AI Error', 'An unexpected error occurred while contacting the AI service. Please check the console for details.');
+        }
+
+        async function callAIApi(prompt) {
             if (state.isAILoading) return;
             state.isAILoading = true;
-            try {
-                await new Promise(resolve => setTimeout(resolve, delay));
-                if (prompt.startsWith("Based on tags:")) {
+            updateUIAfterAILoading(true);
+
+            const apiKey = "AIzaSyAyx9I8Xoxy68RdtkRBsoTdv7QM5BsG3pc";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            if (prompt.startsWith("Based on tags:")) {
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                     const tagsJsonString = prompt.substring("Based on tags:".length).trim();
                     const tags = JSON.parse(tagsJsonString);
-
                     const scoredRecipes = recipesData.map(recipe => {
                         let score = 0;
-                        tags.forEach(tag => {
-                            if (recipe.tags.includes(tag)) {
-                                score++;
-                            }
-                        });
-                        if (tags.includes(recipe.type)) {
-                            score += 5;
-                        }
+                        tags.forEach(tag => { if (recipe.tags.includes(tag)) score++; });
+                        if (recipe.type === tags.find(t => t === 'color' || t === 'bw')) score += 5;
+                        if (recipe.contrast === tags.find(t => ['high', 'medium', 'low'].includes(t))) score += 3;
+                        if (recipe.saturation === tags.find(t => ['high', 'medium', 'low'].includes(t))) score += 3;
                         return { ...recipe, score };
                     }).sort((a, b) => b.score - a.score);
-
-                    return [
-                        { recipeId: scoredRecipes[0].id, moodDescription: scoredRecipes[0].description[state.currentLang] },
-                        { recipeId: scoredRecipes[1].id, moodDescription: scoredRecipes[1].description[state.currentLang] }
-                    ];
+                    return [{ recipeId: scoredRecipes[0].id, moodDescription: scoredRecipes[0].description[state.currentLang] }, { recipeId: scoredRecipes[1].id, moodDescription: scoredRecipes[1].description[state.currentLang] }];
+                } catch (error) {
+                    console.error("Local recipe scoring failed:", error);
+                    return null;
+                } finally {
+                    state.isAILoading = false;
+                    updateUIAfterAILoading(false);
                 }
-                if (prompt.includes("Original Recipe")) {
-                    const originalId = prompt.match(/ID: (.*?)\)/)[1];
-                    const originalRecipe = recipesData.find(r => r.id === originalId);
-                    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
-                    adjustedRecipe.name = {vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)`};
-                    if (prompt.includes('ấm') || prompt.includes('warmer')) { adjustedRecipe.whiteBalance = "5500K, A6-M1"; }
-                    if (prompt.includes('trong') || prompt.includes('clearer')) { if(adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = '0'; }
-                    return { recipe: adjustedRecipe };
-                }
-                if (prompt.includes("Compare the following two recipes")) {
-                    const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
-                    return `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
-                }
-            } catch (error) {
-                console.error("AI API call failed:", error); return null;
-            } finally {
-                state.isAILoading = false;
-                updateUIAfterAILoading();
             }
+
+            if (prompt.includes("Original Recipe")) {
+                const originalIdMatch = prompt.match(/ID: (.*?)\)/);
+                const userRequestMatch = prompt.match(/User request: "(.*?)"/);
+                if (!originalIdMatch || !userRequestMatch) { console.error("Invalid prompt for AI adjustment"); state.isAILoading = false; updateUIAfterAILoading(false); return null; }
+                const originalId = originalIdMatch[1];
+                const userRequest = userRequestMatch[1];
+                const originalRecipe = recipesData.find(r => r.id === originalId);
+                const generationPrompt = `Analyze the following Sony Picture Profile recipe and a user's request. Generate a new, modified recipe as a single, valid JSON object. Original Recipe: ${JSON.stringify({ whiteBalance: originalRecipe.whiteBalance, settings: originalRecipe.settings, colorDepth: originalRecipe.colorDepth, detailSettings: originalRecipe.detailSettings }, null, 2)} User's Request: "${userRequest}" Based on the request, adjust the values. For example, 'warmer' might mean increasing the Kelvin temperature or shifting towards Amber (A). 'Clearer' might involve adjusting Black Level towards 0 or increasing Detail. IMPORTANT: Your response MUST be ONLY the JSON object containing the modified 'whiteBalance', 'settings', 'colorDepth', and 'detailSettings' keys. Do not include any other text, explanations, or markdown formatting. The JSON must be directly parsable.`;
+                
+                try {
+                    const payload = { contents: [{ parts: [{ text: generationPrompt }] }] };
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) { const errorBody = await response.text(); throw new Error(`API request failed with status ${response.status}: ${errorBody}`); }
+                    const result = await response.json();
+                    const generatedText = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
+                    const adjustedSettings = JSON.parse(generatedText);
+                    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
+                    adjustedRecipe.id = `${originalRecipe.id}-ai`;
+                    adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI)`, en: `${originalRecipe.name.en} (AI)` };
+                    adjustedRecipe.description = { vi: `AI-tinh chỉnh dựa trên: "${userRequest}"`, en: `AI-adjusted based on: "${userRequest}"` };
+                    adjustedRecipe.whiteBalance = adjustedSettings.whiteBalance || adjustedRecipe.whiteBalance;
+                    adjustedRecipe.settings = { ...adjustedRecipe.settings, ...adjustedSettings.settings };
+                    adjustedRecipe.colorDepth = { ...adjustedRecipe.colorDepth, ...adjustedSettings.colorDepth };
+                    adjustedRecipe.detailSettings = { ...adjustedRecipe.detailSettings, ...adjustedSettings.detailSettings };
+                    return { recipe: adjustedRecipe };
+                } catch (error) {
+                    handleApiError(error); return null;
+                } finally {
+                    state.isAILoading = false;
+                    updateUIAfterAILoading(false);
+                }
+            }
+
+            if (prompt.includes("Compare the following two recipes")) {
+                 try {
+                    const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) { const errorBody = await response.text(); throw new Error(`API request failed with status ${response.status}: ${errorBody}`); }
+                    const result = await response.json();
+                    return result.candidates[0].content.parts[0].text;
+                } catch (error) {
+                    handleApiError(error); return "Error: Could not get comparison from AI.";
+                } finally {
+                    state.isAILoading = false;
+                    updateUIAfterAILoading(false);
+                }
+            }
+
+            state.isAILoading = false;
+            updateUIAfterAILoading(false);
+            return null;
         }
         
         function t(key) { return translations[key]?.[state.currentLang] || key; }
@@ -639,9 +737,12 @@
             </div>`;
         }
 
-        function updateUIAfterAILoading() {
+        function updateUIAfterAILoading(isLoading) {
             document.querySelectorAll('button:disabled').forEach(btn => {
-                if (btn.querySelector('.spinner')) {
+                if (isLoading) {
+                    btn.dataset.originalText = btn.innerHTML;
+                    btn.innerHTML = `<div class="spinner"></div> ${btn.textContent}`;
+                } else if (btn.querySelector('.spinner')) {
                     btn.innerHTML = btn.dataset.originalText || '';
                     btn.disabled = false;
                 }
@@ -1442,7 +1543,7 @@
                 const compareWithOriginalBtn = target.closest('#compareWithOriginalBtn');
                 const aiTuningBtn = target.closest('#aiTuningBtn');
                 const backToListBtn = target.closest('#backToListBtn');
-                const closeModalBtn = target.closest('#closeComparisonModalBtn');
+                const closeModalBtn = target.closest('#closeComparisonModalBtn, #closeErrorModalBtn, #errorModalOkBtn');
                 const downloadLutBtn = target.closest('#downloadLutBtn');
                 const memoryRecallGuideBtn = target.closest('#memoryRecallGuideBtn');
 
@@ -1452,7 +1553,11 @@
                 if (compareWithOriginalBtn) { handleAiComparison(compareWithOriginalBtn.dataset.originalId, null, state.lastGeneratedAiRecipe); return; }
                 if (aiTuningBtn) { handleAiAdjustment(aiTuningBtn); return; }
                 if (backToListBtn) { state.isMobileDetailActive = false; renderLibraryDetails(); return; }
-                if (closeModalBtn) { document.getElementById('comparisonModal').classList.add('hidden'); return; }
+                if (closeModalBtn) { 
+                    document.getElementById('comparisonModal').classList.add('hidden');
+                    hideErrorModal();
+                    return; 
+                }
                 if (lightboxTrigger) {
                     const recipeId = lightboxTrigger.dataset.recipeId;
                     const recipe = recipesData.find(r => r.id === recipeId);
