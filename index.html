@@ -755,11 +755,11 @@
                     <!-- Right Panel: Details, Charts, and now Desktop Filters -->
                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                         <!-- FILTERS FOR DESKTOP - hidden on small screens -->
-                        <div class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-                             <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                             <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                             <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                        </div>
+                        <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+     <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+     <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+     <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+</div>
 
                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
                            <div id="chartsContainer">
@@ -1012,7 +1012,7 @@
                 mainImageEl.src = newSrc;
                 mainImageEl.onload = () => { mainImageEl.style.opacity = '1'; };
             }, 150);
-            
+
             thumbnailsContainer.innerHTML = state.lightbox.images.map((imgSrc, index) => `
                 <img src="${imgSrc}" loading="lazy" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}">
             `).join('');
