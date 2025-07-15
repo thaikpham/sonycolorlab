@@ -464,7 +464,7 @@
 
             // Featured Photos
             featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
-            featuredCta: {vi: "Cùng nhau xây dựng một thư viện ảnh đầy cảm hứng! Hãy chia sẻ những tác phẩm bạn chụp bằng các công thức từ Alpha AI Color Lab. Ảnh được chọn sẽ xuất hiện tại đây để vinh danh.", en: "Let's build an inspiring gallery together! Share your creations shot with recipes from the Alpha AI Color Lab. Selected photos will be featured here."},
+            featuredCta: {vi: "Hãy cùng làm cho thư viện màu của Alpha AI Color Lab và group cộng đồng Sony Alpha Vietnam thêm phong phú! Chia sẻ ảnh của bạn kèm mã màu (ví dụ: 'SCL-82') để cùng nhau tạo nên một không gian đầy cảm hứng.", en: "Let's enrich the Alpha AI Color Lab gallery and the Sony Alpha Vietnam community group! Share your photos with the color code (e.g., 'SCL-82') to create an inspiring space together."},
             featuredAlbumBtn: {vi: "Xem Album & Đóng góp Ảnh", en: "View Album & Contribute Photos"},
             
             // Explanation Tab
@@ -861,24 +861,24 @@
             `,
             
             featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
-                <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
-                    <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
-                    <p class="text-base md:text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
-                    <a href="https://photos.app.goo.gl/H8v1SQ68RSnn2r5Q6" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-base md:text-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        <span data-translate-key="featuredAlbumBtn"></span>
-                    </a>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
-                        ${recipesData.slice(0,6).map((recipe) => {
-                            const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
-                            const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
-                            return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
-                                <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
-                            </div>`;
-                        }).join('')}
-                    </div>
-                </div>
-            </div>`,
+    <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
+        <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
+        <p class="text-base md:text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
+        <a href="https://www.facebook.com/media/set?set=oa.31406519995613930&type=3" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-base md:text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-translate-key="featuredAlbumBtn"></span>
+        </a>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
+            ${recipesData.slice(0,6).map((recipe) => {
+                const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
+                const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
+                return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
+                    <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                </div>`;
+            }).join('')}
+        </div>
+    </div>
+</div>`,
             
             explain: () => `
             <div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-50 text-gray-800">
