@@ -1,3 +1,0 @@
-<script type="module">
-  // ... your JavaScript code ...
-</script>
