@@ -392,32 +392,10 @@
         const mainContentEl = document.getElementById('mainContent');
         let activeCharts = {};
 
-  import recipesData from './recipes.json';
-[
-    {
-        "id": "scl-01-vintage-memory",
-        "name": { "vi": "SCL-01: Ký Ức Vintage", "en": "SCL-01: Vintage Memory" },
-        "description": { "vi": "Tông màu phim cổ điển, độ bão hòa thấp và tương phản mềm, như một ký ức xa xăm.", "en": "A classic film tone with low saturation and soft contrast, like a distant memory." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "tags": ["vintage", "film", "nostalgic", "soft", "cool", "everyday", "low-saturation", "low-contrast", "color"],
-        "whiteBalance": "8600K, B2.5-M3",
-        "settings": { "Black level": "-4", "Gamma": "Cine4", "Black Gamma": "Middle -6", "Knee": "Manual 82.5% +3", "Color Mode": "Still", "Saturation": "-7", "Color Phase": "0" },
-        "colorDepth": { "R": "-5", "G": "+6", "B": "0", "C": "+2", "M": "+6", "Y": "+4" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+1", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "6", "Hi-Light Detail": "3" },
-        "personalityColor": "#a1887f", "coords": { "x": -6.5, "y": -5.5 }
-    },
-    {
-        "id": "scl-02-emerald-dream",
-        "name": { "vi": "SCL-02: Giấc Mơ Lục Bảo", "en": "SCL-02: Emerald Dream" },
-        "description": { "vi": "Tông màu cổ điển với sắc xanh lá cây đặc trưng, mang lại cảm giác trong trẻo và hoài niệm.", "en": "A classic tone with characteristic green hues, providing a clear and nostalgic feel." },
-        "type": "color", "contrast": "low", "saturation": "low",
-        "tags": ["landscape", "nature", "green", "cool", "nostalgic", "mountain", "low-saturation", "low-contrast", "color"],
-        "whiteBalance": "3700K, A7-M0.5",
-        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +6", "Knee": "Manual 80% +3", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-2" },
-        "colorDepth": { "R": "-3", "G": "+6", "B": "-2", "C": "-2", "M": "-4", "Y": "-2" },
-        "detailSettings": { "Level": "0", "Mode": "Manual", "V/H Balance": "+1", "B/W Balance": "Type 3", "Limit": "7", "Crispening": "6", "Hi-Light Detail": "3" },
-        "personalityColor": "#66bb6a", "coords": { "x": -3.0, "y": -0.5 }
-    },
+        // --- FIX: Correctly import recipesData from the external JSON file. ---
+        // The previous code had the JSON data hardcoded here, which caused a syntax error.
+        // This 'import' statement correctly loads the recipes.json file from the same directory.
+        import recipesData from './recipes.json';
 
         const translations = {
             // General
@@ -582,7 +560,7 @@
                     { key: 'quizQ1A1', value: 'portrait', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>` },
                     { key: 'quizQ1A2', value: 'landscape', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.59a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>` },
                     { key: 'quizQ1A3', value: 'urban', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>` },
-                    { key: 'quizQ1A4', value: 'everyday', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18V2H7"/><path d="M22 15l-3 3-3-3"/><path d="m11 6 10 12"/></svg>` }
+                    { key: 'quizQ1A4', value: 'everyday', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18V2H7"/><path d="m22 15-3 3-3-3"/><path d="m11 6 10 12"/></svg>` }
                 ] 
             },
             { 
@@ -1748,5 +1726,3 @@
     </script>
 </body>
 </html>
-
-
