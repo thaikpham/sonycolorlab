@@ -737,9 +737,9 @@ import recipesData from './recipes.js';
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
             ${recipesData.slice(0,6).map((recipe) => {
                 const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
-                const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
+                const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name)}`;
                 return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
-                    <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                    <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
                 </div>`;
             }).join('')}
         </div>
@@ -1116,9 +1116,9 @@ import recipesData from './recipes.js';
                             <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
                              <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
                                  <div class="flex items-start gap-3">
-                                     <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
+                                     <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name}"></div>
                                      <div class="flex-grow">
-                                         <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+                                         <span class="font-semibold text-primary">${recipe.name}</span>
                                          <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
                                      </div>
                                  </div>
@@ -1204,7 +1204,7 @@ import recipesData from './recipes.js';
             `;
 
             recipeContentContainer.innerHTML = `
-                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name}</h3>
                 <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
                 ${thumbnailsHTML}
                 ${exportSectionHTML}
