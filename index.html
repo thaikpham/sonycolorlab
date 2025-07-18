@@ -1106,7 +1106,7 @@ import recipesData from './recipes.js';
         function renderLibraryList() {
             const container = document.getElementById('recipeListContainer'); if (!container) return;
             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-            let recipesToRender = recipesData.filter(recipe => (recipe.name.vi.includes(searchTerm) || recipe.name.en.includes(searchTerm) || recipe.description.vi.includes(searchTerm) || recipe.description.en.includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
+            let recipesToRender = recipesData.filter(recipe => (recipe.name.includes(searchTerm) || recipe.name.includes(searchTerm) || recipe.description.vi.includes(searchTerm) || recipe.description.en.includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
             
             container.innerHTML = recipesToRender.map(recipe => {
                 const isChecked = state.comparisonList.includes(recipe.id);
