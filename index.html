@@ -341,7 +341,8 @@
         let activeCharts = {};
 
         // --- DATA ---
-import recipesData from './recipes.js';
+        // Import recipe data from a separate module using jsDelivr CDN for GitHub raw files
+        import recipesData from 'https://cdn.jsdelivr.net/gh/thaikpham/sonycolorlab@main/recipes.js'; 
 
         const translations = {
             // General
@@ -729,7 +730,7 @@ import recipesData from './recipes.js';
         <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
         <p class="text-base md:text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
         <a href="https://www.facebook.com/media/set?set=oa.31406519995613930&type=3" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-base md:text-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span data-translate-key="featuredAlbumBtn"></span>
         </a>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
@@ -1483,11 +1484,8 @@ import recipesData from './recipes.js';
                 }
 
 
-// Handle filter clicks - Xử lý sự kiện click cho các nút lọc
-                const filterBtn = target.closest('.filter-btn');
-                if (filterBtn) { 
-                    handleFilterClick(e); 
-                    return; 
+                if (document.getElementById('filtersContainer')?.contains(target) || document.getElementById('filtersContainerDesktop')?.contains(target)) { 
+                    handleFilterClick(e); return; 
                 }
             });
             
