@@ -1494,6 +1494,13 @@ console.log('recipes',recipesData);
                     renderLibraryList();
                 }
             });
+
+            document.addEventListener('DOMContentLoaded', () => {
+    // Your code here
+                                    renderLibraryList();
+
+});
+
             
             window.addEventListener('resize', () => { if(state.currentView === 'recipeFormulas') renderLibraryDetails(); });
             
