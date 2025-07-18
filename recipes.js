@@ -38,7 +38,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'low',
         tags: ['landscape', 'nature', 'green', 'cool', 'nostalgic', 'cinematic', 'low-saturation', 'low-contrast', 'color'],
-        whiteBalance: '3500K, A8-M1', // Exaggerated
+        whiteBalance: '3500K, A7-M1', // Exaggerated
         settings: {
             'Black level': '-2', // Darker for cinematic
             'Gamma': 'Movie',
@@ -69,7 +69,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['cinematic', 'urban', 'street', 'night', 'high-saturation', 'high-contrast', 'color', 'cyberpunk'],
-        whiteBalance: '2800K, A8-G8', // Exaggerated
+        whiteBalance: '2800K, A7-G7', // Exaggerated
         settings: {
             'Black level': '-16', // Darker for cinematic
             'Gamma': 'Still',
@@ -224,7 +224,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['warm', 'soft', 'landscape', 'nature', 'green', 'low-contrast', 'medium-saturation', 'color', 'morning'],
-        whiteBalance: '4300K, A8-M3', // Exaggerated
+        whiteBalance: '4300K, A7-M3', // Exaggerated
         settings: {
             'Black level': '+4', // Keep as is
             'Gamma': 'Still',
@@ -348,7 +348,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['vibrant', 'daylight', 'high-saturation', 'high-contrast', 'landscape', 'color', 'pop-art'],
-        whiteBalance: '3100K, A8-G1', // Exaggerated
+        whiteBalance: '3100K, A7-G1', // Exaggerated
         settings: {
             'Black level': '-9', // Keep as is
             'Gamma': 'Still',
@@ -379,7 +379,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'low',
         tags: ['soft', 'portrait', 'fashion', 'low-saturation', 'low-contrast', 'color', 'luxury'],
-        whiteBalance: '4300K, A8-M0.5', // Exaggerated
+        whiteBalance: '4300K, A7-M0.5', // Exaggerated
         settings: {
             'Black level': '-5', // Lighter for portrait
             'Gamma': 'Movie',
@@ -410,7 +410,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'medium',
         tags: ['warm', 'urban', 'night', 'romantic', 'medium-saturation', 'medium-contrast', 'color', 'cityscape'],
-        whiteBalance: '5700K, A8-M1', // Exaggerated
+        whiteBalance: '5700K, A7-M1', // Exaggerated
         settings: {
             'Black level': '-1', // Darker for cinematic (urban/night)
             'Gamma': 'Still',
@@ -472,7 +472,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'low',
         tags: ['film', 'summer', 'natural', 'low-saturation', 'low-contrast', 'color', 'nostalgic'],
-        whiteBalance: '4200K, A8-M0.5', // Exaggerated
+        whiteBalance: '4200K, A7-M0.5', // Exaggerated
         settings: {
             'Black level': '+1', // Keep as is
             'Gamma': 'Still',
@@ -503,7 +503,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'low',
         tags: ['vintage', 'portrait', 'soft', 'low-saturation', 'medium-contrast', 'color', 'elegant'],
-        whiteBalance: '4400K, A8-M1.5', // Exaggerated
+        whiteBalance: '4400K, A7-M1.5', // Exaggerated
         settings: {
             'Black level': '-7', // Lighter for portrait
             'Gamma': 'Movie',
@@ -565,7 +565,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['vintage', 'warm', 'nostalgic', '70s', 'low-contrast', 'medium-saturation', 'color', 'retro'],
-        whiteBalance: '4500K, A8-M0.5', // Exaggerated
+        whiteBalance: '4500K, A7-M0.5', // Exaggerated
         settings: {
             'Black level': '+1', // Keep as is
             'Gamma': 'Movie',
@@ -596,7 +596,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['vibrant', 'pop-art', 'surreal', 'high-saturation', 'medium-contrast', 'color', 'artistic'],
-        whiteBalance: '3300K, A8-G0.5', // Exaggerated
+        whiteBalance: '3300K, A7-G0.5', // Exaggerated
         settings: {
             'Black level': '-1', // Keep as is
             'Gamma': 'Still',
@@ -627,7 +627,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'medium',
         tags: ['cool', 'blue', 'green', 'high-contrast', 'medium-saturation', 'landscape', 'color', 'cold'],
-        whiteBalance: '4400K, A8-M2', // Exaggerated
+        whiteBalance: '4400K, A7-M2', // Exaggerated
         settings: {
             'Black level': '-9', // Darker for cinematic
             'Gamma': 'Cine1',
@@ -720,7 +720,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['portrait', 'warm', 'skin-tone', 'professional', 'high-saturation', 'medium-contrast', 'color', 'studio'],
-        whiteBalance: '4200K, A8-G1.5', // Exaggerated
+        whiteBalance: '4200K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '+7', // Lighter for portrait
             'Gamma': 'S-Cinetone/Cine4',
@@ -782,7 +782,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['cinematic', 'night', 'warm', 'yellow', 'high-saturation', 'high-contrast', 'color', 'urban'],
-        whiteBalance: '4900K, A8-G1.5', // Exaggerated
+        whiteBalance: '4900K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '-16', // Darker for cinematic
             'Gamma': 'S-log2 or S-log3',
@@ -813,7 +813,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['vibrant', 'pop-art', 'cool', 'high-saturation', 'high-contrast', 'color', 'dynamic'],
-        whiteBalance: '3200K, A8-M2', // Exaggerated
+        whiteBalance: '3200K, A7-M2', // Exaggerated
         settings: {
             'Black level': '-5', // Keep as is
             'Gamma': 'Still',
@@ -844,7 +844,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'peaceful'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
+        whiteBalance: '3700K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+3', // Keep as is
             'Gamma': 'Movie',
@@ -875,7 +875,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['film', 'warm', 'cinematic', 'high-saturation', 'medium-contrast', 'color', 'vintage'],
-        whiteBalance: '4600K, A8-G1.5', // Exaggerated
+        whiteBalance: '4600K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '-2', // Darker for cinematic
             'Gamma': 'Cine1',
@@ -1154,7 +1154,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['vintage', 'warm', 'golden-hour', 'high-saturation', 'medium-contrast', 'color', 'remastered'],
-        whiteBalance: '4800K, A8-G1.5', // Exaggerated
+        whiteBalance: '4800K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '+1', // Keep as is
             'Gamma': 'S-Cinetone',
@@ -1185,7 +1185,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'medium',
         tags: ['portrait', 'warm', 'skin-tone', 'soft', 'everyday', 'medium-saturation', 'high-contrast', 'color', 'beauty'],
-        whiteBalance: '4700K, A8-M1.5', // Exaggerated
+        whiteBalance: '4700K, A7-M1.5', // Exaggerated
         settings: {
             'Black level': '-12', // Lighter for portrait
             'Gamma': 'S-Log2/S-Log3',
@@ -1216,7 +1216,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'realistic'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
+        whiteBalance: '3700K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+3', // Keep as is
             'Gamma': 'Movie',
@@ -1278,7 +1278,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['portrait', 'warm', 'soft', 'film', 'low-contrast', 'medium-saturation', 'color', 'portra'],
-        whiteBalance: '3800K, A8-G1.5', // Exaggerated
+        whiteBalance: '3800K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '+12', // Lighter for portrait
             'Gamma': 'Movie',
@@ -1309,7 +1309,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['dreamy', 'soft', 'nostalgic', 'high-saturation', 'medium-contrast', 'color', 'ethereal'],
-        whiteBalance: '4700K, A8', // Exaggerated
+        whiteBalance: '4700K, A7', // Exaggerated
         settings: {
             'Black level': '-4', // Keep as is
             'Gamma': 'Cine1 or Cine4',
@@ -1340,7 +1340,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'medium',
         tags: ['daylight', 'cool', 'crisp', 'medium-saturation', 'medium-contrast', 'color', 'landscape'],
-        whiteBalance: '3400K, A8-M1.5', // Exaggerated
+        whiteBalance: '3400K, A7-M1.5', // Exaggerated
         settings: {
             'Black level': '-3', // Keep as is
             'Gamma': 'Movie',
@@ -1371,7 +1371,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['warm', 'subtle', 'everyday', 'portrait', 'low-contrast', 'medium-saturation', 'color', 'soft'],
-        whiteBalance: '4700K, A8-M1', // Exaggerated
+        whiteBalance: '4700K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+3', // Lighter for portrait, also everyday
             'Gamma': 'Movie',
@@ -1402,7 +1402,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'low',
         tags: ['cinematic', 'green', 'soft', 'low-saturation', 'low-contrast', 'color', 'noir'],
-        whiteBalance: '3800K, A8-M0.5', // Exaggerated
+        whiteBalance: '3800K, A7-M0.5', // Exaggerated
         settings: {
             'Black level': '+4', // Darker for cinematic
             'Gamma': 'Movie',
@@ -1433,7 +1433,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['vintage', 'warm', 'golden-hour', 'low-contrast', 'medium-saturation', 'color', 'classic'],
-        whiteBalance: '4400K, A8-M1', // Exaggerated
+        whiteBalance: '4400K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+7', // Keep as is
             'Gamma': 'Still',
@@ -1495,7 +1495,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['vibrant', 'warm', 'summer', 'high-saturation', 'medium-contrast', 'color', 'energetic'],
-        whiteBalance: '4200K, A8-G1.5', // Exaggerated
+        whiteBalance: '4200K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '+1', // Keep as is
             'Gamma': 'Still',
@@ -1557,7 +1557,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'medium',
         tags: ['film', 'warm', 'rich', 'high-contrast', 'medium-saturation', 'color', 'kodachrome'],
-        whiteBalance: '4700K, A8-M1', // Exaggerated
+        whiteBalance: '4700K, A7-M1', // Exaggerated
         settings: {
             'Black level': '-11', // Darker for cinematic
             'Gamma': 'Cine1',
@@ -1619,7 +1619,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['film', 'warm', 'daylight', 'natural', 'low-contrast', 'medium-saturation', 'color', 'kodachrome'],
-        whiteBalance: '4200K, A8-M2.5', // Exaggerated
+        whiteBalance: '4200K, A7-M2.5', // Exaggerated
         settings: {
             'Black level': '+5', // Keep as is
             'Gamma': 'S-Cinetone',
@@ -1712,7 +1712,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['romantic', 'dreamy', 'warm', 'high-saturation', 'medium-contrast', 'color', 'pink'],
-        whiteBalance: '4800K, A8-M1', // Exaggerated
+        whiteBalance: '4800K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+5', // Keep as is
             'Gamma': 'Still',
@@ -1743,7 +1743,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['cinematic', 'teal-orange', 'modern', 'high-saturation', 'high-contrast', 'color', 'americana'],
-        whiteBalance: '4500K, A8-G1', // Exaggerated
+        whiteBalance: '4500K, A7-G1', // Exaggerated
         settings: {
             'Black level': '-16', // Darker for cinematic
             'Gamma': 'Cine1',
@@ -1805,7 +1805,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'earthy'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
+        whiteBalance: '3700K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+3', // Keep as is
             'Gamma': 'Movie',
@@ -1836,7 +1836,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['film', 'vibrant', 'red', 'high-saturation', 'high-contrast', 'color', 'luxurious'],
-        whiteBalance: '3300K, A8-G2', // Exaggerated
+        whiteBalance: '3300K, A7-G2', // Exaggerated
         settings: {
             'Black level': '-2', // Darker for cinematic
             'Gamma': 'Still',
@@ -1867,7 +1867,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'medium',
         tags: ['portrait', 'skin-tone', 'soft', 'medium-saturation', 'high-contrast', 'color', 'beauty'],
-        whiteBalance: '4700K, A8-M1.5', // Exaggerated
+        whiteBalance: '4700K, A7-M1.5', // Exaggerated
         settings: {
             'Black level': '-12', // Lighter for portrait
             'Gamma': 'S-Log2/S-Log3',
@@ -1898,7 +1898,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['vintage', 'green', 'warm', 'high-saturation', 'high-contrast', 'color', 'unique'],
-        whiteBalance: '8200K, A8-G6', // Exaggerated
+        whiteBalance: '8200K, A7-G6', // Exaggerated
         settings: {
             'Black level': '-11', // Keep as is
             'Gamma': 'Cine4',
@@ -1960,7 +1960,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['warm', 'yellow', 'vibrant', 'nostalgic', 'high-saturation', 'medium-contrast', 'color', 'summer'],
-        whiteBalance: '4400K, A8-G0.5', // Exaggerated
+        whiteBalance: '4400K, A7-G0.5', // Exaggerated
         settings: {
             'Black level': '+3', // Keep as is
             'Gamma': 'Still',
@@ -1991,7 +1991,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'medium',
         tags: ['vintage', 'film', 'warm', 'medium-saturation', 'medium-contrast', 'color', 'classic'],
-        whiteBalance: '5500K, A8-M1', // Exaggerated
+        whiteBalance: '5500K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+2', // Keep as is
             'Gamma': 'Still',
@@ -2022,7 +2022,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'low',
         tags: ['film', 'night', 'tungsten', 'cool', 'low-saturation', 'low-contrast', 'color', 'noir'],
-        whiteBalance: '2500K, A8-M1.5', // Exaggerated
+        whiteBalance: '2500K, A7-M1.5', // Exaggerated
         settings: {
             'Black level': '0', // Darker for cinematic
             'Gamma': 'Movie',
@@ -2053,7 +2053,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'high',
         tags: ['film', 'daylight', 'vibrant', 'high-saturation', 'low-contrast', 'color', 'cinematic', 'professional'],
-        whiteBalance: '3500K, A8-G1.5', // Exaggerated
+        whiteBalance: '3500K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '+6', // Darker for cinematic
             'Gamma': 'S-Cinetone',
@@ -2239,7 +2239,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['vintage', 'warm', 'high-saturation', 'medium-contrast', 'color', 'sepia'],
-        whiteBalance: '4800K, A8-G1.5', // Exaggerated
+        whiteBalance: '4800K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '+1', // Keep as is
             'Gamma': 'S-Cinetone',
@@ -2270,7 +2270,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['cinematic', 'film', 'high-saturation', 'high-contrast', 'color', 'epic'],
-        whiteBalance: '3700K, A8', // Exaggerated
+        whiteBalance: '3700K, A7', // Exaggerated
         settings: {
             'Black level': '-16', // Darker for cinematic
             'Gamma': 'HLG3',
@@ -2301,7 +2301,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['portrait', 'warm', 'skin-tone', 'professional', 'high-saturation', 'medium-contrast', 'color', 'golden-hour'],
-        whiteBalance: '4200K, A8-G1.5', // Exaggerated
+        whiteBalance: '4200K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '+7', // Lighter for portrait
             'Gamma': 'S-Cinetone/Cine4',
@@ -2363,7 +2363,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['cinematic', 'night', 'warm', 'yellow', 'high-saturation', 'high-contrast', 'color', 'urban'],
-        whiteBalance: '4900K, A8-G1.5', // Exaggerated
+        whiteBalance: '4900K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '-16', // Darker for cinematic
             'Gamma': 'S-log2 or S-log3',
@@ -2394,7 +2394,7 @@ const recipesData = [
         contrast: 'high',
         saturation: 'high',
         tags: ['vibrant', 'pop-art', 'cool', 'high-saturation', 'high-contrast', 'color', 'neon', 'urban'],
-        whiteBalance: '3200K, A8-M2', // Exaggerated
+        whiteBalance: '3200K, A7-M2', // Exaggerated
         settings: {
             'Black level': '-5', // Keep as is
             'Gamma': 'Still',
@@ -2425,7 +2425,7 @@ const recipesData = [
         contrast: 'low',
         saturation: 'medium',
         tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'refined'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
+        whiteBalance: '3700K, A7-M1', // Exaggerated
         settings: {
             'Black level': '+3', // Keep as is
             'Gamma': 'Movie',
@@ -2456,7 +2456,7 @@ const recipesData = [
         contrast: 'medium',
         saturation: 'high',
         tags: ['film', 'warm', 'cinematic', 'high-saturation', 'medium-contrast', 'color', 'retro'],
-        whiteBalance: '4600K, A8-G1.5', // Exaggerated
+        whiteBalance: '4600K, A7-G1.5', // Exaggerated
         settings: {
             'Black level': '-2', // Darker for cinematic
             'Gamma': 'Cine1',
