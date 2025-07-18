@@ -1483,8 +1483,11 @@ import recipesData from './recipes.js';
                 }
 
 
-                if (document.getElementById('filtersContainer')?.contains(target) || document.getElementById('filtersContainerDesktop')?.contains(target)) { 
-                    handleFilterClick(e); return; 
+// Handle filter clicks - Xử lý sự kiện click cho các nút lọc
+                const filterBtn = target.closest('.filter-btn');
+                if (filterBtn) { 
+                    handleFilterClick(e); 
+                    return; 
                 }
             });
             
