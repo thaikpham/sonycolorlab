@@ -585,6 +585,7 @@ async function callAIApi(prompt, isStructured = false, customDelay = 500) { // C
                     }
                 };
             } else if (prompt.includes("adjusted settings")) {
+                // Explicitly define a robust schema for adjusted recipe
                 payload.generationConfig = {
                     responseMimeType: "application/json",
                     responseSchema: {
@@ -603,7 +604,7 @@ async function callAIApi(prompt, isStructured = false, customDelay = 500) { // C
                                     "whiteBalance": { "type": "STRING" },
                                     "settings": {
                                         "type": "OBJECT",
-                                        "properties": {
+                                        properties: { // All possible settings keys
                                             "Black level": { "type": "STRING" },
                                             "Gamma": { "type": "STRING" },
                                             "Black Gamma": { "type": "STRING" },
@@ -611,24 +612,28 @@ async function callAIApi(prompt, isStructured = false, customDelay = 500) { // C
                                             "Color Mode": { "type": "STRING" },
                                             "Saturation": { "type": "STRING" },
                                             "Color Phase": { "type": "STRING" }
-                                        }
+                                        },
+                                        "additionalProperties": true // Allow for other properties if LLM adds them
                                     },
                                     "colorDepth": {
                                         "type": "OBJECT",
-                                        "properties": {
+                                        properties: { // All possible color depth keys
                                             "R": { "type": "STRING" }, "G": { "type": "STRING" }, "B": { "type": "STRING" },
                                             "C": { "type": "STRING" }, "M": { "type": "STRING" }, "Y": { "type": "STRING" }
-                                        }
+                                        },
+                                        "additionalProperties": true
                                     },
                                     "detailSettings": {
                                         "type": "OBJECT",
-                                        "properties": {
+                                        properties: {
                                             "Level": { "type": "STRING" }
-                                        }
+                                        },
+                                        "additionalProperties": true
                                     },
                                     "personalityColor": { "type": "STRING" },
                                     "coords": { "type": "OBJECT", "properties": { "x": { "type": "NUMBER" }, "y": { "type": "NUMBER" } } }
-                                }
+                                },
+                                "required": ["id", "name", "description", "type", "contrast", "saturation", "whiteBalance", "settings", "personalityColor", "coords"] // Ensure these are always present
                             }
                         }
                     }
@@ -654,18 +659,18 @@ async function callAIApi(prompt, isStructured = false, customDelay = 500) { // C
                 } catch (e) {
                     console.error("AI Response JSON parsing error:", e);
                     console.error("Raw AI response text:", text);
-                    result = null;
+                    result = null; // Set result to null if parsing fails
                 }
             } else {
                 result = text;
             }
         } else {
             console.error("Unexpected AI response structure:", responseData);
-            result = null;
+            result = null; // Set result to null if response structure is unexpected
         }
     } catch (error) {
         console.error("AI API call failed:", error);
-        result = null;
+        result = null; // Set result to null on API call failure
     } finally {
         state.isAILoading = false;
         updateUIAfterAILoading();
@@ -1161,9 +1166,72 @@ Ví dụ cấu trúc JSON mong đợi:
 const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON
 
 if (aiResponse && aiResponse.recipe) {
-state.lastGeneratedAiRecipe = aiResponse.recipe;
-resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3" data-translate-key="compareWithOriginalBtn"></button></div>`;
-} else { resultContainer.innerHTML = `<p class="text-red-500">Failed to generate adjustment. Please try again.</p>`; }
+    // Apply specific adjustments based on user request keywords
+    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe)); // Start with original
+    adjustedRecipe.id = `${originalRecipe.id}-ai`;
+    adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
+    adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${textarea.value}"`, en: `Adjusted based on request: "${textarea.value}"` };
+
+    const userRequestLower = textarea.value.toLowerCase();
+
+    // Example adjustments based on common keywords
+    if (userRequestLower.includes('ấm hơn') || userRequestLower.includes('warmer')) {
+        adjustedRecipe.whiteBalance = "5500K, A6-M1"; // Example warm WB
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.R = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.R || 0) + 2));
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.Y = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.Y || 0) + 2));
+    }
+    if (userRequestLower.includes('mát hơn') || userRequestLower.includes('cooler')) {
+        adjustedRecipe.whiteBalance = "2500K, B6-M1"; // Example cool WB
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.B = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.B || 0) + 2));
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.C = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.C || 0) + 2));
+    }
+    if (userRequestLower.includes('tăng tương phản') || userRequestLower.includes('more contrast') || userRequestLower.includes('punchy')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Still'; // More contrasty gamma
+        if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.max(-15, parseInt(adjustedRecipe.settings['Black level'] || 0) - 5));
+        adjustedRecipe.contrast = 'high';
+    }
+    if (userRequestLower.includes('giảm tương phản') || userRequestLower.includes('less contrast') || userRequestLower.includes('soft')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Cine4'; // Flatter gamma
+        if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.min(7, parseInt(adjustedRecipe.settings['Black level'] || 0) + 5));
+        adjustedRecipe.contrast = 'low';
+    }
+    if (userRequestLower.includes('tươi hơn') || userRequestLower.includes('more vibrant') || userRequestLower.includes('tăng bão hòa')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.min(32, parseInt(adjustedRecipe.settings.Saturation || 0) + 10));
+        adjustedRecipe.saturation = 'high';
+    }
+    if (userRequestLower.includes('nhạt hơn') || userRequestLower.includes('less saturated') || userRequestLower.includes('giảm bão hòa')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.max(-7, parseInt(adjustedRecipe.settings.Saturation || 0) - 10));
+        adjustedRecipe.saturation = 'low';
+    }
+    if (userRequestLower.includes('sắc nét hơn') || userRequestLower.includes('sharper')) {
+        if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.min(7, parseInt(adjustedRecipe.detailSettings.Level || 0) + 3));
+    }
+    if (userRequestLower.includes('mềm mại hơn') || userRequestLower.includes('softer') || userRequestLower.includes('giảm chi tiết')) {
+        if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.max(-7, parseInt(adjustedRecipe.detailSettings.Level || 0) - 3));
+    }
+
+    // Attempt to merge AI's suggested changes if available and valid
+    if (aiResponse.recipe) {
+        // Simple merge: AI's values overwrite if they exist and are valid.
+        // For simplicity, directly assign top-level properties if they exist in AI's response
+        if (aiResponse.recipe.whiteBalance) adjustedRecipe.whiteBalance = aiResponse.recipe.whiteBalance;
+        if (aiResponse.recipe.settings) Object.assign(adjustedRecipe.settings, aiResponse.recipe.settings);
+        if (aiResponse.recipe.colorDepth) Object.assign(adjustedRecipe.colorDepth, aiResponse.recipe.colorDepth);
+        if (aiResponse.recipe.detailSettings) Object.assign(adjustedRecipe.detailSettings, aiResponse.recipe.detailSettings);
+        if (aiResponse.recipe.personalityColor) adjustedRecipe.personalityColor = aiResponse.recipe.personalityColor;
+        if (aiResponse.recipe.coords) adjustedRecipe.coords = aiResponse.recipe.coords;
+        if (aiResponse.recipe.contrast) adjustedRecipe.contrast = aiResponse.recipe.contrast;
+        if (aiResponse.recipe.saturation) adjustedRecipe.saturation = aiResponse.recipe.saturation;
+        if (aiResponse.recipe.tags) adjustedRecipe.tags = aiResponse.recipe.tags;
+    }
+
+
+    state.lastGeneratedAiRecipe = adjustedRecipe; // Use the locally adjusted recipe
+    resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
+} else {
+    console.error("AI Adjustment failed. AI Response was not valid or missing 'recipe' object:", aiResponse);
+    resultContainer.innerHTML = `<p class="text-red-500">Lỗi khi tạo tinh chỉnh bằng AI. Phản hồi không hợp lệ hoặc thiếu dữ liệu công thức. Vui lòng thử lại.</p>`;
+}
 button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
 }
 
