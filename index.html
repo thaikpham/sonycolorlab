@@ -563,108 +563,82 @@ async function callAIApi(prompt, isStructured = false, delay = 1200) {
     try {
         await new Promise(resolve => setTimeout(resolve, delay)); // Simulate network delay
 
-        let chatHistory = [];
-        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+        // --- MOCK API LOGIC ---
+        if (prompt.includes("Suggest the single best existing recipe")) {
+            const tagsJsonString = prompt.substring(prompt.indexOf("tags:") + 5).trim();
+            const tags = JSON.parse(tagsJsonString);
 
-        let payload = { contents: chatHistory };
-        const apiKey = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ"; // API Key của bạn
-
-        if (isStructured) {
-            // Define schema for structured output (e.g., quiz results or adjusted recipe)
-            if (prompt.includes("Suggest the single best existing recipe")) {
-                payload.generationConfig = {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "recipeId": { "type": "STRING" },
-                            "moodDescription": { "type": "STRING" }
-                        },
-                        "propertyOrdering": ["recipeId", "moodDescription"]
+            const scoredRecipes = recipesData.map(recipe => {
+                let score = 0;
+                tags.forEach(tag => {
+                    if (recipe.tags.includes(tag)) {
+                        score++;
                     }
-                };
-            } else if (prompt.includes("adjusted settings")) {
-                payload.generationConfig = {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "recipe": {
-                                type: "OBJECT",
-                                properties: {
-                                    "id": { "type": "STRING" },
-                                    "name": { "type": "OBJECT", "properties": { "vi": { "type": "STRING" }, "en": { "type": "STRING" } } },
-                                    "description": { "type": "OBJECT", "properties": { "vi": { "type": "STRING" }, "en": { "type": "STRING" } } },
-                                    "type": { "type": "STRING" },
-                                    "contrast": { "type": "STRING" },
-                                    "saturation": { "type": "STRING" },
-                                    "tags": { "type": "ARRAY", "items": { "type": "STRING" } },
-                                    "whiteBalance": { "type": "STRING" },
-                                    "settings": {
-                                        "type": "OBJECT",
-                                        "properties": {
-                                            "Black level": { "type": "STRING" },
-                                            "Gamma": { "type": "STRING" },
-                                            "Black Gamma": { "type": "STRING" },
-                                            "Knee": { "type": "STRING" },
-                                            "Color Mode": { "type": "STRING" },
-                                            "Saturation": { "type": "STRING" },
-                                            "Color Phase": { "type": "STRING" }
-                                        }
-                                    },
-                                    "colorDepth": {
-                                        "type": "OBJECT",
-                                        "properties": {
-                                            "R": { "type": "STRING" }, "G": { "type": "STRING" }, "B": { "type": "STRING" },
-                                            "C": { "type": "STRING" }, "M": { "type": "STRING" }, "Y": { "type": "STRING" }
-                                        }
-                                    },
-                                    "detailSettings": {
-                                        "type": "OBJECT",
-                                        "properties": {
-                                            "Level": { "type": "STRING" }
-                                        }
-                                    },
-                                    "personalityColor": { "type": "STRING" },
-                                    "coords": { "type": "OBJECT", "properties": { "x": { "type": "NUMBER" }, "y": { "type": "NUMBER" } } }
-                                }
-                            }
-                        }
-                    }
-                };
-            }
-        }
-
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const responseData = await response.json();
-
-        if (responseData.candidates && responseData.candidates.length > 0 &&
-            responseData.candidates[0].content && responseData.candidates[0].content.parts &&
-            responseData.candidates[0].content.parts.length > 0) {
-            const text = responseData.candidates[0].content.parts[0].text;
-            if (isStructured) {
-                try {
-                    result = JSON.parse(text);
-                } catch (e) {
-                    console.error("AI Response JSON parsing error:", e);
-                    console.error("Raw AI response text:", text);
-                    result = null;
+                });
+                // Boost score for matching type (color/bw) as it's a hard requirement
+                if (tags.includes(recipe.type)) {
+                    score += 5;
                 }
+                return { ...recipe, score };
+            }).sort((a, b) => b.score - a.score);
+
+            if (scoredRecipes.length > 0) {
+                result = {
+                    recipeId: scoredRecipes[0].id,
+                    moodDescription: scoredRecipes[0].description[state.currentLang]
+                };
             } else {
-                result = text;
+                result = null; // No matching recipe found
             }
+        } else if (prompt.includes("adjusted settings")) {
+            const originalIdMatch = prompt.match(/Original Recipe \(ID: (.*?)\)/);
+            const originalId = originalIdMatch ? originalIdMatch[1] : null;
+            const userRequestMatch = prompt.match(/User request: "(.*?)"/);
+            const userRequest = userRequestMatch ? userRequestMatch[1] : "";
+
+            const originalRecipe = recipesData.find(r => r.id === originalId);
+            if (originalRecipe) {
+                let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe)); // Deep copy
+                adjustedRecipe.id = `${originalRecipe.id}-ai`;
+                adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
+                adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${userRequest}"`, en: `Adjusted based on request: "${userRequest}"` };
+
+                // Simple mock adjustments based on keywords
+                if (userRequest.includes('ấm hơn') || userRequest.includes('warmer')) { 
+                    adjustedRecipe.whiteBalance = "5500K, A6-M1"; 
+                }
+                if (userRequest.includes('trong hơn') || userRequest.includes('clearer')) { 
+                    if(adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = '0'; 
+                }
+                if (userRequest.includes('tương phản cao') || userRequest.includes('high contrast')) {
+                    if(adjustedRecipe.settings) adjustedRecipe.settings['Gamma'] = 'Still';
+                    adjustedRecipe.contrast = 'high';
+                }
+                if (userRequest.includes('bão hòa hơn') || userRequest.includes('more saturation')) {
+                    if(adjustedRecipe.settings) adjustedRecipe.settings['Saturation'] = '+20';
+                    adjustedRecipe.saturation = 'high';
+                }
+
+                result = { recipe: adjustedRecipe };
+            } else {
+                result = null;
+            }
+        } else if (prompt.includes("Compare the following two recipes")) {
+            const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
+            result = `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
+        } else if (prompt.includes("Giải thích các đặc điểm và ý đồ nghệ thuật của công thức Sony Picture Profile")) {
+            // Simple mock explanation
+            const recipeNameMatch = prompt.match(/Tên công thức: (.*?)\n/);
+            const recipeName = recipeNameMatch ? recipeNameMatch[1] : "công thức này";
+            result = `Đây là một giải thích giả lập cho ${recipeName}. Công thức này được thiết kế để tạo ra một cái nhìn đặc biệt thông qua việc điều chỉnh cân bằng trắng, gamma và độ sâu màu. Các cài đặt này giúp kiểm soát tông màu tổng thể, độ tương phản và cách các màu sắc cụ thể được thể hiện. \n\n**Tình huống lý tưởng:** Thích hợp cho chụp phong cảnh với ánh sáng tự nhiên hoặc chân dung ngoài trời để có màu da mềm mại.`;
         } else {
-            console.error("Unexpected AI response structure:", responseData);
+            console.warn("Unknown prompt for mock API:", prompt);
             result = null;
         }
+        // --- END MOCK API LOGIC ---
+
     } catch (error) {
-        console.error("AI API call failed:", error);
+        console.error("Mock API call failed:", error);
         result = null;
     } finally {
         state.isAILoading = false;
@@ -781,8 +755,8 @@ recipeFormulas: () => `
                       <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
  <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
  <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
- <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-</div>
+ <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                      </div>
 
                       <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
                          <div id="chartsContainer">
@@ -1165,6 +1139,7 @@ async function handleAiRecipeExplanation(button) {
         return;
     }
 
+    // This prompt is now for the mock API, it will return a predefined string
     const prompt = `Giải thích các đặc điểm và ý đồ nghệ thuật của công thức Sony Picture Profile sau một cách súc tích, dễ hiểu, tập trung vào cách Cân bằng trắng, Gamma, Mức độ đen, Chế độ màu, Độ bão hòa, Độ sâu màu và cài đặt Chi tiết của nó đóng góp vào giao diện và cảm nhận tổng thể. Đồng thời, gợi ý các tình huống chụp ảnh lý tưởng cho công thức này.
     Tên công thức: ${recipe.name[state.currentLang]}
     Mô tả: ${recipe.description[state.currentLang]}
@@ -1174,7 +1149,7 @@ async function handleAiRecipeExplanation(button) {
     Cài đặt chi tiết: ${JSON.stringify(recipe.detailSettings || {})}
     `;
 
-    const aiResponse = await callAIApi(prompt, false); // Expecting plain text/markdown
+    const aiResponse = await callAIApi(prompt, false); // Expecting plain text/markdown from mock
 
     if (aiResponse) {
         explanationContainer.innerHTML = `<div class="mt-4 p-4 rounded-xl bg-blue-50">
@@ -1207,7 +1182,7 @@ Example:
 {"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
 `;
 
-const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON
+const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON from mock
 console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
 
 if (aiResponse && aiResponse.recipeId) {
@@ -1427,7 +1402,7 @@ callbacks: { label: function(context) { return context.raw.name; } }
 }
 },
 scales: {
-x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t('axisTonality') } },
+x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } },
 y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
 }
 });
