@@ -401,6 +401,41 @@ lightbox: { isOpen: false, images: [], currentIndex: 0 },
 const mainContentEl = document.getElementById('mainContent');
 let activeCharts = {};
 
+// --- DATA ---
+        const recipesData = [
+            {
+                id: 'scl-01-vintage-memory',
+                name: { vi: 'SCL-01: Ký Ức Vintage', en: 'SCL-01: Vintage Memory' },
+                description: { vi: 'Tông màu phim cổ điển, độ bão hòa thấp và tương phản mềm, như một ký ức xa xăm.', en: 'A classic film tone with low saturation and soft contrast, like a distant memory.' },
+                type: 'color',
+                contrast: 'low',
+                saturation: 'low',
+                tags: ['vintage', 'film', 'nostalgic', 'soft', 'cool', 'everyday', 'low-saturation', 'low-contrast', 'color'],
+                whiteBalance: '8600K, B2.5-M3',
+                settings: { 'Black level': '-4', 'Gamma': 'Cine4', 'Black Gamma': 'Middle -6', 'Knee': 'Manual 82.5% +3', 'Color Mode': 'Still', 'Saturation': '-7', 'Color Phase': '0' },
+                colorDepth: { 'R': '-5', 'G': '+6', 'B': '0', 'C': '+2', 'M': '+6', 'Y': '+4' },
+                detailSettings: { 'Level': '0', 'Mode': 'Manual', 'V/H Balance': '+1', 'B/W Balance': 'Type 3', 'Limit': '7', 'Crispening': '6', 'Hi-Light Detail': '3' },
+                personalityColor: '#a1887f',
+                coords: { x: -6.5, y: -5.5 }
+            },
+            {
+                id: 'scl-02-emerald-dream',
+                name: { vi: 'SCL-02: Giấc Mơ Lục Bảo', en: 'SCL-02: Emerald Dream' },
+                description: { vi: 'Tông màu cổ điển với sắc xanh lá cây đặc trưng, mang lại cảm giác trong trẻo và hoài niệm.', en: 'A classic tone with characteristic green hues, providing a clear and nostalgic feel.' },
+                type: 'color',
+                contrast: 'low',
+                saturation: 'low',
+                tags: ['landscape', 'nature', 'green', 'cool', 'nostalgic', 'mountain', 'low-saturation', 'low-contrast', 'color'],
+                whiteBalance: '3700K, A7-M0.5',
+                settings: { 'Black level': '0', 'Gamma': 'Movie', 'Black Gamma': 'Wide +6', 'Knee': 'Manual 80% +3', 'Color Mode': 'Still', 'Saturation': '+10', 'Color Phase': '-2' },
+                colorDepth: { 'R': '-3', 'G': '+6', 'B': '-2', 'C': '-2', 'M': '-4', 'Y': '-2' },
+                detailSettings: { 'Level': '0', 'Mode': 'Manual', 'V/H Balance': '+1', 'B/W Balance': 'Type 3', 'Limit': '7', 'Crispening': '6', 'Hi-Light Detail': '3' },
+                personalityColor: '#66bb6a',
+                coords: { x: -3.0, y: -0.5 }
+            }
+            // Add all other recipes here...
+        ];
+// --- DATA ---
 import recipesData from './recipes.js';
 
 const translations = {
