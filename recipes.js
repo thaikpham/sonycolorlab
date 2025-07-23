@@ -354,7 +354,7 @@ const recipesData = [
         "saturation": "maximum",
         "tags": ["color-explosion", "maximum-saturation", "super-vibrant", "high-energy", "bold-statements", "playful-side"],
         "whiteBalance": "3700K, A5-M1",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +5", "Color Mode": "S-Gamut3", "Saturation": "+20", "Color Phase": "-1" },
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 85% +3", "Color Mode": "S-Gamut3", "Saturation": "+20", "Color Phase": "-1" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FF69B4", // Hot Pink
