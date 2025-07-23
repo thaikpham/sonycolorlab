@@ -588,7 +588,11 @@ async function callAIApi(prompt, isStructured = false, delay = 1200) {
                     moodDescription: scoredRecipes[0].description[state.currentLang]
                 };
             } else {
-                result = null; // No matching recipe found
+                // Fallback to a default recipe if no strong match is found
+                result = {
+                    recipeId: 'scl-001', // Default to the first recipe
+                    moodDescription: recipesData.find(r => r.id === 'scl-001').description[state.currentLang]
+                };
             }
         } else if (prompt.includes("adjusted settings")) {
             const originalIdMatch = prompt.match(/Original Recipe \(ID: (.*?)\)/);
@@ -624,8 +628,53 @@ async function callAIApi(prompt, isStructured = false, delay = 1200) {
                 result = null;
             }
         } else if (prompt.includes("Compare the following two recipes")) {
-            const names = prompt.match(/\*(.*?)\* and \*(.*?)\*/);
-            result = `### Cảm Giác & Phong Cách\n* **${names[1]}:** Mang lại cảm giác ấm áp, hoài cổ.\n* **${names[2]}:** Tạo ra cái nhìn lạnh hơn, hiện đại.\n\n### So Sánh Thông Số Chính\n| Thông số | ${names[1]} | ${names[2]} | Phân Tích |\n|---|---|---|---|\n| **White Balance** | Ấm (4000K) | Lạnh (8000K) | Đây là sự khác biệt chính. |\n| **Black Level** | -15 | -10 | Cả hai đều tăng tương phản, nhưng công thức 1 có vùng tối sâu hơn. |\n\n### Trường Hợp Sử Dụng\n* **Dùng ${names[1]} khi:** Chụp chân dung, hoàng hôn.\n* **Dùng ${names[2]} khi:** Chụp phong cảnh, kiến trúc.`;
+            const names = prompt.match(/\*(.*?)\* \(ID: (.*?)\) and \*(.*?)\* \(ID: (.*?)\)/);
+            const recipe1Name = names[1];
+            const recipe1Id = names[2];
+            const recipe2Name = names[3];
+            const recipe2Id = names[4];
+
+            const r1 = recipesData.find(r => r.id === recipe1Id);
+            const r2 = recipesData.find(r => r.id === recipe2Id);
+
+            let tableContent = `| Thông số | ${recipe1Name} | ${recipe2Name} |\n|---|---|---|\n`;
+            
+            // Add White Balance
+            tableContent += `| **Cân bằng trắng** | ${r1.whiteBalance} | ${r2.whiteBalance} |\n`;
+
+            // Add common settings
+            const commonSettingsKeys = ['Black level', 'Gamma', 'Black Gamma', 'Knee', 'Color Mode', 'Saturation', 'Color Phase'];
+            commonSettingsKeys.forEach(key => {
+                const val1 = r1.settings?.[key] || 'N/A';
+                const val2 = r2.settings?.[key] || 'N/A';
+                tableContent += `| **${key}** | ${val1} | ${val2} |\n`;
+            });
+
+            // Add Color Depth (if applicable and structured)
+            const colorDepthKeys = ['R', 'G', 'B', 'C', 'M', 'Y'];
+            if (r1.colorDepth || r2.colorDepth) {
+                colorDepthKeys.forEach(key => {
+                    const val1 = r1.colorDepth?.[key] || 'N/A';
+                    const val2 = r2.colorDepth?.[key] || 'N/A';
+                    tableContent += `| **Độ sâu màu ${key}** | ${val1} | ${val2} |\n`;
+                });
+            }
+
+            // Add Detail Settings (if applicable)
+            if (r1.detailSettings?.Level || r2.detailSettings?.Level) {
+                const val1 = r1.detailSettings?.Level || 'N/A';
+                const val2 = r2.detailSettings?.Level || 'N/A';
+                tableContent += `| **Chi tiết (Level)** | ${val1} | ${val2} |\n`;
+            }
+
+            result = `${tableContent}\n` +
+                     `### Cảm Giác & Phong Cách\n` +
+                     `* **${recipe1Name}:** ${r1.description[state.currentLang]}\n` +
+                     `* **${recipe2Name}:** ${r2.description[state.currentLang]}\n\n` +
+                     `### Trường Hợp Sử Dụng\n` +
+                     `* **Dùng ${recipe1Name} khi:** Chụp chân dung, hoàng hôn. (Đây là nhận định giả lập)\n` +
+                     `* **Dùng ${recipe2Name} khi:** Chụp phong cảnh, kiến trúc. (Đây là nhận định giả lập)`;
+
         } else if (prompt.includes("Giải thích các đặc điểm và ý đồ nghệ thuật của công thức Sony Picture Profile")) {
             // Simple mock explanation
             const recipeNameMatch = prompt.match(/Tên công thức: (.*?)\n/);
