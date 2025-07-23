@@ -1162,7 +1162,7 @@ const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON
 
 if (aiResponse && aiResponse.recipe) {
 state.lastGeneratedAiRecipe = aiResponse.recipe;
-resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
+resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3" data-translate-key="compareWithOriginalBtn"></button></div>`;
 } else { resultContainer.innerHTML = `<p class="text-red-500">Failed to generate adjustment. Please try again.</p>`; }
 button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
 }
@@ -1214,36 +1214,83 @@ async function handleAiRecipeExplanation(button) {
 
 
 async function handleQuizSubmit() {
-const selectedTags = Object.values(state.quizAnswers);
-await renderView('home');
-const homeView = document.getElementById('homeView');
-if (!homeView) { console.error("Quiz Submit Error: homeView not found after render."); return; }
-homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
-applyTranslations();
+    const selectedTags = Object.values(state.quizAnswers);
+    await renderView('home');
+    const homeView = document.getElementById('homeView');
+    if (!homeView) { console.error("Quiz Submit Error: homeView not found after render."); return; }
+    homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
+    applyTranslations();
 
-// Construct a prompt for the AI to suggest a single best recipe based on quiz answers
-const prompt = `Based on the user's quiz answers (tags): ${JSON.stringify(selectedTags)}.
-Suggest the single best existing recipe from the provided 'recipesData' that best matches these tags.
-Provide the output as a JSON object, with 'recipeId' (the 'id' of the recipe) and 'moodDescription' (the recipe's description in the current language).
-Example:
-{"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
-`;
+    let recommendedRecipe = null;
 
-const aiResponse = await callAIApi(prompt, true, 0); // Explicitly set delay to 0 for quiz submission
-console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
+    try {
+        // Step 1: Try to get a recommendation from Gemini API
+        const prompt = `Based on the user's quiz answers (tags): ${JSON.stringify(selectedTags)}.
+        From the following list of available recipes, suggest the single best recipe that matches these tags.
+        Available recipes: ${JSON.stringify(recipesData.map(r => ({ id: r.id, name: r.name[state.currentLang], tags: r.tags })))}
+        Provide the output as a JSON object, with 'recipeId' (the 'id' of the recipe) and 'moodDescription' (the recipe's description in the current language).
+        Example:
+        {"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
+        `;
 
-if (aiResponse && aiResponse.recipeId) {
-    const recommendedRecipe = recipesData.find(r => r.id === aiResponse.recipeId);
+        const aiResponse = await callAIApi(prompt, true, 0); // Set delay to 0 for quick response
+        console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
+
+        if (aiResponse && aiResponse.recipeId) {
+            recommendedRecipe = recipesData.find(r => r.id === aiResponse.recipeId);
+            if (!recommendedRecipe) {
+                console.warn(`AI recommended recipe ID '${aiResponse.recipeId}' not found in local data. Falling back to local scoring.`);
+            }
+        } else {
+            console.warn("AI response invalid or missing recipeId. Falling back to local scoring.");
+        }
+
+    } catch (error) {
+        console.error("Error calling AI for quiz, falling back to local scoring:", error);
+    }
+
+    // Step 2: Fallback to local scoring if AI recommendation failed or was invalid
+    if (!recommendedRecipe) {
+        let maxScore = -1;
+        let bestLocalRecipe = null;
+
+        recipesData.forEach(recipe => {
+            let score = 0;
+            selectedTags.forEach(tag => {
+                if (recipe.tags.includes(tag)) {
+                    score++;
+                }
+            });
+            // Give extra weight to type match
+            if (selectedTags.includes(recipe.type)) {
+                score += 5;
+            }
+
+            if (score > maxScore) {
+                maxScore = score;
+                bestLocalRecipe = recipe;
+            }
+        });
+
+        if (bestLocalRecipe) {
+            recommendedRecipe = bestLocalRecipe;
+            console.log("Using local scoring fallback. Recommended recipe:", recommendedRecipe.id);
+        } else {
+            // Ultimate fallback if no local recipe matches at all (highly unlikely)
+            recommendedRecipe = recipesData[0];
+            console.warn("No suitable recipe found via AI or local scoring. Defaulting to first recipe:", recommendedRecipe.id);
+        }
+    }
+
+    // Step 3: Navigate to the recommended recipe's detail page
     if (recommendedRecipe) {
         state.selectedRecipeId = recommendedRecipe.id;
         state.isMobileDetailActive = true;
         await renderView('recipeFormulas'); // Directly navigate to recipe details
     } else {
-        homeView.innerHTML = `<p class="text-red-500">Lỗi: Không tìm thấy công thức được đề xuất từ AI. Vui lòng thử lại.</p>`;
+        // This case should ideally not be reached with the fallbacks in place
+        homeView.innerHTML = `<p class="text-red-500">Lỗi không mong muốn: Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
     }
-} else { 
-    homeView.innerHTML = `<p class="text-red-500">Lỗi khi lấy đề xuất từ AI. Phản hồi không hợp lệ hoặc thiếu 'recipeId'. Vui lòng thử lại.</p>`; 
-}
 }
 
 function attachViewEventListeners(viewName) {
@@ -1702,4 +1749,3 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
-
