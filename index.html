@@ -38,16 +38,11 @@ overflow-y: auto;
 --text-secondary: #6e6e73;
 }
 
-        .glass-panel {   
-            background: var(--glass-bg);   
-            backdrop-filter: blur(40px) saturate(180%);   
-            -webkit-backdrop-filter: blur(40px) saturate(180%);   
-            border: 1px solid var(--glass-border);   
-        .glass-panel {    
-            background: var(--glass-bg);    
-            backdrop-filter: blur(40px) saturate(180%);    
-            -webkit-backdrop-filter: blur(40px) saturate(180%);    
-            border: 1px solid var(--glass-border);    
+.glass-panel {    
+background: var(--glass-bg);    
+backdrop-filter: blur(40px) saturate(180%);    
+-webkit-backdrop-filter: blur(40px) saturate(180%);    
+border: 1px solid var(--glass-border);    
 box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
 border-radius: 24px;
 }
@@ -55,14 +50,10 @@ border-radius: 24px;
 .glass-panel { border-radius: 28px; }
 }
 
-        .recipe-item.selected {   
-            background-color: rgba(0, 122, 255, 0.1);   
-            border-left: 4px solid var(--primary-accent);   
-            color: var(--text-primary);   
-        .recipe-item.selected {    
-            background-color: rgba(0, 122, 255, 0.1);    
-            border-left: 4px solid var(--primary-accent);    
-            color: var(--text-primary);    
+.recipe-item.selected {    
+background-color: rgba(0, 122, 255, 0.1);    
+border-left: 4px solid var(--primary-accent);    
+color: var(--text-primary);    
 transform: translateX(4px);
 box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
 }
@@ -224,35 +215,6 @@ left: 0;
 color: #16a34a;
 font-weight: bold;
 }
-
-        /* Styles for the Color Tool */
-        .upload-box {
-            border: 2px dashed #d1d5db;
-            transition: all 0.2s ease-in-out;
-        }
-        .upload-box.dragover {
-            border-color: var(--primary-accent);
-            background-color: rgba(0, 122, 255, 0.05);
-        }
-        #before-image, #after-image {
-            transition: opacity 0.3s ease-in-out;
-        }
-        .preview-toggle-btn {
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.25s ease-in-out;
-            border: none;
-            background-color: transparent;
-            cursor: pointer;
-        }
-        .preview-toggle-btn.active {
-            background-color: rgba(255, 255, 255, 0.95);
-            color: #1d1d1f;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .preview-toggle-btn:not(.active):hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGB56ZKQD"></script>
@@ -276,31 +238,17 @@ gtag('config', 'G-QKGB56ZKQD');
 </button>
 <div class="flex items-center gap-2 md:gap-4">
 <nav id="mainNav" class="hidden md:flex items-center gap-2">
-                    <div class="relative" id="pp-dropdown-container">
-                        <button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100">
-                            <span data-translate-key="navPictureProfile"></span>
-                            <svg class="w-4 h-4 transition-transform" id="pp-dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95">
-                            <button data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
-                            <button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
-                            <button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
-                        </div>
-                    </div>
-                    <div class="relative">
-                        <button data-view="colorTool" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navColorTool"></button>
-                    </div>
-                     <div class="relative" id="pp-dropdown-container">
-                         <button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100">
-                             <span data-translate-key="navPictureProfile"></span>
-                             <svg class="w-4 h-4 transition-transform" id="pp-dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                         </button>
-                         <div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95">
-                             <button data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
-                             <button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
-                             <button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
-                         </div>
-                     </div>
+<div class="relative" id="pp-dropdown-container">
+<button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100">
+<span data-translate-key="navPictureProfile"></span>
+<svg class="w-4 h-4 transition-transform" id="pp-dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</button>
+<div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95">
+<button data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
+<button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
+<button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
+</div>
+</div>
 </nav>
 <div class="flex items-center gap-2">
 <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
@@ -340,7 +288,6 @@ gtag('config', 'G-QKGB56ZKQD');
 <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
 <nav class="mt-16 flex flex-col gap-6 text-center">
 <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navRecipeFormulas"></button>
-                <button data-view="colorTool" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navColorTool"></button>
 <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navFeaturedPhotos"></button>
 <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navExplain"></button>
 </nav>
@@ -388,19 +335,13 @@ quizAnswers: {},
 activeFilters: { type: 'all', contrast: 'all', saturation: 'all' },
 isMobileDetailActive: false,
 lightbox: { isOpen: false, images: [], currentIndex: 0 },
-            colorTool: {
-                referenceImage: null,
-                sourceImage: null,
-                palette: [],
-                isGraded: false,
-            }
 };
 
 const mainContentEl = document.getElementById('mainContent');
 let activeCharts = {};
 
-        // --- DATA ---
-        // FIX: Embed recipe data directly to resolve module import error.
+// --- DATA ---
+// FIX: Embed recipe data directly to resolve module import error.
 
 import recipesData from './recipes.js';
 
@@ -409,7 +350,6 @@ const translations = {
 headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
 navPictureProfile: {vi: "Picture Profile", en: "Picture Profile"},
 navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-            navColorTool: {vi: "Công cụ tạo màu", en: "Color Tool"}, 
 navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
 navExplain: {vi:"Giải thích (PP)", en:"Guide (PP)"},
 noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
@@ -418,27 +358,6 @@ startExploringBtn: {vi: "Bắt đầu khám phá", en: "Start Exploring"},
 exportRecipeBtn: {vi: "Lưu & Xuất Công Thức", en: "Save & Export Recipe"},
 downloadLutBtn: {vi: "Tải file .CUBE (LUT)", en: "Download .CUBE (LUT) File"},
 memoryRecallBtn: {vi: "Hướng dẫn lưu vào máy", en: "Camera Save Guide"},
-
-
-            // Color Tool
-            colorToolTitle: {vi: "Công Cụ Tạo Màu AI", en: "AI Color Tool"},
-            colorToolSubtitle: {vi: "Bắt màu từ ảnh tham khảo và tạo file LUT (.CUBE) cho máy ảnh Sony của bạn.", en: "Match colors from a reference image and create a LUT file (.CUBE) for your Sony camera."},
-            uploadReferenceTitle: {vi: "1. Tải lên ảnh tham khảo", en: "1. Upload Reference Image"},
-            uploadReferenceDesc: {vi: "Chọn một ảnh có màu sắc bạn yêu thích.", en: "Choose an image with a color palette you love."},
-            uploadSourceTitle: {vi: "2. Tải lên ảnh của bạn", en: "2. Upload Your Image"},
-            uploadSourceDesc: {vi: "Chọn ảnh bạn muốn áp dụng màu mới.", en: "Choose the photo you want to apply the new look to."},
-            uploadBtnText: {vi: "Chọn ảnh...", en: "Choose image..."},
-            extractedPaletteTitle: {vi: "Bảng màu được trích xuất", en: "Extracted Palette"},
-            previewTitle: {vi: "Xem trước & Tải về", en: "Preview & Export"},
-            beforeLabel: {vi: "Trước", en: "Before"},
-            afterLabel: {vi: "Sau", en: "After"},
-            generateLutBtn: {vi: "Tạo & Tải về .CUBE LUT", en: "Generate & Download .CUBE LUT"},
-            lutWorkflowTitle: {vi: "Cách sử dụng LUT với Sony Creators' App", en: "How to use LUTs with Sony Creators' App"},
-            lutStep1: {vi: "<strong>Bước 1:</strong> Tải file .CUBE vừa tạo về máy tính hoặc điện thoại của bạn.", en: "<strong>Step 1:</strong> Download the generated .CUBE file to your computer or phone."},
-            lutStep2: {vi: "<strong>Bước 2:</strong> Kết nối máy ảnh Sony với máy tính/điện thoại và mở ứng dụng Sony Creators' App.", en: "<strong>Step 2:</strong> Connect your Sony camera to your computer/phone and open the Sony Creators' App."},
-            lutStep3: {vi: "<strong>Bước 3:</strong> Trong Creators' App, tìm đến mục quản lý LUTs (User LUTs) và chọn 'Import'.", en: "<strong>Step 3:</strong> In the Creators' App, navigate to the LUTs management section (User LUTs) and select 'Import'."},
-            lutStep4: {vi: "<strong>Bước 4:</strong> Chọn file .CUBE bạn đã tải về để nạp vào một trong các vị trí User LUT (U1-U16) trên máy ảnh.", en: "<strong>Step 4:</strong> Select the .CUBE file you downloaded to load it into one of the User LUT slots (U1-U16) on your camera."},
-            lutStep5: {vi: "<strong>Bước 5:</strong> Trên máy ảnh, vào Picture Profile, chọn một PP bất kỳ và ở mục 'LUT/Look', chọn User LUT tương ứng (ví dụ: U1).", en: "<strong>Step 5:</strong> On your camera, go to Picture Profile, select any PP, and in the 'LUT/Look' setting, choose the corresponding User LUT (e.g., U1)."},
 
 // Home / Quiz
 landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
@@ -681,10 +600,8 @@ function applyTranslations() {
 document.querySelectorAll('[data-translate-key]').forEach(el => {
 const key = el.dataset.translateKey;
 if (translations[key] && translations[key][state.currentLang]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }   
-                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }   
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
-                    else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
+if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
+else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
 else { el.innerHTML = t(key); }
 }
 });
@@ -705,12 +622,9 @@ function createFullRecipeHTML(recipe, isMainView = false) {
 const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
 const noteHTML = (recipe.notes && recipe.notes[state.currentLang])   
 ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-xl">
-                        <p class="font-bold" data-translate-key="noteTitle"></p>
-                        <p>${recipe.notes[state.currentLang]}</p>
-                      </div>` : '';
-                            <p class="font-bold" data-translate-key="noteTitle"></p>
-                            <p>${recipe.notes[state.currentLang]}</p>
-                          </div>` : '';
+                           <p class="font-bold" data-translate-key="noteTitle"></p>
+                           <p>${recipe.notes[state.currentLang]}</p>
+                         </div>` : '';
 
 return `${noteHTML}<div class="space-y-6 mt-6">
                <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
@@ -786,12 +700,9 @@ recipeFormulas: () => `
                    <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                        <!-- FILTERS FOR DESKTOP - hidden on small screens -->
                        <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-     <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-     <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-     <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-   <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-   <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-   <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+  <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+  <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+  <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
 </div>
 
                        <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
@@ -815,84 +726,6 @@ recipeFormulas: () => `
                    </div>
                </div>`,
 
-            colorTool: () => `
-                <div id="colorToolView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4 md:p-8">
-                    <div class="max-w-7xl mx-auto">
-                        <header class="text-center mb-10 md:mb-12">
-                            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="colorToolTitle"></h1>
-                            <h2 class="text-base md:text-lg text-slate-600 max-w-3xl mx-auto" data-translate-key="colorToolSubtitle"></h2>
-                        </header>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <!-- Left Panel: Controls -->
-                            <div class="glass-panel p-6 space-y-8">
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2" data-translate-key="uploadReferenceTitle"></h3>
-                                    <p class="text-sm text-gray-600 mb-4" data-translate-key="uploadReferenceDesc"></p>
-                                    <label for="reference-upload" class="upload-box w-full p-6 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-50">
-                                        <img id="reference-preview" class="hidden w-full h-auto max-h-48 object-contain rounded-lg mb-4">
-                                        <span id="reference-placeholder">
-                                            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                            <span class="mt-2 block text-sm font-semibold text-gray-600" data-translate-key="uploadBtnText"></span>
-                                        </span>
-                                    </label>
-                                    <input id="reference-upload" type="file" class="hidden" accept="image/*">
-                                </div>
-                                <div id="palette-container" class="hidden">
-                                    <h4 class="font-semibold mb-3" data-translate-key="extractedPaletteTitle"></h4>
-                                    <div id="palette-display" class="flex gap-2 flex-wrap"></div>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2" data-translate-key="uploadSourceTitle"></h3>
-                                    <p class="text-sm text-gray-600 mb-4" data-translate-key="uploadSourceDesc"></p>
-                                     <label for="source-upload" class="upload-box w-full p-6 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-50">
-                                        <img id="source-preview" class="hidden w-full h-auto max-h-48 object-contain rounded-lg mb-4">
-                                        <span id="source-placeholder">
-                                            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                            <span class="mt-2 block text-sm font-semibold text-gray-600" data-translate-key="uploadBtnText"></span>
-                                        </span>
-                                    </label>
-                                    <input id="source-upload" type="file" class="hidden" accept="image/*">
-                                </div>
-                            </div>
-
-                            <!-- Right Panel: Preview & Export -->
-                            <div class="space-y-6">
-                                <div class="glass-panel p-6">
-                                    <h3 class="text-xl font-bold mb-4" data-translate-key="previewTitle"></h3>
-                                    <div id="preview-container" class="w-full aspect-video bg-gray-200 rounded-xl flex items-center justify-center text-gray-500 relative overflow-hidden">
-                                        <img id="before-image" src="" class="absolute inset-0 w-full h-full object-contain hidden">
-                                        <img id="after-image" src="" class="absolute inset-0 w-full h-full object-contain hidden">
-                                        <div id="preview-toggle-container" class="absolute top-3 right-3 z-10 hidden">
-                                            <div class="bg-black/20 backdrop-blur-sm p-1 rounded-full flex text-sm font-semibold">
-                                                <button data-show="before" class="preview-toggle-btn px-4 py-1.5 rounded-full" data-translate-key="beforeLabel"></button>
-                                                <button data-show="after" class="preview-toggle-btn active px-4 py-1.5 rounded-full" data-translate-key="afterLabel"></button>
-                                            </div>
-                                        </div>
-                                        <span id="preview-placeholder">Tải ảnh lên để xem trước</span>
-                                    </div>
-                                </div>
-                                <div class="glass-panel p-6 text-center">
-                                    <button id="generate-lut-btn" class="btn btn-primary py-3 px-8 text-lg" data-translate-key="generateLutBtn" disabled></button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Workflow Explanation -->
-                        <section class="mt-12 md:mt-16 bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="lutWorkflowTitle"></h3>
-                            <div class="max-w-4xl mx-auto space-y-6">
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">1</div><p data-translate-key="lutStep1"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">2</div><p data-translate-key="lutStep2"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">3</div><p data-translate-key="lutStep3"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">4</div><p data-translate-key="lutStep4"></p></div>
-                                <div class="flex items-start gap-4"><div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">5</div><p data-translate-key="lutStep5"></p></div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            `,
-            
 featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
    <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
        <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
@@ -904,9 +737,11 @@ featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolut
        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
            ${recipesData.slice(0,6).map((recipe) => {
                const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
-               const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
+                const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
+                const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name)}`;
                return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
-                   <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                    <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                    <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
                </div>`;
            }).join('')}
        </div>
@@ -960,7 +795,6 @@ explain: () => `
                                         <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. <span data-translate-key="ppItemBlackLevel"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemBlackLevelDesc"></p></details>
                                         <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. <span data-translate-key="ppItemColorDepth"></span></summary><p class="text-sm text-gray-600 mt-2" data-translate-key="ppItemColorDepthDesc"></p></details>
                                     </div>
-                                     </div>
                                </div>
                            </div>
                        </section>
@@ -995,7 +829,6 @@ explain: () => `
 
                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
-                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
                             <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8" data-translate-key="recallDesc"></p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                                 <div class="bg-slate-100 rounded-lg p-6 text-center">
@@ -1007,21 +840,10 @@ explain: () => `
                                     <p class="text-sm" data-translate-key="recallCardDesc"></p>
                                 </div>
                             </div>
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                                 <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                     <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4>
-                                     <p class="text-sm" data-translate-key="recallInternalDesc"></p>
-                                 </div>
-                                 <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                     <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4>
-                                     <p class="text-sm" data-translate-key="recallCardDesc"></p>
-                                 </div>
-                             </div>
                         </section>
 
                         <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="exposureNoteTitle"></h3>
-                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="exposureNoteTitle"></h3>
                             <p class="max-w-3xl mx-auto text-center text-gray-700" data-translate-key="exposureNoteDesc"></p>
                         </section>
            
@@ -1254,8 +1076,6 @@ renderLibraryDetails();
 renderInteractiveCharts(state.currentLang);
 } else if (viewName === 'explain') {
 initInteractiveGrid();
-            } else if (viewName === 'colorTool') {
-                initColorTool();
 } else if (viewName === 'quiz') {
 const quizView = document.getElementById('quizView');
 quizView.addEventListener('click', (e) => {
@@ -1288,7 +1108,7 @@ document.getElementById('submitQuizBtn').addEventListener('click', handleQuizSub
 function renderLibraryList() {
 const container = document.getElementById('recipeListContainer'); if (!container) return;
 const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-let recipesToRender = recipesData.filter(recipe => (recipe.name.vi.toLowerCase().includes(searchTerm) || recipe.name.en.toLowerCase().includes(searchTerm) || recipe.description.vi.toLowerCase().includes(searchTerm) || recipe.description.en.toLowerCase().includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
+let recipesToRender = recipesData.filter(recipe => (recipe.name.includes(searchTerm) || recipe.name.includes(searchTerm) || recipe.description.vi.includes(searchTerm) || recipe.description.en.includes(searchTerm)) && (state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type) && (state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast) && (state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation) );
 
 container.innerHTML = recipesToRender.map(recipe => {
 const isChecked = state.comparisonList.includes(recipe.id);
@@ -1298,9 +1118,11 @@ return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 borde
                            <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
                             <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
                                 <div class="flex items-start gap-3">
-                                    <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
+                                     <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
+                                     <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name}"></div>
                                     <div class="flex-grow">
-                                        <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+                                         <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+                                         <span class="font-semibold text-primary">${recipe.name}</span>
                                         <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
                                     </div>
                                 </div>
@@ -1386,7 +1208,8 @@ const exportSectionHTML = `
            `;
 
 recipeContentContainer.innerHTML = `
-               <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name}</h3>
                <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
                ${thumbnailsHTML}
                ${exportSectionHTML}
@@ -1532,112 +1355,6 @@ menu.classList.add('hidden');
 }
 });
 }
-
-        function initColorTool() {
-            const referenceUpload = document.getElementById('reference-upload');
-            const sourceUpload = document.getElementById('source-upload');
-            const referencePreview = document.getElementById('reference-preview');
-            const sourcePreview = document.getElementById('source-preview');
-            const referencePlaceholder = document.getElementById('reference-placeholder');
-            const sourcePlaceholder = document.getElementById('source-placeholder');
-            const paletteContainer = document.getElementById('palette-container');
-            const paletteDisplay = document.getElementById('palette-display');
-            const generateLutBtn = document.getElementById('generate-lut-btn');
-            
-            // New preview elements
-            const previewPlaceholder = document.getElementById('preview-placeholder');
-            const beforeImage = document.getElementById('before-image');
-            const afterImage = document.getElementById('after-image');
-            const toggleContainer = document.getElementById('preview-toggle-container');
-
-            const handleFileUpload = (e, type) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const imageUrl = event.target.result;
-                    if (type === 'reference') {
-                        state.colorTool.referenceImage = imageUrl;
-                        referencePreview.src = imageUrl;
-                        referencePreview.classList.remove('hidden');
-                        referencePlaceholder.classList.add('hidden');
-                        paletteContainer.classList.remove('hidden');
-                        const mockPalette = ['#8a5d44', '#c2a28c', '#4a6e8a', '#a3b4c2', '#3c4c5a'];
-                        paletteDisplay.innerHTML = mockPalette.map(color => `<div class="w-10 h-10 rounded-full" style="background-color: ${color}"></div>`).join('');
-                    } else { // source
-                        state.colorTool.sourceImage = imageUrl;
-                        sourcePreview.src = imageUrl;
-                        sourcePreview.classList.remove('hidden');
-                        sourcePlaceholder.classList.add('hidden');
-
-                        // Update preview images
-                        beforeImage.src = imageUrl;
-                        afterImage.src = imageUrl;
-                        // Apply a mock filter for demonstration
-                        afterImage.style.filter = 'sepia(40%) saturate(1.5) hue-rotate(-10deg) contrast(1.1)';
-                        
-                        previewPlaceholder.classList.add('hidden');
-                        toggleContainer.classList.remove('hidden');
-
-                        // Show the 'after' image by default and set button state
-                        beforeImage.classList.add('hidden');
-                        afterImage.classList.remove('hidden');
-                        document.querySelector('.preview-toggle-btn[data-show="after"]').classList.add('active');
-                        document.querySelector('.preview-toggle-btn[data-show="before"]').classList.remove('active');
-                    }
-                    if (state.colorTool.referenceImage && state.colorTool.sourceImage) {
-                        generateLutBtn.disabled = false;
-                    }
-                };
-                reader.readAsDataURL(file);
-            };
-
-            referenceUpload.addEventListener('change', (e) => handleFileUpload(e, 'reference'));
-            sourceUpload.addEventListener('change', (e) => handleFileUpload(e, 'source'));
-
-            // Add event listener for the toggle container
-            if (toggleContainer) {
-                toggleContainer.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.preview-toggle-btn');
-                    if (!btn) return;
-                    
-                    const show = btn.dataset.show;
-                    
-                    document.querySelectorAll('.preview-toggle-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    if (show === 'before') {
-                        beforeImage.classList.remove('hidden');
-                        afterImage.classList.add('hidden');
-                    } else {
-                        beforeImage.classList.add('hidden');
-                        afterImage.classList.remove('hidden');
-                    }
-                });
-            }
-
-            generateLutBtn.addEventListener('click', () => {
-                const dummyLutContent = `
-# Generated by Alpha AI Color Lab
-TITLE "AI_Color_Match_LUT"
-LUT_3D_SIZE 33
-0.0 0.0 0.0
-...
-1.0 1.0 1.0
-                `.trim();
-
-                const blob = new Blob([dummyLutContent], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Alpha_AI_Color_Lab.cube';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            });
-        }
 
 // Cookie helper functions
 function setCookie(name, value, days) {
@@ -1804,8 +1521,6 @@ handleDropdownNav();
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
-import recipesData from './recipes.js';
 </script>
 </body>
 </html>
