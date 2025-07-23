@@ -555,13 +555,13 @@ options: [
 }
 ];
 
-async function callAIApi(prompt, isStructured = false, delay = 1200) {
+async function callAIApi(prompt, isStructured = false, customDelay = 500) { // Changed default delay to 500ms
     if (state.isAILoading) return;
     state.isAILoading = true;
     let result = null;
 
     try {
-        await new Promise(resolve => setTimeout(resolve, delay)); // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, customDelay)); // Use customDelay
 
         let chatHistory = [];
         chatHistory.push({ role: "user", parts: [{ text: prompt }] });
@@ -1229,7 +1229,7 @@ Example:
 {"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
 `;
 
-const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON from mock
+const aiResponse = await callAIApi(prompt, true, 0); // Explicitly set delay to 0 for quiz submission
 console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
 
 if (aiResponse && aiResponse.recipeId) {
@@ -1702,3 +1702,4 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
+
