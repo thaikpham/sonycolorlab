@@ -446,7 +446,7 @@ wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là c�
 ppInfographicTitle: {vi: "Quy trình Tinh chỉnh Picture Profile", en:"Picture Profile Adjustment Workflow"},
 ppInfographicDesc: {vi: "Làm theo các bước sau để thiết lập Picture Profile từ đầu, cho phép bạn kiểm soát hoàn toàn giao diện cuối cùng của hình ảnh.", en:"Follow these steps to set up a Picture Profile from scratch, giving you full control over the final look of your image."},
 ppItemBlackLevel: {vi: "Black Level (Mức độ đen)", en: "Black Level"},
-ppItemBlackLevelDesc: {vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).", en: "Sets the black point. Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more contrast)."},
+ppItemBlackLevelDesc: {vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).", en: "Sets the black point. Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more more contrast)."},
 ppItemGamma: {vi: "Gamma", en: "Gamma"},
 ppItemGammaDesc: {vi: "Thiết lập đường cong tương phản (contrast curve). Đây là nền tảng cho 'look' của bạn. Still & Movie cho độ tương phản cao, trong khi các gamma Cine/S-Log cho dải nhạy sáng rộng hơn.", en: "Sets the contrast curve. This is the foundation of your look. Still & Movie are punchy, while Cine/S-Log gammas offer wider dynamic range."},
 ppItemBlackGamma: {vi: "Black Gamma", en: "Black Gamma"},
@@ -1172,33 +1172,32 @@ Ví dụ cấu trúc JSON mong đợi:
 `;
 const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON
 
-if (aiResponse && aiResponse.recipe) {
-    // Apply specific adjustments based on user request keywords
-    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe)); // Start with original
+    // Start with a deep copy of the original recipe
+    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
     adjustedRecipe.id = `${originalRecipe.id}-ai`;
     adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
     adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${textarea.value}"`, en: `Adjusted based on request: "${textarea.value}"` };
 
     const userRequestLower = textarea.value.toLowerCase();
 
-    // Example adjustments based on common keywords
+    // Apply keyword-based adjustments first (robust fallback)
     if (userRequestLower.includes('ấm hơn') || userRequestLower.includes('warmer')) {
-        adjustedRecipe.whiteBalance = "5500K, A6-M1"; // Example warm WB
+        adjustedRecipe.whiteBalance = "5500K, A6-M1";
         if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.R = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.R || 0) + 2));
         if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.Y = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.Y || 0) + 2));
     }
     if (userRequestLower.includes('mát hơn') || userRequestLower.includes('cooler')) {
-        adjustedRecipe.whiteBalance = "2500K, B6-M1"; // Example cool WB
+        adjustedRecipe.whiteBalance = "2500K, B6-M1";
         if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.B = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.B || 0) + 2));
         if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.C = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.C || 0) + 2));
     }
     if (userRequestLower.includes('tăng tương phản') || userRequestLower.includes('more contrast') || userRequestLower.includes('punchy')) {
-        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Still'; // More contrasty gamma
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Still';
         if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.max(-15, parseInt(adjustedRecipe.settings['Black level'] || 0) - 5));
         adjustedRecipe.contrast = 'high';
     }
     if (userRequestLower.includes('giảm tương phản') || userRequestLower.includes('less contrast') || userRequestLower.includes('soft')) {
-        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Cine4'; // Flatter gamma
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Cine4';
         if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.min(7, parseInt(adjustedRecipe.settings['Black level'] || 0) + 5));
         adjustedRecipe.contrast = 'low';
     }
@@ -1218,27 +1217,49 @@ if (aiResponse && aiResponse.recipe) {
     }
 
     // Attempt to merge AI's suggested changes if available and valid
-    if (aiResponse.recipe) {
-        // Simple merge: AI's values overwrite if they exist and are valid.
-        // For simplicity, directly assign top-level properties if they exist in AI's response
-        if (aiResponse.recipe.whiteBalance) adjustedRecipe.whiteBalance = aiResponse.recipe.whiteBalance;
-        if (aiResponse.recipe.settings) Object.assign(adjustedRecipe.settings, aiResponse.recipe.settings);
-        if (aiResponse.recipe.colorDepth) Object.assign(adjustedRecipe.colorDepth, aiResponse.recipe.colorDepth);
-        if (aiResponse.recipe.detailSettings) Object.assign(adjustedRecipe.detailSettings, aiResponse.recipe.detailSettings);
-        if (aiResponse.recipe.personalityColor) adjustedRecipe.personalityColor = aiResponse.recipe.personalityColor;
-        if (aiResponse.recipe.coords) adjustedRecipe.coords = aiResponse.recipe.coords;
-        if (aiResponse.recipe.contrast) adjustedRecipe.contrast = aiResponse.recipe.contrast;
-        if (aiResponse.recipe.saturation) adjustedRecipe.saturation = aiResponse.recipe.saturation;
-        if (aiResponse.recipe.tags) adjustedRecipe.tags = aiResponse.recipe.tags;
-    }
+    if (aiResponse && aiResponse.recipe) {
+        const aiRecipe = aiResponse.recipe;
+        // Overwrite with AI's values if they are present and valid
+        if (aiRecipe.whiteBalance !== undefined) adjustedRecipe.whiteBalance = aiRecipe.whiteBalance;
+        if (aiRecipe.settings) {
+            for (const key in aiRecipe.settings) {
+                if (aiRecipe.settings.hasOwnProperty(key)) {
+                    adjustedRecipe.settings[key] = aiRecipe.settings[key];
+                }
+            }
+        }
+        if (aiRecipe.colorDepth) {
+            for (const key in aiRecipe.colorDepth) {
+                if (aiRecipe.colorDepth.hasOwnProperty(key)) {
+                    adjustedRecipe.colorDepth[key] = aiRecipe.colorDepth[key];
+                }
+            }
+        }
+        if (aiRecipe.detailSettings) {
+            for (const key in aiRecipe.detailSettings) {
+                if (aiRecipe.detailSettings.hasOwnProperty(key)) {
+                    adjustedRecipe.detailSettings[key] = aiRecipe.detailSettings[key];
+                }
+            }
+        }
+        // Also update descriptive fields if AI provided them (e.g., name, description, tags, contrast, saturation)
+        if (aiRecipe.name) adjustedRecipe.name = aiRecipe.name;
+        if (aiRecipe.description) adjustedRecipe.description = aiRecipe.description;
+        if (aiRecipe.type) adjustedRecipe.type = aiRecipe.type;
+        if (aiRecipe.contrast) adjustedRecipe.contrast = aiRecipe.contrast;
+        if (aiRecipe.saturation) adjustedRecipe.saturation = aiRecipe.saturation;
+        if (aiRecipe.tags) adjustedRecipe.tags = aiRecipe.tags;
+        if (aiRecipe.personalityColor) adjustedRecipe.personalityColor = aiRecipe.personalityColor;
+        if (aiRecipe.coords) adjustedRecipe.coords = aiRecipe.coords;
 
+    } else {
+        console.warn("AI did not return a valid structured recipe. Proceeding with keyword-based adjustments only.");
+        // No need to set resultContainer.innerHTML here, as it's done below with adjustedRecipe
+    }
 
     state.lastGeneratedAiRecipe = adjustedRecipe; // Use the locally adjusted recipe
     resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
-} else {
-    console.error("AI Adjustment failed. AI Response was not valid or missing 'recipe' object:", aiResponse);
-    resultContainer.innerHTML = `<p class="text-red-500">Lỗi khi tạo tinh chỉnh bằng AI. Phản hồi không hợp lệ hoặc thiếu dữ liệu công thức. Vui lòng thử lại.</p>`;
-}
+
 button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
 }
 
@@ -1364,7 +1385,7 @@ async function handleQuizSubmit() {
         await renderView('recipeFormulas'); // Directly navigate to recipe details
     } else {
         // This case should ideally not be reached with the fallbacks in place
-        homeView.innerHTML = `<p class="text-red-500">Lỗi không mong muốn: Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
+        homeView.innerHTML = `<p class="text-red-500">Lỗi không mong unexpected: Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
     }
 }
 
