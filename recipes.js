@@ -1,2653 +1,745 @@
 const recipesData = [
-{
-id: 'scl-01-classic-film',
-name: 'SCL-01: Classic Film',
-description: { en: 'Evokes classic film, with muted tones and soft contrast, like timeless cinematic frames, perfect for a nostalgic and understated mood.', vi: 'Gợi nhớ phim ảnh cổ điển, với tông màu trầm và tương phản mềm mại, như những thước phim vượt thời gian, hoàn hảo cho tâm trạng hoài niệm và tinh tế.' },
-type: 'color',
-contrast: 'low',
-saturation: 'low',
-tags: ['vintage', 'film', 'nostalgic', 'soft', 'cool', 'everyday', 'low-saturation', 'low-contrast', 'color'],
-whiteBalance: '8800K, B3-M4', // Exaggerated
-settings: {
-'Black level': '-6', // Darker for everyday
-'Gamma': 'Cine4',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 82.5% +3',
-'Color Mode': 'Still',
-'Saturation': '-7',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-4', 'G': '+5', 'B': '0', 'C': '+1', 'M': '+5', 'Y': '+3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#a1887f',
-coords: { x: -7.0, y: -6.0 } // Adjusted
-},
-{
-id: 'scl-02-wong-kar-wai',
-name: 'SCL-02: Wong Kar-Wai',
-description: { en: 'Characteristic green hues, reminiscent of Wong Kar-Wai\'s cinematic style, full of nostalgia, romance, and a melancholic beauty.', vi: 'Sắc xanh đặc trưng, gợi nhớ phong cách điện ảnh của Wong Kar-Wai, đầy hoài niệm, lãng mạn và vẻ đẹp u buồn.' },
-type: 'color',
-contrast: 'low',
-saturation: 'low',
-tags: ['landscape', 'nature', 'green', 'cool', 'nostalgic', 'cinematic', 'low-saturation', 'low-contrast', 'color'],
-        whiteBalance: '3500K, A8-M1', // Exaggerated
-        whiteBalance: '3500K, A7-M1', // Exaggerated
-settings: {
-'Black level': '-2', // Darker for cinematic
-'Gamma': 'Movie',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'Still',
-'Saturation': '+10',
-'Color Phase': '-2'
-},
-colorDepth: { 'R': '-2', 'G': '+5', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#66bb6a',
-coords: { x: -3.5, y: -1.0 } // Adjusted
-},
-{
-id: 'scl-03-cyberpunk-nights',
-name: 'SCL-03: Cyberpunk Nights',
-description: { en: 'A cinematic green tone, ideal for magical and vibrant night scenes of the cyberpunk world, with neon glows and deep shadows.', vi: 'Tông xanh lá cây điện ảnh, lý tưởng cho những cảnh đêm huyền ảo và sống động của thế giới cyberpunk, với ánh đèn neon và bóng tối sâu thẳm.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['cinematic', 'urban', 'street', 'night', 'high-saturation', 'high-contrast', 'color', 'cyberpunk'],
-        whiteBalance: '2800K, A8-G8', // Exaggerated
-        whiteBalance: '2800K, A7-G7', // Exaggerated
-settings: {
-'Black level': '-16', // Darker for cinematic
-'Gamma': 'Still',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 105% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+31',
-'Color Phase': '+4'
-},
-colorDepth: { 'R': '+3', 'G': '0', 'B': '0', 'C': '+3', 'M': '+3', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#880e4f',
-coords: { x: 8.0, y: 8.5 } // Adjusted
-},
-{
-id: 'scl-04-concrete-jungle',
-name: 'SCL-04: Concrete Jungle',
-description: { en: 'High-contrast black and white with deep, detailed shadows, perfect for urban architecture and street photography, capturing the raw essence of the city.', vi: 'Đen trắng tương phản cao với bóng tối sâu và chi tiết, hoàn hảo cho kiến trúc đô thị và nhiếp ảnh đường phố, nắm bắt bản chất thô mộc của thành phố.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'low',
-tags: ['urban', 'street', 'bw', 'high-contrast', 'architecture'],
-whiteBalance: 'AWB', // Kept AWB
-settings: {
-'Black level': '-9', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Middle -2',
-'Knee': 'Manual 85% +4',
-'Color Mode': 'Black & White',
-'Saturation': '+14',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-2', 'G': '0', 'B': '+1', 'C': '+1', 'M': '-2', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#616161',
-coords: { x: 5.5, y: -2.5 } // Adjusted
-},
-{
-id: 'scl-05-faded-elegance',
-name: 'SCL-05: Faded Elegance',
-description: { en: 'Black and white with a \'faded\' effect, where shadows are lifted to create a nostalgic, elegant, and dreamy feel, reminiscent of antique prints.', vi: 'Đen trắng với hiệu ứng \'faded\', vùng tối được nâng lên tạo cảm giác hoài niệm, thanh lịch và mơ màng, gợi nhớ những bản in cổ điển.' },
-type: 'bw',
-contrast: 'low',
-saturation: 'medium',
-tags: ['bw', 'vintage', 'faded', 'low-contrast', 'portrait', 'elegant'],
-whiteBalance: 'AWB', // Kept AWB
-settings: {
-'Black level': '+2', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +1',
-'Color Mode': 'Black & White',
-'Saturation': '0',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+3', 'G': '+3', 'B': '+5', 'C': '0', 'M': '+5', 'Y': '-2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#9e9e9e',
-coords: { x: -3.5, y: 1.5 } // Adjusted
-},
-{
-id: 'scl-06-desert-bloom',
-name: 'SCL-06: Desert Bloom',
-description: { en: 'The warm tones of sunlit dunes, carrying a deep sense of nostalgia and freedom, like a desert flower blooming under a golden sky.', vi: 'Tông màu ấm áp của cồn cát dưới ánh nắng, mang đậm cảm giác hoài niệm và tự do, như một bông hoa sa mạc nở rộ dưới bầu trời vàng óng.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['warm', 'nostalgic', 'landscape', 'beach', 'high-saturation', 'medium-contrast', 'color', 'desert'],
-whiteBalance: 'AWB, A3-G2', // Exaggerated
-settings: {
-'Black level': '+3', // Keep as is
-'Gamma': 'S-Cinetone',
-'Black Gamma': 'Middle -6',
-'Knee': 'Auto',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+31',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '+2', 'C': '-3', 'M': '-1', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb300',
-coords: { x: 1.0, y: 9.0 } // Adjusted
-},
-{
-id: 'scl-07-silver-screen',
-name: 'SCL-07: Silver Screen',
-description: { en: 'High-contrast black and white, simulating classic, sharp motion picture film, timeless and iconic, perfect for dramatic narratives.', vi: 'Đen trắng tương phản cao, mô phỏng những thước phim điện ảnh cổ điển, sắc nét, vượt thời gian và mang tính biểu tượng, hoàn hảo cho những câu chuyện kịch tính.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'high',
-tags: ['bw', 'cinematic', 'high-contrast', 'street', 'portrait', 'classic'],
-whiteBalance: '5600K', // Exaggerated
-settings: {
-'Black level': '-14', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Black & White',
-'Saturation': '+31',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '0', 'C': '0', 'M': '+5', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#424242',
-coords: { x: 8.5, y: 7.5 } // Adjusted
-},
-{
-id: 'scl-08-pastoral-dawn',
-name: 'SCL-08: Pastoral Dawn',
-description: { en: 'A warm, soft tone that evokes the feeling of morning sun on a peaceful meadow, embodying a pastoral beauty and gentle awakening.', vi: 'Tông màu ấm áp, mềm mại, gợi cảm giác ánh nắng ban mai trên một đồng cỏ yên bình, thể hiện vẻ đẹp điền viên và sự thức tỉnh nhẹ nhàng.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['warm', 'soft', 'landscape', 'nature', 'green', 'low-contrast', 'medium-saturation', 'color', 'morning'],
-        whiteBalance: '4300K, A8-M3', // Exaggerated
-        whiteBalance: '4300K, A7-M3', // Exaggerated
-settings: {
-'Black level': '+4', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+13',
-'Color Phase': '-2'
-},
-colorDepth: { 'R': '-1', 'G': '+5', 'B': '-1', 'C': '-5', 'M': '-2', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#fff176',
-coords: { x: -6.5, y: 4.0 } // Adjusted
-},
-{
-id: 'scl-09-scarlet-drama',
-name: 'SCL-09: Scarlet Drama',
-description: { en: 'Strong colors with high contrast, with emphasized red and orange tones, creating a dramatic and impactful effect, like a vivid theatrical scene.', vi: 'Màu sắc mạnh mẽ với độ tương phản cao, nhấn mạnh tông đỏ và cam, tạo hiệu ứng kịch tính và ấn tượng, như một cảnh sân khấu sống động.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['dramatic', 'high-contrast', 'high-saturation', 'warm', 'cinematic', 'color', 'red'],
-whiteBalance: '8700K, B4-G1.5', // Exaggerated
-settings: {
-'Black level': '-16', // Darker for cinematic
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 105% +4',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+31',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+3', 'G': '+5', 'B': '0', 'C': '+3', 'M': '+3', 'Y': '+3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e53935',
-coords: { x: 9.0, y: 9.0 } // Adjusted
-},
-{
-id: 'scl-10-sunset-boulevard',
-name: 'SCL-10: Sunset Boulevard',
-description: { en: 'Recreates the golden, soft light of sunset, providing a warm and romantic feel, like on Sunset Boulevard, perfect for dreamy and nostalgic scenes.', vi: 'Tái tạo ánh sáng vàng óng, mềm mại của buổi hoàng hôn, mang lại cảm giác ấm áp và lãng mạn, như trên Đại lộ Hoàng hôn, hoàn hảo cho những cảnh mơ màng và hoài niệm.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['warm', 'golden-hour', 'romantic', 'portrait', 'landscape', 'high-saturation', 'medium-contrast', 'color', 'cinematic'],
-whiteBalance: '5200K, A3-M1.5', // Exaggerated
-settings: {
-'Black level': '+3', // Darker for cinematic
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+24',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '-1', 'G': '+5', 'B': '+3', 'C': '+3', 'M': '+3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e57373',
-coords: { x: 4.0, y: 5.5 } // Adjusted
-},
-{
-id: 'scl-11-mediterranean-blue',
-name: 'SCL-11: Mediterranean Blue',
-description: { en: 'A characteristic blue tone, evoking the feel of a daylight-shot motion picture, with a Mediterranean breeze and clear, vibrant skies.', vi: 'Tông màu xanh dương đặc trưng, gợi cảm giác của một thước phim điện ảnh quay vào ban ngày, với làn gió Địa Trung Hải và bầu trời trong xanh, sống động.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['cool', 'cinematic', 'daylight', 'blue', 'medium-saturation', 'medium-contrast', 'color', 'landscape'],
-whiteBalance: '7600K, B5-M1.5', // Exaggerated
-settings: {
-'Black level': '-2', // Darker for cinematic
-'Gamma': 'Still',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+9',
-'Color Phase': '-2'
-},
-colorDepth: { 'R': '+2', 'G': '+3', 'B': '-2', 'C': '-2', 'M': '+3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#42a5f5',
-coords: { x: 1.5, y: 5.0 } // Adjusted
-},
-{
-id: 'scl-12-pop-art-brights',
-name: 'SCL-12: Pop Art Brights',
-description: { en: 'Vibrant, clear colors, simulating lively daylight motion picture film, like a Pop Art masterpiece, bursting with energy and bold hues.', vi: 'Màu sắc sống động, trong trẻo, mô phỏng những thước phim quay ban ngày đầy sức sống, như một kiệt tác Pop Art, bùng nổ năng lượng và sắc thái táo bạo.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['vibrant', 'daylight', 'high-saturation', 'high-contrast', 'landscape', 'color', 'pop-art'],
-        whiteBalance: '3100K, A8-G1', // Exaggerated
-        whiteBalance: '3100K, A7-G1', // Exaggerated
-settings: {
-'Black level': '-9', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle -6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+31',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '+2', 'G': '+5', 'B': '-4', 'C': '+2', 'M': '+4', 'Y': '+3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ef5350',
-coords: { x: 4.5, y: 9.0 } // Adjusted
-},
-{
-id: 'scl-13-velvet-portrait',
-name: 'SCL-13: Velvet Portrait',
-description: { en: 'Soft tones with low saturation, suitable for portraits and fashion, creating a gentle and luxurious velvet feel, emphasizing delicate beauty.', vi: 'Tông màu mềm mại với độ bão hòa thấp, phù hợp cho chân dung và thời trang, tạo cảm giác nhẹ nhàng và sang trọng như nhung, nhấn mạnh vẻ đẹp tinh tế.' },
-type: 'color',
-contrast: 'low',
-saturation: 'low',
-tags: ['soft', 'portrait', 'fashion', 'low-saturation', 'low-contrast', 'color', 'luxury'],
-        whiteBalance: '4300K, A8-M0.5', // Exaggerated
-        whiteBalance: '4300K, A7-M0.5', // Exaggerated
-settings: {
-'Black level': '-5', // Lighter for portrait
-'Gamma': 'Movie',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+4',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '0', 'B': '+1', 'C': '0', 'M': '-5', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e0e0e0',
-coords: { x: -1.0, y: -4.0 } // Adjusted
-},
-{
-id: 'scl-14-urban-glow',
-name: 'SCL-14: Urban Glow',
-description: { en: 'A luxurious golden tone, suitable for romantic and cozy urban nightscapes, like the city\'s warm glow, capturing the essence of vibrant city nights.', vi: 'Tông màu vàng sang trọng, phù hợp cho những cảnh đêm đô thị lãng mạn và ấm cúng, như ánh sáng ấm áp của thành phố, nắm bắt bản chất của những đêm đô thị sôi động.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['warm', 'urban', 'night', 'romantic', 'medium-saturation', 'medium-contrast', 'color', 'cityscape'],
-        whiteBalance: '5700K, A8-M1', // Exaggerated
-        whiteBalance: '5700K, A7-M1', // Exaggerated
-settings: {
-'Black level': '-1', // Darker for cinematic (urban/night)
-'Gamma': 'Still',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+17',
-'Color Phase': '+6'
-},
-colorDepth: { 'R': '+3', 'G': '0', 'B': '0', 'C': '+3', 'M': '+3', 'Y': '-3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: -1.5, y: 5.5 } // Adjusted
-},
-{
-id: 'scl-15-graphic-mono',
-name: 'SCL-15: Graphic Mono',
-description: { en: 'Black and white with extremely high contrast, creating a strong and impressive graphic effect, ideal for bold and impactful imagery.', vi: 'Đen trắng với độ tương phản cực cao, tạo hiệu ứng đồ họa mạnh mẽ và ấn tượng, lý tưởng cho những hình ảnh táo bạo và có sức ảnh hưởng.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'high',
-tags: ['bw', 'high-contrast', 'graphic', 'street', 'architecture'],
-whiteBalance: '5600K', // Exaggerated
-settings: {
-'Black level': '-14', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Black&White',
-'Saturation': '+31',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+2', 'G': '+5', 'B': '+5', 'C': '+5', 'M': '+5', 'Y': '+5' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#424242',
-coords: { x: 9.0, y: 9.0 } // Adjusted
-},
-{
-id: 'scl-16-summer-nostalgia',
-name: 'SCL-16: Summer Nostalgia',
-description: { en: 'Balanced, faithful colors, simulating clear and fresh summer films, full of nostalgia and a gentle, sun-drenched warmth.', vi: 'Màu sắc cân bằng, trung thực, mô phỏng những thước phim mùa hè trong trẻo và tươi mát, đầy hoài niệm và sự ấm áp dịu dàng của nắng.' },
-type: 'color',
-contrast: 'low',
-saturation: 'low',
-tags: ['film', 'summer', 'natural', 'low-saturation', 'low-contrast', 'color', 'nostalgic'],
-        whiteBalance: '4200K, A8-M0.5', // Exaggerated
-        whiteBalance: '4200K, A7-M0.5', // Exaggerated
-settings: {
-'Black level': '+1', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 75 +3',
-'Color Mode': 'Still',
-'Saturation': '+1',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '0', 'C': '+1', 'M': '0', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#aed581',
-coords: { x: -2.5, y: -1.5 } // Adjusted
-},
-{
-id: 'scl-17-timeless-elegance',
-name: 'SCL-17: Timeless Elegance',
-description: { en: 'Low saturation and soft contrast, ideal for portraits with a timeless quality, exuding elegance and a classic, refined beauty.', vi: 'Độ bão hòa thấp và tương phản mềm mại, lý tưởng cho những bức chân dung mang vẻ đẹp vượt thời gian, toát lên sự thanh lịch và vẻ đẹp cổ điển, tinh tế.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'low',
-tags: ['vintage', 'portrait', 'soft', 'low-saturation', 'medium-contrast', 'color', 'elegant'],
-        whiteBalance: '4400K, A8-M1.5', // Exaggerated
-        whiteBalance: '4400K, A7-M1.5', // Exaggerated
-settings: {
-'Black level': '-7', // Lighter for portrait
-'Gamma': 'Movie',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+6',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '-1', 'G': '+5', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '+2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e57373',
-coords: { x: 2.5, y: -2.5 } // Adjusted
-},
-{
-id: 'scl-18-infrared-drama',
-name: 'SCL-18: Infrared Drama',
-description: { en: 'A black and white infrared effect, making foliage and skies dramatic, surreal, and full of impact, creating an otherworldly landscape.', vi: 'Hiệu ứng hồng ngoại đen trắng, làm cho cây cối và bầu trời trở nên kịch tính, siêu thực và đầy ấn tượng, tạo nên một phong cảnh siêu nhiên.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'high',
-tags: ['bw', 'infrared', 'landscape', 'dramatic', 'high-contrast', 'surreal'],
-whiteBalance: 'AWB, A3', // Kept AWB
-settings: {
-'Black level': '-9', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Black & White',
-'Saturation': '+31',
-'Color Phase': '+3'
-},
-colorDepth: { 'R': '-5', 'G': '-5', 'B': '+5', 'C': '+5', 'M': '+5', 'Y': '-3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#616161',
-coords: { x: 7.0, y: 7.0 } // Adjusted
-},
-{
-id: 'scl-19-retro-amber',
-name: 'SCL-19: Retro Amber',
-description: { en: 'Warm amber tones, reminiscent of prints from the 70s, full of nostalgia and retro style, perfect for a vintage aesthetic.', vi: 'Tông màu hổ phách ấm áp, gợi nhớ những bản in từ thập niên 70, đầy hoài niệm và phong cách retro, hoàn hảo cho một vẻ đẹp cổ điển.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['vintage', 'warm', 'nostalgic', '70s', 'low-contrast', 'medium-saturation', 'color', 'retro'],
-        whiteBalance: '4500K, A8-M0.5', // Exaggerated
-        whiteBalance: '4500K, A7-M0.5', // Exaggerated
-settings: {
-'Black level': '+1', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Middle +1',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+2',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '0', 'C': '0', 'M': '+2', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-5', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 5',
-'Limit': '1', // Adjusted towards 0
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: -6.0, y: 2.5 } // Adjusted
-},
-{
-id: 'scl-20-surreal-pop',
-name: 'SCL-20: Surreal Pop',
-description: { en: 'Extremely vibrant and saturated colors, creating a surreal and colorful world, pushing boundaries with artistic flair.', vi: 'Màu sắc cực kỳ sống động và bão hòa, tạo nên một thế giới siêu thực và đầy màu sắc, vượt qua mọi giới hạn với phong cách nghệ thuật.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['vibrant', 'pop-art', 'surreal', 'high-saturation', 'medium-contrast', 'color', 'artistic'],
-        whiteBalance: '3300K, A8-G0.5', // Exaggerated
-        whiteBalance: '3300K, A7-G0.5', // Exaggerated
-settings: {
-'Black level': '-1', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'ITU709Matrix',
-'Saturation': '+17',
-'Color Phase': '-2'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+5', 'C': '+5', 'M': '+5', 'Y': '-2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ef5350',
-coords: { x: 3.5, y: 8.5 } // Adjusted
-},
-{
-id: 'scl-21-arctic-chill',
-name: 'SCL-21: Arctic Chill',
-description: { en: 'A cool tone with blue and green hues and high contrast, providing a sharp, cold feel like arctic ice, perfect for stark landscapes.', vi: 'Tông màu lạnh với sắc xanh dương và xanh lá cây, độ tương phản cao, mang lại cảm giác sắc lạnh như băng Bắc Cực, hoàn hảo cho những phong cảnh khắc nghiệt.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['cool', 'blue', 'green', 'high-contrast', 'medium-saturation', 'landscape', 'color', 'cold'],
-        whiteBalance: '4400K, A8-M2', // Exaggerated
-        whiteBalance: '4400K, A7-M2', // Exaggerated
-settings: {
-'Black level': '-9', // Darker for cinematic
-'Gamma': 'Cine1',
-'Black Gamma': 'Wide +6',
-'Knee': 'Auto',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+19',
-'Color Phase': '-3'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '-3', 'C': '-3', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#29b6f6',
-coords: { x: 5.0, y: 1.5 } // Adjusted
-},
-{
-id: 'scl-22-golden-era-cinema',
-name: 'SCL-22: Golden Era Cinema',
-description: { en: 'A classic, balanced cinematic tone with a pleasant touch of golden warmth, reminiscent of the golden era of cinema, for timeless storytelling.', vi: 'Tông màu điện ảnh cổ điển, cân bằng, với chút ấm áp dễ chịu của nắng vàng, gợi nhớ kỷ nguyên vàng của điện ảnh, cho những câu chuyện vượt thời gian.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['cinematic', 'warm', 'vintage', 'balanced', 'medium-saturation', 'medium-contrast', 'color', 'classic'],
-whiteBalance: 'AWB White Priority, A3-G0.5', // Exaggerated
-settings: {
-'Black level': '-3', // Darker for cinematic
-'Gamma': 'Movie',
-'Black Gamma': 'Wide +6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+11',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-1', 'G': '+5', 'B': '-3', 'C': '+3', 'M': '-3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffca28',
-coords: { x: 2.5, y: 2.0 } // Adjusted
-},
-{
-id: 'scl-23-crystal-clear-mono',
-name: 'SCL-23: Crystal Clear Mono',
-description: { en: 'Black and white with fine grain and sharp details, delivering crystal-high clarity, perfect for architectural and urban scenes.', vi: 'Đen trắng với hạt mịn và chi tiết sắc nét, mang lại độ trong trẻo cao như pha lê, hoàn hảo cho các cảnh kiến trúc và đô thị.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'low',
-tags: ['bw', 'sharp', 'high-contrast', 'street', 'architecture', 'clear'],
-whiteBalance: 'AWB, B3-G0.25', // Kept AWB
-settings: {
-'Black level': '-11', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 82% +4',
-'Color Mode': 'Black & White',
-'Saturation': '0',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '-5', 'B': '+5', 'C': '+5', 'M': '+5', 'Y': '-2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#757575',
-coords: { x: 4.5, y: -1.0 } // Adjusted
-},
-{
-id: 'scl-24-studio-radiance',
-name: 'SCL-24: Studio Radiance',
-description: { en: 'Accurate colors and beautiful skin tones, suitable for professional portraits with warm tones, exuding radiance and natural beauty.', vi: 'Màu sắc chính xác và tông màu da đẹp, phù hợp cho chân dung chuyên nghiệp với tông ấm, toát lên vẻ rạng rỡ và vẻ đẹp tự nhiên.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['portrait', 'warm', 'skin-tone', 'professional', 'high-saturation', 'medium-contrast', 'color', 'studio'],
-        whiteBalance: '4200K, A8-G1.5', // Exaggerated
-        whiteBalance: '4200K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '+7', // Lighter for portrait
-'Gamma': 'S-Cinetone/Cine4',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+29',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+1', 'C': '+3', 'M': '+1', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ff8a65',
-coords: { x: 3.5, y: 8.5 } // Adjusted
-},
-{
-id: 'scl-25-mystic-garden',
-name: 'SCL-25: Mystic Garden',
-description: { en: 'A unique tone with green and magenta hues, creating a fantastical and mysterious feel as if in a fairytale garden, full of hidden wonders.', vi: 'Tông màu độc đáo với sắc xanh lá cây và tím, tạo cảm giác kỳ ảo và bí ẩn như trong một khu vườn cổ tích, đầy những điều kỳ diệu tiềm ẩn.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['artistic', 'green', 'magenta', 'mystical', 'medium-saturation', 'medium-contrast', 'color', 'fantasy'],
-whiteBalance: '7200K, B1.5-M1.5', // Exaggerated
-settings: {
-'Black level': '+6', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+9',
-'Color Phase': '+6'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+3', 'C': '+3', 'M': '+3', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ba68c8',
-coords: { x: 0.5, y: 3.0 } // Adjusted
-},
-{
-id: 'scl-26-city-lights-warmth',
-name: 'SCL-26: City Lights Warmth',
-description: { en: 'Simulates motion picture film, with characteristic warm yellow tones for night scenes, like the glowing embrace of city lights after dark.', vi: 'Mô phỏng phim điện ảnh, với tông màu vàng ấm đặc trưng cho cảnh đêm, như ánh sáng ấm áp của đèn thành phố sau khi trời tối.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['cinematic', 'night', 'warm', 'yellow', 'high-saturation', 'high-contrast', 'color', 'urban'],
-        whiteBalance: '4900K, A8-G1.5', // Exaggerated
-        whiteBalance: '4900K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '-16', // Darker for cinematic
-'Gamma': 'S-log2 or S-log3',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'ITU709Matrix',
-'Saturation': '+31',
-'Color Phase': '+4'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '-5', 'C': '-5', 'M': '+3', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#827717',
-coords: { x: 6.0, y: 8.0 } // Adjusted
-},
-{
-id: 'scl-27-pop-art-energy',
-name: 'SCL-27: Pop Art Energy',
-description: { en: 'Vibrant, slightly bluish colors, creating a dynamic and prominent feel like Pop Art, bursting with energy and bold visual impact.', vi: 'Màu sắc sống động, hơi ngả xanh, tạo cảm giác năng động và nổi bật như tranh Pop Art, bùng nổ năng lượng và tác động thị giác mạnh mẽ.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['vibrant', 'pop-art', 'cool', 'high-saturation', 'high-contrast', 'color', 'dynamic'],
-        whiteBalance: '3200K, A8-M2', // Exaggerated
-        whiteBalance: '3200K, A7-M2', // Exaggerated
-settings: {
-'Black level': '-5', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Wide +6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+31',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '0', 'C': '+5', 'M': '-3', 'Y': '-2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ef5350',
-coords: { x: 6.5, y: 9.0 } // Adjusted
-},
-{
-id: 'scl-28-soft-serenity',
-name: 'SCL-28: Soft Serenity',
-description: { en: 'A realistic, slightly blueish tone, suitable for many photography genres that require subtlety, bringing a sense of peaceful serenity and calm.', vi: 'Tông màu chân thực, hơi ngả xanh, phù hợp cho nhiều thể loại nhiếp ảnh cần sự tinh tế, mang lại cảm giác thanh bình và yên tĩnh.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'peaceful'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
-        whiteBalance: '3700K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+3', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'Still',
-'Saturation': '+13',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '-1', 'G': '+3', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#a1887f',
-coords: { x: -1.5, y: 4.5 } // Adjusted
-},
-{
-id: 'scl-29-vintage-film-warmth',
-name: 'SCL-29: Vintage Film Warmth',
-description: { en: 'Another version of the warm tone with more subdued colors, with a strong classic cinematic quality, evoking a nostalgic film look.', vi: 'Một phiên bản khác của tông màu ấm với màu sắc dịu hơn, mang đậm chất điện ảnh cổ điển, gợi lên vẻ đẹp hoài niệm của phim ảnh.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['film', 'warm', 'cinematic', 'high-saturation', 'medium-contrast', 'color', 'vintage'],
-        whiteBalance: '4600K, A8-G1.5', // Exaggerated
-        whiteBalance: '4600K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '-2', // Darker for cinematic
-'Gamma': 'Cine1',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+24',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '0', 'C': '0', 'M': '+3', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-5', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 5',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: 3.0, y: 6.5 } // Adjusted
-},
-{
-id: 'scl-30-orthochromatic-blue',
-name: 'SCL-30: Orthochromatic Blue',
-description: { en: 'Black and white simulating Orthochromatic film, sensitive to blue and green, creating a unique and artistic effect with a distinctive blue cast.', vi: 'Đen trắng mô phỏng phim Orthochromatic, nhạy cảm với màu xanh dương và xanh lá cây, tạo hiệu ứng độc đáo và nghệ thuật với tông xanh đặc trưng.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'medium',
-tags: ['bw', 'artistic', 'cool', 'high-contrast', 'orthochromatic', 'film'],
-whiteBalance: 'AWB, A3-M2.75', // Kept AWB
-settings: {
-'Black level': '-11', // Keep as is for BW
-'Gamma': 'Movie',
-'Black Gamma': 'Narrow -6',
-'Knee': '105% +4',
-'Color Mode': 'Still',
-'Saturation': '+14',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+5', 'G': '+5', 'B': '-5', 'C': '-5', 'M': '+5', 'Y': '+5' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#616161',
-coords: { x: 6.0, y: 2.5 } // Adjusted
-},
-{
-id: 'scl-31-festive-radiance',
-name: 'SCL-31: Festive Radiance',
-description: { en: 'A warm, vibrant tone that brings a festive and joyful atmosphere, full of life and radiance, perfect for celebratory moments.', vi: 'Tông màu ấm áp, sống động, mang lại không khí lễ hội vui tươi, tràn đầy sức sống và rạng rỡ, hoàn hảo cho những khoảnh khắc kỷ niệm.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['warm', 'vibrant', 'happy', 'high-contrast', 'medium-saturation', 'color', 'holiday'],
-whiteBalance: 'AWB, A6-G0.5', // Exaggerated
-settings: {
-'Black level': '-6', // Keep as is
-'Gamma': 'Cine3',
-'Black Gamma': 'Narrow -6',
-'Knee': '105% +4',
-'Color Mode': 'Still',
-'Saturation': '+12',
-'Color Phase': '+3'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '-2', 'C': '-3', 'M': '+2', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ef5350',
-coords: { x: 7.0, y: 1.0 } // Adjusted
-},
-{
-id: 'scl-32-regal-tones',
-name: 'SCL-32: Regal Tones',
-description: { en: 'Vibrant colors with prominent red and blue tones, creating a luxurious and noble feel, like royal hues, for a sophisticated look.', vi: 'Màu sắc sống động với tông đỏ và xanh dương nổi bật, tạo cảm giác sang trọng và quý phái, như những sắc màu hoàng gia, cho một vẻ ngoài tinh tế.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['vibrant', 'rich', 'red', 'blue', 'high-saturation', 'high-contrast', 'color', 'luxury', 'jewel'],
-whiteBalance: '7200K, B2.5-M1.5', // Exaggerated
-settings: {
-'Black level': '-11', // Darker for cinematic
-'Gamma': 'Movie',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Movie',
-'Saturation': '+24',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+5', 'C': '+5', 'M': '+5', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#d81b60',
-coords: { x: 8.5, y: 5.0 } // Adjusted
-},
-{
-id: 'scl-33-cinematic-monochrome',
-name: 'SCL-33: Cinematic Monochrome',
-description: { en: 'A variation of Eterna with richer and more saturated colors, creating a striking black and white effect with a cinematic feel and deep tones.', vi: 'Một biến thể của Eterna với màu sắc đậm và bão hòa hơn, tạo hiệu ứng đen trắng ấn tượng với cảm giác điện ảnh và tông màu sâu.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'high',
-tags: ['bw', 'cinematic', 'high-contrast', 'high-saturation', 'film'],
-whiteBalance: '4100K, A7.5-M1.5', // Exaggerated
-settings: {
-'Black level': '-4', // Keep as is for BW
-'Gamma': 'Cine4',
-'Black Gamma': 'Wide -4',
-'Knee': 'Manual 87.5% +2',
-'Color Mode': 'S-Gamut3',
-'Saturation': '+31',
-'Color Phase': '+5'
-},
-colorDepth: { 'R': '-1', 'G': '0', 'B': '+1', 'C': '+5', 'M': '-1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e57373',
-coords: { x: 8.0, y: 5.5 } // Adjusted
-},
-{
-id: 'scl-34-forest-whisper-mono',
-name: 'SCL-34: Forest Whisper Mono',
-description: { en: 'Black and white with a green tint, creating a unique and artistic effect, like the whisper of a forest, full of subtle mystery.', vi: 'Đen trắng với tông xanh lá cây, tạo hiệu ứng độc đáo và nghệ thuật, như tiếng thì thầm của rừng, đầy bí ẩn tinh tế.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'low',
-tags: ['bw', 'green', 'tinted-mono', 'artistic', 'high-contrast', 'nature'],
-whiteBalance: 'AWB', // Kept AWB
-settings: {
-'Black level': '-14', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 85% +4',
-'Color Mode': 'Black & White',
-'Saturation': '+14',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '-2', 'B': '0', 'C': '0', 'M': '0', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#a5d6a7',
-coords: { x: 6.5, y: -0.5 } // Adjusted
-},
-{
-id: 'scl-35-tropical-punch',
-name: 'SCL-35: Tropical Punch',
-description: { en: 'A high-contrast color recipe with warm, vibrant, and punchy tones, like a tropical punch, bursting with energetic and lively hues.', vi: 'Một công thức màu tương phản cao với tông ấm, sống động và mạnh mẽ, như một cú đấm nhiệt đới, bùng nổ với các sắc thái tràn đầy năng lượng và sôi nổi.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['vibrant', 'punchy', 'warm', 'high-contrast', 'high-saturation', 'color', 'energetic'],
-whiteBalance: '4200K, A5.5-M1', // Exaggerated
-settings: {
-'Black level': '-14', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 92.5% +4',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+26',
-'Color Phase': '+5'
-},
-colorDepth: { 'R': '+3', 'G': '+5', 'B': '+3', 'C': '+3', 'M': '0', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#d32f2f',
-coords: { x: 6.5, y: 8.0 } // Adjusted
-},
-{
-id: 'scl-36-glacial-daylight',
-name: 'SCL-36: Glacial Daylight',
-description: { en: 'A surreal, cool tone with high saturation, suitable for daylight scenes, like glacial daylight, creating a stark and ethereal atmosphere.', vi: 'Tông màu lạnh, siêu thực với độ bão hòa cao, phù hợp cho cảnh ban ngày, như ánh sáng băng giá, tạo ra một bầu không khí khắc nghiệt và thanh tao.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['cool', 'surreal', 'daylight', 'high-contrast', 'medium-saturation', 'color', 'cold'],
-whiteBalance: '8200K, B2.5-M2.5', // Exaggerated
-settings: {
-'Black level': '-14', // Keep as is
-'Gamma': 'Cine3',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 85% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+19',
-'Color Phase': '+6'
-},
-colorDepth: { 'R': '-3', 'G': '0', 'B': '+1', 'C': '+2', 'M': '+3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#4fc3f7',
-coords: { x: 6.0, y: 5.5 } // Adjusted
-},
-{
-id: 'scl-37-urban-chic',
-name: 'SCL-37: Urban Chic',
-description: { en: 'Vivid and highly saturated colors, providing a fresh and modern feel, with an urban chic style, perfect for contemporary cityscapes and fashion.', vi: 'Màu sắc sống động và bão hòa cao, mang lại cảm giác tươi mới và hiện đại, với phong cách đô thị sang trọng, hoàn hảo cho cảnh quan thành phố đương đại và thời trang.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['modern', 'vibrant', 'high-saturation', 'high-contrast', 'color', 'urban', 'fashion'],
-whiteBalance: '4500K, A4', // Exaggerated
-settings: {
-'Black level': '-11', // Darker for cinematic
-'Gamma': 'Cine1',
-'Black Gamma': 'Middle +6',
-'Knee': 'Auto',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+31',
-'Color Phase': '+4'
-},
-colorDepth: { 'R': '-1', 'G': '+2', 'B': '+1', 'C': '+1', 'M': '0', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#4caf50',
-coords: { x: 4.5, y: 7.0 } // Adjusted
-},
-{
-id: 'scl-38-golden-age-remastered',
-name: 'SCL-38: Golden Age Remastered',
-description: { en: 'A second version of the warm golden tone, with warmer and more saturated colors, like a remastered golden age, bringing classic beauty to modern eyes.', vi: 'Một phiên bản thứ hai của tông màu vàng ấm, với màu sắc ấm hơn và bão hòa hơn, như một kỷ nguyên vàng được tái bản, mang vẻ đẹp cổ điển đến với đôi mắt hiện đại.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['vintage', 'warm', 'golden-hour', 'high-saturation', 'medium-contrast', 'color', 'remastered'],
-        whiteBalance: '4800K, A8-G1.5', // Exaggerated
-        whiteBalance: '4800K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '+1', // Keep as is
-'Gamma': 'S-Cinetone',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Auto',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+24',
-'Color Phase': '+4'
-},
-colorDepth: { 'R': '+1', 'G': '-1', 'B': '-3', 'C': '-1', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: 2.5, y: 6.0 } // Adjusted
-},
-{
-id: 'scl-39-porcelain-skin',
-name: 'SCL-39: Porcelain Skin',
-description: { en: 'Simulates portrait film, ideal for achieving beautiful and natural skin tones, smooth as porcelain, perfect for elegant and refined portraits.', vi: 'Mô phỏng phim chân dung, lý tưởng để đạt được tông màu da đẹp và tự nhiên, mịn màng như sứ, hoàn hảo cho những bức chân dung thanh lịch và tinh tế.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['portrait', 'warm', 'skin-tone', 'soft', 'everyday', 'medium-saturation', 'high-contrast', 'color', 'beauty'],
-        whiteBalance: '4700K, A8-M1.5', // Exaggerated
-        whiteBalance: '4700K, A7-M1.5', // Exaggerated
-settings: {
-'Black level': '-12', // Lighter for portrait
-'Gamma': 'S-Log2/S-Log3',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+19',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '+1', 'G': '+3', 'B': '+3', 'C': '+5', 'M': '+5', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffccbc',
-coords: { x: 5.5, y: 3.5 } // Adjusted
-},
-{
-id: 'scl-40-true-tone',
-name: 'SCL-40: True Tone',
-description: { en: 'A realistic, slightly blueish tone, suitable for many photography genres, faithfully reproducing natural light with subtle and accurate colors.', vi: 'Tông màu chân thực, hơi ngả xanh, phù hợp cho nhiều thể loại nhiếp ảnh, tái tạo ánh sáng tự nhiên một cách trung thực với màu sắc tinh tế và chính xác.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'realistic'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
-        whiteBalance: '3700K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+3', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'Still',
-'Saturation': '+13',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '-1', 'G': '+3', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#81c784',
-coords: { x: -1.5, y: 4.5 } // Adjusted
-},
-{
-id: 'scl-41-enchanted-warmth',
-name: 'SCL-41: Enchanted Warmth',
-description: { en: 'A unique, warm tone that brings a magical and distinct feeling to the photo, as if enchanted, perfect for whimsical and artistic scenes.', vi: 'Tông màu ấm áp độc đáo, mang lại cảm giác kỳ diệu và khác biệt cho bức ảnh, như thể được phù phép, hoàn hảo cho những cảnh quay huyền ảo và nghệ thuật.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['warm', 'artistic', 'high-contrast', 'medium-saturation', 'color', 'magical'],
-whiteBalance: '7200K, B4.5-M1.5', // Exaggerated
-settings: {
-'Black level': '-11', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+16',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-2', 'G': '+5', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '+2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: 6.0, y: 0.5 } // Adjusted
-},
-{
-id: 'scl-42-portraesque-warmth',
-name: 'SCL-42: Portraesque Warmth',
-description: { en: 'Another version of Portra 400 with warmer and softer tones, ideal for portraits, creating beautiful and natural skin tones with a gentle touch.', vi: 'Một phiên bản khác của Portra 400 với tông màu ấm hơn và mềm mại hơn, lý tưởng cho chân dung, tạo ra tông màu da đẹp và tự nhiên với một cảm giác dịu dàng.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['portrait', 'warm', 'soft', 'film', 'low-contrast', 'medium-saturation', 'color', 'portra'],
-        whiteBalance: '3800K, A8-G1.5', // Exaggerated
-        whiteBalance: '3800K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '+12', // Lighter for portrait
-'Gamma': 'Movie',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 85% +3',
-'Color Mode': 'Still',
-'Saturation': '+10',
-'Color Phase': '-3'
-},
-colorDepth: { 'R': '-1', 'G': '+5', 'B': '-1', 'C': '0', 'M': '+3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-5', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 5',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffcc80',
-coords: { x: -5.0, y: 5.0 } // Adjusted
-},
-{
-id: 'scl-43-dreamy-reverie',
-name: 'SCL-43: Dreamy Reverie',
-description: { en: 'A dreamy, soft tone with gentle colors, bringing a nostalgic and ethereal feeling, perfect for capturing moments of quiet contemplation.', vi: 'Tông màu mơ màng, mềm mại với màu sắc dịu nhẹ, mang lại cảm giác hoài niệm và thanh tao, hoàn hảo để ghi lại những khoảnh khắc tĩnh lặng.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['dreamy', 'soft', 'nostalgic', 'high-saturation', 'medium-contrast', 'color', 'ethereal'],
-        whiteBalance: '4700K, A8', // Exaggerated
-        whiteBalance: '4700K, A7', // Exaggerated
-settings: {
-'Black level': '-4', // Keep as is
-'Gamma': 'Cine1 or Cine4',
-'Black Gamma': 'Middle -6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+24',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '0', 'G': '+3', 'B': '0', 'C': '+1', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ef9a9a',
-coords: { x: 3.5, y: 4.5 } // Adjusted
-},
-{
-id: 'scl-44-azure-dawn',
-name: 'SCL-44: Azure Dawn',
-description: { en: 'Clear, slightly bluish colors, simulating crisp daylight, like an azure dawn, perfect for refreshing and vibrant outdoor scenes.', vi: 'Màu sắc trong trẻo, hơi ngả xanh, mô phỏng ánh sáng ban ngày trong trẻo, như bình minh xanh ngắt, hoàn hảo cho những cảnh ngoài trời tươi mới và sống động.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['daylight', 'cool', 'crisp', 'medium-saturation', 'medium-contrast', 'color', 'landscape'],
-        whiteBalance: '3400K, A8-M1.5', // Exaggerated
-        whiteBalance: '3400K, A7-M1.5', // Exaggerated
-settings: {
-'Black level': '-3', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'Still',
-'Saturation': '+9',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+1', 'G': '+3', 'B': '-2', 'C': '0', 'M': '+4', 'Y': '+3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#4dd0e1',
-coords: { x: 1.0, y: 4.0 } // Adjusted
-},
-{
-id: 'scl-45-gentle-embrace',
-name: 'SCL-45: Gentle Embrace',
-description: { en: 'Warm tones with moderate saturation, suitable for everyday photography and portraits, providing a gentle embrace of light and color.', vi: 'Tông màu ấm áp với độ bão hòa vừa phải, phù hợp cho nhiếp ảnh hàng ngày và chân dung, mang lại cảm giác ôm ấp dịu dàng của ánh sáng và màu sắc.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['warm', 'subtle', 'everyday', 'portrait', 'low-contrast', 'medium-saturation', 'color', 'soft'],
-        whiteBalance: '4700K, A8-M1', // Exaggerated
-        whiteBalance: '4700K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+3', // Lighter for portrait, also everyday
-'Gamma': 'Movie',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+7',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-2', 'G': '+5', 'B': '-1', 'C': '-3', 'M': '+3', 'Y': '+2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffab91',
-coords: { x: -3.0, y: 2.0 } // Adjusted
-},
-{
-id: 'scl-46-neo-noir-green',
-name: 'SCL-46: Neo-Noir Green',
-description: { en: 'A cinematic tone, low saturation and soft contrast with a green hue, reminiscent of Neo-Noir aesthetics, for mysterious and atmospheric scenes.', vi: 'Tông màu điện ảnh, độ bão hòa thấp và tương phản mềm mại với sắc xanh lá cây, gợi nhớ tính thẩm mỹ của Neo-Noir, cho những cảnh quay bí ẩn và đầy không khí.' },
-type: 'color',
-contrast: 'low',
-saturation: 'low',
-tags: ['cinematic', 'green', 'soft', 'low-saturation', 'low-contrast', 'color', 'noir'],
-        whiteBalance: '3800K, A8-M0.5', // Exaggerated
-        whiteBalance: '3800K, A7-M0.5', // Exaggerated
-settings: {
-'Black level': '+4', // Darker for cinematic
-'Gamma': 'Movie',
-'Black Gamma': 'Wide -4',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '-4',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-1', 'G': '+5', 'B': '0', 'C': '+4', 'M': '+2', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ad494a',
-coords: { x: -6.5, y: -5.0 } // Adjusted
-},
-{
-id: 'scl-47-golden-era-revival',
-name: 'SCL-47: Golden Era Revival',
-description: { en: 'Classic, warm colors, reminiscent of photos from the golden age of photography, like a revival, bringing a timeless and rich aesthetic.', vi: 'Màu sắc cổ điển, ấm áp, gợi nhớ những bức ảnh từ kỷ nguyên vàng của nhiếp ảnh, như một sự hồi sinh, mang lại vẻ đẹp vượt thời gian và phong phú.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['vintage', 'warm', 'golden-hour', 'low-contrast', 'medium-saturation', 'color', 'classic'],
-        whiteBalance: '4400K, A8-M1', // Exaggerated
-        whiteBalance: '4400K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+7', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle -6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+11',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+2', 'C': '+2', 'M': '+3', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffd54f',
-coords: { x: -2.0, y: 3.5 } // Adjusted
-},
-{
-id: 'scl-48-aurora-borealis',
-name: 'SCL-48: Aurora Borealis',
-description: { en: 'A crisp, cool tone with prominent blue hues, perfect for capturing the pristine moments of early morning, like the aurora borealis, ethereal and striking.', vi: 'Tông màu lạnh, trong trẻo với sắc xanh nổi bật, hoàn hảo để nắm bắt những khoảnh khắc tinh khôi của buổi sớm, như cực quang, thanh tao và ấn tượng.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['cool', 'blue', 'crisp', 'high-contrast', 'medium-saturation', 'color', 'surreal'],
-whiteBalance: '8200K, B2.5-M2.5', // Exaggerated
-settings: {
-'Black level': '-14', // Keep as is
-'Gamma': 'Cine3',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 85% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+19',
-'Color Phase': '+6'
-},
-colorDepth: { 'R': '-3', 'G': '0', 'B': '+1', 'C': '+2', 'M': '+3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#4fc3f7',
-coords: { x: 6.0, y: 5.5 } // Adjusted
-},
-{
-id: 'scl-49-sun-kissed-pop',
-name: 'SCL-49: Sun-Kissed Pop',
-description: { en: 'Vibrant colors with warm undertones, bringing a dynamic and lively summer feeling, like a sun-kissed pop, full of joyous energy.', vi: 'Màu sắc sống động với tông ấm, mang lại cảm giác năng động và tràn đầy sức sống của mùa hè, như một nụ hôn của nắng, đầy năng lượng vui tươi.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['vibrant', 'warm', 'summer', 'high-saturation', 'medium-contrast', 'color', 'energetic'],
-        whiteBalance: '4200K, A8-G1.5', // Exaggerated
-        whiteBalance: '4200K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '+1', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'S-Gamut3',
-'Saturation': '+31',
-'Color Phase': '+3'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+5', 'C': '+5', 'M': '+5', 'Y': '+2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ff8a65',
-coords: { x: 2.0, y: 7.5 } // Adjusted
-},
-{
-id: 'scl-50-timeless-monochrome',
-name: 'SCL-50: Timeless Monochrome',
-description: { en: 'Soft-contrast black and white, providing a classic, gentle, and deep feel, timeless in its appeal, perfect for emotive storytelling.', vi: 'Đen trắng tương phản mềm mại, mang lại cảm giác cổ điển, nhẹ nhàng và sâu lắng, vượt thời gian trong sức hấp dẫn, hoàn hảo cho những câu chuyện đầy cảm xúc.' },
-type: 'bw',
-contrast: 'low',
-saturation: 'low',
-tags: ['bw', 'soft', 'vintage', 'low-contrast', 'low-saturation', 'classic'],
-whiteBalance: 'AWB', // Kept AWB
-settings: {
-'Black level': '-7', // Keep as is for BW
-'Gamma': 'Cine3',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 75% +2',
-'Color Mode': 'Black & White',
-'Saturation': '0',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '-2', 'G': '+1', 'B': '+5', 'C': '0', 'M': '+5', 'Y': '-3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#9e9e9e',
-coords: { x: -6.5, y: -2.5 } // Adjusted
-},
-{
-id: 'scl-51-kodachrome-legacy',
-name: 'SCL-51: Kodachrome Legacy',
-description: { en: 'A version of Kodachrome with higher contrast and rich, warm colors, inheriting the Kodachrome legacy for vibrant and authentic imagery.', vi: 'Một phiên bản của Kodachrome với độ tương phản cao hơn và màu sắc phong phú, ấm áp, kế thừa di sản Kodachrome cho hình ảnh sống động và chân thực.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['film', 'warm', 'rich', 'high-contrast', 'medium-saturation', 'color', 'kodachrome'],
-        whiteBalance: '4700K, A8-M1', // Exaggerated
-        whiteBalance: '4700K, A7-M1', // Exaggerated
-settings: {
-'Black level': '-11', // Darker for cinematic
-'Gamma': 'Cine1',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+16',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '+4', 'B': '0', 'C': '+5', 'M': '+5', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#a1887f',
-coords: { x: 5.5, y: 6.5 } // Adjusted
-},
-{
-id: 'scl-52-retro-cool',
-name: 'SCL-52: Retro Cool',
-description: { en: 'Simulates the characteristic colors of vintage cameras, with cool and sharp tones, embodying a retro style that is both nostalgic and edgy.', vi: 'Mô phỏng màu sắc đặc trưng của máy ảnh cổ điển, với tông màu lạnh và sắc nét, thể hiện phong cách retro vừa hoài niệm vừa cá tính.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'low',
-tags: ['cool', 'vintage', 'sharp', 'low-saturation', 'medium-contrast', 'color', 'retro'],
-whiteBalance: '7200K, B5.5-M0.5', // Exaggerated
-settings: {
-'Black level': '-8', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+5',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '+1', 'C': '-3', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#78909c',
-coords: { x: 3.5, y: -3.5 } // Adjusted
-},
-{
-id: 'scl-53-kodachrome-daylight',
-name: 'SCL-53: Kodachrome Daylight',
-description: { en: 'A balanced Kodachrome version with pleasant, realistic colors for daylight, capturing the authentic vibrancy of a sunny day.', vi: 'Một phiên bản Kodachrome cân bằng với màu sắc dễ chịu, chân thực cho ánh sáng ban ngày, nắm bắt sự sống động đích thực của một ngày nắng.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['film', 'warm', 'daylight', 'natural', 'low-contrast', 'medium-saturation', 'color', 'kodachrome'],
-        whiteBalance: '4200K, A8-M2.5', // Exaggerated
-        whiteBalance: '4200K, A7-M2.5', // Exaggerated
-settings: {
-'Black level': '+5', // Keep as is
-'Gamma': 'S-Cinetone',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Auto',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+13',
-'Color Phase': '-2'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+3', 'C': '0', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffcc80',
-coords: { x: -4.0, y: 6.0 } // Adjusted
-},
-{
-id: 'scl-54-oceanic-depths',
-name: 'SCL-54: Oceanic Depths',
-description: { en: 'Simulates color negative film, with cool blue tones and moderate contrast, like the depths of the ocean, for a profound and immersive feel.', vi: 'Mô phỏng phim âm bản màu, với tông xanh lạnh và độ tương phản vừa phải, như chiều sâu đại dương, mang lại cảm giác sâu sắc và đắm chìm.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['film', 'cool', 'blue', 'medium-saturation', 'medium-contrast', 'color', 'cinematic'],
-whiteBalance: '8400K, B5-G2', // Exaggerated
-settings: {
-'Black level': '-11', // Darker for cinematic
-'Gamma': 'S-Cinetone',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Auto',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+15',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '+3', 'G': '+5', 'B': '-4', 'C': '-3', 'M': '+5', 'Y': '-2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#64b5f6',
-coords: { x: 2.5, y: 2.0 } // Adjusted
-},
-{
-id: 'scl-55-luminous-monochrome',
-name: 'SCL-55: Luminous Monochrome',
-description: { en: 'A version of Tri-X with softer, flatter contrast, creating a high-key effect, bringing a luminous feel perfect for bright and airy compositions.', vi: 'Một phiên bản của Tri-X với độ tương phản mềm mại, phẳng hơn, tạo hiệu ứng high-key, mang lại cảm giác sáng bừng, hoàn hảo cho những bố cục tươi sáng và thoáng đãng.' },
-type: 'bw',
-contrast: 'low',
-saturation: 'high',
-tags: ['bw', 'high-key', 'soft', 'low-contrast', 'high-saturation', 'bright'],
-whiteBalance: '5600K, A3.5-G2.5', // Exaggerated
-settings: {
-'Black level': '+2', // Keep as is for BW
-'Gamma': 'Cine1',
-'Black Gamma': 'Narrow +4',
-'Knee': 'Manual 75% +2',
-'Color Mode': 'Black & White',
-'Saturation': '+23',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+1', 'G': '+1', 'B': '+1', 'C': '0', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#eeeeee',
-coords: { x: -7.5, y: 8.0 } // Adjusted
-},
-{
-id: 'scl-56-romantic-blush',
-name: 'SCL-56: Romantic Blush',
-description: { en: 'A gentle, romantic rose tone that creates a dreamy and sweet feeling, like a soft blush, ideal for tender and intimate portraits.', vi: 'Tông màu hồng nhẹ nhàng, lãng mạn, tạo cảm giác mơ màng và ngọt ngào, như một cái chạm hồng dịu dàng, lý tưởng cho những bức chân dung mềm mại và thân mật.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['romantic', 'dreamy', 'warm', 'high-saturation', 'medium-contrast', 'color', 'pink'],
-        whiteBalance: '4800K, A8-M1', // Exaggerated
-        whiteBalance: '4800K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+5', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Pro',
-'Saturation': '+24',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '0', 'G': '0', 'B': '0', 'C': '-1', 'M': '+3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#f06292',
-coords: { x: 2.5, y: 5.5 } // Adjusted
-},
-{
-id: 'scl-57-americana-dream',
-name: 'SCL-57: Americana Dream',
-description: { en: 'A modern cinematic tone with teal in the shadows and orange in the highlights, evoking the American dream, for a bold and iconic look.', vi: 'Tông màu điện ảnh hiện đại với sắc xanh ở vùng tối và cam ở vùng sáng, gợi lên giấc mơ Mỹ, cho một vẻ ngoài táo bạo và mang tính biểu tượng.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['cinematic', 'teal-orange', 'modern', 'high-saturation', 'high-contrast', 'color', 'americana'],
-        whiteBalance: '4500K, A8-G1', // Exaggerated
-        whiteBalance: '4500K, A7-G1', // Exaggerated
-settings: {
-'Black level': '-16', // Darker for cinematic
-'Gamma': 'Cine1',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 82.5% +3',
-'Color Mode': 'S-Cinetone/Still',
-'Saturation': '+9',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '-5', 'C': '-4', 'M': '+1', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ff8a65',
-coords: { x: 7.0, y: 4.5 } // Adjusted
-},
-{
-id: 'scl-58-full-spectrum-mono',
-name: 'SCL-58: Full Spectrum Mono',
-description: { en: 'A black and white recipe with a wide tonal range and good detail in both highlights and shadows, like seeing the full spectrum, for rich and detailed monochrome.', vi: 'Một công thức đen trắng với dải tông màu rộng và chi tiết tốt ở cả vùng sáng và tối, như nhìn thấy toàn bộ quang phổ, cho hình ảnh đơn sắc phong phú và chi tiết.' },
-type: 'bw',
-contrast: 'medium',
-saturation: 'high',
-tags: ['bw', 'wide-range', 'detailed', 'medium-contrast', 'versatile'],
-whiteBalance: '6200K, B3-M2', // Exaggerated
-settings: {
-'Black level': '+1', // Keep as is for BW
-'Gamma': 'Cine1-4',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Black & White',
-'Saturation': '+31',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-2', 'G': '+3', 'B': '+2', 'C': '0', 'M': '-3', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#9e9e9e',
-coords: { x: 2.5, y: 3.5 } // Adjusted
-},
-{
-id: 'scl-59-organic-hues',
-name: 'SCL-59: Organic Hues',
-description: { en: 'A realistic, slightly blueish tone, suitable for many photography genres that require subtlety, with organic hues that feel natural and authentic.', vi: 'Tông màu chân thực, hơi ngả xanh, phù hợp cho nhiều thể loại nhiếp ảnh cần sự tinh tế, với sắc thái hữu cơ mang lại cảm giác tự nhiên và chân thực.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'earthy'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
-        whiteBalance: '3700K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+3', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'Still',
-'Saturation': '+13',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '-1', 'G': '+3', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#a1887f',
-coords: { x: -1.5, y: 4.5 } // Adjusted
-},
-{
-id: 'scl-60-ruby-glow',
-name: 'SCL-60: Ruby Glow',
-description: { en: 'Simulates slide film with vibrant and clear colors, emphasizing red tones, like the glowing intensity of a ruby, for rich and striking visuals.', vi: 'Mô phỏng phim slide với màu sắc sống động và trong trẻo, nhấn mạnh tông đỏ, như ánh sáng rực rỡ của viên hồng ngọc, cho hình ảnh phong phú và ấn tượng.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['film', 'vibrant', 'red', 'high-saturation', 'high-contrast', 'color', 'luxurious'],
-        whiteBalance: '3300K, A8-G2', // Exaggerated
-        whiteBalance: '3300K, A7-G2', // Exaggerated
-settings: {
-'Black level': '-2', // Darker for cinematic
-'Gamma': 'Still',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+31',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '+2', 'G': '0', 'B': '+5', 'C': '0', 'M': '+5', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e53935',
-coords: { x: 5.5, y: 9.0 } // Adjusted
-},
-{
-id: 'scl-61-silk-skin-tone',
-name: 'SCL-61: Silk Skin Tone',
-description: { en: 'Simulates portrait film, ideal for achieving beautiful and natural skin tones, smooth as silk, perfect for elegant and flattering portraits.', vi: 'Mô phỏng phim chân dung, lý tưởng để đạt được tông màu da đẹp và tự nhiên, mịn màng như lụa, hoàn hảo cho những bức chân dung thanh lịch và nịnh mắt.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['portrait', 'skin-tone', 'soft', 'medium-saturation', 'high-contrast', 'color', 'beauty'],
-        whiteBalance: '4700K, A8-M1.5', // Exaggerated
-        whiteBalance: '4700K, A7-M1.5', // Exaggerated
-settings: {
-'Black level': '-12', // Lighter for portrait
-'Gamma': 'S-Log2/S-Log3',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+19',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '+1', 'G': '+3', 'B': '+3', 'C': '+5', 'M': '+5', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffccbc',
-coords: { x: 5.5, y: 3.5 } // Adjusted
-},
-{
-id: 'scl-62-emerald-vintage',
-name: 'SCL-62: Emerald Vintage',
-description: { en: 'A unique yellow-green tone, creating a classic and unusual feel, like an old film with an emerald tint, for a distinct retro look.', vi: 'Tông màu vàng xanh độc đáo, tạo cảm giác cổ điển và lạ mắt, như một thước phim cũ với tông ngọc lục bảo, cho một vẻ ngoài retro đặc biệt.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['vintage', 'green', 'warm', 'high-saturation', 'high-contrast', 'color', 'unique'],
-        whiteBalance: '8200K, A8-G6', // Exaggerated
-        whiteBalance: '8200K, A7-G6', // Exaggerated
-settings: {
-'Black level': '-11', // Keep as is
-'Gamma': 'Cine4',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'S-Gamut3',
-'Saturation': '+31',
-'Color Phase': '+6'
-},
-colorDepth: { 'R': '+2', 'G': '+3', 'B': '0', 'C': '0', 'M': '-1', 'Y': '+5' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#cddc39',
-coords: { x: 7.0, y: 8.5 } // Adjusted
-},
-{
-id: 'scl-63-urban-grit',
-name: 'SCL-63: Urban Grit',
-description: { en: 'High-contrast black and white with prominent grain, simulating pushed film for added drama, with an urban grit aesthetic perfect for street photography.', vi: 'Đen trắng tương phản cao với hạt rõ nét, mô phỏng phim được đẩy sáng để tăng kịch tính, với vẻ đẹp bụi bặm đô thị hoàn hảo cho nhiếp ảnh đường phố.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'high',
-tags: ['bw', 'high-contrast', 'grainy', 'dramatic', 'street', 'urban'],
-whiteBalance: '5600K, A3.5-G2.5', // Exaggerated
-settings: {
-'Black level': '+4', // Keep as is for BW
-'Gamma': 'Still',
-'Black Gamma': 'Wide -6',
-'Knee': 'Manual 77.5% +1',
-'Color Mode': 'Black & White',
-'Saturation': '+23',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-2', 'G': '0', 'B': '+4', 'C': '+3', 'M': '-1', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#616161',
-coords: { x: 8.0, y: 5.5 } // Adjusted
-},
-{
-id: 'scl-64-summer-solstice',
-name: 'SCL-64: Summer Solstice',
-description: { en: 'A dominant yellow tone, creating a sunny, nostalgic, and energetic feel, like the summer solstice, full of radiant warmth and light.', vi: 'Tông màu vàng chủ đạo, tạo cảm giác nắng ấm, hoài niệm và tràn đầy năng lượng, như ngày hạ chí, đầy ánh sáng và sự ấm áp rạng rỡ.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['warm', 'yellow', 'vibrant', 'nostalgic', 'high-saturation', 'medium-contrast', 'color', 'summer'],
-        whiteBalance: '4400K, A8-G0.5', // Exaggerated
-        whiteBalance: '4400K, A7-G0.5', // Exaggerated
-settings: {
-'Black level': '+3', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+19',
-'Color Phase': '-3'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '0', 'C': '-1', 'M': '-2', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffee58',
-coords: { x: 2.0, y: 8.0 } // Adjusted
-},
-{
-id: 'scl-65-gaf-500-legacy',
-name: 'SCL-65: GAF 500 Legacy',
-description: { en: 'Simulates GAF 500 film with vintage colors and a unique, warm tone, inheriting the GAF legacy for a distinct and classic film look.', vi: 'Mô phỏng phim GAF 500 với màu sắc cổ điển và tông màu ấm áp độc đáo, kế thừa di sản GAF cho một vẻ ngoài phim ảnh đặc trưng và cổ điển.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['vintage', 'film', 'warm', 'medium-saturation', 'medium-contrast', 'color', 'classic'],
-        whiteBalance: '5500K, A8-M1', // Exaggerated
-        whiteBalance: '5500K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+2', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Still',
-'Saturation': '+9',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+1', 'G': '+3', 'B': '-1', 'C': '-1', 'M': '-1', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#d4e157',
-coords: { x: -1.0, y: 6.5 } // Adjusted
-},
-{
-id: 'scl-66-tungsten-noir',
-name: 'SCL-66: Tungsten Noir',
-description: { en: 'Simulates film balanced for Tungsten light, ideal for night photography, with a mysterious noir aesthetic, capturing deep shadows and subtle highlights.', vi: 'Mô phỏng phim cân bằng cho ánh sáng Tungsten, lý tưởng cho nhiếp ảnh đêm, với vẻ đẹp huyền bí của phim noir, nắm bắt bóng tối sâu và điểm sáng tinh tế.' },
-type: 'color',
-contrast: 'low',
-saturation: 'low',
-tags: ['film', 'night', 'tungsten', 'cool', 'low-saturation', 'low-contrast', 'color', 'noir'],
-        whiteBalance: '2500K, A8-M1.5', // Exaggerated
-        whiteBalance: '2500K, A7-M1.5', // Exaggerated
-settings: {
-'Black level': '0', // Darker for cinematic
-'Gamma': 'Movie',
-'Black Gamma': 'Wide +6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+1',
-'Color Phase': '+4'
-},
-colorDepth: { 'R': '-3', 'G': '-5', 'B': '-5', 'C': '+1', 'M': '-5', 'Y': '-3' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ce93d8',
-coords: { x: -7.5, y: -6.5 } // Adjusted
-},
-{
-id: 'scl-67-cine-daylight-pro',
-name: 'SCL-67: Cine Daylight Pro',
-description: { en: 'Simulates motion picture film balanced for daylight, with clear and vibrant colors, offering a professional cine look perfect for bright outdoor scenes.', vi: 'Mô phỏng phim điện ảnh cân bằng cho ánh sáng ban ngày, với màu sắc trong trẻo và sống động, mang lại vẻ ngoài điện ảnh chuyên nghiệp hoàn hảo cho các cảnh ngoài trời sáng sủa.' },
-type: 'color',
-contrast: 'low',
-saturation: 'high',
-tags: ['film', 'daylight', 'vibrant', 'high-saturation', 'low-contrast', 'color', 'cinematic', 'professional'],
-        whiteBalance: '3500K, A8-G1.5', // Exaggerated
-        whiteBalance: '3500K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '+6', // Darker for cinematic
-'Gamma': 'S-Cinetone',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Auto',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+31',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '0', 'G': '+1', 'B': '0', 'C': '0', 'M': '-1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#81d4fa',
-coords: { x: -8.5, y: 7.5 } // Adjusted
-},
-{
-id: 'scl-68-redscale-aura',
-name: 'SCL-68: Redscale Aura',
-description: { en: 'A Redscale effect, where the entire image is cast in a dramatic and unique red-orange hue, like a redscale aura, for an artistic and experimental look.', vi: 'Hiệu ứng Redscale, toàn bộ hình ảnh được phủ một tông màu đỏ cam ấn tượng và độc đáo, như một vầng hào quang đỏ, cho một vẻ ngoài nghệ thuật và thử nghiệm.' },
-type: 'color',
-contrast: 'low',
-saturation: 'low',
-tags: ['artistic', 'red', 'warm', 'low-saturation', 'low-contrast', 'color', 'unique'],
-whiteBalance: '>9900K, B4-G2.5', // Exaggerated
-settings: {
-'Black level': '+4', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'ITU709Matrix',
-'Saturation': '+6',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+3', 'G': '+5', 'B': '+3', 'C': '+3', 'M': '-5', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e53935',
-coords: { x: -8.5, y: -8.5 } // Adjusted
-},
-{
-id: 'scl-69-bold-monochrome',
-name: 'SCL-69: Bold Monochrome',
-description: { en: 'High-contrast black and white, suitable for works that require strength and impact, with a bold aesthetic perfect for powerful and dramatic compositions.', vi: 'Đen trắng tương phản cao, phù hợp cho những tác phẩm đòi hỏi sức mạnh và tác động, với vẻ đẹp táo bạo hoàn hảo cho những bố cục mạnh mẽ và kịch tính.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'high',
-tags: ['bw', 'graphic', 'high-contrast', 'high-saturation', 'impactful'],
-whiteBalance: '5600K', // Exaggerated
-settings: {
-'Black level': '-14', // Keep as is for BW
-'Gamma': 'S-Cinetone',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 75+1',
-'Color Mode': 'Black&White',
-'Saturation': '+27',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-1', 'G': '+2', 'B': '+1', 'C': '+1', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#616161',
-coords: { x: 9.0, y: 6.0 } // Adjusted
-},
-{
-id: 'scl-70-autumnal-glow',
-name: 'SCL-70: Autumnal Glow',
-description: { en: 'A unique, warm tone that brings a magical and distinct feeling to the photo, like the glow of autumn, for rich and inviting imagery.', vi: 'Tông màu ấm áp độc đáo, mang lại cảm giác kỳ diệu và khác biệt cho bức ảnh, như ánh sáng rực rỡ của mùa thu, cho hình ảnh phong phú và lôi cuốn.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['warm', 'artistic', 'high-contrast', 'medium-saturation', 'color', 'autumn'],
-whiteBalance: '7200K, B4.5-M1.5', // Exaggerated
-settings: {
-'Black level': '-11', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+16',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '-2', 'G': '+5', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '+2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: 6.0, y: 0.5 } // Adjusted
-},
-{
-id: 'scl-71-azure-horizon',
-name: 'SCL-71: Azure Horizon',
-description: { en: 'Cool and clear blue and green tones, ideal for landscapes, like an azure horizon, capturing the vastness and clarity of open skies.', vi: 'Tông màu xanh dương và xanh lá cây mát mẻ, trong trẻo, lý tưởng cho phong cảnh, như đường chân trời xanh ngắt, nắm bắt sự bao la và trong trẻo của bầu trời rộng mở.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['cool', 'blue', 'green', 'landscape', 'high-saturation', 'high-contrast', 'color', 'sky'],
-whiteBalance: 'AWB, B2.5-G2.5', // Exaggerated
-settings: {
-'Black level': '-4', // Keep as is
-'Gamma': 'Cine4',
-'Black Gamma': 'Wide +6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+29',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+5', 'C': '-3', 'M': '-1', 'Y': '-2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#29b6f6',
-coords: { x: 7.5, y: 7.5 } // Adjusted
-},
-{
-id: 'scl-72-classic-street-mono',
-name: 'SCL-72: Classic Street Mono',
-description: { en: 'Simulates classic black and white film, a great choice for street photography, with a soft feel that emphasizes texture and subtle details.', vi: 'Mô phỏng phim đen trắng cổ điển, một lựa chọn tuyệt vời cho nhiếp ảnh đường phố, với cảm giác mềm mại nhấn mạnh kết cấu và các chi tiết tinh tế.' },
-type: 'bw',
-contrast: 'low',
-saturation: 'low',
-tags: ['bw', 'soft', 'vintage', 'street', 'low-contrast', 'classic'],
-whiteBalance: 'AWB, A3', // Kept AWB
-settings: {
-'Black level': '-11', // Keep as is for BW
-'Gamma': 'Movie',
-'Black Gamma': 'Middle -4',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Black & White',
-'Saturation': '0',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '0', 'G': '+1', 'B': '0', 'C': '0', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#bdbdbd',
-coords: { x: -5.5, y: -5.5 } // Adjusted
-},
-{
-id: 'scl-73-sepia-dream',
-name: 'SCL-73: Sepia Dream',
-description: { en: 'A second version of the warm golden tone, with warmer and more saturated colors, evoking a sepia dream, for a timeless and artistic feel.', vi: 'Một phiên bản thứ hai của tông màu vàng ấm, với màu sắc ấm hơn và bão hòa hơn, gợi lên giấc mơ màu nâu đỏ, cho một cảm giác vượt thời gian và nghệ thuật.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['vintage', 'warm', 'high-saturation', 'medium-contrast', 'color', 'sepia'],
-        whiteBalance: '4800K, A8-G1.5', // Exaggerated
-        whiteBalance: '4800K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '+1', // Keep as is
-'Gamma': 'S-Cinetone',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Auto',
-'Color Mode': 'S-Cinetone',
-'Saturation': '+24',
-'Color Phase': '+4'
-},
-colorDepth: { 'R': '+1', 'G': '-1', 'B': '-3', 'C': '-1', 'M': '+1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: 2.5, y: 6.0 } // Adjusted
-},
-{
-id: 'scl-74-hollywood-epic',
-name: 'SCL-74: Hollywood Epic',
-description: { en: 'A cinematic tone with wide dynamic range and filmic colors, like a Hollywood epic film, for grand and dramatic visual storytelling.', vi: 'Tông màu điện ảnh với dải nhạy sáng rộng và màu sắc đậm chất phim, như một bộ phim bom tấn Hollywood, cho cách kể chuyện bằng hình ảnh hoành tráng và kịch tính.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['cinematic', 'film', 'high-saturation', 'high-contrast', 'color', 'epic'],
-        whiteBalance: '3700K, A8', // Exaggerated
-        whiteBalance: '3700K, A7', // Exaggerated
-settings: {
-'Black level': '-16', // Darker for cinematic
-'Gamma': 'HLG3',
-'Black Gamma': 'Wide 0',
-'Knee': 'Auto',
-'Color Mode': 'BT.2020',
-'Saturation': '+31',
-'Color Phase': '+6'
-},
-colorDepth: { 'R': '-2', 'G': '0', 'B': '+3', 'C': '+2', 'M': '+3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#64b5f6',
-coords: { x: 9.0, y: 3.5 } // Adjusted
-},
-{
-id: 'scl-75-golden-hour-portrait',
-name: 'SCL-75: Golden Hour Portrait',
-description: { en: 'Accurate colors and beautiful skin tones, suitable for professional portraits with warm tones, as if shot during golden hour, for a soft and flattering glow.', vi: 'Màu sắc chính xác và tông màu da đẹp, phù hợp cho chân dung chuyên nghiệp với tông ấm, như thể được chụp vào giờ vàng, cho một ánh sáng mềm mại và nịnh mắt.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['portrait', 'warm', 'skin-tone', 'professional', 'high-saturation', 'medium-contrast', 'color', 'golden-hour'],
-        whiteBalance: '4200K, A8-G1.5', // Exaggerated
-        whiteBalance: '4200K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '+7', // Lighter for portrait
-'Gamma': 'S-Cinetone/Cine4',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+29',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+1', 'C': '+3', 'M': '+1', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ff8a65',
-coords: { x: 3.5, y: 8.5 } // Adjusted
-},
-{
-id: 'scl-76-enchanted-forest',
-name: 'SCL-76: Enchanted Forest',
-description: { en: 'A unique tone with green and magenta hues, creating a fantastical and mysterious feel as if in an enchanted forest, for whimsical and dreamy compositions.', vi: 'Tông màu độc đáo với sắc xanh lá cây và tím, tạo cảm giác kỳ ảo và bí ẩn như trong một khu rừng phù thủy, cho những bố cục huyền ảo và mơ màng.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'medium',
-tags: ['artistic', 'green', 'magenta', 'mystical', 'medium-saturation', 'medium-contrast', 'color', 'fantasy'],
-whiteBalance: '7200K, B1.5-M1.5', // Exaggerated
-settings: {
-'Black level': '+6', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'S-Gamut3.Cine',
-'Saturation': '+9',
-'Color Phase': '+6'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+3', 'C': '+3', 'M': '+3', 'Y': '-1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ba68c8',
-coords: { x: 0.5, y: 3.0 } // Adjusted
-},
-{
-id: 'scl-77-urban-nocturne',
-name: 'SCL-77: Urban Nocturne',
-description: { en: 'Simulates motion picture film, with characteristic warm yellow tones for night scenes, like an urban nocturne, capturing the quiet beauty of the city after dark.', vi: 'Mô phỏng phim điện ảnh, với tông màu vàng ấm đặc trưng cho cảnh đêm, như một bản nhạc đêm đô thị, nắm bắt vẻ đẹp tĩnh lặng của thành phố sau khi trời tối.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['cinematic', 'night', 'warm', 'yellow', 'high-saturation', 'high-contrast', 'color', 'urban'],
-        whiteBalance: '4900K, A8-G1.5', // Exaggerated
-        whiteBalance: '4900K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '-16', // Darker for cinematic
-'Gamma': 'S-log2 or S-log3',
-'Black Gamma': 'Middle -6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'ITU709Matrix',
-'Saturation': '+31',
-'Color Phase': '+4'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '-5', 'C': '-5', 'M': '+3', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#827717',
-coords: { x: 6.0, y: 8.0 } // Adjusted
-},
-{
-id: 'scl-78-neon-city-pop',
-name: 'SCL-78: Neon City Pop',
-description: { en: 'Vibrant, slightly bluish colors, creating a dynamic and prominent feel like Pop Art, with a neon city vibe, perfect for energetic and modern street photography.', vi: 'Màu sắc sống động, hơi ngả xanh, tạo cảm giác năng động và nổi bật như tranh Pop Art, với không khí thành phố neon, hoàn hảo cho nhiếp ảnh đường phố hiện đại và tràn đầy năng lượng.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['vibrant', 'pop-art', 'cool', 'high-saturation', 'high-contrast', 'color', 'neon', 'urban'],
-        whiteBalance: '3200K, A8-M2', // Exaggerated
-        whiteBalance: '3200K, A7-M2', // Exaggerated
-settings: {
-'Black level': '-5', // Keep as is
-'Gamma': 'Still',
-'Black Gamma': 'Wide +6',
-'Knee': 'Auto',
-'Color Mode': 'Still',
-'Saturation': '+31',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '0', 'C': '+5', 'M': '-3', 'Y': '-2' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ef5350',
-coords: { x: 6.5, y: 9.0 } // Adjusted
-},
-{
-id: 'scl-79-delicate-tones',
-name: 'SCL-79: Delicate Tones',
-description: { en: 'A realistic, slightly blueish tone, suitable for many photography genres that require subtlety, with delicate hues that convey a refined and understated beauty.', vi: 'Tông màu chân thực, hơi ngả xanh, phù hợp cho nhiều thể loại nhiếp ảnh cần sự tinh tế, với sắc thái dịu nhẹ truyền tải vẻ đẹp tinh tế và kín đáo.' },
-type: 'color',
-contrast: 'low',
-saturation: 'medium',
-tags: ['natural', 'cool', 'subtle', 'low-contrast', 'medium-saturation', 'color', 'refined'],
-        whiteBalance: '3700K, A8-M1', // Exaggerated
-        whiteBalance: '3700K, A7-M1', // Exaggerated
-settings: {
-'Black level': '+3', // Keep as is
-'Gamma': 'Movie',
-'Black Gamma': 'Narrow -6',
-'Knee': 'Manual 80% +3',
-'Color Mode': 'Still',
-'Saturation': '+13',
-'Color Phase': '-1'
-},
-colorDepth: { 'R': '-1', 'G': '+3', 'B': '-1', 'C': '-1', 'M': '-3', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#a1887f',
-coords: { x: -1.5, y: 4.5 } // Adjusted
-},
-{
-id: 'scl-80-retro-cine-warm',
-name: 'SCL-80: Retro Cine Warm',
-description: { en: 'Another version of the warm tone with more subdued colors, with a strong classic cinematic quality and a retro style, perfect for vintage film looks.', vi: 'Một phiên bản khác của tông màu ấm với màu sắc dịu hơn, mang đậm chất điện ảnh cổ điển và phong cách retro, hoàn hảo cho vẻ ngoài phim ảnh cổ điển.' },
-type: 'color',
-contrast: 'medium',
-saturation: 'high',
-tags: ['film', 'warm', 'cinematic', 'high-saturation', 'medium-contrast', 'color', 'retro'],
-        whiteBalance: '4600K, A8-G1.5', // Exaggerated
-        whiteBalance: '4600K, A7-G1.5', // Exaggerated
-settings: {
-'Black level': '-2', // Darker for cinematic
-'Gamma': 'Cine1',
-'Black Gamma': 'Middle +6',
-'Knee': 'Manual 75% +4',
-'Color Mode': 'Still',
-'Saturation': '+24',
-'Color Phase': '+2'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '0', 'C': '0', 'M': '+3', 'Y': '+1' }, // Adjusted
-detailSettings: {
-'Level': '-5', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 5',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ffb74d',
-coords: { x: 3.0, y: 6.5 } // Adjusted
-},
-{
-id: 'scl-81-cyanotype-dream',
-name: 'SCL-81: Cyanotype Dream',
-description: { en: 'Black and white simulating Orthochromatic film, sensitive to blue and green, creating a unique effect like a Cyanotype print, for an artistic and distinct monochrome.', vi: 'Đen trắng mô phỏng phim Orthochromatic, nhạy cảm với màu xanh dương và xanh lá cây, tạo hiệu ứng độc đáo như bản in Cyanotype, cho một hình ảnh đơn sắc nghệ thuật và khác biệt.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'medium',
-tags: ['bw', 'artistic', 'cool', 'high-contrast', 'orthochromatic', 'cyanotype'],
-whiteBalance: 'AWB, A3-M2.75', // Kept AWB
-settings: {
-'Black level': '-11', // Keep as is for BW
-'Gamma': 'Movie',
-'Black Gamma': 'Narrow -6',
-'Knee': '105% +4',
-'Color Mode': 'Still',
-'Saturation': '+14',
-'Color Phase': '0'
-},
-colorDepth: { 'R': '+5', 'G': '+5', 'B': '-5', 'C': '-5', 'M': '+5', 'Y': '+5' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#616161',
-coords: { x: 6.0, y: 2.5 } // Adjusted
-},
-{
-id: 'scl-82-carnival-spirit',
-name: 'SCL-82: Carnival Spirit',
-description: { en: 'A warm, vibrant tone that brings a festive and joyful atmosphere, full of life like a carnival spirit, perfect for energetic and celebratory moments.', vi: 'Tông màu ấm áp, sống động, mang lại không khí lễ hội vui tươi, tràn đầy sức sống như tinh thần lễ hội, hoàn hảo cho những khoảnh khắc tràn đầy năng lượng và kỷ niệm.' },
-type: 'color',
-contrast: 'high',
-saturation: 'medium',
-tags: ['warm', 'vibrant', 'happy', 'high-contrast', 'medium-saturation', 'color', 'holiday'],
-whiteBalance: 'AWB, A6-G0.5', // Exaggerated
-settings: {
-'Black level': '-6', // Keep as is
-'Gamma': 'Cine3',
-'Black Gamma': 'Narrow -6',
-'Knee': '105% +4',
-'Color Mode': 'Still',
-'Saturation': '+12',
-'Color Phase': '+3'
-},
-colorDepth: { 'R': '+1', 'G': '+5', 'B': '-2', 'C': '-3', 'M': '+2', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#ef5350',
-coords: { x: 7.0, y: 1.0 } // Adjusted
-},
-{
-id: 'scl-83-jewel-tone-luxe',
-name: 'SCL-83: Jewel Tone Luxe',
-description: { en: 'Vibrant colors with prominent red and blue tones, creating a luxurious and noble feel, like precious jewel tones, for a sophisticated and rich aesthetic.', vi: 'Màu sắc sống động với tông đỏ và xanh dương nổi bật, tạo cảm giác sang trọng và quý phái, như những sắc màu đá quý, cho một vẻ đẹp tinh tế và phong phú.' },
-type: 'color',
-contrast: 'high',
-saturation: 'high',
-tags: ['vibrant', 'rich', 'red', 'blue', 'high-saturation', 'high-contrast', 'color', 'luxury', 'jewel'],
-whiteBalance: '7200K, B2.5-M1.5', // Exaggerated
-settings: {
-'Black level': '-11', // Darker for cinematic
-'Gamma': 'Movie',
-'Black Gamma': 'Wide +6',
-'Knee': 'Manual 75% +3',
-'Color Mode': 'Movie',
-'Saturation': '+24',
-'Color Phase': '+1'
-},
-colorDepth: { 'R': '0', 'G': '+5', 'B': '+5', 'C': '+5', 'M': '+5', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#d81b60',
-coords: { x: 8.5, y: 5.0 } // Adjusted
-},
-{
-id: 'scl-84-dramatic-noir',
-name: 'SCL-84: Dramatic Noir',
-description: { en: 'A variation of Eterna with richer and more saturated colors, creating a striking black and white effect, dramatic like film noir, for intense and moody compositions.', vi: 'Một biến thể của Eterna với màu sắc đậm và bão hòa hơn, tạo hiệu ứng đen trắng ấn tượng, kịch tính như phim noir, cho những bố cục mạnh mẽ và đầy tâm trạng.' },
-type: 'bw',
-contrast: 'high',
-saturation: 'high',
-tags: ['bw', 'cinematic', 'high-contrast', 'high-saturation', 'noir', 'dramatic'],
-whiteBalance: '4100K, A7.5-M1.5', // Exaggerated
-settings: {
-'Black level': '-4', // Keep as is for BW
-'Gamma': 'Cine4',
-'Black Gamma': 'Wide -4',
-'Knee': 'Manual 87.5% +2',
-'Color Mode': 'S-Gamut3',
-'Saturation': '+31',
-'Color Phase': '+5'
-},
-colorDepth: { 'R': '-1', 'G': '0', 'B': '+1', 'C': '+5', 'M': '-1', 'Y': '0' }, // Adjusted
-detailSettings: {
-'Level': '-3', // Softer
-'Mode': 'Manual',
-'V/H Balance': '+1',
-'B/W Balance': 'Type 3',
-'Limit': '7',
-'Crispening': '3', // Softer
-'Hi-Light Detail': '0' // Softer
-},
-personalityColor: '#e57373',
-coords: { x: 8.0, y: 5.5 } // Adjusted
-}
+    {
+        "id": "scl-001",
+        "name": { "vi": "SCL-001: Mojave Sun", "en": "SCL-001: Mojave Sun" }, // Updated name format
+        "formattedName": "SCL-001-Mojave Sun", // Formatted name
+        "description": {
+            "en": "A nostalgic, sun-drenched style that bathes scenes in the warm glow of golden hour.\nPerfect for travel and lifestyle, it recreates rich yellows and deep blues, evoking the feeling of an endless summer road trip.",
+            "vi": "Một phong cách hoài niệm, ngập tràn ánh nắng, bao phủ các khung cảnh trong ánh sáng ấm áp của giờ vàng. Hoàn hảo cho du lịch và đời sống, nó tái tạo màu vàng đậm và xanh dương sâu, gợi lên cảm giác về một chuyến đi mùa hè bất tận."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["nostalgic", "sun-drenched", "warm", "travel", "lifestyle", "summer", "golden-hour"],
+        "whiteBalance": "8500K, B3-M1.75",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
+        "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#FFD700", // Yellowish
+        "coords": { "x": 6, "y": 7 } // Example coordinates for chart
+    },
+    {
+        "id": "scl-002",
+        "name": { "vi": "SCL-002: Kyoto Jade", "en": "SCL-002: Kyoto Jade" }, // Updated name format
+        "formattedName": "SCL-002-Kyoto Jade", // Formatted name
+        "description": {
+            "en": "A serene and subtle palette defined by rich jade tones and gentle skin colors.\nIdeal for contemplative portraits, street photography, and landscapes, creating a peaceful, painterly atmosphere.",
+            "vi": "Một bảng màu thanh tĩnh và tinh tế được định hình bởi các tông màu xanh ngọc bích đậm và màu da dịu. Lý tưởng cho chân dung trầm tư, nhiếp ảnh đường phố và phong cảnh, tạo ra một không khí yên bình, tựa như tranh vẽ."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["serene", "subtle", "portrait", "street-photography", "landscape", "peaceful", "painterly"],
+        "whiteBalance": "3700K, A7-M0.5",
+        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-3" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#66CDAA", // Jade Green
+        "coords": { "x": -4, "y": 3 }
+    },
+    {
+        "id": "scl-003",
+        "name": { "vi": "SCL-003: Caspian Blue", "en": "SCL-003: Caspian Blue" }, // Updated name format
+        "formattedName": "SCL-003-Caspian Blue", // Formatted name
+        "description": {
+            "en": "A cool-toned, cinematic profile with distinctive deep blues and rich, crushed blacks.\nIt lends a moody, atmospheric quality to images, perfect for urban nightscapes, dramatic portraits, and storytelling.",
+            "vi": "Một cấu hình điện ảnh, tông lạnh với sắc xanh dương đặc trưng và vùng tối sâu, đậm. Nó mang lại chất lượng tâm trạng, đầy không khí cho hình ảnh, hoàn hảo cho cảnh đêm đô thị, chân dung kịch tính và kể chuyện."
+        },
+        "type": "color",
+        "contrast": "high",
+        "saturation": "normal",
+        "tags": ["cinematic", "cool-tone", "deep-blues", "moody", "atmospheric", "urban-night", "dramatic-portrait", "storytelling"],
+        "whiteBalance": "8000K, B2-M2",
+        "settings": { "Black level": "-15", "Gamma": "Cine3", "Black Gamma": "Wide +7", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+20", "Color Phase": "+7" },
+        "colorDepth": { "R": "-5", "G": "-1", "B": "+3", "C": "+4", "M": "+5", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#4682B4", // Steel Blue
+        "coords": { "x": -8, "y": 5 }
+    },
+    {
+        "id": "scl-004",
+        "name": { "vi": "SCL-004: Tuscan Ochre", "en": "SCL-004: Tuscan Ochre" }, // Updated name format
+        "formattedName": "SCL-004-Tuscan Ochre", // Formatted name
+        "description": {
+            "en": "A vibrant, high-saturation style with warm, earthy reds and yellows.\nIt brings a bold, sun-baked intensity to images, reminiscent of classic European travel photography.",
+            "vi": "Một phong cách rực rỡ, độ bão hòa cao với các tông màu đỏ đất và vàng đất ấm áp. Nó mang lại một cường độ táo bạo, cháy nắng cho hình ảnh, gợi nhớ đến nhiếp ảnh du lịch châu Âu cổ điển."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "high",
+        "tags": ["vibrant", "high-saturation", "earthy-reds", "warm-yellows", "bold", "sun-baked", "classic-european-travel"],
+        "whiteBalance": "5000K, A2-M1",
+        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+25", "Color Phase": "+2" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "+1" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#CD853F", // Peru
+        "coords": { "x": 7, "y": 8 }
+    },
+    {
+        "id": "scl-005",
+        "name": { "vi": "SCL-005: Somerset Meadow", "en": "SCL-005: Somerset Meadow" }, // Updated name format
+        "formattedName": "SCL-005-Somerset Meadow", // Formatted name
+        "description": {
+            "en": "A soft, pastel-like palette with gentle contrast and low saturation.\nIt renders skin tones beautifully and gives landscapes a dreamy, ethereal quality, perfect for romantic and fine-art portraits.",
+            "vi": "Một bảng màu nhẹ nhàng, tựa màu pastel với độ tương phản mềm và độ bão hòa thấp. Nó tái tạo tông màu da một cách đẹp đẽ và mang lại cho phong cảnh một chất lượng mơ màng, thanh tao, hoàn hảo cho chân dung lãng mạn và nghệ thuật."
+        },
+        "type": "color",
+        "contrast": "soft",
+        "saturation": "low",
+        "tags": ["pastel", "soft-contrast", "low-saturation", "dreamy", "ethereal", "romantic-portrait", "fine-art"],
+        "whiteBalance": "4200K, A7-M1",
+        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+7", "Color Phase": "+3" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#B0E0E6", // Powder Blue
+        "coords": { "x": -2, "y": -5 }
+    },
+    {
+        "id": "scl-006",
+        "name": { "vi": "SCL-006: Faded Canvas", "en": "SCL-006: Faded Canvas" }, // Updated name format
+        "formattedName": "SCL-006-Faded Canvas", // Formatted name
+        "description": {
+            "en": "A stylized look with heavily lifted blacks and muted colors, creating a soft, hazy effect.\nIt evokes a sense of nostalgia and is ideal for fashion, editorial, and lifestyle photography aiming for a vintage-modern feel.",
+            "vi": "Một phong cách được cách điệu hóa với vùng đen được nâng sáng mạnh và màu sắc dịu, tạo ra một hiệu ứng mờ, mềm mại. Nó gợi lên cảm giác hoài niệm và lý tưởng cho nhiếp ảnh thời trang, biên tập và đời sống hướng đến cảm giác cổ điển-hiện đại."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "muted",
+        "tags": ["stylized", "lifted-blacks", "soft-colors", "hazy", "nostalgic", "fashion", "editorial", "lifestyle", "vintage-modern"],
+        "whiteBalance": "3600K, A7-G1",
+        "settings": { "Black level": "+11", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 85% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-4" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "+2", "M": "+5", "Y": "+2" },
+        "detailSettings": { "Level": "-7" },
+        "personalityColor": "#D2B48C", // Tan
+        "coords": { "x": 0, "y": -7 }
+    },
+    {
+        "id": "scl-007",
+        "name": { "vi": "SCL-007: Dynachrome '75", "en": "SCL-007: Dynachrome '75" }, // Updated name format
+        "formattedName": "SCL-007-Dynachrome '75", // Formatted name
+        "description": {
+            "en": "A high-contrast, moody profile with deep blacks and a dramatic, cool color shift.\nIt emphasizes texture and form, creating a strong graphic style reminiscent of vintage documentary slide film.",
+            "vi": "Một cấu hình tương phản cao, đầy tâm trạng với màu đen sâu và sự dịch chuyển màu sắc lạnh, đầy kịch tính. Nó nhấn mạnh kết cấu và hình khối, tạo ra một phong cách đồ họa mạnh mẽ gợi nhớ đến phim dương bản tài liệu cổ điển."
+        },
+        "type": "color",
+        "contrast": "high",
+        "saturation": "normal",
+        "tags": ["high-contrast", "moody", "deep-blacks", "cool-color-shift", "graphic", "classic-slide-film"],
+        "whiteBalance": "4700K, A7-G0.5",
+        "settings": { "Black level": "-15", "Gamma": "Cine1", "Black Gamma": "Wide -7", "Knee": "Manual 82.5% +4", "Color Mode": "S-Cinetone", "Saturation": "+10", "Color Phase": "+2" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "-7", "C": "-6", "M": "+3", "Y": "+3" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#8B0000", // Dark Red
+        "coords": { "x": -8, "y": 2 }
+    },
+    {
+        "id": "scl-008",
+        "name": { "vi": "SCL-008: Modern Classic", "en": "SCL-008: Modern Classic" }, // Updated name format
+        "formattedName": "SCL-008-Modern Classic", // Formatted name
+        "description": {
+            "en": "A clean, vibrant, and contemporary style built on modern color science.\nIt delivers rich, pleasing colors with smooth tonal transitions, making it a versatile choice for everyday shooting, from portraits to products.",
+            "vi": "Một phong cách trong trẻo, sống động và đương đại được xây dựng trên khoa học màu sắc hiện đại. Nó mang lại màu sắc phong phú, dễ chịu với sự chuyển tông mượt mà, là một lựa chọn linh hoạt cho việc chụp ảnh hàng ngày, từ chân dung đến sản phẩm."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["clean", "vibrant", "contemporary", "modern-color-science", "rich-colors", "smooth-tonal-transitions", "versatile", "everyday", "portrait", "product"],
+        "whiteBalance": "4000K, A7-M2",
+        "settings": { "Black level": "+6", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+14", "Color Phase": "-3" },
+        "colorDepth": { "R": "0", "G": "+7", "B": "+5", "C": "-2", "M": "+3", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#4682B4", // Steel Blue
+        "coords": { "x": 0, "y": 4 }
+    },
+    {
+        "id": "scl-009",
+        "name": { "vi": "SCL-009: Urban Teal", "en": "SCL-009: Urban Teal" }, // Updated name format
+        "formattedName": "SCL-009-Urban Teal", // Formatted name
+        "description": {
+            "en": "A muted, low-saturation color profile with a distinctive cyan-teal cast in the shadows and mid-tones.\nIt creates a subtle, gentle, and slightly melancholic mood, perfect for street photography and urban exploration.",
+            "vi": "Một cấu hình màu dịu, độ bão hòa thấp với sắc xanh mòng két (cyan-teal) đặc trưng ở vùng tối và trung bình. Nó tạo ra một tâm trạng tinh tế, nhẹ nhàng và hơi u buồn, hoàn hảo cho nhiếp ảnh đường phố và khám phá đô thị."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "low",
+        "tags": ["muted-color", "low-saturation", "cyan-teal", "subtle", "gentle", "melancholy", "street-photography", "urban-exploration"],
+        "whiteBalance": "4000K, A7-M0.5",
+        "settings": { "Black level": "-7", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+2" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "+2", "C": "+3", "M": "-6", "Y": "-1" },
+        "detailSettings": { "Level": "-7" },
+        "personalityColor": "#008080", // Teal
+        "coords": { "x": -5, "y": -3 }
+    },
+    {
+        "id": "scl-010",
+        "name": { "vi": "SCL-010: Cinema Verde", "en": "SCL-010: Cinema Verde" }, // Updated name format
+        "formattedName": "SCL-010-Cinema Verde", // Formatted name
+        "description": {
+            "en": "A cinematic style with very low saturation and a subtle green tint, designed to emulate motion picture film.\nIt provides a flat, neutral base, ideal for shots requiring a desaturated, atmospheric feel.",
+            "vi": "Một phong cách điện ảnh với độ bão hòa rất thấp và một chút sắc xanh lá tinh tế, được thiết kế để mô phỏng phim điện ảnh. Nó cung cấp một nền phẳng, trung tính, lý tưởng cho các cảnh quay đòi hỏi cảm giác mất bão hòa, đầy không khí."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "very-low",
+        "tags": ["cinematic", "very-low-saturation", "subtle-green-tint", "film-emulation", "flat", "neutral", "desaturated", "atmospheric"],
+        "whiteBalance": "4000K, A7-M0.25",
+        "settings": { "Black level": "+7", "Gamma": "Movie", "Black Gamma": "Wide -5", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+1" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-2", "C": "+6", "M": "+4", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#3CB371", // Medium Sea Green
+        "coords": { "x": 2, "y": -6 }
+    },
+    {
+        "id": "scl-011",
+        "name": { "vi": "SCL-011: Midnight Halogen", "en": "SCL-011: Midnight Halogen" }, // Updated name format
+        "formattedName": "SCL-011-Midnight Halogen", // Formatted name
+        "description": {
+            "en": "A night-specific formula that transforms artificial city lights into vibrant blues and cyans, while maintaining good highlight control.\nIt creates a futuristic, cyberpunk-inspired aesthetic.",
+            "vi": "Một công thức chuyên dụng cho ban đêm, biến đổi ánh đèn nhân tạo của thành phố thành các màu xanh dương và xanh mòng két rực rỡ, trong khi vẫn kiểm soát tốt vùng sáng. Nó tạo ra một thẩm mỹ tương lai, lấy cảm hứng từ cyberpunk."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["night-specific", "city-lights", "vibrant-blues", "cyan-teal", "highlight-control", "futuristic", "cyberpunk"],
+        "whiteBalance": "2700K, A7-M1.25",
+        "settings": { "Black level": "+3", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+5" },
+        "colorDepth": { "R": "-5", "G": "-7", "B": "-7", "C": "+3", "M": "-7", "Y": "-5" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#4169E1", // Royal Blue
+        "coords": { "x": -7, "y": 0 }
+    },
+    {
+        "id": "scl-012",
+        "name": { "vi": "SCL-012: Amber Glow", "en": "SCL-012: Amber Glow" }, // Updated name format
+        "formattedName": "SCL-012-Amber Glow", // Formatted name
+        "description": {
+            "en": "A warm, soft, and nostalgic profile with a gentle amber cast.\nIt excels at creating a cozy and intimate feel, perfect for golden hour portraits, family photos, and vintage-inspired shots.",
+            "vi": "Một cấu hình ấm áp, nhẹ nhàng và hoài niệm với sắc hổ phách mềm mại. Nó xuất sắc trong việc tạo ra cảm giác ấm áp và thân mật, hoàn hảo cho chân dung giờ vàng, ảnh gia đình và các cảnh quay mang hơi hướng cổ điển."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["warm", "soft", "nostalgic", "amber-tint", "intimate", "golden-hour-portrait", "family-photos", "vintage-inspired"],
+        "whiteBalance": "4300K, A7-M0.25",
+        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Middle +2", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+3", "Color Phase": "+1" },
+        "colorDepth": { "R": "+1", "G": "+7", "B": "+2", "C": "+2", "M": "+4", "Y": "+2" },
+        "detailSettings": { "Level": "-7" },
+        "personalityColor": "#FFBF00", // Amber
+        "coords": { "x": 4, "y": -2 }
+    },
+    {
+        "id": "scl-013",
+        "name": { "vi": "SCL-013: Flatiron Mist", "en": "SCL-013: Flatiron Mist" }, // Updated name format
+        "formattedName": "SCL-013-Flatiron Mist", // Formatted name
+        "description": {
+            "en": "An incredibly versatile, low-contrast profile that utilizes an S-Log gamma to maximize dynamic range.\nIt produces a flat, soft image with rich colors, perfect for harsh lighting conditions or as a robust base for post-production.",
+            "vi": "Một cấu hình cực kỳ linh hoạt, có độ tương phản thấp, sử dụng gamma S-Log để tối đa hóa dải tần nhạy sáng. Nó tạo ra một hình ảnh phẳng, mềm mại với màu sắc phong phú, hoàn hảo cho điều kiện ánh sáng gắt hoặc làm nền tảng vững chắc cho việc hậu kỳ."
+        },
+        "type": "color",
+        "contrast": "low",
+        "saturation": "normal",
+        "tags": ["versatile", "low-contrast", "s-log", "maximized-dynamic-range", "flat-image", "soft", "rich-colors", "harsh-lighting", "post-production"],
+        "whiteBalance": "4500K, A7-M1",
+        "settings": { "Black level": "-15", "Gamma": "S-Log2", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "+3" },
+        "colorDepth": { "R": "+3", "G": "+5", "B": "+5", "C": "+7", "M": "+7", "Y": "-3" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#A9A9A9", // Dark Gray
+        "coords": { "x": -5, "y": 0 }
+    },
+    {
+        "id": "scl-014",
+        "name": { "vi": "SCL-014: Magenta Bloom", "en": "SCL-014: Magenta Bloom" }, // Updated name format
+        "formattedName": "SCL-014-Magenta Bloom", // Formatted name
+        "description": {
+            "en": "A vibrant, powerful style with a distinctive magenta cast, emulating a popular slide film.\nIdeal for landscapes and nature, making flowers and sunsets pop with intense, dramatic colors.",
+            "vi": "Một phong cách sống động, mạnh mẽ với tông màu magenta đặc trưng, mô phỏng loại phim dương bản nổi tiếng. Lý tưởng cho phong cảnh và thiên nhiên, làm cho hoa và cảnh hoàng hôn trở nên nổi bật với màu sắc dữ dội, đầy kịch tính."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "vibrant",
+        "tags": ["vibrant", "powerful", "magenta-cast", "slide-film", "landscape", "nature", "flowers", "sunsets", "intense-colors", "dramatic"],
+        "whiteBalance": "3900K, A7-M0.25",
+        "settings": { "Black level": "-8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "-7", "Y": "0" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#FF00FF", // Magenta
+        "coords": { "x": 3, "y": 6 }
+    },
+    {
+        "id": "scl-015",
+        "name": { "vi": "SCL-015: Vintage Slide", "en": "SCL-015: Vintage Slide" }, // Updated name format
+        "formattedName": "SCL-015-Vintage Slide", // Formatted name
+        "description": {
+            "en": "A warm, slightly faded style with a subtle green-cyan tint in the shadows.\nIt evokes the feeling of looking through old family slide films, perfect for nostalgic portraits and everyday scenes.",
+            "vi": "Một phong cách ấm áp, hơi phai màu với một chút sắc xanh lá-lục trong vùng tối. Nó gợi lên cảm giác như đang xem lại những tấm phim slide cũ của gia đình, hoàn hảo cho chân dung hoài niệm và các cảnh đời thường."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "faded",
+        "tags": ["warm", "faded", "green-tint", "old-family-slides", "nostalgic-portrait", "everyday-scenes"],
+        "whiteBalance": "3600K, A7-M1",
+        "settings": { "Black level": "-4", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "+3", "G": "+5", "B": "-4", "C": "+2", "M": "+6", "Y": "+5" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#BC8F8F", // Rosy Brown
+        "coords": { "x": 1, "y": -4 }
+    },
+    {
+        "id": "scl-016",
+        "name": { "vi": "SCL-016: Everyday Natural", "en": "SCL-016: Everyday Natural" }, // Updated name format
+        "formattedName": "SCL-016-Everyday Natural", // Formatted name
+        "description": {
+            "en": "A clean, balanced, and versatile profile with moderate saturation and natural skin tones.\nThis is a go-to choice for a wide range of situations, providing an authentic look with a subtle filmic feel.",
+            "vi": "Một cấu hình trong trẻo, cân bằng và linh hoạt với độ bão hòa vừa phải và tông màu da tự nhiên. Đây là lựa chọn hàng đầu cho nhiều tình huống, mang lại một cái nhìn chân thực với một chút cảm giác phim ảnh tinh tế."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "moderate",
+        "tags": ["clean", "balanced", "versatile", "natural-skin-tones", "all-situations", "authentic-look", "subtle-film-feel"],
+        "whiteBalance": "3900K, A7",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide +2", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "-2", "G": "+7", "B": "+4", "C": "+2", "M": "-4", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#8FBC8F", // Dark Sea Green
+        "coords": { "x": 0, "y": 0 }
+    },
+    {
+        "id": "scl-017",
+        "name": { "vi": "SCL-017: Soft Portrait", "en": "SCL-017: Soft Portrait" }, // Updated name format
+        "formattedName": "SCL-017-Soft Portrait", // Formatted name
+        "description": {
+            "en": "Characterized by soft contrast and a gentle magenta cast, this formula is perfect for flattering portraits.\nIt renders skin tones with a smooth, delicate quality, creating a refined and elegant look.",
+            "vi": "Đặc trưng bởi độ tương phản mềm mại và tông màu magenta dịu, công thức này hoàn hảo cho những bức chân dung nịnh mắt. Nó tái tạo tông màu da với chất lượng nhẹ nhàng, mượt mà, tạo ra một vẻ ngoài tinh tế và thanh lịch."
+        },
+        "type": "color",
+        "contrast": "soft",
+        "saturation": "muted",
+        "tags": ["soft-contrast", "gentle-magenta", "flattering-portraits", "smooth-skin-tones", "delicate", "elegant"],
+        "whiteBalance": "4100K, A7-M0.25",
+        "settings": { "Black level": "-8", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "0" },
+        "colorDepth": { "R": "0", "G": "+2", "B": "+3", "C": "+2", "M": "-7", "Y": "0" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#DB7093", // Pale Violet Red
+        "coords": { "x": -3, "y": -1 }
+    },
+    {
+        "id": "scl-018",
+        "name": { "vi": "SCL-018: Vector Graphic", "en": "SCL-018: Vector Graphic" }, // Updated name format
+        "formattedName": "SCL-018-Vector Graphic", // Formatted name
+        "description": {
+            "en": "A bold, high-contrast style with super-saturated, almost artificial colors and deep blacks.\nIt creates a strong graphic look, ideal for abstract subjects, modern architecture, and experimental photography.",
+            "vi": "Một phong cách táo bạo, tương phản cao với màu sắc siêu bão hòa, gần như nhân tạo và màu đen sâu. Nó tạo ra một phong cách đồ họa mạnh mẽ, lý tưởng cho các chủ thể trừu tượng, kiến trúc hiện đại và nhiếp ảnh thử nghiệm."
+        },
+        "type": "color",
+        "contrast": "high",
+        "saturation": "super-saturated",
+        "tags": ["bold", "high-contrast", "super-saturated", "artificial-colors", "deep-blacks", "graphic", "abstract", "modern-architecture", "experimental-photography"],
+        "whiteBalance": "4000K, A5-M0.5",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 92.5% +5", "Color Mode": "S-Gamut3.Cine", "Saturation": "+27", "Color Phase": "+6" },
+        "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "+2", "Y": "+1" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#8A2BE2", // Blue Violet
+        "coords": { "x": 8, "y": 9 }
+    },
+    {
+        "id": "scl-019",
+        "name": { "vi": "SCL-019: Pop Art", "en": "SCL-019: Pop Art" }, // Updated name format
+        "formattedName": "SCL-019-Pop Art", // Formatted name
+        "description": {
+            "en": "An explosion of color. This formula pushes saturation to the maximum, creating a super-vibrant, high-energy style.\nPerfect for making bold statements and capturing the fun, playful side of life.",
+            "vi": "Một sự bùng nổ của màu sắc. Công thức này đẩy độ bão hòa lên mức tối đa, tạo ra một phong cách siêu rực rỡ, năng lượng cao. Hoàn hảo để tạo ra những tuyên bố táo bạo và ghi lại khía cạnh vui vẻ, tinh nghịch của cuộc sống."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "maximum",
+        "tags": ["color-explosion", "maximum-saturation", "super-vibrant", "high-energy", "bold-statements", "playful-side"],
+        "whiteBalance": "4000K, A7-G1",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +5", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+4" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+4" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#FF69B4", // Hot Pink
+        "coords": { "x": 9, "y": 8 }
+    },
+    {
+        "id": "scl-020",
+        "name": { "vi": "SCL-020: Autumn Haze", "en": "SCL-020: Autumn Haze" }, // Updated name format
+        "formattedName": "SCL-020-Autumn Haze", // Formatted name
+        "description": {
+            "en": "A modern take on classic warm film stocks, utilizing S-Cinetone for smooth tones.\nIt delivers a cozy feel, with slightly muted greens and yellows, perfect for capturing the essence of a misty autumn day.",
+            "vi": "Một phiên bản hiện đại của dòng phim ấm cổ điển, sử dụng S-Cinetone cho tông màu mượt mà. Nó mang lại cảm giác ấm cúng, với màu xanh lá và vàng hơi dịu, hoàn hảo để ghi lại tinh hoa của một ngày thu mờ sương."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "muted",
+        "tags": ["modern-take", "classic-warm-film", "s-cinetone", "smooth-tones", "cozy", "subtle-greens", "yellows", "misty-autumn-day"],
+        "whiteBalance": "4600K, A7-G1.25",
+        "settings": { "Black level": "+2", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+25", "Color Phase": "+5" },
+        "colorDepth": { "R": "+3", "G": "-3", "B": "-5", "C": "-3", "M": "+3", "Y": "-2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#D2B48C", // Tan
+        "coords": { "x": 5, "y": -1 }
+    },
+    {
+        "id": "scl-021",
+        "name": { "vi": "SCL-021: Muted Pastels", "en": "SCL-021: Muted Pastels" }, // Updated name format
+        "formattedName": "SCL-021-Muted Pastels", // Formatted name
+        "description": {
+            "en": "A soft and subtle style with moderate saturation and gentle tones.\nIt's versatile for everyday shooting, lending images a peaceful and pleasant feel without being overwhelmed by color.",
+            "vi": "Một phong cách nhẹ nhàng và tinh tế với độ bão hòa vừa phải và tông màu mềm mại. Nó linh hoạt cho việc chụp ảnh hàng ngày, mang lại cho hình ảnh một cảm giác yên bình và dễ chịu mà không bị màu sắc lấn át."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "moderate",
+        "tags": ["soft", "subtle", "moderate-saturation", "soft-tones", "versatile", "everyday-shooting", "peaceful", "pleasant", "not-overwhelmed-by-color"],
+        "whiteBalance": "4500K, A7-M0.75",
+        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+8", "Color Phase": "-1" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-5", "M": "+5", "Y": "+4" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#ADD8E6", // Light Blue
+        "coords": { "x": -1, "y": -3 }
+    },
+    {
+        "id": "scl-022",
+        "name": { "vi": "SCL-022: Neutral Standard", "en": "SCL-022: Neutral Standard" }, // Updated name format
+        "formattedName": "SCL-022-Neutral Standard", // Formatted name
+        "description": {
+            "en": "A neutral, true-to-life profile designed for accuracy.\nIt provides a clean, standard look with minimal color shifts, making it a great, reliable base for any type of photography.",
+            "vi": "Một cấu hình trung tính, chân thực được thiết kế cho sự chính xác. Nó cung cấp một cái nhìn trong trẻo, tiêu chuẩn với sự thay đổi màu sắc tối thiểu, làm cho nó trở thành một nền tảng tuyệt vời, đáng tin cậy cho bất kỳ loại nhiếp ảnh nào."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "low",
+        "tags": ["neutral", "true-to-life", "accuracy", "clean", "standard-look", "minimal-color-shift", "reliable-base", "any-type-of-photography"],
+        "whiteBalance": "4000K, A7-M0.25",
+        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+1" },
+        "colorDepth": { "R": "+1", "G": "+7", "B": "0", "C": "+3", "M": "+2", "Y": "+1" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#D3D3D3", // Light Gray
+        "coords": { "x": 0, "y": -1 }
+    },
+    {
+        "id": "scl-023",
+        "name": { "vi": "SCL-023: Alpine Cool", "en": "SCL-023: Alpine Cool" }, // Updated name format
+        "formattedName": "SCL-023-Alpine Cool", // Formatted name
+        "description": {
+            "en": "A cool-toned formula with a high Kelvin temperature, giving images a clean, crisp blue cast.\nIt's well-suited for emphasizing cold light in urban or mountain landscapes, creating a clean and edgy aesthetic.",
+            "vi": "Một công thức tông màu lạnh với nhiệt độ Kelvin cao, mang lại cho hình ảnh một sắc xanh trong trẻo, sắc nét. Rất phù hợp để nhấn mạnh ánh sáng lạnh trong các cảnh quan đô thị hoặc núi non, tạo ra một phong cách thẩm mỹ sạch sẽ và sắc sảo."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["cool-tone", "high-kelvin", "clean-blue-cast", "sharp", "cold-light", "urban-landscape", "mountain", "clean-aesthetic", "crisp"],
+        "whiteBalance": "7000K, B5-M0.25",
+        "settings": { "Black level": "-9", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+6", "Color Phase": "+2" },
+        "colorDepth": { "R": "+3", "G": "+7", "B": "+3", "C": "-5", "M": "+3", "Y": "-2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#4682B4", // Steel Blue
+        "coords": { "x": -6, "y": 3 }
+    },
+    {
+        "id": "scl-024",
+        "name": { "vi": "SCL-024: Arctic Negative", "en": "SCL-024: Arctic Negative" }, // Updated name format
+        "formattedName": "SCL-024-Arctic Negative", // Formatted name
+        "description": {
+            "en": "Pushing white balance to its coldest, this formula creates a unique, stylized look with a deep blue-green cast.\nIt's perfect for experimental, moody, and atmospheric photography.",
+            "vi": "Đẩy cân bằng trắng đến mức lạnh nhất, công thức này tạo ra một phong cách độc đáo, cách điệu với sắc xanh lam-lục sâu. Nó hoàn hảo cho các bức ảnh thử nghiệm, tâm trạng và đầy không khí."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["cold-white-balance", "unique", "stylized", "deep-blue-green-cast", "experimental", "moody", "atmospheric"],
+        "whiteBalance": "9900K, B6-M0.5",
+        "settings": { "Black level": "+4", "Gamma": "S-Cinetone", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone", "Saturation": "+5", "Color Phase": "+1" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "-4", "C": "-4", "M": "-5", "Y": "+3" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#00CED1", // Dark Cyan
+        "coords": { "x": -9, "y": 1 }
+    },
+    {
+        "id": "scl-025",
+        "name": { "vi": "SCL-025: Saturated Cinema", "en": "SCL-025: Saturated Cinema" }, // Updated name format
+        "formattedName": "SCL-025-Saturated Cinema", // Formatted name
+        "description": {
+            "en": "A powerful, high-saturation cinematic style, distinct from Fuji emulations.\nIt utilizes a wide color space to produce deep, rich colors with a filmic gamma curve, well-suited for vivid visual storytelling.",
+            "vi": "Một phong cách điện ảnh có độ bão hòa cao và mạnh mẽ, khác với phiên bản Fuji. Nó sử dụng không gian màu rộng để tạo ra màu sắc sâu, phong phú với đường cong gamma điện ảnh, rất phù hợp cho kể chuyện bằng hình ảnh sống động."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "high",
+        "tags": ["high-saturation", "powerful-cinematic", "wide-color-space", "deep-rich-colors", "cinematic-gamma-curve", "vivid-visual-storytelling"],
+        "whiteBalance": "4000K, A7-M1",
+        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide -5", "Knee": "Manual 87.5% +3", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
+        "colorDepth": { "R": "-3", "G": "-2", "B": "+3", "C": "+7", "M": "-3", "Y": "-2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#8B0000", // Dark Red
+        "coords": { "x": 7, "y": 5 }
+    },
+    {
+        "id": "scl-026",
+        "name": { "vi": "SCL-026: HDR Cinema", "en": "SCL-026: HDR Cinema" }, // Updated name format
+        "formattedName": "SCL-026-HDR Cinema", // Formatted name
+        "description": {
+            "en": "Leveraging HLG (Hybrid Log-Gamma), this formula captures wide dynamic range with high saturation.\nIt produces a vivid, impactful image that feels both cinematic and surreal, ideal for high-energy shots.",
+            "vi": "Tận dụng HLG (Hybrid Log-Gamma), công thức này ghi lại dải tần nhạy sáng rộng với độ bão hòa cao. Nó tạo ra một hình ảnh sống động, tác động mạnh, vừa mang cảm giác điện ảnh vừa siêu thực, lý tưởng cho các cảnh quay năng lượng cao."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "high",
+        "tags": ["hlg", "hybrid-log-gamma", "wide-dynamic-range", "high-saturation", "vivid", "impactful", "cinematic-feel", "surreal", "high-energy-shots"],
+        "whiteBalance": "3900K, A7",
+        "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto", "Color Mode": "BT.2020", "Saturation": "+32", "Color Phase": "+7" },
+        "colorDepth": { "R": "-4", "G": "-1", "B": "+5", "C": "+4", "M": "+5", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#FF4500", // Orange Red
+        "coords": { "x": 9, "y": 6 }
+    },
+    {
+        "id": "scl-027",
+        "name": { "vi": "SCL-027: Daylight Cinema", "en": "SCL-027: Daylight Cinema" }, // Updated name format
+        "formattedName": "SCL-027-Daylight Cinema", // Formatted name
+        "description": {
+            "en": "A modern, clean cinematic style based on S-Cinetone.\nIt's designed for daylight conditions, delivering beautiful skin tones, high saturation, and a professional, polished feel straight out of camera.",
+            "vi": "Một phong cách điện ảnh hiện đại, trong trẻo dựa trên S-Cinetone. Nó được thiết kế cho ánh sáng ban ngày, mang lại tông màu da đẹp, độ bão hòa cao và cảm giác chuyên nghiệp, bóng bẩy ngay từ máy ảnh."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "high",
+        "tags": ["modern-cinematic", "clean", "s-cinetone", "daylight", "beautiful-skin-tones", "high-saturation", "professional", "polished", "straight-out-of-camera"],
+        "whiteBalance": "3700K, A7-G1",
+        "settings": { "Black level": "+9", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+3" },
+        "colorDepth": { "R": "0", "G": "+3", "B": "+2", "C": "+2", "M": "-3", "Y": "+1" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#F0E68C", // Khaki
+        "coords": { "x": 5, "y": 4 }
+    },
+    {
+        "id": "scl-028",
+        "name": { "vi": "SCL-028: Phoenix Fire", "en": "SCL-028: Phoenix Fire" }, // Updated name format
+        "formattedName": "SCL-028-Phoenix Fire", // Formatted name
+        "description": {
+            "en": "An experimental and powerful style with ultra-high saturation and pronounced warm tones.\nIt creates fiery reds and oranges, perfect for bold, abstract, and high-impact photography.",
+            "vi": "Một phong cách thử nghiệm và mạnh mẽ với độ bão hòa cực cao và tông màu ấm rõ rệt. Nó tạo ra màu đỏ và cam rực lửa, hoàn hảo cho nhiếp ảnh táo bạo, trừu tượng và có tác động mạnh."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "extreme",
+        "tags": ["experimental", "powerful", "ultra-high-saturation", "pronounced-warm-tones", "fiery-reds", "oranges", "bold", "abstract", "high-impact"],
+        "whiteBalance": "8500K, B3.5-G1",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 105% +5", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+1" },
+        "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#FF4500", // OrangeRed
+        "coords": { "x": 9, "y": 9 }
+    },
+    {
+        "id": "scl-029",
+        "name": { "vi": "SCL-029: Hollywood Cool", "en": "SCL-029: Hollywood Cool" }, // Updated name format
+        "formattedName": "SCL-029-Hollywood Cool", // Formatted name
+        "description": {
+            "en": "A balanced cinematic formula for tungsten lighting with a cool blue-green bias.\nBased on S-Cinetone, it delivers smooth tones and a sophisticated, professional look reminiscent of classic Hollywood films.",
+            "vi": "Một công thức điện ảnh cân bằng cho ánh sáng tungsten với thiên hướng xanh lam-lục mát mẻ. Dựa trên S-Cinetone, nó mang lại tông màu mượt mà và một vẻ ngoài tinh xảo, chuyên nghiệp gợi nhớ đến các bộ phim Hollywood cổ điển."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["balanced-cinematic", "tungsten-light", "cool-blue-green-bias", "s-cinetone", "smooth-tones", "sophisticated", "professional-look", "classic-hollywood"],
+        "whiteBalance": "8200K, B4.5-G1.75",
+        "settings": { "Black level": "-10", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+16", "Color Phase": "+2" },
+        "colorDepth": { "R": "+5", "G": "+7", "B": "-6", "C": "-5", "M": "+7", "Y": "-4" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#6495ED", // Cornflower Blue
+        "coords": { "x": -8, "y": 0 }
+    },
+    {
+        "id": "scl-040",
+        "name": { "vi": "SCL-040: Graphite Standard", "en": "SCL-040: Graphite Standard" }, // Updated name format
+        "formattedName": "SCL-040-Graphite Standard", // Formatted name
+        "description": {
+            "en": "A balanced, versatile monochrome style with a full tonal range and clean mid-tones.\nThis is a perfect starting point for black and white photography, delivering classic, timeless results for any subject.",
+            "vi": "Một phong cách đơn sắc cân bằng, đa dụng với dải tông màu đầy đủ và các tông màu trung bình trong trẻo. Đây là điểm khởi đầu hoàn hảo cho nhiếp ảnh đen trắng, mang lại kết quả cổ điển, vượt thời gian cho mọi chủ thể."
+        },
+        "type": "bw",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["balanced-monochrome", "versatile", "full-tonal-range", "clean-midtones", "perfect-starting-point", "black-and-white", "classic", "timeless"],
+        "whiteBalance": "AWB (Ưu tiên trắng)",
+        "settings": { "Black level": "-11", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "-1", "G": "+1", "B": "-1", "C": "+3", "M": "-3", "Y": "-1" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#555555", // Dark Gray
+        "coords": { "x": 0, "y": 0 } // Placeholder for B&W chart
+    },
+    {
+        "id": "scl-041",
+        "name": { "vi": "SCL-041: Obsidian Contrast", "en": "SCL-041: Obsidian Contrast" }, // Updated name format
+        "formattedName": "SCL-041-Obsidian Contrast", // Formatted name
+        "description": {
+            "en": "A dramatic, high-contrast monochrome style with inky blacks and crisp whites.\nIdeal for architectural details, powerful street photography, and making subjects stand out with impressive clarity.",
+            "vi": "Một phong cách đơn sắc kịch tính, tương phản cao với màu đen sâu như mực và màu trắng sắc nét. Lý tưởng cho các chi tiết kiến trúc, nhiếp ảnh đường phố mạnh mẽ và làm nổi bật chủ thể với sự rõ ràng ấn tượng."
+        },
+        "type": "bw",
+        "contrast": "high",
+        "saturation": "normal",
+        "tags": ["dramatic-monochrome", "high-contrast", "inky-blacks", "crisp-whites", "architectural-details", "powerful-street-photography", "impressive-clarity"],
+        "whiteBalance": "AWB (Ưu tiên trắng)",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "+2", "G": "-4", "B": "-1", "C": "+2", "M": "-1", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#333333", // Very Dark Gray
+        "coords": { "x": 8, "y": 5 }
+    },
+    {
+        "id": "scl-042",
+        "name": { "vi": "SCL-042: Newsprint Grit", "en": "SCL-042: Newsprint Grit" }, // Updated name format
+        "formattedName": "SCL-042-Newsprint Grit", // Formatted name
+        "description": {
+            "en": "A powerful, high-contrast style that emulates the feel of 'pushed' black and white film used by photojournalists.\nIt's grainy, sharp, and full of character, perfect for capturing raw, unedited moments.",
+            "vi": "Một phong cách mạnh mẽ, tương phản cao mô phỏng cảm giác của phim đen trắng \"pushed\" được các nhà báo ảnh sử dụng. Nó có hạt, sắc nét và đầy cá tính, hoàn hảo để ghi lại những khoảnh khắc thô mộc, không qua chỉnh sửa."
+        },
+        "type": "bw",
+        "contrast": "high",
+        "saturation": "normal",
+        "tags": ["powerful", "high-contrast", "pushed-black-and-white-film", "photojournalism", "grainy", "sharp", "character", "raw", "unedited-moments"],
+        "whiteBalance": "5500K, A3-G2",
+        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 77.5% +2", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
+        "colorDepth": { "R": "-4", "G": "-1", "B": "+6", "C": "+5", "M": "-3", "Y": "-3" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#777777", // Medium Gray
+        "coords": { "x": 6, "y": -2 }
+    },
+    {
+        "id": "scl-043",
+        "name": { "vi": "SCL-043: Silver Gelatin", "en": "SCL-043: Silver Gelatin" }, // Updated name format
+        "formattedName": "SCL-043-Silver Gelatin", // Formatted name
+        "description": {
+            "en": "A flat, soft-contrast profile with rich mid-tones and smooth transitions.\nIt emulates the look of a classic darkroom print on silver gelatin paper, ideal for fine-art portraits and subtle compositions.",
+            "vi": "Một cấu hình tương phản phẳng, mềm mại với các tông màu trung bình phong phú và sự chuyển tiếp mượt mà. Nó mô phỏng vẻ ngoài của một bản in phòng tối cổ điển trên giấy bạc gelatin, lý tưởng cho chân dung nghệ thuật và các bố cục tinh tế."
+        },
+        "type": "bw",
+        "contrast": "soft",
+        "saturation": "normal",
+        "tags": ["flat", "soft-contrast", "rich-midtones", "smooth-transitions", "classic-darkroom-print", "silver-gelatin-paper", "fine-art-portrait", "subtle-compositions"],
+        "whiteBalance": "5500K, A3-G2",
+        "settings": { "Black level": "+3", "Gamma": "Cine1", "Black Gamma": "Narrow +5", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
+        "colorDepth": { "R": "+3", "G": "+3", "B": "+3", "C": "+2", "M": "+3", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#AAAAAA", // Light Gray
+        "coords": { "x": -5, "y": -5 }
+    },
+    {
+        "id": "scl-044",
+        "name": { "vi": "SCL-044: Crystal Clear", "en": "SCL-044: Crystal Clear" }, // Updated name format
+        "formattedName": "SCL-044-Crystal Clear", // Formatted name
+        "description": {
+            "en": "A clean, crisp, and cool-toned black and white style.\nIt features fine grain and high clarity, perfect for technical subjects, architecture, and portraits where detail is paramount.",
+            "vi": "Một phong cách đen trắng trong trẻo, sắc nét và có tông màu lạnh. Nó có hạt mịn và độ trong cao, hoàn hảo cho các chủ thể kỹ thuật, kiến trúc và chân dung nơi chi tiết là quan trọng nhất."
+        },
+        "type": "bw",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["clean", "crisp", "cool-tone", "fine-grain", "high-clarity", "technical-subjects", "architecture", "detail-oriented-portraits"],
+        "whiteBalance": "AWB, B3-G0.25",
+        "settings": { "Black level": "-12", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 82% +5", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
+        "colorDepth": { "R": "-1", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#BBBBBB", // Lighter Gray
+        "coords": { "x": 3, "y": 7 }
+    },
+    {
+        "id": "scl-045",
+        "name": { "vi": "SCL-045: Classic Reportage", "en": "SCL-045: Classic Reportage" }, // Updated name format
+        "formattedName": "SCL-045-Classic Reportage", // Formatted name
+        "description": {
+            "en": "A versatile, medium-contrast style with a classic grain structure.\nThis is a black and white 'workhorse' choice, ideal for photojournalism, street photography, and capturing everyday life with an authentic feel.",
+            "vi": "Một phong cách đa dụng, có độ tương phản trung bình với cấu trúc hạt cổ điển. Đây là lựa chọn \"chủ lực\" của nhiếp ảnh đen trắng, lý tưởng cho phóng sự, nhiếp ảnh đường phố và ghi lại cuộc sống hàng ngày với cảm giác chân thực."
+        },
+        "type": "bw",
+        "contrast": "medium",
+        "saturation": "normal",
+        "tags": ["versatile", "medium-contrast", "classic-grain", "black-and-white-workhorse", "photojournalism", "street-photography", "everyday-life", "authentic-feel"],
+        "whiteBalance": "AWB, A3",
+        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -5", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
+        "colorDepth": { "R": "0", "G": "+3", "B": "0", "C": "+2", "M": "+3", "Y": "0" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#888888", // Gray
+        "coords": { "x": -2, "y": 2 }
+    },
+    {
+        "id": "scl-046",
+        "name": { "vi": "SCL-046: Noir Film", "en": "SCL-046: Noir Film" }, // Updated name format
+        "formattedName": "SCL-046-Noir Film", // Formatted name
+        "description": {
+            "en": "A very high-contrast, dramatic black and white style with deep, crushed blacks and bright whites.\nIt evokes the classic film noir aesthetic, perfect for creating mystery, drama, and graphic compositions.",
+            "vi": "Một phong cách đen trắng có độ tương phản rất cao, đầy kịch tính với màu đen sâu, bị nén và màu trắng sáng. Nó gợi lên phong cách của phim noir cổ điển, hoàn hảo để tạo ra sự bí ẩn, kịch tính và các bố cục đồ họa."
+        },
+        "type": "bw",
+        "contrast": "very-high",
+        "saturation": "normal",
+        "tags": ["very-high-contrast", "dramatic", "deep-crushed-blacks", "bright-whites", "classic-film-noir", "mystery", "graphic-compositions"],
+        "whiteBalance": "5500K",
+        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
+        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "+7", "Y": "+1" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#222222", // Very Dark Gray
+        "coords": { "x": 9, "y": 9 }
+    },
+    {
+        "id": "scl-047",
+        "name": { "vi": "SCL-047: Low Light Grain", "en": "SCL-047: Low Light Grain" }, // Updated name format
+        "formattedName": "SCL-047-Low Light Grain", // Formatted name
+        "description": {
+            "en": "Designed to emulate high-speed film, this formula uses a cinematic gamma to handle contrast while encouraging grain.\nIt's perfect for low-light situations, adding texture and atmosphere to shots.",
+            "vi": "Được thiết kế để mô phỏng phim tốc độ cao, công thức này sử dụng gamma điện ảnh để xử lý độ tương phản trong khi khuyến khích hạt. Nó hoàn hảo cho các tình huống thiếu sáng, thêm kết cấu và không khí cho ảnh."
+        },
+        "type": "bw",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["high-speed-film-emulation", "cinematic-gamma", "contrast-handling", "grain-encouraged", "low-light-situations", "texture", "atmosphere"],
+        "whiteBalance": "AWB (Ưu tiên trắng)",
+        "settings": { "Black level": "-11", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Manual 82.5% +0", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
+        "colorDepth": { "R": "+3", "G": "+2", "B": "+7", "C": "+7", "M": "+4", "Y": "-5" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#666666", // Dark Gray
+        "coords": { "x": -4, "y": -7 }
+    },
+    {
+        "id": "scl-048",
+        "name": { "vi": "SCL-048: Modern B&W", "en": "SCL-048: Modern B&W" }, // Updated name format
+        "formattedName": "SCL-048-Modern B&W", // Formatted name
+        "description": {
+            "en": "A contemporary black and white style that utilizes S-Cinetone gamma for smooth, beautiful tonal transitions.\nIt delivers deep blacks without being overly harsh, well-suited for modern portraits and fine art.",
+            "vi": "Một phong cách đen trắng đương đại sử dụng gamma S-Cinetone để tạo ra sự chuyển tông mượt mà, đẹp mắt. Nó mang lại màu đen sâu mà không quá gắt, rất phù hợp cho chân dung hiện đại và nghệ thuật."
+        },
+        "type": "bw",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["contemporary-black-and-white", "s-cinetone-gamma", "smooth-beautiful-tonal-transitions", "deep-blacks", "not-harsh", "modern-portrait", "fine-art"],
+        "whiteBalance": "5500K",
+        "settings": { "Black level": "-15", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "+28", "Color Phase": "0" },
+        "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "+3", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#444444", // Dark Gray
+        "coords": { "x": 5, "y": 4 }
+    },
+    {
+        "id": "scl-049",
+        "name": { "vi": "SCL-049: Ortho Portrait", "en": "SCL-049: Ortho Portrait" }, // Updated name format
+        "formattedName": "SCL-049-Ortho Portrait", // Formatted name
+        "description": {
+            "en": "Emulating orthochromatic film, which is insensitive to red light.\nThis results in darkened skin and lip tones, creating a unique, vintage, and often dramatic portrait style.",
+            "vi": "Mô phỏng phim orthochromatic, loại phim không nhạy với ánh sáng đỏ. Điều này dẫn đến tông màu da và môi bị tối đi, tạo ra một phong cách chân dung độc đáo, cổ điển và thường đầy kịch tính."
+        },
+        "type": "color", // This one is tricky, it's a color effect but often used for B&W-like portraits
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["orthochromatic-film", "red-light-insensitive", "darkened-skin-tones", "lips", "unique-portrait", "vintage", "dramatic"],
+        "whiteBalance": "AWB, A3-M2.75",
+        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 105% +5", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "0" },
+        "colorDepth": { "R": "+7", "G": "+7", "B": "-7", "C": "-7", "M": "+7", "Y": "+7" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#708090", // Slate Gray
+        "coords": { "x": -6, "y": -8 }
+    }
 ];
 
 export default recipesData;
