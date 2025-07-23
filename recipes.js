@@ -11,8 +11,8 @@ const recipesData = [
         "contrast": "normal",
         "saturation": "normal",
         "tags": ["nostalgic", "sun-drenched", "warm", "travel", "lifestyle", "summer", "golden-hour"],
-        "whiteBalance": "8500K, B3-M1.75",
-        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
+        "whiteBalance": "8300K, B3-M1.5",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+22", "Color Phase": "+4" },
         "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FFD700", // Yellowish
@@ -31,7 +31,7 @@ const recipesData = [
         "saturation": "normal",
         "tags": ["serene", "subtle", "portrait", "street-photography", "landscape", "peaceful", "painterly"],
         "whiteBalance": "3700K, A7-M0.5",
-        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-3" },
+        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-4" },
         "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#66CDAA", // Jade Green
@@ -50,7 +50,7 @@ const recipesData = [
         "saturation": "normal",
         "tags": ["cinematic", "cool-tone", "deep-blues", "moody", "atmospheric", "urban-night", "dramatic-portrait", "storytelling"],
         "whiteBalance": "8000K, B2-M2",
-        "settings": { "Black level": "-15", "Gamma": "Cine3", "Black Gamma": "Wide +7", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+20", "Color Phase": "+7" },
+        "settings": { "Black level": "-15", "Gamma": "Cine2", "Black Gamma": "Middle +7", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+20", "Color Phase": "+7" },
         "colorDepth": { "R": "0", "G": "-1", "B": "+3", "C": "+4", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#4682B4", // Steel Blue
@@ -68,8 +68,8 @@ const recipesData = [
         "contrast": "normal",
         "saturation": "high",
         "tags": ["vibrant", "high-saturation", "earthy-reds", "warm-yellows", "bold", "sun-baked", "classic-european-travel"],
-        "whiteBalance": "5000K, A2-M1",
-        "settings": { "Black level": "+6", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+25", "Color Phase": "+2" },
+        "whiteBalance": "4700K, A2-M0.5",
+        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +2", "Color Mode": "S-Gamut3.Cine", "Saturation": "+23", "Color Phase": "+3" },
         "colorDepth": { "R": "-3", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "+1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#CD853F", // Peru
@@ -87,8 +87,8 @@ const recipesData = [
         "contrast": "soft",
         "saturation": "low",
         "tags": ["pastel", "soft-contrast", "low-saturation", "dreamy", "ethereal", "romantic-portrait", "fine-art"],
-        "whiteBalance": "4200K, A7-M1",
-        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+7", "Color Phase": "+3" },
+        "whiteBalance": "4200K, A6-M2",
+        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Movie", "Saturation": "+10", "Color Phase": "+3" },
         "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#B0E0E6", // Powder Blue
@@ -96,7 +96,7 @@ const recipesData = [
     },
     {
         "id": "scl-006",
-        "name": { "vi": "SCL-006: Faded Canvas", "en": "SCL-006: Faded Canvas" }, // Updated name format
+        "name": { "vi": "SCL-006: Faded Cine", "en": "SCL-006: Faded Cine" }, // Updated name format
         "formattedName": "SCL-006-Faded Canvas", // Formatted name
         "description": {
             "en": "A stylized look with heavily lifted blacks and muted colors, creating a soft, hazy effect.\nIt evokes a sense of nostalgia and is ideal for fashion, editorial, and lifestyle photography aiming for a vintage-modern feel.",
@@ -106,9 +106,9 @@ const recipesData = [
         "contrast": "normal",
         "saturation": "muted",
         "tags": ["stylized", "lifted-blacks", "soft-colors", "hazy", "nostalgic", "fashion", "editorial", "lifestyle", "vintage-modern"],
-        "whiteBalance": "3600K, A7-G1",
-        "settings": { "Black level": "+11", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 85% +4", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-4" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "+2", "M": "+5", "Y": "+2" },
+        "whiteBalance": "3600K, A6-M1.5",
+        "settings": { "Black level": "+15", "Gamma": "Movie", "Black Gamma": "Narrow +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-4" },
+        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "+3", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "-7" },
         "personalityColor": "#D2B48C", // Tan
         "coords": { "x": 0, "y": -7 }
