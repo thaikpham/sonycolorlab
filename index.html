@@ -558,7 +558,7 @@ options: [
 async function callAIApi(prompt, isStructured = false, customDelay = 500) { // Changed default delay to 500ms
     if (state.isAILoading) return;
     state.isAILoading = true;
-    let result = null;
+    let result = null; // Default to null for structured, or empty string for unstructured
 
     try {
         await new Promise(resolve => setTimeout(resolve, customDelay)); // Use customDelay
@@ -647,7 +647,14 @@ async function callAIApi(prompt, isStructured = false, customDelay = 500) { // C
             body: JSON.stringify(payload)
         });
 
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`API call failed with status ${response.status}:`, errorText);
+            throw new Error(`API call failed: ${response.statusText}`);
+        }
+
         const responseData = await response.json();
+        console.log("Raw AI responseData:", responseData); // Log raw response for debugging
 
         if (responseData.candidates && responseData.candidates.length > 0 &&
             responseData.candidates[0].content && responseData.candidates[0].content.parts &&
@@ -658,19 +665,19 @@ async function callAIApi(prompt, isStructured = false, customDelay = 500) { // C
                     result = JSON.parse(text);
                 } catch (e) {
                     console.error("AI Response JSON parsing error:", e);
-                    console.error("Raw AI response text:", text);
-                    result = null; // Set result to null if parsing fails
+                    console.error("Raw AI response text that failed parsing:", text);
+                    result = null; // Explicitly null for structured parsing failure
                 }
             } else {
-                result = text;
+                result = text; // Return the raw text for unstructured
             }
         } else {
-            console.error("Unexpected AI response structure:", responseData);
-            result = null; // Set result to null if response structure is unexpected
+            console.error("Unexpected AI response structure or empty content:", responseData);
+            result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
         }
     } catch (error) {
-        console.error("AI API call failed:", error);
-        result = null; // Set result to null on API call failure
+        console.error("AI API call failed in catch block:", error);
+        result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
     } finally {
         state.isAILoading = false;
         updateUIAfterAILoading();
