@@ -358,7 +358,7 @@ const recipesData = [
         "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FF69B4", // Hot Pink
-        "coords": { "x": 9, "y": 8 }
+        "coords": { "x": 8, "y": 6 }
     },
     {
         "id": "scl-020",
