@@ -737,7 +737,6 @@ featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolut
        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
            ${recipesData.slice(0,6).map((recipe) => {
                const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
-                const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
                 const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name)}`;
                return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
                     <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
