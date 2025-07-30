@@ -303,6 +303,27 @@
     </div>
 </div>
 
+<!-- AI Prompt Confirmation Modal -->
+<div id="aiPromptModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+    <div class="modal-content glass-panel w-full max-w-2xl max-h-[90vh] flex flex-col p-6 md:p-8">
+        <h2 class="text-2xl font-bold mb-4" data-translate-key="aiPromptModalTitle"></h2>
+        <div class="space-y-4 text-gray-700 flex-grow overflow-y-auto pr-4">
+            <div>
+                <h3 class="font-semibold" data-translate-key="aiPromptModalOriginal"></h3>
+                <p id="originalPromptText" class="mt-1 p-3 bg-gray-100 rounded-lg text-gray-600 italic"></p>
+            </div>
+            <div>
+                <h3 class="font-semibold" data-translate-key="aiPromptModalSuggested"></h3>
+                <div id="rewrittenPromptContainer" class="mt-1 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 min-h-[6rem]"></div>
+            </div>
+        </div>
+        <div class="mt-6 flex justify-end gap-4 flex-shrink-0">
+            <button id="cancelPromptBtn" class="btn bg-gray-200 text-gray-800 py-2 px-6" data-translate-key="aiPromptModalCancel"></button>
+            <button id="confirmPromptBtn" class="btn btn-primary py-2 px-6" data-translate-key="aiPromptModalConfirm"></button>
+        </div>
+    </div>
+</div>
+
 <script type="module">
 // --- STATE & CONFIGURATION ---
 const state = {
@@ -323,8 +344,6 @@ const mainContentEl = document.getElementById('mainContent');
 let activeCharts = {};
 
 // --- DATA ---
-// The recipesData array will be imported from recipes.js
-// Ensure you have a recipes.js file in the same directory
 import recipesData from './recipes.js';
 
 const translations = {
@@ -379,6 +398,11 @@ const translations = {
     backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
     aiExplainRecipeBtn: {vi: "✨ Giải thích bằng AI", en: "✨ Explain with AI"},
     aiExplanationLoading: {vi: "AI đang phân tích công thức...", en: "AI is analyzing the recipe..."},
+    aiPromptModalTitle: {vi: "Xác nhận yêu cầu AI", en: "Confirm AI Request"},
+    aiPromptModalOriginal: {vi: "Yêu cầu gốc của bạn:", en: "Your Original Request:"},
+    aiPromptModalSuggested: {vi: "Yêu cầu được AI tối ưu hóa:", en: "AI-Optimized Request:"},
+    aiPromptModalCancel: {vi: "Hủy", en: "Cancel"},
+    aiPromptModalConfirm: {vi: "Xác nhận & Tạo", en: "Confirm & Generate"},
 
     // Featured Photos
     featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
@@ -484,18 +508,17 @@ const quizQuestions = [
 async function callAIApi(prompt, isStructured = false) {
     if (state.isAILoading) return;
     state.isAILoading = true;
-    updateUIAfterAILoading(); // To show spinners
+    updateUIAfterAILoading();
 
     let result = isStructured ? null : "";
 
     try {
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-
         let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
         let payload = { contents: chatHistory };
         
         const apiKey = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ"; 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+        // Using gemini-1.5-flash-latest as requested by user for "gemini 2.0 flash"
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
         if (isStructured) {
             payload.generationConfig = {
@@ -522,7 +545,9 @@ async function callAIApi(prompt, isStructured = false) {
             const text = responseData.candidates[0].content.parts[0].text;
             if (isStructured) {
                 try {
-                    result = JSON.parse(text);
+                    // Sometimes the API wraps the JSON in markdown backticks, so we clean it.
+                    const cleanedText = text.replace(/^```json\n?/, '').replace(/```$/, '');
+                    result = JSON.parse(cleanedText);
                 } catch (e) {
                     console.error("AI Response JSON parsing error:", e, "\nRaw text:", text);
                     result = null;
@@ -537,7 +562,7 @@ async function callAIApi(prompt, isStructured = false) {
         console.error("AI API call failed in catch block:", error);
     } finally {
         state.isAILoading = false;
-        updateUIAfterAILoading(); // To hide spinners
+        updateUIAfterAILoading();
         return result;
     }
 }
@@ -578,7 +603,7 @@ function createFullRecipeHTML(recipe, isMainView = false) {
 
 function updateUIAfterAILoading() {
     document.querySelectorAll('button').forEach(btn => {
-        if (btn.dataset.originalText && state.isAILoading === false) {
+        if (btn.dataset.originalText && !state.isAILoading) {
             btn.innerHTML = btn.dataset.originalText;
             btn.disabled = false;
             delete btn.dataset.originalText;
@@ -827,6 +852,7 @@ function initInteractiveGrid() {
 }
 
 function renderView(viewName) {
+    state.currentView = viewName;
     return new Promise(resolve => {
         const currentContent = mainContentEl.children[0];
         if (currentContent) {
@@ -913,36 +939,90 @@ async function handleAiAdjustment(button) {
     const recipeId = button.dataset.recipeId;
     const textarea = document.getElementById('aiTuningTextarea');
     const resultContainer = document.getElementById('aiResultContainer');
-    if (!textarea.value || !resultContainer || state.isAILoading) return;
+    const originalUserInput = textarea.value;
+
+    if (!originalUserInput || !resultContainer || state.isAILoading) return;
     
     button.disabled = true; 
     button.dataset.originalText = button.innerHTML;
     button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
 
-    const originalRecipe = recipesData.find(r => r.id === recipeId);
+    // Step 1: Rewrite the prompt
+    const rewriteLang = state.currentLang === 'vi' ? 'Vietnamese' : 'English';
+    const rewritePrompt = `You are an AI prompt expert. Rewrite the following user request to be a more effective and detailed prompt for another AI that adjusts camera color recipe settings. The user's request is: "${originalUserInput}". Respond ONLY with the rewritten prompt, in the original language (${rewriteLang}).`;
     
-    const prompt = `Based on the original recipe below, adjust the settings according to the user's request. Return a single, complete JSON object for the adjusted recipe. The new recipe must keep the original structure. The 'id' should be appended with '-ai'. The 'name' should be appended with '(AI Adjusted)'. Create a new 'description' based on the adjustment. Only adjust values within 'whiteBalance', 'settings', 'colorDepth', and 'detailSettings'.
+    const rewrittenPrompt = await callAIApi(rewritePrompt, false);
+
+    if (!rewrittenPrompt) {
+        resultContainer.innerHTML = `<p class="text-red-500 mt-4">Lỗi khi tối ưu hóa yêu cầu. Vui lòng thử lại.</p>`;
+        button.disabled = false;
+        button.innerHTML = button.dataset.originalText;
+        return;
+    }
+
+    // Step 2: Show confirmation modal
+    const modal = document.getElementById('aiPromptModal');
+    document.getElementById('originalPromptText').textContent = originalUserInput;
+    const rewrittenContainer = document.getElementById('rewrittenPromptContainer');
+    rewrittenContainer.textContent = rewrittenPrompt;
+    modal.classList.remove('hidden');
+
+    const confirmBtn = document.getElementById('confirmPromptBtn');
+    const cancelBtn = document.getElementById('cancelPromptBtn');
+
+    const handleConfirmation = async () => {
+        modal.classList.add('hidden');
+        resultContainer.innerHTML = `<div class="flex items-center justify-center p-4"><div class="spinner"></div><p class="ml-2 text-base font-semibold">AI đang tạo công thức mới...</p></div>`;
+        
+        // Step 3: Generate the recipe with the confirmed prompt
+        const originalRecipe = recipesData.find(r => r.id === recipeId);
+        const generationLang = state.currentLang === 'vi' ? 'Vietnamese' : 'English';
+        const generationPrompt = `Based on the original recipe JSON below, adjust the settings according to the user's detailed request. Return a single, complete, and valid JSON object for the adjusted recipe. 
+- The new recipe must keep the original JSON structure exactly.
+- The 'id' should be appended with '-ai'.
+- The 'name' object's values should be appended with '(AI Adjusted)'.
+- Create a new 'description' object with 'vi' and 'en' keys, describing the result of the adjustment in ${generationLang}.
+- Only adjust numeric or string values within 'whiteBalance', 'settings', 'colorDepth', and 'detailSettings' based on the request. Do not add or remove keys.
 
 Original Recipe: ${JSON.stringify(originalRecipe)}
-User Request: "${textarea.value}"
+User's Detailed Request: "${rewrittenPrompt}"
 
-Return ONLY the JSON object.`;
+Return ONLY the full JSON object of the new recipe.`;
 
-    const aiResponse = await callAIApi(prompt, true);
+        const aiResponse = await callAIApi(generationPrompt, true);
 
-    if (aiResponse && typeof aiResponse === 'object') {
-        state.lastGeneratedAiRecipe = aiResponse; // The AI now returns the full object
-        resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6">
-            <h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4>
-            <div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div>
-            <button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button>
-        </div>`;
-    } else {
-        resultContainer.innerHTML = `<p class="text-red-500 mt-4">Lỗi khi tạo tinh chỉnh bằng AI. Phản hồi không hợp lệ. Vui lòng thử lại.</p>`;
-    }
-    
-    applyTranslations();
+        if (aiResponse && typeof aiResponse === 'object' && aiResponse.id) {
+            state.lastGeneratedAiRecipe = aiResponse;
+            resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6">
+                <h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4>
+                <div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div>
+                <button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button>
+            </div>`;
+        } else {
+            resultContainer.innerHTML = `<p class="text-red-500 mt-4">Lỗi khi tạo tinh chỉnh bằng AI. Phản hồi không hợp lệ. Vui lòng thử lại.</p>`;
+        }
+        applyTranslations();
+        button.disabled = false;
+        button.innerHTML = button.dataset.originalText;
+        
+        // Clean up listeners
+        confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+        cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+    };
+
+    const handleCancellation = () => {
+        modal.classList.add('hidden');
+        button.disabled = false;
+        button.innerHTML = button.dataset.originalText;
+        // Clean up listeners
+        confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+        cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+    };
+
+    confirmBtn.addEventListener('click', handleConfirmation, { once: true });
+    cancelBtn.addEventListener('click', handleCancellation, { once: true });
 }
+
 
 async function handleAiRecipeExplanation(button) {
     const recipeId = button.dataset.recipeId;
@@ -1055,7 +1135,6 @@ function renderLibraryList() {
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
     
     let recipesToRender = recipesData.filter(recipe => {
-        // Using the new data structure with state.currentLang
         const nameMatch = recipe.name[state.currentLang].toLowerCase().includes(searchTerm);
         const descriptionMatch = recipe.description[state.currentLang].toLowerCase().includes(searchTerm);
         const typeMatch = state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type;
