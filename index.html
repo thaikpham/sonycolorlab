@@ -494,15 +494,12 @@ async function callAIApi(prompt, isStructured = false) {
         let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
         let payload = { contents: chatHistory };
         
-        // The API key will be provided by the execution environment.
-        const apiKey = ""; 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+        const apiKey = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ"; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
 
         if (isStructured) {
             payload.generationConfig = {
                 responseMimeType: "application/json",
-                // A generic schema that expects a JSON object.
-                // Specific schemas can be added here based on the prompt type if needed.
                 responseSchema: { type: "OBJECT" } 
             };
         }
@@ -571,14 +568,6 @@ function createSettingsGrid(settings) {
 
 function createFullRecipeHTML(recipe, isMainView = false) {
     const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
-    // The 'notes' field is not in the provided data structure, so this is removed for now.
-    // If you add it back to recipes.js, you can uncomment this.
-    // const noteHTML = (recipe.notes && recipe.notes[state.currentLang])   
-    // ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-xl">
-    //                      <p class="font-bold" data-translate-key="noteTitle"></p>
-    //                      <p>${recipe.notes[state.currentLang]}</p>
-    //                    </div>` : '';
-
     return `<div class="space-y-6 mt-6">
                  <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
                  <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
