@@ -12,7 +12,6 @@
 <!-- OPTIMIZATION: Defer non-critical scripts to speed up initial page load -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-<!-- REMOVED: <script src="recipes.js" defer></script> as it will be imported as a module -->
 <style>
 html { scroll-behavior: smooth; }
 body {
@@ -44,11 +43,6 @@ background: var(--glass-bg);
 backdrop-filter: blur(40px) saturate(180%);    
 -webkit-backdrop-filter: blur(40px) saturate(180%);    
 border: 1px solid var(--glass-border);    
-.glass-panel {
-background: var(--glass-bg);
-backdrop-filter: blur(40px) saturate(180%);
--webkit-backdrop-filter: blur(40px) saturate(180%);
-border: 1px solid var(--glass-border);
 box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
 border-radius: 24px;
 }
@@ -58,12 +52,12 @@ border-radius: 24px;
 
 /* Custom style for Welcome Modal background */
 #welcomeModal .modal-content {
-    background: linear-gradient(to bottom right, #FFFFFF, #E0F2FE); /* White to very light blue gradient */
-    /* Ensure other glass-panel properties are retained or re-applied if needed */
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+background: linear-gradient(to bottom right, #FFFFFF, #E0F2FE); /* White to very light blue gradient */
+/* Ensure other glass-panel properties are retained or re-applied if needed */
+backdrop-filter: blur(40px) saturate(180%);
+-webkit-backdrop-filter: blur(40px) saturate(180%);
+border: 1px solid var(--glass-border);
+box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -71,10 +65,6 @@ border-radius: 24px;
 background-color: rgba(0, 122, 255, 0.1);    
 border-left: 4px solid var(--primary-accent);    
 color: var(--text-primary);    
-.recipe-item.selected {
-background-color: rgba(0, 122, 255, 0.1);
-border-left: 4px solid var(--primary-accent);
-color: var(--text-primary);
 transform: translateX(4px);
 box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
 }
@@ -190,7 +180,6 @@ width: 100%;
 max-width: 300px;
 margin: auto;
 touch-action: none; 
-touch-action: none;
 }
 #abgm-grid {
 position: relative;
@@ -199,7 +188,6 @@ aspect-ratio: 1 / 1;
 border-radius: 0.5rem;
 cursor: pointer;
 background-image: 
-background-image:
 linear-gradient(to right, rgba(0, 128, 0, 0.2), rgba(255, 255, 255, 0), rgba(255, 0, 255, 0.2)),
 linear-gradient(to bottom, rgba(255, 165, 0, 0.2), rgba(255, 255, 255, 0), rgba(0, 0, 255, 0.2));
 box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
@@ -344,9 +332,6 @@ gtag('config', 'G-QKGB56ZKQD');
 </div>
 
 <script type="module">
-// --- FIX: Import recipesData from the module ---
-import recipesData from './recipes.js';
-
 // --- STATE & CONFIGURATION ---
 const state = {
 currentLang: 'vi',
@@ -367,7 +352,6 @@ let activeCharts = {};
 
 // --- DATA ---
 import recipesData from './recipes.js';
-// The recipesData variable is now correctly imported from recipes.js
 
 const translations = {
 // General
@@ -462,6 +446,7 @@ wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là c�
 ppInfographicTitle: {vi: "Quy trình Tinh chỉnh Picture Profile", en:"Picture Profile Adjustment Workflow"},
 ppInfographicDesc: {vi: "Làm theo các bước sau để thiết lập Picture Profile từ đầu, cho phép bạn kiểm soát hoàn toàn giao diện cuối cùng của hình ảnh.", en:"Follow these steps to set up a Picture Profile from scratch, giving you full control over the final look of your image."},
 ppItemBlackLevel: {vi: "Black Level (Mức độ đen)", en: "Black Level"},
+ppItemBlackLevelDesc: {vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).", en: "Sets the black point. Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more contrast)."},
 ppItemBlackLevelDesc: {vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).", en: "Sets the black point. Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more more contrast)."},
 ppItemGamma: {vi: "Gamma", en: "Gamma"},
 ppItemGammaDesc: {vi: "Thiết lập đường cong tương phản (contrast curve). Đây là nền tảng cho 'look' của bạn. Still & Movie cho độ tương phản cao, trong khi các gamma Cine/S-Log cho dải nhạy sáng rộng hơn.", en: "Sets the contrast curve. This is the foundation of your look. Still & Movie are punchy, while Cine/S-Log gammas offer wider dynamic range."},
@@ -484,7 +469,6 @@ recallDesc: { vi: 'Đừng lãng phí công sức! Lưu lại các công thức 
 recallInternalTitle: { vi: 'Bộ Nhớ Trong (1, 2, 3)', en: 'Internal Memory (1, 2, 3)' },
 recallInternalDesc: { vi: 'Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.', en: 'Saves directly to the camera. Quickest access via the mode dial. Ideal for your daily-use recipes.' },
 recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, M2, M3, M4)' },
-recallCardTitle: { vi: 'Thẻ Nhớ (M1, M2, M3, M4)', en: 'Memory Card (M1, 2, 3, 4)' },
 recallCardDesc: { vi: 'Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.', en: 'Saves as a file on your memory card. Extremely useful for backups or transferring recipes to another Sony camera body.' },
 tutorialTitle: { vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide" },
 tutorialStep1Title: { vi: "Bước 1: Tìm Picture Profile", en: "Step 1: Find Picture Profile" },
@@ -527,43 +511,31 @@ const quizQuestions = [
 { 
 id: 'subject', 
 title: 'quizQ1', 
-{
-id: 'subject',
-title: 'quizQ1',
 options: [
 { key: 'quizQ1A1', value: 'portrait', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>` },
 { key: 'quizQ1A2', value: 'landscape', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.59a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>` },
 { key: 'quizQ1A3', value: 'urban', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>` },
 { key: 'quizQ1A4', value: 'everyday', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18V2H7"/><path d="M22 15l-3 3-3-3"/><path d="m11 6 10 12"/></svg>` }
 ] 
-]
 },
 { 
 id: 'tone', 
 title: 'quizQ2', 
-{
-id: 'tone',
-title: 'quizQ2',
 options: [
 { key: 'quizQ2A1', value: 'warm', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>` },
 { key: 'quizQ2A2', value: 'cool', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.5 3 5.7L12 22l4-7.3c1.8-1.2 3-3.3 3-5.7a7 7 0 0 0-7-7z"/><path d="M12 9a3 3 0 0 0-3 3c0 1.2.8 2.2 2 2.7l1 1.3l1-1.3c1.2-.5 2-1.5 2-2.7a3 3 0 0 0-3-3z"/></svg>` },
 { key: 'quizQ2A3', value: 'natural', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-2 0-4-1-4-4 0-2 2-3 4-3s4 1 4 3c0 3-2 4-4 4z"/><path d="M12 15V2"/><path d="m5 12-3-3 3-3"/><path d="m19 12 3-3-3-3"/></svg>` },
 { key: 'quizQ2A4', value: 'vintage', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h4"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M21 7.5h-4"/><path d="M21 12h-4"/><path d="M21 16.5h-4"/></svg>` }
 ] 
-]
 },
 { 
 id: 'contrast', 
 title: 'quizQ3', 
-{
-id: 'contrast',
-title: 'quizQ3',
 options: [
 { key: 'quizQ3A1', value: 'high', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></svg>` },
 { key: 'quizQ3A2', value: 'low', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" fill="currentColor" fill-opacity="0.2"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></svg>` },
 { key: 'quizQ3A3', value: 'medium', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z" fill="currentColor" fill-opacity="0.5"/></svg>` }
 ] 
-]
 },
 {
 id: 'type',
@@ -585,57 +557,36 @@ options: [
 ];
 
 async function callAIApi(prompt, isStructured = false, customDelay = 500) { // Changed default delay to 500ms
-/**
- * Calls the Gemini API to get a response.
- * @param {string} prompt The prompt to send to the AI.
- * @param {boolean} isStructured Whether to expect a structured JSON response.
- * @param {number} customDelay A delay to simulate network latency for UX.
- * @returns {Promise<object|string|null>} The parsed JSON object, a text string, or null if an error occurs.
- */
-async function callAIApi(prompt, isStructured = false, customDelay = 500) {
 if (state.isAILoading) return;
 state.isAILoading = true;
-    let result = null; // Default to null for structured, or empty string for unstructured
-    let result = null;
+let result = null; // Default to null for structured, or empty string for unstructured
 
 try {
-        await new Promise(resolve => setTimeout(resolve, customDelay)); // Use customDelay
-        // The delay is for simulating network latency, can be removed or kept for UX.
-        await new Promise(resolve => setTimeout(resolve, customDelay));
+await new Promise(resolve => setTimeout(resolve, customDelay)); // Use customDelay
 
-        let chatHistory = [];
-        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+let chatHistory = [];
+chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
-        let payload = { contents: chatHistory };
-        const apiKey = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ"; // API Key của bạn
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-        const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-        const payload = { contents: chatHistory };
-        
-        // The API key will be provided by the execution environment.
-        const apiKey = ""; 
-        const model = "gemini-2.5-flash-preview-05-20";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+let payload = { contents: chatHistory };
+const apiKey = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ"; // API Key của bạn
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
 if (isStructured) {
-            // Define schema for structured output (e.g., quiz results or adjusted recipe)
-            if (prompt.includes("Suggest the single best existing recipe")) {
-                payload.generationConfig = {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "recipeId": { "type": "STRING" },
-                            "moodDescription": { "type": "STRING" }
-                        },
-                        "propertyOrdering": ["recipeId", "moodDescription"]
-                    }
-                };
-            } else if (prompt.includes("adjusted settings")) {
-                // Explicitly define a robust schema for adjusted recipe
-            // Define schema for structured output
-            if (prompt.includes("**Nhiệm vụ:** Tinh chỉnh một công thức")) {
-                // More flexible schema for recipe adjustment
+// Define schema for structured output (e.g., quiz results or adjusted recipe)
+if (prompt.includes("Suggest the single best existing recipe")) {
+payload.generationConfig = {
+responseMimeType: "application/json",
+responseSchema: {
+type: "OBJECT",
+properties: {
+"recipeId": { "type": "STRING" },
+"moodDescription": { "type": "STRING" }
+},
+"propertyOrdering": ["recipeId", "moodDescription"]
+}
+};
+} else if (prompt.includes("adjusted settings")) {
+// Explicitly define a robust schema for adjusted recipe
 payload.generationConfig = {
 responseMimeType: "application/json",
 responseSchema: {
@@ -644,51 +595,46 @@ properties: {
 "recipe": {
 type: "OBJECT",
 properties: {
-                                    "id": { "type": "STRING" },
+"id": { "type": "STRING" },
 "name": { "type": "OBJECT", "properties": { "vi": { "type": "STRING" }, "en": { "type": "STRING" } } },
 "description": { "type": "OBJECT", "properties": { "vi": { "type": "STRING" }, "en": { "type": "STRING" } } },
-                                    "whiteBalance": { "type": "STRING" },
-                                    "settings": { "type": "OBJECT", "additionalProperties": { "type": "STRING" } },
-                                    "colorDepth": { "type": "OBJECT", "additionalProperties": { "type": "STRING" } },
-                                    "detailSettings": { "type": "OBJECT", "additionalProperties": { "type": "STRING" } },
 "type": { "type": "STRING" },
 "contrast": { "type": "STRING" },
 "saturation": { "type": "STRING" },
 "tags": { "type": "ARRAY", "items": { "type": "STRING" } },
-                                    "whiteBalance": { "type": "STRING" },
-                                    "settings": {
-                                        "type": "OBJECT",
-                                        properties: { // All possible settings keys
-                                            "Black level": { "type": "STRING" },
-                                            "Gamma": { "type": "STRING" },
-                                            "Black Gamma": { "type": "STRING" },
-                                            "Knee": { "type": "STRING" },
-                                            "Color Mode": { "type": "STRING" },
-                                            "Saturation": { "type": "STRING" },
-                                            "Color Phase": { "type": "STRING" }
-                                        },
-                                        "additionalProperties": true // Allow for other properties if LLM adds them
-                                    },
-                                    "colorDepth": {
-                                        "type": "OBJECT",
-                                        properties: { // All possible color depth keys
-                                            "R": { "type": "STRING" }, "G": { "type": "STRING" }, "B": { "type": "STRING" },
-                                            "C": { "type": "STRING" }, "M": { "type": "STRING" }, "Y": { "type": "STRING" }
-                                        },
-                                        "additionalProperties": true
-                                    },
-                                    "detailSettings": {
-                                        "type": "OBJECT",
-                                        properties: {
-                                            "Level": { "type": "STRING" }
-                                        },
-                                        "additionalProperties": true
-                                    },
+"whiteBalance": { "type": "STRING" },
+"settings": {
+"type": "OBJECT",
+properties: { // All possible settings keys
+"Black level": { "type": "STRING" },
+"Gamma": { "type": "STRING" },
+"Black Gamma": { "type": "STRING" },
+"Knee": { "type": "STRING" },
+"Color Mode": { "type": "STRING" },
+"Saturation": { "type": "STRING" },
+"Color Phase": { "type": "STRING" }
+},
+"additionalProperties": true // Allow for other properties if LLM adds them
+},
+"colorDepth": {
+"type": "OBJECT",
+properties: { // All possible color depth keys
+"R": { "type": "STRING" }, "G": { "type": "STRING" }, "B": { "type": "STRING" },
+"C": { "type": "STRING" }, "M": { "type": "STRING" }, "Y": { "type": "STRING" }
+},
+"additionalProperties": true
+},
+"detailSettings": {
+"type": "OBJECT",
+properties: {
+"Level": { "type": "STRING" }
+},
+"additionalProperties": true
+},
 "personalityColor": { "type": "STRING" },
 "coords": { "type": "OBJECT", "properties": { "x": { "type": "NUMBER" }, "y": { "type": "NUMBER" } } }
 },
-                                "required": ["id", "name", "description", "type", "contrast", "saturation", "whiteBalance", "settings", "personalityColor", "coords"] // Ensure these are always present
-                                required: ["name", "description", "whiteBalance", "settings"]
+"required": ["id", "name", "description", "type", "contrast", "saturation", "whiteBalance", "settings", "personalityColor", "coords"] // Ensure these are always present
 }
 }
 }
@@ -702,23 +648,18 @@ headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(payload)
 });
 
-        const responseData = await response.json();
-        console.log("Raw AI Response:", responseData); // Log the full response for debugging
-
 if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`API call failed with status ${response.status}:`, errorText);
-            console.error(`API call failed with status ${response.status}:`, responseData);
+const errorText = await response.text();
+console.error(`API call failed with status ${response.status}:`, errorText);
 throw new Error(`API call failed: ${response.statusText}`);
 }
 
-        const responseData = await response.json();
-        console.log("Raw AI responseData:", responseData); // Log raw response for debugging
+const responseData = await response.json();
+console.log("Raw AI responseData:", responseData); // Log raw response for debugging
 
-        if (responseData.candidates && responseData.candidates.length > 0 &&
-            responseData.candidates[0].content && responseData.candidates[0].content.parts &&
-            responseData.candidates[0].content.parts.length > 0) {
-        if (responseData.candidates && responseData.candidates[0]?.content?.parts?.[0]) {
+if (responseData.candidates && responseData.candidates.length > 0 &&
+responseData.candidates[0].content && responseData.candidates[0].content.parts &&
+responseData.candidates[0].content.parts.length > 0) {
 const text = responseData.candidates[0].content.parts[0].text;
 if (isStructured) {
 try {
@@ -726,62 +667,24 @@ result = JSON.parse(text);
 } catch (e) {
 console.error("AI Response JSON parsing error:", e);
 console.error("Raw AI response text that failed parsing:", text);
-                    result = null; // Explicitly null for structured parsing failure
-                    result = null;
+result = null; // Explicitly null for structured parsing failure
 }
 } else {
-                result = text; // Return the raw text for unstructured
-                result = text;
+result = text; // Return the raw text for unstructured
 }
 } else {
-            console.error("Unexpected AI response structure or empty content:", responseData);
-            result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
-            // Log safety ratings or other reasons for no content
-            if(responseData.candidates && responseData.candidates[0]?.finishReason) {
-                 console.error("AI response finished with reason:", responseData.candidates[0].finishReason);
-                 if(responseData.candidates[0].safetyRatings) {
-                       console.error("Safety Ratings:", responseData.candidates[0].safetyRatings);
-                 }
-            } else {
-                 console.error("Unexpected AI response structure or empty content:", responseData);
-            }
-            result = isStructured ? null : "";
+console.error("Unexpected AI response structure or empty content:", responseData);
+result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
 }
 } catch (error) {
 console.error("AI API call failed in catch block:", error);
-        result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
-        result = isStructured ? null : "";
+result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
 } finally {
 state.isAILoading = false;
 updateUIAfterAILoading();
 return result;
 }
 }
-
-/**
- * Formats a recipe object into a clean, readable string for AI prompts.
- * @param {object} recipe The recipe object.
- * @param {string} lang The current language ('vi' or 'en').
- * @returns {string} A formatted string detailing the recipe.
- */
-function formatRecipeForPrompt(recipe, lang) {
-    const settings = recipe.settings ? Object.entries(recipe.settings).map(([k, v]) => `- ${k}: ${v}`).join('\n') : 'N/A';
-    const colorDepth = recipe.colorDepth ? Object.entries(recipe.colorDepth).map(([k, v]) => `- ${k}: ${v}`).join('\n') : 'N/A';
-    const detail = recipe.detailSettings ? Object.entries(recipe.detailSettings).map(([k, v]) => `- ${k}: ${v}`).join('\n') : 'N/A';
-
-    return `
-Tên: ${recipe.name[lang]}
-Mô tả: ${recipe.description[lang]}
-Cân bằng trắng: ${recipe.whiteBalance}
-Cài đặt chính:
-${settings}
-Độ sâu màu:
-${colorDepth}
-Chi tiết:
-${detail}
-`.trim();
-}
-
 
 function t(key) { return translations[key]?.[state.currentLang] || key; }
 
@@ -791,8 +694,6 @@ const key = el.dataset.translateKey;
 if (translations[key] && translations[key][state.currentLang]) {
 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
 else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
-if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }
-else if (el.tagName === 'OPTION') { el.textContent = t(key); }
 else { el.innerHTML = t(key); }
 }
 });
@@ -812,22 +713,17 @@ return Object.entries(settings).map(([key, value]) => `<div class="flex flex-col
 function createFullRecipeHTML(recipe, isMainView = false) {
 const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
 const noteHTML = (recipe.notes && recipe.notes[state.currentLang])   
-const noteHTML = (recipe.notes && recipe.notes[state.currentLang])
 ? `<div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-xl">
-                          <p class="font-bold" data-translate-key="noteTitle"></p>
-                          <p>${recipe.notes[state.currentLang]}</p>
-                        </div>` : '';
-                                  <p class="font-bold" data-translate-key="noteTitle"></p>
-                                  <p>${recipe.notes[state.currentLang]}</p>
-                                </div>` : '';
+                         <p class="font-bold" data-translate-key="noteTitle"></p>
+                         <p>${recipe.notes[state.currentLang]}</p>
+                       </div>` : '';
 
 return `${noteHTML}<div class="space-y-6 mt-6">
              <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
              <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
              ${recipe.colorDepth ? `<div><h4 class="${titleClass} mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 sm:grid-cols-6 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
              ${recipe.detailSettings ? `<div><h4 class="${titleClass} mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
-          </div>`;
-        </div>`;
+         </div>`;
 }
 
 function updateUIAfterAILoading() {
@@ -841,36 +737,24 @@ btn.disabled = false;
 
 const viewTemplates = {
 home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
-              <h1 data-translate-key="landingTitle" class="landing-title"></h1>
-              <p data-translate-key="landingSubtitle" class="landing-subtitle"></p>
-              <button id="startQuizBtn" class="btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startQuizBtn"></button>
-          </div>`,
-                  <h1 data-translate-key="landingTitle" class="landing-title"></h1>
-                  <p data-translate-key="landingSubtitle" class="landing-subtitle"></p>
-                  <button id="startQuizBtn" class="btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startQuizBtn"></button>
-            </div>`,
+             <h1 data-translate-key="landingTitle" class="landing-title"></h1>
+             <p data-translate-key="landingSubtitle" class="landing-subtitle"></p>
+             <button id="startQuizBtn" class="btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startQuizBtn"></button>
+         </div>`,
 
 quiz: () => {
 const quizHTML = quizQuestions.map(q => {
 const optionsHTML = q.options.map(opt => `
-                      <div class="quiz-option-card" data-value="${opt.value}">
-                          ${opt.icon}
-                          <span data-translate-key="${opt.key}"></span>
-                      </div>`).join('');
-                                <div class="quiz-option-card" data-value="${opt.value}">
-                                    ${opt.icon}
-                                    <span data-translate-key="${opt.key}"></span>
-                                </div>`).join('');
+                     <div class="quiz-option-card" data-value="${opt.value}">
+                         ${opt.icon}
+                         <span data-translate-key="${opt.key}"></span>
+                     </div>`).join('');
 const gridCols = q.options.length > 3 ? 'grid-cols-2 lg:grid-cols-4' : (q.options.length === 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-3');
 return `
-                      <div class="mb-12" data-quiz-group="${q.id}">
-                          <h2 class="text-2xl font-bold text-center mb-6" data-translate-key="${q.title}"></h2>
-                          <div class="grid ${gridCols} gap-4">${optionsHTML}</div>
-                      </div>`;
-                                <div class="mb-12" data-quiz-group="${q.id}">
-                                    <h2 class="text-2xl font-bold text-center mb-6" data-translate-key="${q.title}"></h2>
-                                    <div class="grid ${gridCols} gap-4">${optionsHTML}</div>
-                                </div>`;
+                     <div class="mb-12" data-quiz-group="${q.id}">
+                         <h2 class="text-2xl font-bold text-center mb-6" data-translate-key="${q.title}"></h2>
+                         <div class="grid ${gridCols} gap-4">${optionsHTML}</div>
+                     </div>`;
 }).join('');
 
 return `<div id="quizView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-6 md:p-12">
@@ -880,102 +764,59 @@ return `<div id="quizView" class="w-full h-full absolute inset-0 overflow-y-auto
                          <button id="submitQuizBtn" class="btn btn-primary py-4 px-12 text-xl" disabled>Xem kết quả</button>
                      </div>
                  </div>
-              </div>`;
-            </div>`;
+             </div>`;
 },
 
 recipeFormulas: () => `
-              <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                  <!-- Left Panel: Recipe List & Mobile Filters -->
-                  <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
-                      <!-- Removed h2 title: <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2> -->
-                      <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                      
-                      <!-- FILTERS FOR MOBILE - hidden on medium screens and up -->
-                      <div class="space-y-4 text-sm mb-4 md:hidden">
-                           <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                           <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                           <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                      </div>
-                  <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                      <!-- Left Panel: Recipe List & Mobile Filters -->
-                      <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
-                          <!-- Removed h2 title: <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2> -->
-                          <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                          
-                          <!-- FILTERS FOR MOBILE - hidden on medium screens and up -->
-                          <div class="space-y-4 text-sm mb-4 md:hidden">
-                              <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                              <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                              <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                          </div>
+             <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
+                 <!-- Left Panel: Recipe List & Mobile Filters -->
+                 <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
+                     <!-- Removed h2 title: <h2 class="text-2xl md:text-3xl font-bold" data-translate-key="sidebarTitle"></h2> -->
+                     <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                     
+                     <!-- FILTERS FOR MOBILE - hidden on medium screens and up -->
+                     <div class="space-y-4 text-sm mb-4 md:hidden">
+                          <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
+                          <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                          <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                     </div>
 
-                      <!-- The recipe list itself -->
-                      <div id="recipeListContainer" class="space-y-2 md:pt-0 pt-4 border-t md:border-t-0 flex-grow overflow-y-auto pr-2 -mr-3"></div>
-                      
-                      <!-- Compare button at the bottom -->
-                      <div id="compareBtnContainer" class="pt-4 flex-shrink-0 border-t mt-auto"></div>
-                  </aside>
+                     <!-- The recipe list itself -->
+                     <div id="recipeListContainer" class="space-y-2 md:pt-0 pt-4 border-t md:border-t-0 flex-grow overflow-y-auto pr-2 -mr-3"></div>
+                     
+                     <!-- Compare button at the bottom -->
+                     <div id="compareBtnContainer" class="pt-4 flex-shrink-0 border-t mt-auto"></div>
+                 </aside>
 
-                  <!-- Right Panel: Details, Charts, and now Desktop Filters -->
-                  <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
-                      <!-- FILTERS FOR DESKTOP - hidden on small screens -->
-                      <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-                          <!-- The recipe list itself -->
-                          <div id="recipeListContainer" class="space-y-2 md:pt-0 pt-4 border-t md:border-t-0 flex-grow overflow-y-auto pr-2 -mr-3"></div>
-                          
-                          <!-- Compare button at the bottom -->
-                          <div id="compareBtnContainer" class="pt-4 flex-shrink-0 border-t mt-auto"></div>
-                      </aside>
-
-                      <!-- Right Panel: Details, Charts, and now Desktop Filters -->
-                      <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
-                          <!-- FILTERS FOR DESKTOP - hidden on small screens -->
-                          <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+                 <!-- Right Panel: Details, Charts, and now Desktop Filters -->
+                 <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
+                     <!-- FILTERS FOR DESKTOP - hidden on small screens -->
+                     <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
 <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
 <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
 <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                      </div>
-                          </div>
-
-                      <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
-                         <div id="chartsContainer">
-                             <div class="text-center mb-10">
-                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
-                          <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
-                             <div id="chartsContainer">
-                                 <div class="text-center mb-10">
-                                     <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
-                                 </div>
-                                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                                     <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
-                                     <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
-                                 </div>
-                            </div>
-                             <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                                 <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
-                                 <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
-                             </div>
-                         </div>
-                         <div id="recipeContent" class="hidden"></div>
-                      </div>
-                  </main>
-                  <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
-                      <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
-                      <div class="glass-panel p-6 overflow-y-auto">
-                         <div id="recipeContentMobile"></div>
-                             <div id="recipeContent" class="hidden"></div>
-                          </div>
-                      </main>
-                      <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
-                          <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
-                          <div class="glass-panel p-6 overflow-y-auto">
-                             <div id="recipeContentMobile"></div>
-                          </div>
                      </div>
-                  </div>
-              </div>`,
-                  </div>`,
+
+                     <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
+                        <div id="chartsContainer">
+                            <div class="text-center mb-10">
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                            </div>
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                                <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
+                                <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
+                            </div>
+                        </div>
+                        <div id="recipeContent" class="hidden"></div>
+                     </div>
+                 </main>
+                 <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
+                     <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
+                     <div class="glass-panel p-6 overflow-y-auto">
+                        <div id="recipeContentMobile"></div>
+                     </div>
+                 </div>
+             </div>`,
 
 featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
  <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
@@ -990,10 +831,8 @@ featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolut
              const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
              const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
              return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
-                    <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
-              </div>`;
-                      <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
-                  </div>`;
+                   <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
+             </div>`;
          }).join('')}
      </div>
  </div>
@@ -1006,8 +845,7 @@ explain: () => `
                      <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="explainHeader"></h1>
                      <h2 class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="explainSubtitle"></h2>
                  </header>
-          
-                  
+         
                  <main class="space-y-12 md:space-y-20">
                      <section>
                          <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="pillarsTitle"></h3>
@@ -1041,18 +879,12 @@ explain: () => `
                              <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                                  <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
                                  <p class="text-sm text-gray-700 mb-6 text-center">Picture Profile là một hệ thống menu tích hợp trong máy ảnh Sony, cung cấp một loạt các thông số cho phép người dùng điều chỉnh hình ảnh và video ngay bên trong máy ảnh trước khi chúng được xử lý và nén.<br>Các thông số này cho phép thay đổi các cài đặt liên quan đến màu sắc, độ chuyển tông, độ tương phản và độ sắc nét của hình ảnh.</p>
-                                   <div class="space-y-4">
-                                       <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">1. <span data-translate-key="ppItemGamma"></span></summary><p class="text-sm text-gray-600 mt-2">Gamma thiết lập độ dốc (đường cong tương phản), xác định mối quan hệ giữa mức tín hiệu đầu vào (độ sáng từ đối tượng) và mức tín hiệu đầu ra (độ sáng được tái tạo bởi máy ảnh hoặc màn hình hiển thị).<br>Hình dạng của đường cong gamma ảnh hưởng đáng kể đến đặc điểm hình ảnh, đặc biệt là ở các vùng tối và độ tương phản tổng thể. Các đường cong Cine, S-Cinetone và HLG nổi bật như những ứng cử viên chính cho các giao diện điện ảnh "tức thì", mang lại sự cân bằng giữa dải động và độ tương phản dễ chịu ngay từ máy ảnh. S-Log không dành cho việc sử dụng "tức thì", đặc biệt là trên các máy ảnh 8 bit do nhiễu và tính dễ vỡ của nó.</p></details>
-                                       <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">2. <span data-translate-key="ppItemColorMode"></span></summary><p class="text-sm text-gray-600 mt-2">Color Mode xác định các đặc tính màu sắc, hoạt động kết hợp với Gamma để thiết lập màu sắc cơ bản của hình ảnh.<br>Gamma xác định đường cong độ sáng, trong khi Color Mode xác định sắc độ. Cùng với nhau, chúng thiết lập "giao diện" cơ bản của hình ảnh. Việc chọn đúng Color Mode là rất quan trọng để đạt được các tính thẩm mỹ cụ thể.</p></details>
-                                       <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. <span data-translate-key="ppItemBlackLevel"></span></summary><p class="text-sm text-gray-600 mt-2">Chức năng Black Level điều chỉnh điểm đen, về cơ bản kiểm soát điểm tối nhất trong hình ảnh.<br>Một màu đen bị "crush" (ép xuống) có thể thêm kịch tính và độ tương phản, trong khi màu đen được "lift" (nâng lên) – thường được gọi là "màu đen mờ" hoặc "màu đen sữa" – là một đặc điểm của nhiều loại phim cổ điển và có thể tạo ra cảm giác mềm mại, thanh tao hoặc cổ điển hơn.</p></details>
-                                       <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. <span data-translate-key="ppItemColorDepth"></span></summary><p class="text-sm text-gray-600 mt-2">Chức năng Color Depth điều chỉnh độ sáng cho từng pha màu (Đỏ, Lục, Lam, Lục lam, Tím, Vàng) riêng lẻ.<br>Không giống như Saturation toàn cầu hoặc Color Phase, Color Depth cho phép điều chỉnh độ sáng trên từng kênh, mang lại khả năng kiểm soát chính xác hơn. Thông số này cực kỳ mạnh mẽ để chỉnh màu tinh tế nhưng có tác động trực tiếp trong máy ảnh.</p></details>
-                                   </div>
-                                    <div class="space-y-4">
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">1. <span data-translate-key="ppItemGamma"></span></summary><p class="text-sm text-gray-600 mt-2">Gamma thiết lập độ dốc (đường cong tương phản), xác định mối quan hệ giữa mức tín hiệu đầu vào (độ sáng từ đối tượng) và mức tín hiệu đầu ra (độ sáng được tái tạo bởi máy ảnh hoặc màn hình hiển thị).<br>Hình dạng của đường cong gamma ảnh hưởng đáng kể đến đặc điểm hình ảnh, đặc biệt là ở các vùng tối và độ tương phản tổng thể. Các đường cong Cine, S-Cinetone và HLG nổi bật như những ứng cử viên chính cho các giao diện điện ảnh "tức thì", mang lại sự cân bằng giữa dải động và độ tương phản dễ chịu ngay từ máy ảnh. S-Log không dành cho việc sử dụng "tức thì", đặc biệt là trên các máy ảnh 8 bit do nhiễu và tính dễ vỡ của nó.</p></details>
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">2. <span data-translate-key="ppItemColorMode"></span></summary><p class="text-sm text-gray-600 mt-2">Color Mode xác định các đặc tính màu sắc, hoạt động kết hợp với Gamma để thiết lập màu sắc cơ bản của hình ảnh.<br>Gamma xác định đường cong độ sáng, trong khi Color Mode xác định sắc độ. Cùng với nhau, chúng thiết lập "giao diện" cơ bản của hình ảnh. Việc chọn đúng Color Mode là rất quan trọng để đạt được các tính thẩm mỹ cụ thể.</p></details>
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. <span data-translate-key="ppItemBlackLevel"></span></summary><p class="text-sm text-gray-600 mt-2">Chức năng Black Level điều chỉnh điểm đen, về cơ bản kiểm soát điểm tối nhất trong hình ảnh.<br>Một màu đen bị "crush" (ép xuống) có thể thêm kịch tính và độ tương phản, trong khi màu đen được "lift" (nâng lên) – thường được gọi là "màu đen mờ" hoặc "màu đen sữa" – là một đặc điểm của nhiều loại phim cổ điển và có thể tạo ra cảm giác mềm mại, thanh tao hoặc cổ điển hơn.</p></details>
-                                        <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. <span data-translate-key="ppItemColorDepth"></span></summary><p class="text-sm text-gray-600 mt-2">Chức năng Color Depth điều chỉnh độ sáng cho từng pha màu (Đỏ, Lục, Lam, Lục lam, Tím, Vàng) riêng lẻ.<br>Không giống như Saturation toàn cầu hoặc Color Phase, Color Depth cho phép điều chỉnh độ sáng trên từng kênh, mang lại khả năng kiểm soát chính xác hơn. Thông số này cực kỳ mạnh mẽ để chỉnh màu tinh tế nhưng có tác động trực tiếp trong máy ảnh.</p></details>
-                                    </div>
+                                  <div class="space-y-4">
+                                      <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">1. <span data-translate-key="ppItemGamma"></span></summary><p class="text-sm text-gray-600 mt-2">Gamma thiết lập độ dốc (đường cong tương phản), xác định mối quan hệ giữa mức tín hiệu đầu vào (độ sáng từ đối tượng) và mức tín hiệu đầu ra (độ sáng được tái tạo bởi máy ảnh hoặc màn hình hiển thị).<br>Hình dạng của đường cong gamma ảnh hưởng đáng kể đến đặc điểm hình ảnh, đặc biệt là ở các vùng tối và độ tương phản tổng thể. Các đường cong Cine, S-Cinetone và HLG nổi bật như những ứng cử viên chính cho các giao diện điện ảnh "tức thì", mang lại sự cân bằng giữa dải động và độ tương phản dễ chịu ngay từ máy ảnh. S-Log không dành cho việc sử dụng "tức thì", đặc biệt là trên các máy ảnh 8 bit do nhiễu và tính dễ vỡ của nó.</p></details>
+                                      <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">2. <span data-translate-key="ppItemColorMode"></span></summary><p class="text-sm text-gray-600 mt-2">Color Mode xác định các đặc tính màu sắc, hoạt động kết hợp với Gamma để thiết lập màu sắc cơ bản của hình ảnh.<br>Gamma xác định đường cong độ sáng, trong khi Color Mode xác định sắc độ. Cùng với nhau, chúng thiết lập "giao diện" cơ bản của hình ảnh. Việc chọn đúng Color Mode là rất quan trọng để đạt được các tính thẩm mỹ cụ thể.</p></details>
+                                      <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. <span data-translate-key="ppItemBlackLevel"></span></summary><p class="text-sm text-gray-600 mt-2">Chức năng Black Level điều chỉnh điểm đen, về cơ bản kiểm soát điểm tối nhất trong hình ảnh.<br>Một màu đen bị "crush" (ép xuống) có thể thêm kịch tính và độ tương phản, trong khi màu đen được "lift" (nâng lên) – thường được gọi là "màu đen mờ" hoặc "màu đen sữa" – là một đặc điểm của nhiều loại phim cổ điển và có thể tạo ra cảm giác mềm mại, thanh tao hoặc cổ điển hơn.</p></details>
+                                      <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. <span data-translate-key="ppItemColorDepth"></span></summary><p class="text-sm text-gray-600 mt-2">Chức năng Color Depth điều chỉnh độ sáng cho từng pha màu (Đỏ, Lục, Lam, Lục lam, Tím, Vàng) riêng lẻ.<br>Không giống như Saturation toàn cầu hoặc Color Phase, Color Depth cho phép điều chỉnh độ sáng trên từng kênh, mang lại khả năng kiểm soát chính xác hơn. Thông số này cực kỳ mạnh mẽ để chỉnh màu tinh tế nhưng có tác động trực tiếp trong máy ảnh.</p></details>
+                                  </div>
                              </div>
                          </div>
                      </section>
@@ -1085,26 +917,6 @@ explain: () => `
                          </div>
                      </section>
 
-                       <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                           <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
-                           <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8">Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.</p>
-                           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                               <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                   <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallInternalTitle"></h4>
-                                   <p class="text-sm">Lưu trực tiếp vào máy. Truy cập nhanh nhất bằng cách xoay vòng xoay chế độ. Lý tưởng cho các công thức bạn sử dụng hàng ngày.</p>
-                               </div>
-                               <div class="bg-slate-100 rounded-lg p-6 text-center">
-                                   <h4 class="text-xl font-bold text-slate-700 mb-2" data-translate-key="recallCardTitle"></h4>
-                                   <p class="text-sm">Lưu dưới dạng file trên thẻ nhớ. Cực kỳ hữu ích để sao lưu an toàn hoặc chuyển công thức sang một thân máy Sony khác.</p>
-                               </div>
-                           </div>
-                       </section>
-
-                       <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                           <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="exposureNoteTitle"></h3>
-                           <p class="max-w-3xl mx-auto text-center text-gray-700">Hầu hết các công thức được tối ưu khi chụp ở mức phơi sáng 0EV với chế độ đo sáng 'Toàn màn hình trung bình' (Entire Screen Avg.).<br>Tuy nhiên, các công thức dựa trên S-Log có thể cần tăng phơi sáng (overexpose) để có kết quả tốt nhất. Việc phơi sáng đúng cách đảm bảo rằng máy ảnh thu được lượng ánh sáng và chi tiết tối ưu, cho phép Picture Profile phát huy tác dụng một cách hiệu quả.</p>
-                       </section>
-          
                       <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                           <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="recallTitle"></h3>
                           <p class="max-w-3xl mx-auto text-center text-gray-700 mb-8">Đừng lãng phí công sức! Lưu lại các công thức của bạn vào bộ nhớ của máy ảnh để gọi ra nhanh chóng chỉ bằng một thao tác xoay nút.</p>
@@ -1124,7 +936,7 @@ explain: () => `
                           <h3 class="text-2xl md:text-3xl font-bold text-center mb-4" data-translate-key="exposureNoteTitle"></h3>
                           <p class="max-w-3xl mx-auto text-center text-gray-700">Hầu hết các công thức được tối ưu khi chụp ở mức phơi sáng 0EV với chế độ đo sáng 'Toàn màn hình trung bình' (Entire Screen Avg.).<br>Tuy nhiên, các công thức dựa trên S-Log có thể cần tăng phơi sáng (overexpose) để có kết quả tốt nhất. Việc phơi sáng đúng cách đảm bảo rằng máy ảnh thu được lượng ánh sáng và chi tiết tối ưu, cho phép Picture Profile phát huy tác dụng một cách hiệu quả.</p>
                       </section>
-                      
+         
                  </main>
                  <footer class="text-center text-sm text-gray-500 pt-8 mt-12 border-t">
                      <p data-translate-key="footerText"></p>
@@ -1160,10 +972,8 @@ mainImageEl.onload = () => { mainImageEl.style.opacity = '1'; };
 }, 150);
 
 thumbnailsContainer.innerHTML = state.lightbox.images.map((imgSrc, index) => `
-              <img src="${imgSrc}" loading="lazy" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}">
-          `).join('');
-                  <img src="${imgSrc}" loading="lazy" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}">
-              `).join('');
+             <img src="${imgSrc}" loading="lazy" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}">
+         `).join('');
 }
 
 function navigateLightbox(direction) {
@@ -1202,7 +1012,6 @@ pointer.style.top = `${y}px`;
 
 const abValue = Math.round((x / rect.width) * 18 - 9);
 const gmValue = Math.round(((rect.height - y) / rect.height) * 18 - 9); 
-const gmValue = Math.round(((rect.height - y) / rect.height) * 18 - 9);
 
 const abLabel = abValue > 0 ? `A${abValue}` : (abValue < 0 ? `B${Math.abs(abValue)}` : '0');
 const gmLabel = gmValue > 0 ? `G${gmValue}` : (gmValue < 0 ? `M${Math.abs(gmValue)}` : '0');
@@ -1259,7 +1068,6 @@ function handleFilterClick(e) {
 const btn = e.target.closest('.filter-btn'); if (!btn) return;
 const group = btn.closest('[data-filter-group]').dataset.filterGroup;
 const value = btn.dataset.filterValue; 
-const value = btn.dataset.filterValue;
 state.activeFilters[group] = value;
 
 // Syncs active state across both mobile and desktop filter sets
@@ -1274,7 +1082,6 @@ function handleRecipeSelection(id, type) {
 if (type === 'checkbox') {
 const index = state.comparisonList.indexOf(id);
 if (index > -1) { state.comparisonList.splice(index, 1); } 
-if (index > -1) { state.comparisonList.splice(index, 1); }
 else if (state.comparisonList.length < 2) { state.comparisonList.push(id); }
 } else {
 if (state.selectedRecipeId === id) {
@@ -1321,41 +1128,11 @@ Cân bằng trắng: ${recipe2.whiteBalance}
 Cài đặt chính: ${JSON.stringify(recipe2.settings)}
 Độ sâu màu: ${JSON.stringify(recipe2.colorDepth || {})}
 Cài đặt chi tiết: ${JSON.stringify(recipe2.detailSettings || {})}
-    const modal = document.getElementById('comparisonModal');
-    const titleEl = document.getElementById('comparisonModalTitle');
-    const contentEl = document.getElementById('comparisonModalContent');
-    modal.classList.remove('hidden');
-    titleEl.textContent = t('comparisonModalTitle');
-    contentEl.innerHTML = `<div class="flex items-center justify-center p-8"><div class="spinner !w-12 !h-12 !border-4"></div><p class="ml-4 text-lg font-semibold">${t('comparisonLoading')}</p></div>`;
-    
-    const recipe1 = recipesData.find(r => r.id === id1);
-    const recipe2 = recipe2Obj ? { ...recipe2Obj, id: 'ai-adjusted', name: recipe2Obj.name } : recipesData.find(r => r.id === id2);
-
-    const recipe1Details = formatRecipeForPrompt(recipe1, state.currentLang);
-    const recipe2Details = formatRecipeForPrompt(recipe2, state.currentLang);
-
-    const prompt = `
-Hãy là một chuyên gia về màu sắc nhiếp ảnh. So sánh hai công thức Sony Picture Profile sau đây.
-
-**Yêu cầu:**
-1.  Tạo một bảng so sánh chi tiết các thông số kỹ thuật chính.
-2.  Sau bảng, viết một đoạn phân tích chuyên sâu về "cảm giác" và "phong cách" của mỗi công thức.
-3.  Đề xuất các tình huống sử dụng (ví dụ: chân dung, phong cảnh, đường phố) và điều kiện ánh sáng lý tưởng cho từng công thức.
-4.  Trình bày toàn bộ kết quả bằng định dạng Markdown.
-
-**Công thức 1:**
-${recipe1Details}
-
-**Công thức 2:**
-${recipe2Details}
 `;
 
 const comparisonText = await callAIApi(prompt, false); // Expecting Markdown, not structured JSON
 contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
 applyTranslations();
-    const comparisonText = await callAIApi(prompt, false);
-    contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
-    applyTranslations();
 }
 
 async function handleAiAdjustment(button) {
@@ -1376,85 +1153,92 @@ Yêu cầu của người dùng: "${textarea.value}"
 
 Ví dụ cấu trúc JSON mong đợi:
 {
-  "recipe": {
-    "id": "scl-001-ai",
-    "name": {"vi": "Mojave Sun (AI Tinh chỉnh)", "en": "Mojave Sun (AI Adjusted)"},
-    "description": {"vi": "Mô tả mới dựa trên tinh chỉnh AI.", "en": "New description based on AI adjustment."},
-    "type": "color",
-    "contrast": "normal",
-    "saturation": "normal",
-    "tags": ["nostalgic", "sun-drenched", "warm", "travel", "lifestyle", "summer", "golden-hour"],
-    "whiteBalance": "5500K, A6-M1",
-    "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
-    "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
-    "detailSettings": { "Level": "0" },
-    "personalityColor": "#FFD700",
-    "coords": { "x": 6, "y": 7 }
-  }
+ "recipe": {
+   "id": "scl-001-ai",
+   "name": {"vi": "Mojave Sun (AI Tinh chỉnh)", "en": "Mojave Sun (AI Adjusted)"},
+   "description": {"vi": "Mô tả mới dựa trên tinh chỉnh AI.", "en": "New description based on AI adjustment."},
+   "type": "color",
+   "contrast": "normal",
+   "saturation": "normal",
+   "tags": ["nostalgic", "sun-drenched", "warm", "travel", "lifestyle", "summer", "golden-hour"],
+   "whiteBalance": "5500K, A6-M1",
+   "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
+   "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
+   "detailSettings": { "Level": "0" },
+   "personalityColor": "#FFD700",
+   "coords": { "x": 6, "y": 7 }
+ }
 }
 Đảm bảo tất cả các trường gốc đều có mặt và chỉ các điều chỉnh được yêu cầu mới được thực hiện cho các cài đặt liên quan.
 `;
 const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON
-    const recipeId = button.dataset.recipeId;
-    const textarea = document.getElementById('aiTuningTextarea');
-    const resultContainer = document.getElementById('aiResultContainer');
-    if (!textarea.value || !resultContainer || state.isAILoading) return;
-    button.disabled = true;
-    button.dataset.originalText = button.innerHTML;
-    button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
 
+if (aiResponse && aiResponse.recipe) {
+    // Apply specific adjustments based on user request keywords
+    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe)); // Start with original
     // Start with a deep copy of the original recipe
     let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
-    adjustedRecipe.id = `${originalRecipe.id}-ai`;
-    adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
-    adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${textarea.value}"`, en: `Adjusted based on request: "${textarea.value}"` };
-    const originalRecipe = recipesData.find(r => r.id === recipeId);
-    const originalRecipeFormatted = formatRecipeForPrompt(originalRecipe, state.currentLang);
+adjustedRecipe.id = `${originalRecipe.id}-ai`;
+adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
+adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${textarea.value}"`, en: `Adjusted based on request: "${textarea.value}"` };
 
-    const userRequestLower = textarea.value.toLowerCase();
-    const prompt = `
-**Nhiệm vụ:** Tinh chỉnh một công thức Sony Picture Profile dựa trên yêu cầu của người dùng.
-**Định dạng đầu ra:** Chỉ trả về một đối tượng JSON duy nhất chứa khóa "recipe". Không giải thích, không thêm bất kỳ văn bản nào khác.
+const userRequestLower = textarea.value.toLowerCase();
 
+    // Example adjustments based on common keywords
     // Apply keyword-based adjustments first (robust fallback)
-    if (userRequestLower.includes('ấm hơn') || userRequestLower.includes('warmer')) {
+if (userRequestLower.includes('ấm hơn') || userRequestLower.includes('warmer')) {
+        adjustedRecipe.whiteBalance = "5500K, A6-M1"; // Example warm WB
         adjustedRecipe.whiteBalance = "5500K, A6-M1";
-        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.R = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.R || 0) + 2));
-        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.Y = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.Y || 0) + 2));
-    }
-    if (userRequestLower.includes('mát hơn') || userRequestLower.includes('cooler')) {
+if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.R = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.R || 0) + 2));
+if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.Y = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.Y || 0) + 2));
+}
+if (userRequestLower.includes('mát hơn') || userRequestLower.includes('cooler')) {
+        adjustedRecipe.whiteBalance = "2500K, B6-M1"; // Example cool WB
         adjustedRecipe.whiteBalance = "2500K, B6-M1";
-        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.B = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.B || 0) + 2));
-        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.C = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.C || 0) + 2));
-    }
-    if (userRequestLower.includes('tăng tương phản') || userRequestLower.includes('more contrast') || userRequestLower.includes('punchy')) {
+if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.B = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.B || 0) + 2));
+if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.C = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.C || 0) + 2));
+}
+if (userRequestLower.includes('tăng tương phản') || userRequestLower.includes('more contrast') || userRequestLower.includes('punchy')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Still'; // More contrasty gamma
         if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Still';
-        if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.max(-15, parseInt(adjustedRecipe.settings['Black level'] || 0) - 5));
-        adjustedRecipe.contrast = 'high';
-    }
-    if (userRequestLower.includes('giảm tương phản') || userRequestLower.includes('less contrast') || userRequestLower.includes('soft')) {
+if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.max(-15, parseInt(adjustedRecipe.settings['Black level'] || 0) - 5));
+adjustedRecipe.contrast = 'high';
+}
+if (userRequestLower.includes('giảm tương phản') || userRequestLower.includes('less contrast') || userRequestLower.includes('soft')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Cine4'; // Flatter gamma
         if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Cine4';
-        if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.min(7, parseInt(adjustedRecipe.settings['Black level'] || 0) + 5));
-        adjustedRecipe.contrast = 'low';
-    }
-    if (userRequestLower.includes('tươi hơn') || userRequestLower.includes('more vibrant') || userRequestLower.includes('tăng bão hòa')) {
-        if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.min(32, parseInt(adjustedRecipe.settings.Saturation || 0) + 10));
-        adjustedRecipe.saturation = 'high';
-    }
-    if (userRequestLower.includes('nhạt hơn') || userRequestLower.includes('less saturated') || userRequestLower.includes('giảm bão hòa')) {
-        if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.max(-7, parseInt(adjustedRecipe.settings.Saturation || 0) - 10));
-        adjustedRecipe.saturation = 'low';
-    }
-    if (userRequestLower.includes('sắc nét hơn') || userRequestLower.includes('sharper')) {
-        if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.min(7, parseInt(adjustedRecipe.detailSettings.Level || 0) + 3));
-    }
-    if (userRequestLower.includes('mềm mại hơn') || userRequestLower.includes('softer') || userRequestLower.includes('giảm chi tiết')) {
-        if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.max(-7, parseInt(adjustedRecipe.detailSettings.Level || 0) - 3));
-    }
-**Công thức gốc:**
-${originalRecipeFormatted}
+if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.min(7, parseInt(adjustedRecipe.settings['Black level'] || 0) + 5));
+adjustedRecipe.contrast = 'low';
+}
+if (userRequestLower.includes('tươi hơn') || userRequestLower.includes('more vibrant') || userRequestLower.includes('tăng bão hòa')) {
+if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.min(32, parseInt(adjustedRecipe.settings.Saturation || 0) + 10));
+adjustedRecipe.saturation = 'high';
+}
+if (userRequestLower.includes('nhạt hơn') || userRequestLower.includes('less saturated') || userRequestLower.includes('giảm bão hòa')) {
+if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.max(-7, parseInt(adjustedRecipe.settings.Saturation || 0) - 10));
+adjustedRecipe.saturation = 'low';
+}
+if (userRequestLower.includes('sắc nét hơn') || userRequestLower.includes('sharper')) {
+if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.min(7, parseInt(adjustedRecipe.detailSettings.Level || 0) + 3));
+}
+if (userRequestLower.includes('mềm mại hơn') || userRequestLower.includes('softer') || userRequestLower.includes('giảm chi tiết')) {
+if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.max(-7, parseInt(adjustedRecipe.detailSettings.Level || 0) - 3));
+}
 
-    // Attempt to merge AI's suggested changes if available and valid
+// Attempt to merge AI's suggested changes if available and valid
+    if (aiResponse.recipe) {
+        // Simple merge: AI's values overwrite if they exist and are valid.
+        // For simplicity, directly assign top-level properties if they exist in AI's response
+        if (aiResponse.recipe.whiteBalance) adjustedRecipe.whiteBalance = aiResponse.recipe.whiteBalance;
+        if (aiResponse.recipe.settings) Object.assign(adjustedRecipe.settings, aiResponse.recipe.settings);
+        if (aiResponse.recipe.colorDepth) Object.assign(adjustedRecipe.colorDepth, aiResponse.recipe.colorDepth);
+        if (aiResponse.recipe.detailSettings) Object.assign(adjustedRecipe.detailSettings, aiResponse.recipe.detailSettings);
+        if (aiResponse.recipe.personalityColor) adjustedRecipe.personalityColor = aiResponse.recipe.personalityColor;
+        if (aiResponse.recipe.coords) adjustedRecipe.coords = aiResponse.recipe.coords;
+        if (aiResponse.recipe.contrast) adjustedRecipe.contrast = aiResponse.recipe.contrast;
+        if (aiResponse.recipe.saturation) adjustedRecipe.saturation = aiResponse.recipe.saturation;
+        if (aiResponse.recipe.tags) adjustedRecipe.tags = aiResponse.recipe.tags;
+    }
     if (aiResponse && aiResponse.recipe) {
         const aiRecipe = aiResponse.recipe;
         // Overwrite with AI's values if they are present and valid
@@ -1489,47 +1273,20 @@ ${originalRecipeFormatted}
         if (aiRecipe.tags) adjustedRecipe.tags = aiRecipe.tags;
         if (aiRecipe.personalityColor) adjustedRecipe.personalityColor = aiRecipe.personalityColor;
         if (aiRecipe.coords) adjustedRecipe.coords = aiRecipe.coords;
-**Yêu cầu của người dùng:** "${textarea.value}"
 
-**Hướng dẫn:**
-1.  Đọc kỹ yêu cầu của người dùng.
-2.  Chỉ thay đổi các giá trị trong \`whiteBalance\`, \`settings\`, \`colorDepth\`, và \`detailSettings\` để đáp ứng yêu cầu.
-3.  Giữ nguyên cấu trúc của công thức gốc.
-4.  Cập nhật trường \`name\` và \`description\` để phản ánh sự thay đổi. Ví dụ: thêm "(AI Tinh chỉnh)" vào tên.
-5.  Trả về đối tượng JSON hợp lệ theo schema đã cung cấp.
-`;
-
-    const aiResponse = await callAIApi(prompt, true);
-
-    let adjustedRecipe;
-
-    if (aiResponse && aiResponse.recipe) {
-        console.log("AI successfully returned a structured recipe.");
-        // Merge AI response with original to ensure all fields are present
-        adjustedRecipe = { ...JSON.parse(JSON.stringify(originalRecipe)), ...aiResponse.recipe };
-        adjustedRecipe.id = `${originalRecipe.id}-ai`; // Ensure ID is unique
-} else {
+    } else {
         console.warn("AI did not return a valid structured recipe. Proceeding with keyword-based adjustments only.");
         // No need to set resultContainer.innerHTML here, as it's done below with adjustedRecipe
-        console.warn("AI did not return a valid structured recipe. Proceeding with keyword-based adjustments as a fallback.");
-        // Fallback logic remains the same
-        adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
-        adjustedRecipe.id = `${originalRecipe.id}-ai`;
-        adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
-        adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${textarea.value}"`, en: `Adjusted based on request: "${textarea.value}"` };
-        const userRequestLower = textarea.value.toLowerCase();
-        if (userRequestLower.includes('ấm hơn') || userRequestLower.includes('warmer')) {
-            adjustedRecipe.whiteBalance = "5500K, A6-M1";
-        }
-        // ... (add other keyword checks here if needed)
+    }
+
+state.lastGeneratedAiRecipe = adjustedRecipe; // Use the locally adjusted recipe
+resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
+} else {
+    console.error("AI Adjustment failed. AI Response was not valid or missing 'recipe' object:", aiResponse);
+    resultContainer.innerHTML = `<p class="text-red-500">Lỗi khi tạo tinh chỉnh bằng AI. Phản hồi không hợp lệ hoặc thiếu dữ liệu công thức. Vui lòng thử lại.</p>`;
 }
 
-    state.lastGeneratedAiRecipe = adjustedRecipe; // Use the locally adjusted recipe
-    state.lastGeneratedAiRecipe = adjustedRecipe;
-resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
-
 button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
-    button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
 }
 
 async function handleAiRecipeExplanation(button) {
@@ -1551,31 +1308,17 @@ button.innerHTML = button.dataset.originalText;
 return;
 }
 
-    // This prompt is now for the mock API, it will return a predefined string
-    const prompt = `Giải thích các đặc điểm và ý đồ nghệ thuật của công thức Sony Picture Profile sau một cách súc tích, dễ hiểu, tập trung vào cách Cân bằng trắng, Gamma, Mức độ đen, Chế độ màu, Độ bão hòa, Độ sâu màu và cài đặt Chi tiết của nó đóng góp vào giao diện và cảm nhận tổng thể. Đồng thời, gợi ý các tình huống chụp ảnh lý tưởng cho công thức này.
-    Tên công thức: ${recipe.name[state.currentLang]}
-    Mô tả: ${recipe.description[state.currentLang]}
-    Cân bằng trắng: ${recipe.whiteBalance}
-    Cài đặt chính: ${JSON.stringify(recipe.settings)}
-    Độ sâu màu: ${JSON.stringify(recipe.colorDepth || {})}
-    Cài đặt chi tiết: ${JSON.stringify(recipe.detailSettings || {})}
-    `;
-    const recipeDetails = formatRecipeForPrompt(recipe, state.currentLang);
-    const prompt = `
-Hãy là một chuyên gia về màu sắc nhiếp ảnh. Phân tích công thức Sony Picture Profile sau đây.
+// This prompt is now for the mock API, it will return a predefined string
+const prompt = `Giải thích các đặc điểm và ý đồ nghệ thuật của công thức Sony Picture Profile sau một cách súc tích, dễ hiểu, tập trung vào cách Cân bằng trắng, Gamma, Mức độ đen, Chế độ màu, Độ bão hòa, Độ sâu màu và cài đặt Chi tiết của nó đóng góp vào giao diện và cảm nhận tổng thể. Đồng thời, gợi ý các tình huống chụp ảnh lý tưởng cho công thức này.
+   Tên công thức: ${recipe.name[state.currentLang]}
+   Mô tả: ${recipe.description[state.currentLang]}
+   Cân bằng trắng: ${recipe.whiteBalance}
+   Cài đặt chính: ${JSON.stringify(recipe.settings)}
+   Độ sâu màu: ${JSON.stringify(recipe.colorDepth || {})}
+   Cài đặt chi tiết: ${JSON.stringify(recipe.detailSettings || {})}
+   `;
 
-**Yêu cầu:**
-1.  Giải thích một cách súc tích, dễ hiểu về các đặc điểm và ý đồ nghệ thuật của công thức này.
-2.  Tập trung phân tích cách các thông số chính (Cân bằng trắng, Gamma, Mức độ đen, Chế độ màu, Độ sâu màu) phối hợp với nhau để tạo ra phong cách độc đáo của công thức.
-3.  Gợi ý các tình huống chụp ảnh và loại chủ thể lý tưởng (ví dụ: chân dung ngoài trời, kiến trúc, thời trang) để tận dụng tối đa công thức này.
-4.  Trình bày toàn bộ kết quả bằng định dạng Markdown.
-
-**Công thức cần phân tích:**
-${recipeDetails}
-`;
-
-    const aiResponse = await callAIApi(prompt, false); // Expecting plain text/markdown from mock
-    const aiResponse = await callAIApi(prompt, false);
+const aiResponse = await callAIApi(prompt, false); // Expecting plain text/markdown from mock
 
 if (aiResponse) {
 explanationContainer.innerHTML = `<div class="mt-4 p-4 rounded-xl bg-blue-50">
@@ -1594,124 +1337,88 @@ applyTranslations();
 
 async function handleQuizSubmit() {
 const selectedTags = Object.values(state.quizAnswers);
-    
-    // Show a brief loading state before transitioning
 await renderView('home');
 const homeView = document.getElementById('homeView');
 if (!homeView) { console.error("Quiz Submit Error: homeView not found after render."); return; }
 homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
 applyTranslations();
-    await new Promise(resolve => setTimeout(resolve, 400)); // Short delay for UX
 
-    let recommendedRecipe = null;
-    let maxScore = -1;
-    let bestLocalRecipe = null;
+let recommendedRecipe = null;
 
-    try {
-        // Step 1: Try to get a recommendation from Gemini API
-        const prompt = `Based on the user's quiz answers (tags): ${JSON.stringify(selectedTags)}.
-        From the following list of available recipes, suggest the single best recipe that matches these tags.
-        Available recipes: ${JSON.stringify(recipesData.map(r => ({ id: r.id, name: r.name[state.currentLang], tags: r.tags })))}
-        Provide the output as a JSON object, with 'recipeId' (the 'id' of the recipe) and 'moodDescription' (the recipe's description in the current language).
-        Example:
-        {"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
-        `;
+try {
+// Step 1: Try to get a recommendation from Gemini API
+const prompt = `Based on the user's quiz answers (tags): ${JSON.stringify(selectedTags)}.
+       From the following list of available recipes, suggest the single best recipe that matches these tags.
+       Available recipes: ${JSON.stringify(recipesData.map(r => ({ id: r.id, name: r.name[state.currentLang], tags: r.tags })))}
+       Provide the output as a JSON object, with 'recipeId' (the 'id' of the recipe) and 'moodDescription' (the recipe's description in the current language).
+       Example:
+       {"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
+       `;
 
-        const aiResponse = await callAIApi(prompt, true, 0); // Set delay to 0 for quick response
-        console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
+const aiResponse = await callAIApi(prompt, true, 0); // Set delay to 0 for quick response
+console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
 
-        if (aiResponse && aiResponse.recipeId) {
-            recommendedRecipe = recipesData.find(r => r.id === aiResponse.recipeId);
-            if (!recommendedRecipe) {
-                console.warn(`AI recommended recipe ID '${aiResponse.recipeId}' not found in local data. Falling back to local scoring.`);
-            }
-        } else {
-            console.warn("AI response invalid or missing recipeId. Falling back to local scoring.");
-        }
+if (aiResponse && aiResponse.recipeId) {
+recommendedRecipe = recipesData.find(r => r.id === aiResponse.recipeId);
+if (!recommendedRecipe) {
+console.warn(`AI recommended recipe ID '${aiResponse.recipeId}' not found in local data. Falling back to local scoring.`);
+}
+} else {
+console.warn("AI response invalid or missing recipeId. Falling back to local scoring.");
+}
 
-    } catch (error) {
-        console.error("Error calling AI for quiz, falling back to local scoring:", error);
-    }
+} catch (error) {
+console.error("Error calling AI for quiz, falling back to local scoring:", error);
+}
 
-    // Step 2: Fallback to local scoring if AI recommendation failed or was invalid
-    if (!recommendedRecipe) {
-        let maxScore = -1;
-        let bestLocalRecipe = null;
+// Step 2: Fallback to local scoring if AI recommendation failed or was invalid
+if (!recommendedRecipe) {
+let maxScore = -1;
+let bestLocalRecipe = null;
 
-        recipesData.forEach(recipe => {
-            let score = 0;
-            selectedTags.forEach(tag => {
-                if (recipe.tags.includes(tag)) {
-                    score++;
-                }
-            });
-            // Give extra weight to type match
-            if (selectedTags.includes(recipe.type)) {
-                score += 5;
-            }
-
-            if (score > maxScore) {
-                maxScore = score;
-                bestLocalRecipe = recipe;
-    recipesData.forEach(recipe => {
-        let score = 0;
-        selectedTags.forEach(tag => {
-            // Direct match gets a point
-            if (recipe.tags.includes(tag)) {
-                score++;
+recipesData.forEach(recipe => {
+let score = 0;
+selectedTags.forEach(tag => {
+if (recipe.tags.includes(tag)) {
+score++;
 }
 });
-        
-        // Give extra weight to critical matches
-        if (state.quizAnswers.type && recipe.type === state.quizAnswers.type) {
-            score += 5; 
-        }
-        if (state.quizAnswers.contrast && recipe.contrast === state.quizAnswers.contrast) {
-            score += 2; 
-        }
-        if (state.quizAnswers.saturation && recipe.saturation === state.quizAnswers.saturation) {
-            score += 2; 
-        }
-
-        if (bestLocalRecipe) {
-            recommendedRecipe = bestLocalRecipe;
-            console.log("Using local scoring fallback. Recommended recipe:", recommendedRecipe.id);
-        } else {
-            // Ultimate fallback if no local recipe matches at all (highly unlikely)
-            recommendedRecipe = recipesData[0];
-            console.warn("No suitable recipe found via AI or local scoring. Defaulting to first recipe:", recommendedRecipe.id);
-        if (score > maxScore) {
-            maxScore = score;
-            bestLocalRecipe = recipe;
+// Give extra weight to type match
+if (selectedTags.includes(recipe.type)) {
+score += 5;
 }
-    }
-    });
 
-    // Step 3: Navigate to the recommended recipe's detail page
-    const recommendedRecipe = bestLocalRecipe || recipesData[0]; // Fallback to first recipe if no match
-    
-    // Navigate to the recommended recipe's detail page
+if (score > maxScore) {
+maxScore = score;
+bestLocalRecipe = recipe;
+}
+});
+
+if (bestLocalRecipe) {
+recommendedRecipe = bestLocalRecipe;
+console.log("Using local scoring fallback. Recommended recipe:", recommendedRecipe.id);
+} else {
+// Ultimate fallback if no local recipe matches at all (highly unlikely)
+recommendedRecipe = recipesData[0];
+console.warn("No suitable recipe found via AI or local scoring. Defaulting to first recipe:", recommendedRecipe.id);
+}
+}
+
+// Step 3: Navigate to the recommended recipe's detail page
 if (recommendedRecipe) {
 state.selectedRecipeId = recommendedRecipe.id;
 state.isMobileDetailActive = true;
-        await renderView('recipeFormulas'); // Directly navigate to recipe details
-        await renderView('recipeFormulas');
+await renderView('recipeFormulas'); // Directly navigate to recipe details
 } else {
-        // This case should ideally not be reached with the fallbacks in place
+// This case should ideally not be reached with the fallbacks in place
+        homeView.innerHTML = `<p class="text-red-500">Lỗi không mong muốn: Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
         homeView.innerHTML = `<p class="text-red-500">Lỗi không mong unexpected: Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
-        // This case is highly unlikely but good to have a fallback
-        await renderView('home');
-        const fallbackHomeView = document.getElementById('homeView');
-        if(fallbackHomeView) {
-            fallbackHomeView.innerHTML = `<p class="text-red-500">Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
-        }
 }
 }
 
 function attachViewEventListeners(viewName) {
 if (viewName === 'recipeFormulas') {
 renderLibraryList();  
-renderLibraryList();
 renderLibraryDetails();
 renderInteractiveCharts(state.currentLang);
 } else if (viewName === 'explain') {
@@ -1762,27 +1469,17 @@ const isChecked = state.comparisonList.includes(recipe.id);
 const isSelected = recipe.id === state.selectedRecipeId;
 
 return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-start gap-4 ${isSelected ? 'selected' : ''}">
-                          <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
-                           <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
-                               <div class="flex items-start gap-3">
-                                     <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
-                                   <div class="flex-grow">
-                                         <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
-                                       <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
-                                  <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
-                                   <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
-                                       <div class="flex items-start gap-3">
-                                           <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
-                                          <div class="flex-grow">
-                                               <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
-                                              <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
-                                          </div>
-                                       </div>
+                         <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
+                          <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
+                              <div class="flex items-start gap-3">
+                                    <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
+                                  <div class="flex-grow">
+                                        <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+                                      <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
                                   </div>
-                               </div>
-                           </div>
-                      </div>`;
-                              </div>`;
+                              </div>
+                          </div>
+                     </div>`;
 }).join('');
 
 const btnContainer = document.getElementById('compareBtnContainer');
@@ -1823,12 +1520,10 @@ chartsContainer = document.getElementById('chartsContainer');
 if (!recipeContentContainer) return;
 
 if (!recipe) {  
-if (!recipe) {
 if (chartsContainer) chartsContainer.classList.remove('hidden');
 recipeContentContainer.classList.add('hidden');
 if(!isMobile) recipeMainPanel?.classList.remove('hidden');
 return;   
-return;
 }
 if (chartsContainer) chartsContainer.classList.add('hidden');
 recipeContentContainer.classList.remove('hidden');
@@ -1849,96 +1544,53 @@ imageElements.push(`<div class="bg-gray-200 group rounded-xl overflow-hidden"><i
 thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElements.join('')}</div></div>`;
 
 const exportSectionHTML = `
-              <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                  <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="exportRecipeBtn"></h3>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <button id="downloadLutBtn" data-recipe-id="${recipe.id}" class="btn bg-blue-100 text-blue-800 hover:bg-blue-200 w-full py-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                          <span data-translate-key="downloadLutBtn"></span>
-                      </button>
-                      <button id="memoryRecallGuideBtn" class="btn bg-gray-200 text-gray-800 hover:bg-gray-300 w-full py-3">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                         <span data-translate-key="memoryRecallBtn"></span>
-                      </button>
-                  <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                      <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="exportRecipeBtn"></h3>
-                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <button id="downloadLutBtn" data-recipe-id="${recipe.id}" class="btn bg-blue-100 text-blue-800 hover:bg-blue-200 w-full py-3">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                              <span data-translate-key="downloadLutBtn"></span>
-                          </button>
-                          <button id="memoryRecallGuideBtn" class="btn bg-gray-200 text-gray-800 hover:bg-gray-300 w-full py-3">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                              <span data-translate-key="memoryRecallBtn"></span>
-                          </button>
-                      </div>
+             <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
+                 <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="exportRecipeBtn"></h3>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <button id="downloadLutBtn" data-recipe-id="${recipe.id}" class="btn bg-blue-100 text-blue-800 hover:bg-blue-200 w-full py-3">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                         <span data-translate-key="downloadLutBtn"></span>
+                     </button>
+                     <button id="memoryRecallGuideBtn" class="btn bg-gray-200 text-gray-800 hover:bg-gray-300 w-full py-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <span data-translate-key="memoryRecallBtn"></span>
+                     </button>
                  </div>
-              </div>
-          `;
-            `;
+             </div>
+         `;
 
 recipeContentContainer.innerHTML = `
-                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
-              <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
-              ${thumbnailsHTML}
-              ${exportSectionHTML}
-              <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
-              <div class="mt-8 pt-8 border-t-2 border-gray-200/60">
-                  <button id="aiExplainRecipeBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full py-3" data-translate-key="aiExplainRecipeBtn"></button>
-                  <div id="aiExplanationContainer" class="mt-4 hidden"></div>
-              </div>
-              <div id="setupGuideSection" class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                  <details open class="group">
-                      <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
-                          <span data-translate-key="tutorialTitle"></span>
-                          <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                      </summary>
-                      <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
-                          <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p><p data-translate-key="tutorialStep1P2"></p></div>
-                          <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
-                          <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
-                          <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
-                      </div>
-                  </details>
-              </div>
-              <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                  <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
-                  <div class="glass-panel p-4 md:p-6 -mx-2">
-                      <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
-                      <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
-                      <div id="aiResultContainer"></div>
-                  <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
-                <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
-                ${thumbnailsHTML}
-                ${exportSectionHTML}
-                  <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
-                  <div class="mt-8 pt-8 border-t-2 border-gray-200/60">
-                      <button id="aiExplainRecipeBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full py-3" data-translate-key="aiExplainRecipeBtn"></button>
-                      <div id="aiExplanationContainer" class="mt-4 hidden"></div>
-                  </div>
-                  <div id="setupGuideSection" class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                      <details open class="group">
-                          <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
-                              <span data-translate-key="tutorialTitle"></span>
-                              <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                          </summary>
-                          <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
-                              <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p><p data-translate-key="tutorialStep1P2"></p></div>
-                              <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
-                              <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
-                              <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
-                          </div>
-                      </details>
+               <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+             <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
+             ${thumbnailsHTML}
+             ${exportSectionHTML}
+             <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
+             <div class="mt-8 pt-8 border-t-2 border-gray-200/60">
+                 <button id="aiExplainRecipeBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full py-3" data-translate-key="aiExplainRecipeBtn"></button>
+                 <div id="aiExplanationContainer" class="mt-4 hidden"></div>
+             </div>
+             <div id="setupGuideSection" class="mt-12 pt-8 border-t-2 border-gray-200/60">
+                 <details open class="group">
+                     <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
+                         <span data-translate-key="tutorialTitle"></span>
+                         <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                     </summary>
+                     <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
+                         <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p><p data-translate-key="tutorialStep1P2"></p></div>
+                         <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
+                         <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
+                         <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
+                     </div>
+                 </details>
+             </div>
+             <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
+                 <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
+                 <div class="glass-panel p-4 md:p-6 -mx-2">
+                     <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
+                     <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
+                     <div id="aiResultContainer"></div>
                  </div>
-              </div>`;
-                  <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                      <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
-                      <div class="glass-panel p-4 md:p-6 -mx-2">
-                          <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
-                          <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
-                          <div id="aiResultContainer"></div>
-                      </div>
-                  </div>`;
+             </div>`;
 applyTranslations();
 }
 
@@ -1968,7 +1620,6 @@ callbacks: { label: function(context) { return context.raw.name; } }
 },
 scales: {
 x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } },
-x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t('axisTonality') } },
 y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
 }
 });
@@ -2089,8 +1740,6 @@ const target = e.target;
 if (state.lightbox.isOpen) {
 if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) { closeLightbox(); } 
 else if (target.closest('#lightbox-next')) { navigateLightbox(1); } 
-if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) { closeLightbox(); }
-else if (target.closest('#lightbox-next')) { navigateLightbox(1); }
 else if (target.closest('#lightbox-prev')) { navigateLightbox(-1); }
 const thumb = target.closest('.lightbox-thumb');
 if (thumb) {
@@ -2098,13 +1747,11 @@ state.lightbox.currentIndex = parseInt(thumb.dataset.index);
 updateLightboxContent();
 }
 return; 
-return;
 }
 
 const lightboxTrigger = target.closest('.lightbox-trigger-thumb');
 const homeBtn = target.closest('#homeBtn');
 const navBtn = target.closest('.nav-btn'); 
-const navBtn = target.closest('.nav-btn');
 const mobileNavBtn = target.closest('.nav-btn-mobile');
 const langBtn = target.closest('.lang-btn');
 const startQuizBtn = target.closest('#startQuizBtn');
@@ -2121,7 +1768,6 @@ await renderView(mobileNavBtn.dataset.view); return;
 }
 if (homeBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('home'); return; }
 if (navBtn) { 
-if (navBtn) {
 const dropdownMenu = document.getElementById('pp-dropdown-menu');
 if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
 dropdownMenu.classList.add('opacity-0', 'scale-95', 'hidden');
@@ -2131,10 +1777,6 @@ state.selectedRecipeId = null;
 state.isMobileDetailActive = false; 
 await renderView(navBtn.dataset.view); 
 return; 
-state.selectedRecipeId = null;
-state.isMobileDetailActive = false;
-await renderView(navBtn.dataset.view);
-return;
 }
 if (exploreMoreBtn) { state.selectedRecipeId = null; state.isMobileDetailActive = false; await renderView('recipeFormulas'); return; }
 if (langBtn) { state.currentLang = langBtn.id.replace('lang', '').toLowerCase(); await renderView(state.currentView); return; }
@@ -2144,11 +1786,6 @@ state.quizStep = 0;
 state.quizAnswers = {}; 
 await renderView('quiz'); 
 return; 
-if (startQuizBtn) {
-state.quizStep = 0;
-state.quizAnswers = {};
-await renderView('quiz');
-return;
 }
 
 const recipeItemContent = target.closest('.recipe-item-content');
@@ -2203,8 +1840,6 @@ return;
 
 if (document.getElementById('filtersContainer')?.contains(target) || document.getElementById('filtersContainerDesktop')?.contains(target)) { 
 handleFilterClick(e); return; 
-if (document.getElementById('filtersContainer')?.contains(target) || document.getElementById('filtersContainerDesktop')?.contains(target)) {
-handleFilterClick(e); return;
 }
 });
 
