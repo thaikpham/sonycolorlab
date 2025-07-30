@@ -3,14 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sony AI Color Lab Web-App</title>
+<title>Sony Color Lab</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z' stroke='%231d1d1f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3C/path%3E%3C/svg%3E">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<!-- OPTIMIZATION: Defer non-critical scripts to speed up initial page load -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 <style>
     html { scroll-behavior: smooth; }
@@ -21,35 +19,23 @@
         overflow-x: hidden;
         overflow-y: auto;
     }
-
-    #bg-blurs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
-    .blur-circle { position: absolute; border-radius: 50%; filter: blur(180px); opacity: 0.15; transition: all 2s ease-in-out; }
-    .blur-1 { width: 40vw; height: 40vw; max-width: 500px; max-height: 500px; background: #007AFF; top: 5%; left: 10%; animation: move-blur-1 30s infinite alternate; }
-    .blur-2 { width: 50vw; height: 50vw; max-width: 600px; max-height: 600px; background: #FF9500; bottom: 5%; right: 10%; animation: move-blur-2 35s infinite alternate; }
-    @keyframes move-blur-1 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(10vw, 5vh) scale(1.3) rotate(55deg); } }
-    @keyframes move-blur-2 { from { transform: translate(0, 0) scale(1) rotate(0deg); } to { transform: translate(-8vw, -5vh) scale(1.2) rotate(-70deg); } }
-
     :root {
         --primary-accent: #007AFF;
         --primary-accent-darker: #0056B3;
-        --glass-bg: rgba(255, 255, 255, 0.55);
+        --glass-bg: rgba(255, 255, 255, 0.65);
         --glass-border: rgba(0, 0, 0, 0.07);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
     }
-
     .glass-panel {    
         background: var(--glass-bg);    
-        backdrop-filter: blur(40px) saturate(180%);    
-        -webkit-backdrop-filter: blur(40px) saturate(180%);    
+        backdrop-filter: blur(30px) saturate(180%);    
+        -webkit-backdrop-filter: blur(30px) saturate(180%);    
         border: 1px solid var(--glass-border);    
         box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
         border-radius: 24px;
     }
-    @media (min-width: 768px) {
-        .glass-panel { border-radius: 28px; }
-    }
-    
+    @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
     .recipe-item.selected {    
         background-color: rgba(0, 122, 255, 0.1);    
         border-left: 4px solid var(--primary-accent);    
@@ -58,113 +44,21 @@
         box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
     }
     .recipe-item:hover:not(.selected) { background-color: rgba(0, 0, 0, 0.04); }
-    .recipe-dot { transition: transform 0.2s ease-in-out; }
-    .recipe-dot:hover { transform: scale(1.25); }
-
     .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;}
     .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
     .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 18px rgba(0, 118, 255, 0.45); }
-    .btn:disabled { background-color: #b0bec5; cursor: not-allowed; opacity: 0.7; box-shadow: none; }
-
     .lang-btn { background: #e9ecef; border: none; border-radius: 9999px; padding: 0.25rem; transition: all 0.2s ease; }
     .lang-btn.active { box-shadow: 0 0 0 2.5px var(--primary-accent); }
     .lang-btn svg { width: 1.5rem; height: 1.5rem; }
-
-    .landing-title { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.025em; }
-    .quiz-question-title { font-size: clamp(1.7rem, 5vw, 3rem); font-weight: 700; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
-    .landing-subtitle { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--text-secondary); margin-top: 1.25rem; max-width: 650px; line-height: 1.6; }
-
     .view-transition { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
-
-    /* QUIZ STYLES */
-    .quiz-option-card {
-        background-color: white;
-        border: 2px solid #e5e7eb;
-        padding: 1rem;
-        border-radius: 1.25rem;
-        cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.75rem;
-    }
-    .quiz-option-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.07);
-    }
-    .quiz-option-card.selected {
-        border-color: var(--primary-accent);
-        background-color: rgba(0, 122, 255, 0.1);
-        color: var(--primary-accent);
-        box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
-    }
-    .quiz-option-card svg {
-        width: 2.5rem;
-        height: 2.5rem;
-        color: #6b7280;
-        transition: color 0.2s ease;
-    }
-    .quiz-option-card.selected svg {
-        color: var(--primary-accent);
-    }
-    .quiz-option-card span {
-        font-weight: 600;
-        font-size: 1rem;
-    }
-    .bouncing {
-        animation: bounce-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes bounce-in {
-        0% { transform: scale(0.95); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-
     .filter-btn { background-color: rgba(0,0,0,0.05); border: 1px solid transparent; transition: all 0.2s ease-in-out; }
     .filter-btn.active { background-color: rgba(0, 122, 255, 0.1); border-color: var(--primary-accent); color: var(--primary-accent); font-weight: 600; }
-
-    .spinner { border: 3px solid rgba(0, 0, 0, 0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: currentColor; animation: spin 1s ease infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .modal { z-index: 50; transition: opacity 0.3s ease; }
-    .modal-content { transition: transform 0.3s ease; border-radius: 28px; }
-    .modal.hidden { opacity: 0; pointer-events: none; }
-    .modal.hidden .modal-content { transform: scale(0.95); }
-
-    #comparisonModalContent { background-color: #f0f9ff; border-radius: 0 0 28px 28px; }
-    .prose-comparison h3 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); border-bottom: 2px solid var(--primary-accent); padding-bottom: 0.5rem; }
-
-    .quiz-choice-option { cursor: pointer; transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; background: rgba(255,255,255,0.7); border-radius: 20px;}
-    .quiz-choice-option:hover { transform: scale(1.03); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
-
-    .overflow-y-auto::-webkit-scrollbar { width: 10px; }
-    .overflow-y-auto::-webkit-scrollbar-track { background-color: transparent; }
-    .overflow-y-auto::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
-    .overflow-y-auto::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
-    .overflow-y-auto { scrollbar-width: auto; scrollbar-color: rgba(0, 0, 0, 0.2) transparent; }
-
     .chart-container { position: relative; margin: auto; height: 280px; width: 100%;}
     @media (min-width: 768px) { .chart-container { height: 320px; } }
     #colorChart, #bwChart { cursor: pointer; }
-
-    #mobileNavMenu { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-    #lightbox { z-index: 100; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    #lightbox.hidden { opacity: 0; pointer-events: none; }
-    #lightbox .lightbox-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    #lightbox.hidden .lightbox-content { transform: scale(0.95); opacity: 0; }
-    .lightbox-thumb { cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; }
-    .lightbox-thumb.active { border-color: var(--primary-accent); transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 122, 255, 0.5); }
-    .lightbox-nav-btn { background-color: rgba(0,0,0,0.4); transition: background-color 0.2s ease; }
-    .lightbox-nav-btn:hover { background-color: rgba(0,0,0,0.7); }
-    #lightbox-main-image { transition: opacity 0.2s ease-in-out; }
-    
-    /* New Tooltip Styles */
     #infoTooltip {
         position: absolute;
         z-index: 100;
@@ -181,44 +75,25 @@
         opacity: 0;
         transform: translateY(10px);
         transition: opacity 0.2s ease, transform 0.2s ease;
-        pointer-events: none; /* Important */
+        pointer-events: none;
     }
     #infoTooltip.visible {
         opacity: 1;
         transform: translateY(0);
     }
 </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGB56ZKQD"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-QKGB56ZKQD');
-</script>
 </head>
 <body>
-<div id="bg-blurs"><div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div></div>
-
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
         <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             <span data-translate-key="headerTitle" class="hidden sm:inline"></span>
-            <span class="ml-2 text-[10px] font-bold text-white bg-gradient-to-r from-purple-500 via-blue-500 to-teal-400 px-2.5 py-1 rounded-full uppercase tracking-wider self-center shadow-md">Beta</span>
         </button>
         <div class="flex items-center gap-2 md:gap-4">
             <nav id="mainNav" class="hidden md:flex items-center gap-2">
-                <div class="relative" id="pp-dropdown-container">
-                    <button id="pp-dropdown-btn" class="font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 flex items-center gap-1 rounded-full hover:bg-gray-100">
-                        <span data-translate-key="navPictureProfile"></span>
-                        <svg class="w-4 h-4 transition-transform" id="pp-dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95">
-                        <button data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
-                        <button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
-                    </div>
-                </div>
+                <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navRecipeFormulas"></button>
+                <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navFeaturedPhotos"></button>
             </nav>
             <div class="flex items-center gap-2">
                 <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
@@ -233,10 +108,8 @@
     <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
 </div>
 
-<!-- Tooltip Element -->
 <div id="infoTooltip" class="hidden"></div>
 
-<!-- Mobile Nav Menu -->
 <div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
     <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
         <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
@@ -247,1036 +120,29 @@
     </div>
 </div>
 
-<!-- Comparison Modal -->
-<div id="comparisonModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="modal-content glass-panel w-full max-w-4xl max-h-[90vh] flex flex-col">
-        <div class="p-4 md:p-6 border-b border-black/10 flex justify-between items-center flex-shrink-0">
-            <h2 id="comparisonModalTitle" class="text-xl md:text-2xl font-bold"></h2>
-            <button id="closeComparisonModalBtn" class="text-3xl leading-none p-2 rounded-full hover:bg-black/10">&times;</button>
-        </div>
-        <div id="comparisonModalContent" class="p-6 md:p-8 overflow-y-auto prose-comparison"></div>
-    </div>
-</div>
-
-<!-- Lightbox for Images -->
-<div id="lightbox" class="hidden fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300">
-    <div id="lightbox-bg" class="absolute inset-0"></div>
-    <div class="lightbox-content relative w-full max-w-4xl max-h-full">
-        <button id="lightbox-close" class="absolute -top-4 -right-2 md:top-0 md:-right-12 text-white text-5xl font-bold z-10 leading-none p-2">&times;</button>
-        <div class="relative">
-            <img id="lightbox-main-image" src="" alt="Ảnh demo công thức" class="w-full h-auto max-h-[75vh] object-contain rounded-lg shadow-2xl bg-black/50">
-            <button id="lightbox-prev" class="lightbox-nav-btn absolute top-1/2 left-2 md:-left-16 -translate-y-1/2 p-2 md:p-3 rounded-full text-white">
-                <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-            </button>
-            <button id="lightbox-next" class="lightbox-nav-btn absolute top-1/2 right-2 md:-right-16 -translate-y-1/2 p-2 md:p-3 rounded-full text-white">
-                <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-            </button>
-        </div>
-        <div id="lightbox-thumbnails" class="flex justify-center items-center gap-2 md:gap-4 mt-4"></div>
-    </div>
-</div>
-
-<!-- AI Prompt Confirmation Modal -->
-<div id="aiPromptModal" class="modal hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
-    <div class="modal-content glass-panel w-full max-w-2xl max-h-[90vh] flex flex-col p-6 md:p-8">
-        <h2 class="text-2xl font-bold mb-4" data-translate-key="aiPromptModalTitle"></h2>
-        <div class="space-y-4 text-gray-700 flex-grow overflow-y-auto pr-4">
-            <div>
-                <h3 class="font-semibold" data-translate-key="aiPromptModalOriginal"></h3>
-                <p id="originalPromptText" class="mt-1 p-3 bg-gray-100 rounded-lg text-gray-600 italic"></p>
-            </div>
-            <div>
-                <h3 class="font-semibold" data-translate-key="aiPromptModalSuggested"></h3>
-                <div id="rewrittenPromptContainer" class="mt-1 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 min-h-[6rem]"></div>
-            </div>
-        </div>
-        <div class="mt-6 flex justify-end gap-4 flex-shrink-0">
-            <button id="cancelPromptBtn" class="btn bg-gray-200 text-gray-800 py-2 px-6" data-translate-key="aiPromptModalCancel"></button>
-            <button id="confirmPromptBtn" class="btn btn-primary py-2 px-6" data-translate-key="aiPromptModalConfirm"></button>
-        </div>
-    </div>
-</div>
-
 <script type="module">
 // --- STATE & CONFIGURATION ---
 const state = {
     currentLang: 'vi',
     currentView: 'home',
     selectedRecipeId: null,
-    comparisonList: [],
-    lastGeneratedAiRecipe: null,
-    isAILoading: false,
-    quizStep: 0,
-    quizAnswers: {},
     activeFilters: { type: 'all', contrast: 'all', saturation: 'all' },
     isMobileDetailActive: false,
-    lightbox: { isOpen: false, images: [], currentIndex: 0 },
 };
 
 const mainContentEl = document.getElementById('mainContent');
 let activeCharts = {};
 
 // --- DATA ---
-const recipesData = [
-    {
-        "id": "scl-001",
-        "name": { "vi": "SCL-001: Mojave Sun", "en": "SCL-001: Mojave Sun" },
-        "formattedName": "SCL-001-Mojave Sun",
-        "description": {
-            "en": "A nostalgic, sun-drenched style that bathes scenes in the warm glow of golden hour.\nPerfect for travel and lifestyle, it recreates rich yellows and deep blues, evoking the feeling of an endless summer road trip.",
-            "vi": "Một phong cách hoài niệm, ngập tràn ánh nắng, bao phủ các khung cảnh trong ánh sáng ấm áp của giờ vàng. Hoàn hảo cho du lịch và đời sống, nó tái tạo màu vàng đậm và xanh dương sâu, gợi lên cảm giác về một chuyến đi mùa hè bất tận."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["nostalgic", "sun-drenched", "warm", "travel", "lifestyle", "summer", "golden-hour"],
-        "whiteBalance": "8300K, B3-M1.5",
-        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+22", "Color Phase": "+4" },
-        "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#FFD700",
-        "coords": { "x": 6, "y": 7 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczPPT3oBJKObBMX8NEdTxe-PLC2BEd0eRGUMSUiYxocel93ljDNFyG58LJiiPhijnKyWkjJbkSim54sWvSLrRxeM22uF82BlckublQ4qsSic7gwhAVe-XX0jEzRuxDJG7j25PHU6tLUGIT0IRHjy_AvXuQ=w1658-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPC_ounREkB_Q6oj6ZM7ckVGcKKZ_saJP5O63nURHPk09iTI8l4YwSqUzyxJm8ZG760nUJhm5JgmMWyk4uGlDDaaWwjJJPO4E9IAoF1pNfMHqx-2g3OcDS2COZ1w93K8j16X08W24leuMEhZvXx6L4uyw=w736-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPwAttTxhJ89lhQ4Lbp9Klq73D30WWsG21oDGzsTZ9ig_5IYa3hLxdsQnMIb-8xJF-SOUMsNjaoGm-1RbfHrcRDn8lrLR7krn4ubwBkoe7fKqWes36h-8T05_EvDvJiHM04HZYdZzSkJ_4O2y7yhyXc3A=w1658-h1105-s-no?authuser=0"
-        ]
-    },
-    {
-        "id": "scl-002",
-        "name": { "vi": "SCL-002: Kyoto Jade", "en": "SCL-002: Kyoto Jade" },
-        "formattedName": "SCL-002-Kyoto Jade",
-        "description": {
-            "en": "A serene and subtle palette defined by rich jade tones and gentle skin colors.\nIdeal for contemplative portraits, street photography, and landscapes, creating a peaceful, painterly atmosphere.",
-            "vi": "Một bảng màu thanh tĩnh và tinh tế được định hình bởi các tông màu xanh ngọc bích đậm và màu da dịu. Lý tưởng cho chân dung trầm tư, nhiếp ảnh đường phố và phong cảnh, tạo ra một không khí yên bình, tựa như tranh vẽ."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["serene", "subtle", "portrait", "street-photography", "landscape", "peaceful", "painterly"],
-        "whiteBalance": "3700K, A7-M0.5",
-        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-4" },
-        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#66CDAA",
-        "coords": { "x": -4, "y": 3 },
-        "demoImages": [
-            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+1",
-            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+2",
-            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+3"
-        ]
-    },
-    {
-        "id": "scl-003",
-        "name": { "vi": "SCL-003: Caspian Blue", "en": "SCL-003: Caspian Blue" },
-        "formattedName": "SCL-003-Caspian Blue",
-        "description": {
-            "en": "A cool-toned, cinematic profile with distinctive deep blues and rich, crushed blacks.\nIt lends a moody, atmospheric quality to images, perfect for urban nightscapes, dramatic portraits, and storytelling.",
-            "vi": "Một cấu hình điện ảnh, tông lạnh với sắc xanh dương đặc trưng và vùng tối sâu, đậm. Nó mang lại chất lượng tâm trạng, đầy không khí cho hình ảnh, hoàn hảo cho cảnh đêm đô thị, chân dung kịch tính và kể chuyện."
-        },
-        "type": "color",
-        "contrast": "high",
-        "saturation": "normal",
-        "tags": ["cinematic", "cool-tone", "deep-blues", "moody", "atmospheric", "urban-night", "dramatic-portrait", "storytelling"],
-        "whiteBalance": "8000K, B2-M2",
-        "settings": { "Black level": "-15", "Gamma": "Cine2", "Black Gamma": "Middle +7", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+20", "Color Phase": "+7" },
-        "colorDepth": { "R": "0", "G": "-1", "B": "+3", "C": "+4", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#4682B4",
-        "coords": { "x": -8, "y": 5 },
-        "demoImages": [
-            "https://placehold.co/800x600/4682B4/ffffff?text=Caspian+Blue+1",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Caspian+Blue+2",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Caspian+Blue+3"
-        ]
-    },
-    {
-        "id": "scl-004",
-        "name": { "vi": "SCL-004: Tuscan Ochre", "en": "SCL-004: Tuscan Ochre" },
-        "formattedName": "SCL-004-Tuscan Ochre",
-        "description": {
-            "en": "A vibrant, high-saturation style with warm, earthy reds and yellows.\nIt brings a bold, sun-baked intensity to images, reminiscent of classic European travel photography.",
-            "vi": "Một phong cách rực rỡ, độ bão hòa cao với các tông màu đỏ đất và vàng đất ấm áp. Nó mang lại một cường độ táo bạo, cháy nắng cho hình ảnh, gợi nhớ đến nhiếp ảnh du lịch châu Âu cổ điển."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "high",
-        "tags": ["vibrant", "high-saturation", "earthy-reds", "warm-yellows", "bold", "sun-baked", "classic-european-travel"],
-        "whiteBalance": "4700K, A2-M0.5",
-        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +2", "Color Mode": "S-Gamut3.Cine", "Saturation": "+23", "Color Phase": "+3" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "+5", "C": "+5", "M": "+5", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#CD853F",
-        "coords": { "x": 7, "y": 8 },
-        "demoImages": [
-            "https://placehold.co/800x600/CD853F/ffffff?text=Tuscan+Ochre+1",
-            "https://placehold.co/800x600/CD853F/ffffff?text=Tuscan+Ochre+2",
-            "https://placehold.co/800x600/CD853F/ffffff?text=Tuscan+Ochre+3"
-        ]
-    },
-    {
-        "id": "scl-005",
-        "name": { "vi": "SCL-005: Somerset Meadow", "en": "SCL-005: Somerset Meadow" },
-        "formattedName": "SCL-005-Somerset Meadow",
-        "description": {
-            "en": "A soft, pastel-like palette with gentle contrast and low saturation.\nIt renders skin tones beautifully and gives landscapes a dreamy, ethereal quality, perfect for romantic and fine-art portraits.",
-            "vi": "Một bảng màu nhẹ nhàng, tựa màu pastel với độ tương phản mềm và độ bão hòa thấp. Nó tái tạo tông màu da một cách đẹp đẽ và mang lại cho phong cảnh một chất lượng mơ màng, thanh tao, hoàn hảo cho chân dung lãng mạn và nghệ thuật."
-        },
-        "type": "color",
-        "contrast": "soft",
-        "saturation": "low",
-        "tags": ["pastel", "soft-contrast", "low-saturation", "dreamy", "ethereal", "romantic-portrait", "fine-art"],
-        "whiteBalance": "4200K, A6-M2",
-        "settings": { "Black level": "-10", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Movie", "Saturation": "+10", "Color Phase": "+3" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "+4" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#B0E0E6",
-        "coords": { "x": -2, "y": -5 },
-        "demoImages": [
-            "https://placehold.co/800x600/B0E0E6/ffffff?text=Somerset+Meadow+1",
-            "https://placehold.co/800x600/B0E0E6/ffffff?text=Somerset+Meadow+2",
-            "https://placehold.co/800x600/B0E0E6/ffffff?text=Somerset+Meadow+3"
-        ]
-    },
-    {
-        "id": "scl-006",
-        "name": { "vi": "SCL-006: Faded Cine", "en": "SCL-006: Faded Cine" },
-        "formattedName": "SCL-006-Faded Canvas",
-        "description": {
-            "en": "A stylized look with heavily lifted blacks and muted colors, creating a soft, hazy effect.\nIt evokes a sense of nostalgia and is ideal for fashion, editorial, and lifestyle photography aiming for a vintage-modern feel.",
-            "vi": "Một phong cách được cách điệu hóa với vùng đen được nâng sáng mạnh và màu sắc dịu, tạo ra một hiệu ứng mờ, mềm mại. Nó gợi lên cảm giác hoài niệm và lý tưởng cho nhiếp ảnh thời trang, biên tập và đời sống hướng đến cảm giác cổ điển-hiện đại."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "muted",
-        "tags": ["stylized", "lifted-blacks", "soft-colors", "hazy", "nostalgic", "fashion", "editorial", "lifestyle", "vintage-modern"],
-        "whiteBalance": "3600K, A6-M1.5",
-        "settings": { "Black level": "+15", "Gamma": "Movie", "Black Gamma": "Narrow +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+11", "Color Phase": "-4" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-3", "C": "+3", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "-7" },
-        "personalityColor": "#D2B48C",
-        "coords": { "x": 0, "y": -7 },
-        "demoImages": [
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Faded+Cine+1",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Faded+Cine+2",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Faded+Cine+3"
-        ]
-    },
-    {
-        "id": "scl-007",
-        "name": { "vi": "SCL-007: Dynachrome '75", "en": "SCL-007: Dynachrome '75" },
-        "formattedName": "SCL-007-Dynachrome '75",
-        "description": {
-            "en": "A high-contrast, moody profile with deep blacks and a dramatic, cool color shift.\nIt emphasizes texture and form, creating a strong graphic style reminiscent of vintage documentary slide film.",
-            "vi": "Một cấu hình tương phản cao, đầy tâm trạng với màu đen sâu và sự dịch chuyển màu sắc lạnh, đầy kịch tính. Nó nhấn mạnh kết cấu và hình khối, tạo ra một phong cách đồ họa mạnh mẽ gợi nhớ đến phim dương bản tài liệu cổ điển."
-        },
-        "type": "color",
-        "contrast": "high",
-        "saturation": "normal",
-        "tags": ["high-contrast", "moody", "deep-blacks", "cool-color-shift", "graphic", "classic-slide-film"],
-        "whiteBalance": "4700K, A7-G0.5",
-        "settings": { "Black level": "-15", "Gamma": "Cine1", "Black Gamma": "Wide -7", "Knee": "Manual 82.5% +4", "Color Mode": "S-Cinetone", "Saturation": "+10", "Color Phase": "+2" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "-7", "C": "-6", "M": "+3", "Y": "+3" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#8B0000",
-        "coords": { "x": -8, "y": 2 },
-        "demoImages": [
-            "https://placehold.co/800x600/8B0000/ffffff?text=Dynachrome+'75+1",
-            "https://placehold.co/800x600/8B0000/ffffff?text=Dynachrome+'75+2",
-            "https://placehold.co/800x600/8B0000/ffffff?text=Dynachrome+'75+3"
-        ]
-    },
-    {
-        "id": "scl-008",
-        "name": { "vi": "SCL-008: Modern Classic", "en": "SCL-008: Modern Classic" },
-        "formattedName": "SCL-008-Modern Classic",
-        "description": {
-            "en": "A clean, vibrant, and contemporary style built on modern color science.\nIt delivers rich, pleasing colors with smooth tonal transitions, making it a versatile choice for everyday shooting, from portraits to products.",
-            "vi": "Một phong cách trong trẻo, sống động và đương đại được xây dựng trên khoa học màu sắc hiện đại. Nó mang lại màu sắc phong phú, dễ chịu với sự chuyển tông mượt mà, là một lựa chọn linh hoạt cho việc chụp ảnh hàng ngày, từ chân dung đến sản phẩm."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["clean", "vibrant", "contemporary", "modern-color-science", "rich-colors", "smooth-tonal-transitions", "versatile", "everyday", "portrait", "product"],
-        "whiteBalance": "4000K, A7-M2",
-        "settings": { "Black level": "+6", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+14", "Color Phase": "-3" },
-        "colorDepth": { "R": "0", "G": "+7", "B": "+5", "C": "-2", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#4682B4",
-        "coords": { "x": 0, "y": 4 },
-        "demoImages": [
-            "https://placehold.co/800x600/4682B4/ffffff?text=Modern+Classic+1",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Modern+Classic+2",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Modern+Classic+3"
-        ]
-    },
-    {
-        "id": "scl-009",
-        "name": { "vi": "SCL-009: Urban Teal", "en": "SCL-009: Urban Teal" },
-        "formattedName": "SCL-009-Urban Teal",
-        "description": {
-            "en": "A muted, low-saturation color profile with a distinctive cyan-teal cast in the shadows and mid-tones.\nIt creates a subtle, gentle, and slightly melancholic mood, perfect for street photography and urban exploration.",
-            "vi": "Một cấu hình màu dịu, độ bão hòa thấp với sắc xanh mòng két (cyan-teal) đặc trưng ở vùng tối và trung bình. Nó tạo ra một tâm trạng tinh tế, nhẹ nhàng và hơi u buồn, hoàn hảo cho nhiếp ảnh đường phố và khám phá đô thị."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "low",
-        "tags": ["muted-color", "low-saturation", "cyan-teal", "subtle", "gentle", "melancholy", "street-photography", "urban-exploration"],
-        "whiteBalance": "4000K, A7-M0.5",
-        "settings": { "Black level": "-7", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+2" },
-        "colorDepth": { "R": "-4", "G": "+7", "B": "+2", "C": "+3", "M": "-6", "Y": "-1" },
-        "detailSettings": { "Level": "-7" },
-        "personalityColor": "#008080",
-        "coords": { "x": -5, "y": -3 },
-        "demoImages": [
-            "https://placehold.co/800x600/008080/ffffff?text=Urban+Teal+1",
-            "https://placehold.co/800x600/008080/ffffff?text=Urban+Teal+2",
-            "https://placehold.co/800x600/008080/ffffff?text=Urban+Teal+3"
-        ]
-    },
-    {
-        "id": "scl-010",
-        "name": { "vi": "SCL-010: Cinema Verde", "en": "SCL-010: Cinema Verde" },
-        "formattedName": "SCL-010-Cinema Verde",
-        "description": {
-            "en": "A cinematic style with very low saturation and a subtle green tint, designed to emulate motion picture film.\nIt provides a flat, neutral base, ideal for shots requiring a desaturated, atmospheric feel.",
-            "vi": "Một phong cách điện ảnh với độ bão hòa rất thấp và một chút sắc xanh lá tinh tế, được thiết kế để mô phỏng phim điện ảnh. Nó cung cấp một nền phẳng, trung tính, lý tưởng cho các cảnh quay đòi hỏi cảm giác mất bão hòa, đầy không khí."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "very-low",
-        "tags": ["cinematic", "very-low-saturation", "subtle-green-tint", "film-emulation", "flat", "neutral", "desaturated", "atmospheric"],
-        "whiteBalance": "4000K, A7-M0.25",
-        "settings": { "Black level": "+7", "Gamma": "Movie", "Black Gamma": "Wide -5", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "-5", "Color Phase": "+1" },
-        "colorDepth": { "R": "-3", "G": "+7", "B": "-2", "C": "+6", "M": "+4", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#3CB371",
-        "coords": { "x": 2, "y": -6 },
-        "demoImages": [
-            "https://placehold.co/800x600/3CB371/ffffff?text=Cinema+Verde+1",
-            "https://placehold.co/800x600/3CB371/ffffff?text=Cinema+Verde+2",
-            "https://placehold.co/800x600/3CB371/ffffff?text=Cinema+Verde+3"
-        ]
-    },
-    {
-        "id": "scl-011",
-        "name": { "vi": "SCL-011: Midnight Halogen", "en": "SCL-011: Midnight Halogen" },
-        "formattedName": "SCL-011-Midnight Halogen",
-        "description": {
-            "en": "A night-specific formula that transforms artificial city lights into vibrant blues and cyans, while maintaining good highlight control.\nIt creates a futuristic, cyberpunk-inspired aesthetic.",
-            "vi": "Một công thức chuyên dụng cho ban đêm, biến đổi ánh đèn nhân tạo của thành phố thành các màu xanh dương và xanh mòng két rực rỡ, trong khi vẫn kiểm soát tốt vùng sáng. Nó tạo ra một thẩm mỹ tương lai, lấy cảm hứng từ cyberpunk."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["night-specific", "city-lights", "vibrant-blues", "cyan-teal", "highlight-control", "futuristic", "cyberpunk"],
-        "whiteBalance": "2700K, A7-M1.25",
-        "settings": { "Black level": "+3", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+5" },
-        "colorDepth": { "R": "-5", "G": "-7", "B": "-7", "C": "+3", "M": "-7", "Y": "-5" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#4169E1",
-        "coords": { "x": -7, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/4169E1/ffffff?text=Midnight+Halogen+1",
-            "https://placehold.co/800x600/4169E1/ffffff?text=Midnight+Halogen+2",
-            "https://placehold.co/800x600/4169E1/ffffff?text=Midnight+Halogen+3"
-        ]
-    },
-    {
-        "id": "scl-012",
-        "name": { "vi": "SCL-012: Amber Glow", "en": "SCL-012: Amber Glow" },
-        "formattedName": "SCL-012-Amber Glow",
-        "description": {
-            "en": "A warm, soft, and nostalgic profile with a gentle amber cast.\nIt excels at creating a cozy and intimate feel, perfect for golden hour portraits, family photos, and vintage-inspired shots.",
-            "vi": "Một cấu hình ấm áp, nhẹ nhàng và hoài niệm với sắc hổ phách mềm mại. Nó xuất sắc trong việc tạo ra cảm giác ấm áp và thân mật, hoàn hảo cho chân dung giờ vàng, ảnh gia đình và các cảnh quay mang hơi hướng cổ điển."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["warm", "soft", "nostalgic", "amber-tint", "intimate", "golden-hour-portrait", "family-photos", "vintage-inspired"],
-        "whiteBalance": "4300K, A7-M0.25",
-        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Middle +2", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+3", "Color Phase": "+1" },
-        "colorDepth": { "R": "+1", "G": "+7", "B": "+2", "C": "+2", "M": "+4", "Y": "+2" },
-        "detailSettings": { "Level": "-7" },
-        "personalityColor": "#FFBF00",
-        "coords": { "x": 4, "y": -2 },
-        "demoImages": [
-            "https://placehold.co/800x600/FFBF00/ffffff?text=Amber+Glow+1",
-            "https://placehold.co/800x600/FFBF00/ffffff?text=Amber+Glow+2",
-            "https://placehold.co/800x600/FFBF00/ffffff?text=Amber+Glow+3"
-        ]
-    },
-    {
-        "id": "scl-013",
-        "name": { "vi": "SCL-013: Flatiron Mist", "en": "SCL-013: Flatiron Mist" },
-        "formattedName": "SCL-013-Flatiron Mist",
-        "description": {
-            "en": "An incredibly versatile, low-contrast profile that utilizes an S-Log gamma to maximize dynamic range.\nIt produces a flat, soft image with rich colors, perfect for harsh lighting conditions or as a robust base for post-production.",
-            "vi": "Một cấu hình cực kỳ linh hoạt, có độ tương phản thấp, sử dụng gamma S-Log để tối đa hóa dải tần nhạy sáng. Nó tạo ra một hình ảnh phẳng, mềm mại với màu sắc phong phú, hoàn hảo cho điều kiện ánh sáng gắt hoặc làm nền tảng vững chắc cho việc hậu kỳ."
-        },
-        "type": "color",
-        "contrast": "low",
-        "saturation": "normal",
-        "tags": ["versatile", "low-contrast", "s-log", "maximized-dynamic-range", "flat-image", "soft", "rich-colors", "harsh-lighting", "post-production"],
-        "whiteBalance": "4500K, A7-M1",
-        "settings": { "Black level": "-15", "Gamma": "S-Log2", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "Still", "Saturation": "+20", "Color Phase": "+3" },
-        "colorDepth": { "R": "+3", "G": "+5", "B": "+5", "C": "+7", "M": "+7", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#A9A9A9",
-        "coords": { "x": -5, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/A9A9A9/ffffff?text=Flatiron+Mist+1",
-            "https://placehold.co/800x600/A9A9A9/ffffff?text=Flatiron+Mist+2",
-            "https://placehold.co/800x600/A9A9A9/ffffff?text=Flatiron+Mist+3"
-        ]
-    },
-    {
-        "id": "scl-014",
-        "name": { "vi": "SCL-014: Magenta Bloom", "en": "SCL-014: Magenta Bloom" },
-        "formattedName": "SCL-014-Magenta Bloom",
-        "description": {
-            "en": "A vibrant, powerful style with a distinctive magenta cast, emulating a popular slide film.\nIdeal for landscapes and nature, making flowers and sunsets pop with intense, dramatic colors.",
-            "vi": "Một phong cách sống động, mạnh mẽ với tông màu magenta đặc trưng, mô phỏng loại phim dương bản nổi tiếng. Lý tưởng cho phong cảnh và thiên nhiên, làm cho hoa và cảnh hoàng hôn trở nên nổi bật với màu sắc dữ dội, đầy kịch tính."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "vibrant",
-        "tags": ["vibrant", "powerful", "magenta-cast", "slide-film", "landscape", "nature", "flowers", "sunsets", "intense-colors", "dramatic"],
-        "whiteBalance": "3900K, A7-M0.25",
-        "settings": { "Black level": "-8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "-7", "Y": "0" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#FF00FF",
-        "coords": { "x": 3, "y": 6 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF00FF/ffffff?text=Magenta+Bloom+1",
-            "https://placehold.co/800x600/FF00FF/ffffff?text=Magenta+Bloom+2",
-            "https://placehold.co/800x600/FF00FF/ffffff?text=Magenta+Bloom+3"
-        ]
-    },
-    {
-        "id": "scl-015",
-        "name": { "vi": "SCL-015: Vintage Slide", "en": "SCL-015: Vintage Slide" },
-        "formattedName": "SCL-015-Vintage Slide",
-        "description": {
-            "en": "A warm, slightly faded style with a subtle green-cyan tint in the shadows.\nIt evokes the feeling of looking through old family slide films, perfect for nostalgic portraits and everyday scenes.",
-            "vi": "Một phong cách ấm áp, hơi phai màu với một chút sắc xanh lá-lục trong vùng tối. Nó gợi lên cảm giác như đang xem lại những tấm phim slide cũ của gia đình, hoàn hảo cho chân dung hoài niệm và các cảnh đời thường."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "faded",
-        "tags": ["warm", "faded", "green-tint", "old-family-slides", "nostalgic-portrait", "everyday-scenes"],
-        "whiteBalance": "3600K, A7-M1",
-        "settings": { "Black level": "-4", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
-        "colorDepth": { "R": "+3", "G": "+5", "B": "-4", "C": "+2", "M": "+6", "Y": "+5" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#BC8F8F",
-        "coords": { "x": 1, "y": -4 },
-        "demoImages": [
-            "https://placehold.co/800x600/BC8F8F/ffffff?text=Vintage+Slide+1",
-            "https://placehold.co/800x600/BC8F8F/ffffff?text=Vintage+Slide+2",
-            "https://placehold.co/800x600/BC8F8F/ffffff?text=Vintage+Slide+3"
-        ]
-    },
-    {
-        "id": "scl-016",
-        "name": { "vi": "SCL-016: Everyday Natural", "en": "SCL-016: Everyday Natural" },
-        "formattedName": "SCL-016-Everyday Natural",
-        "description": {
-            "en": "A clean, balanced, and versatile profile with moderate saturation and natural skin tones.\nThis is a go-to choice for a wide range of situations, providing an authentic look with a subtle filmic feel.",
-            "vi": "Một cấu hình trong trẻo, cân bằng và linh hoạt với độ bão hòa vừa phải và tông màu da tự nhiên. Đây là lựa chọn hàng đầu cho nhiều tình huống, mang lại một cái nhìn chân thực với một chút cảm giác phim ảnh tinh tế."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "moderate",
-        "tags": ["clean", "balanced", "versatile", "natural-skin-tones", "all-situations", "authentic-look", "subtle-film-feel"],
-        "whiteBalance": "3900K, A7",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide +2", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
-        "colorDepth": { "R": "-2", "G": "+7", "B": "+4", "C": "+2", "M": "-4", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#8FBC8F",
-        "coords": { "x": 0, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/8FBC8F/ffffff?text=Everyday+Natural+1",
-            "https://placehold.co/800x600/8FBC8F/ffffff?text=Everyday+Natural+2",
-            "https://placehold.co/800x600/8FBC8F/ffffff?text=Everyday+Natural+3"
-        ]
-    },
-    {
-        "id": "scl-017",
-        "name": { "vi": "SCL-017: Soft Portrait", "en": "SCL-017: Soft Portrait" },
-        "formattedName": "SCL-017-Soft Portrait",
-        "description": {
-            "en": "Characterized by soft contrast and a gentle magenta cast, this formula is perfect for flattering portraits.\nIt renders skin tones with a smooth, delicate quality, creating a refined and elegant look.",
-            "vi": "Đặc trưng bởi độ tương phản mềm mại và tông màu magenta dịu, công thức này hoàn hảo cho những bức chân dung nịnh mắt. Nó tái tạo tông màu da với chất lượng nhẹ nhàng, mượt mà, tạo ra một vẻ ngoài tinh tế và thanh lịch."
-        },
-        "type": "color",
-        "contrast": "soft",
-        "saturation": "muted",
-        "tags": ["soft-contrast", "gentle-magenta", "flattering-portraits", "smooth-skin-tones", "delicate", "elegant"],
-        "whiteBalance": "4100K, A7-M0.25",
-        "settings": { "Black level": "-8", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "0" },
-        "colorDepth": { "R": "0", "G": "+2", "B": "+3", "C": "+2", "M": "-7", "Y": "0" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#DB7093",
-        "coords": { "x": -3, "y": -1 },
-        "demoImages": [
-            "https://placehold.co/800x600/DB7093/ffffff?text=Soft+Portrait+1",
-            "https://placehold.co/800x600/DB7093/ffffff?text=Soft+Portrait+2",
-            "https://placehold.co/800x600/DB7093/ffffff?text=Soft+Portrait+3"
-        ]
-    },
-    {
-        "id": "scl-018",
-        "name": { "vi": "SCL-018: Vector Graphic", "en": "SCL-018: Vector Graphic" },
-        "formattedName": "SCL-018-Vector Graphic",
-        "description": {
-            "en": "A bold, high-contrast style with super-saturated, almost artificial colors and deep blacks.\nIt creates a strong graphic look, ideal for abstract subjects, modern architecture, and experimental photography.",
-            "vi": "Một phong cách táo bạo, tương phản cao với màu sắc siêu bão hòa, gần như nhân tạo và màu đen sâu. Nó tạo ra một phong cách đồ họa mạnh mẽ, lý tưởng cho các chủ thể trừu tượng, kiến trúc hiện đại và nhiếp ảnh thử nghiệm."
-        },
-        "type": "color",
-        "contrast": "high",
-        "saturation": "super-saturated",
-        "tags": ["bold", "high-contrast", "super-saturated", "artificial-colors", "deep-blacks", "graphic", "abstract", "modern-architecture", "experimental-photography"],
-        "whiteBalance": "4000K, A5-M0.5",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 92.5% +5", "Color Mode": "S-Gamut3.Cine", "Saturation": "+27", "Color Phase": "+6" },
-        "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "+2", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#8A2BE2",
-        "coords": { "x": 8, "y": 9 },
-        "demoImages": [
-            "https://placehold.co/800x600/8A2BE2/ffffff?text=Vector+Graphic+1",
-            "https://placehold.co/800x600/8A2BE2/ffffff?text=Vector+Graphic+2",
-            "https://placehold.co/800x600/8A2BE2/ffffff?text=Vector+Graphic+3"
-        ]
-    },
-    {
-        "id": "scl-019",
-        "name": { "vi": "SCL-019: Pop Art", "en": "SCL-019: Pop Art" },
-        "formattedName": "SCL-019-Pop Art",
-        "description": {
-            "en": "An explosion of color. This formula pushes saturation to the maximum, creating a super-vibrant, high-energy style.\nPerfect for making bold statements and capturing the fun, playful side of life.",
-            "vi": "Một sự bùng nổ của màu sắc. Công thức này đẩy độ bão hòa lên mức tối đa, tạo ra một phong cách siêu rực rỡ, năng lượng cao. Hoàn hảo để tạo ra những tuyên bố táo bạo và ghi lại khía cạnh vui vẻ, tinh nghịch của cuộc sống."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "maximum",
-        "tags": ["color-explosion", "maximum-saturation", "super-vibrant", "high-energy", "bold-statements", "playful-side"],
-        "whiteBalance": "3700K, A5-M1",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 85% +3", "Color Mode": "S-Gamut3", "Saturation": "+20", "Color Phase": "-1" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+4" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#FF69B4",
-        "coords": { "x": 8, "y": 6 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF69B4/ffffff?text=Pop+Art+1",
-            "https://placehold.co/800x600/FF69B4/ffffff?text=Pop+Art+2",
-            "https://placehold.co/800x600/FF69B4/ffffff?text=Pop+Art+3"
-        ]
-    },
-    {
-        "id": "scl-020",
-        "name": { "vi": "SCL-020: Autumn Haze", "en": "SCL-020: Autumn Haze" },
-        "formattedName": "SCL-020-Autumn Haze",
-        "description": {
-            "en": "A modern take on classic warm film stocks, utilizing S-Cinetone for smooth tones.\nIt delivers a cozy feel, with slightly muted greens and yellows, perfect for capturing the essence of a misty autumn day.",
-            "vi": "Một phiên bản hiện đại của dòng phim ấm cổ điển, sử dụng S-Cinetone cho tông màu mượt mà. Nó mang lại cảm giác ấm cúng, với màu xanh lá và vàng hơi dịu, hoàn hảo để ghi lại tinh hoa của một ngày thu mờ sương."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "muted",
-        "tags": ["modern-take", "classic-warm-film", "s-cinetone", "smooth-tones", "cozy", "subtle-greens", "yellows", "misty-autumn-day"],
-        "whiteBalance": "4600K, A7-G1.25",
-        "settings": { "Black level": "+2", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+25", "Color Phase": "+5" },
-        "colorDepth": { "R": "+3", "G": "-3", "B": "-5", "C": "-3", "M": "+3", "Y": "-2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#D2B48C",
-        "coords": { "x": 5, "y": -1 },
-        "demoImages": [
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Autumn+Haze+1",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Autumn+Haze+2",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Autumn+Haze+3"
-        ]
-    },
-    {
-        "id": "scl-021",
-        "name": { "vi": "SCL-021: Muted Pastels", "en": "SCL-021: Muted Pastels" },
-        "formattedName": "SCL-021-Muted Pastels",
-        "description": {
-            "en": "A soft and subtle style with moderate saturation and gentle tones.\nIt's versatile for everyday shooting, lending images a peaceful and pleasant feel without being overwhelmed by color.",
-            "vi": "Một phong cách nhẹ nhàng và tinh tế với độ bão hòa vừa phải và tông màu mềm mại. Nó linh hoạt cho việc chụp ảnh hàng ngày, mang lại cho hình ảnh một cảm giác yên bình và dễ chịu mà không bị màu sắc lấn át."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "moderate",
-        "tags": ["soft", "subtle", "moderate-saturation", "soft-tones", "versatile", "everyday-shooting", "peaceful", "pleasant", "not-overwhelmed-by-color"],
-        "whiteBalance": "4500K, A7-M0.75",
-        "settings": { "Black level": "+2", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+8", "Color Phase": "-1" },
-        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-5", "M": "+5", "Y": "+4" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#ADD8E6",
-        "coords": { "x": -1, "y": -3 },
-        "demoImages": [
-            "https://placehold.co/800x600/ADD8E6/ffffff?text=Muted+Pastels+1",
-            "https://placehold.co/800x600/ADD8E6/ffffff?text=Muted+Pastels+2",
-            "https://placehold.co/800x600/ADD8E6/ffffff?text=Muted+Pastels+3"
-        ]
-    },
-    {
-        "id": "scl-022",
-        "name": { "vi": "SCL-022: Neutral Standard", "en": "SCL-022: Neutral Standard" },
-        "formattedName": "SCL-022-Neutral Standard",
-        "description": {
-            "en": "A neutral, true-to-life profile designed for accuracy.\nIt provides a clean, standard look with minimal color shifts, making it a great, reliable base for any type of photography.",
-            "vi": "Một cấu hình trung tính, chân thực được thiết kế cho sự chính xác. Nó cung cấp một cái nhìn trong trẻo, tiêu chuẩn với sự thay đổi màu sắc tối thiểu, làm cho nó trở thành một nền tảng tuyệt vời, đáng tin cậy cho bất kỳ loại nhiếp ảnh nào."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "low",
-        "tags": ["neutral", "true-to-life", "accuracy", "clean", "standard-look", "minimal-color-shift", "reliable-base", "any-type-of-photography"],
-        "whiteBalance": "4000K, A7-M0.25",
-        "settings": { "Black level": "+2", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+2", "Color Phase": "+1" },
-        "colorDepth": { "R": "+1", "G": "+7", "B": "0", "C": "+3", "M": "+2", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#D3D3D3",
-        "coords": { "x": 0, "y": -1 },
-        "demoImages": [
-            "https://placehold.co/800x600/D3D3D3/ffffff?text=Neutral+Standard+1",
-            "https://placehold.co/800x600/D3D3D3/ffffff?text=Neutral+Standard+2",
-            "https://placehold.co/800x600/D3D3D3/ffffff?text=Neutral+Standard+3"
-        ]
-    },
-    {
-        "id": "scl-023",
-        "name": { "vi": "SCL-023: Alpine Cool", "en": "SCL-023: Alpine Cool" },
-        "formattedName": "SCL-023-Alpine Cool",
-        "description": {
-            "en": "A cool-toned formula with a high Kelvin temperature, giving images a clean, crisp blue cast.\nIt's well-suited for emphasizing cold light in urban or mountain landscapes, creating a clean and edgy aesthetic.",
-            "vi": "Một công thức tông màu lạnh với nhiệt độ Kelvin cao, mang lại cho hình ảnh một sắc xanh trong trẻo, sắc nét. Rất phù hợp để nhấn mạnh ánh sáng lạnh trong các cảnh quan đô thị hoặc núi non, tạo ra một phong cách thẩm mỹ sạch sẽ và sắc sảo."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["cool-tone", "high-kelvin", "clean-blue-cast", "sharp", "cold-light", "urban-landscape", "mountain", "clean-aesthetic", "crisp"],
-        "whiteBalance": "7000K, B5-M0.25",
-        "settings": { "Black level": "-9", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 75% +4", "Color Mode": "Still", "Saturation": "+6", "Color Phase": "+2" },
-        "colorDepth": { "R": "+3", "G": "+7", "B": "+3", "C": "-5", "M": "+3", "Y": "-2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#4682B4",
-        "coords": { "x": -6, "y": 3 },
-        "demoImages": [
-            "https://placehold.co/800x600/4682B4/ffffff?text=Alpine+Cool+1",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Alpine+Cool+2",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Alpine+Cool+3"
-        ]
-    },
-    {
-        "id": "scl-024",
-        "name": { "vi": "SCL-024: Arctic Negative", "en": "SCL-024: Arctic Negative" },
-        "formattedName": "SCL-024-Arctic Negative",
-        "description": {
-            "en": "Pushing white balance to its coldest, this formula creates a unique, stylized look with a deep blue-green cast.\nIt's perfect for experimental, moody, and atmospheric photography.",
-            "vi": "Đẩy cân bằng trắng đến mức lạnh nhất, công thức này tạo ra một phong cách độc đáo, cách điệu với sắc xanh lam-lục sâu. Nó hoàn hảo cho các bức ảnh thử nghiệm, tâm trạng và đầy không khí."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["cold-white-balance", "unique", "stylized", "deep-blue-green-cast", "experimental", "moody", "atmospheric"],
-        "whiteBalance": "9900K, B6-M0.5",
-        "settings": { "Black level": "+4", "Gamma": "S-Cinetone", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone", "Saturation": "+5", "Color Phase": "+1" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "-4", "C": "-4", "M": "-5", "Y": "+3" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#00CED1",
-        "coords": { "x": -9, "y": 1 },
-        "demoImages": [
-            "https://placehold.co/800x600/00CED1/ffffff?text=Arctic+Negative+1",
-            "https://placehold.co/800x600/00CED1/ffffff?text=Arctic+Negative+2",
-            "https://placehold.co/800x600/00CED1/ffffff?text=Arctic+Negative+3"
-        ]
-    },
-    {
-        "id": "scl-025",
-        "name": { "vi": "SCL-025: Saturated Cinema", "en": "SCL-025: Saturated Cinema" },
-        "formattedName": "SCL-025-Saturated Cinema",
-        "description": {
-            "en": "A powerful, high-saturation cinematic style, distinct from Fuji emulations.\nIt utilizes a wide color space to produce deep, rich colors with a filmic gamma curve, well-suited for vivid visual storytelling.",
-            "vi": "Một phong cách điện ảnh có độ bão hòa cao và mạnh mẽ, khác với phiên bản Fuji. Nó sử dụng không gian màu rộng để tạo ra màu sắc sâu, phong phú với đường cong gamma điện ảnh, rất phù hợp cho kể chuyện bằng hình ảnh sống động."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "high",
-        "tags": ["high-saturation", "powerful-cinematic", "wide-color-space", "deep-rich-colors", "cinematic-gamma-curve", "vivid-visual-storytelling"],
-        "whiteBalance": "4000K, A7-M1",
-        "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide -5", "Knee": "Manual 87.5% +3", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
-        "colorDepth": { "R": "-3", "G": "-2", "B": "+3", "C": "+7", "M": "-3", "Y": "-2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#8B0000",
-        "coords": { "x": 7, "y": 5 },
-        "demoImages": [
-            "https://placehold.co/800x600/8B0000/ffffff?text=Saturated+Cinema+1",
-            "https://placehold.co/800x600/8B0000/ffffff?text=Saturated+Cinema+2",
-            "https://placehold.co/800x600/8B0000/ffffff?text=Saturated+Cinema+3"
-        ]
-    },
-    {
-        "id": "scl-026",
-        "name": { "vi": "SCL-026: HDR Cinema", "en": "SCL-026: HDR Cinema" },
-        "formattedName": "SCL-026-HDR Cinema",
-        "description": {
-            "en": "Leveraging HLG (Hybrid Log-Gamma), this formula captures wide dynamic range with high saturation.\nIt produces a vivid, impactful image that feels both cinematic and surreal, ideal for high-energy shots.",
-            "vi": "Tận dụng HLG (Hybrid Log-Gamma), công thức này ghi lại dải tần nhạy sáng rộng với độ bão hòa cao. Nó tạo ra một hình ảnh sống động, tác động mạnh, vừa mang cảm giác điện ảnh vừa siêu thực, lý tưởng cho các cảnh quay năng lượng cao."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "high",
-        "tags": ["hlg", "hybrid-log-gamma", "wide-dynamic-range", "high-saturation", "vivid", "impactful", "cinematic-feel", "surreal", "high-energy-shots"],
-        "whiteBalance": "3900K, A7",
-        "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto", "Color Mode": "BT.2020", "Saturation": "+32", "Color Phase": "+7" },
-        "colorDepth": { "R": "-4", "G": "-1", "B": "+5", "C": "+4", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#FF4500",
-        "coords": { "x": 9, "y": 6 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+1",
-            "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+2",
-            "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+3"
-        ]
-    },
-    {
-        "id": "scl-027",
-        "name": { "vi": "SCL-027: Daylight Cinema", "en": "SCL-027: Daylight Cinema" },
-        "formattedName": "SCL-027-Daylight Cinema",
-        "description": {
-            "en": "A modern, clean cinematic style based on S-Cinetone.\nIt's designed for daylight conditions, delivering beautiful skin tones, high saturation, and a professional, polished feel straight out of camera.",
-            "vi": "Một phong cách điện ảnh hiện đại, trong trẻo dựa trên S-Cinetone. Nó được thiết kế cho ánh sáng ban ngày, mang lại tông màu da đẹp, độ bão hòa cao và cảm giác chuyên nghiệp, bóng bẩy ngay từ máy ảnh."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "high",
-        "tags": ["modern-cinematic", "clean", "s-cinetone", "daylight", "beautiful-skin-tones", "high-saturation", "professional", "polished", "straight-out-of-camera"],
-        "whiteBalance": "3700K, A7-G1",
-        "settings": { "Black level": "+9", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+3" },
-        "colorDepth": { "R": "0", "G": "+3", "B": "+2", "C": "+2", "M": "-3", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#F0E68C",
-        "coords": { "x": 5, "y": 4 },
-        "demoImages": [
-            "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+1",
-            "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+2",
-            "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+3"
-        ]
-    },
-    {
-        "id": "scl-028",
-        "name": { "vi": "SCL-028: Phoenix Fire", "en": "SCL-028: Phoenix Fire" },
-        "formattedName": "SCL-028-Phoenix Fire",
-        "description": {
-            "en": "An experimental and powerful style with ultra-high saturation and pronounced warm tones.\nIt creates fiery reds and oranges, perfect for bold, abstract, and high-impact photography.",
-            "vi": "Một phong cách thử nghiệm và mạnh mẽ với độ bão hòa cực cao và tông màu ấm rõ rệt. Nó tạo ra màu đỏ và cam rực lửa, hoàn hảo cho nhiếp ảnh táo bạo, trừu tượng và có tác động mạnh."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "extreme",
-        "tags": ["experimental", "powerful", "ultra-high-saturation", "pronounced-warm-tones", "fiery-reds", "oranges", "bold", "abstract", "high-impact"],
-        "whiteBalance": "8500K, B3.5-G1",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 105% +5", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+1" },
-        "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#FF4500",
-        "coords": { "x": 9, "y": 9 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF4500/ffffff?text=Phoenix+Fire+1",
-            "https://placehold.co/800x600/FF4500/ffffff?text=Phoenix+Fire+2",
-            "https://placehold.co/800x600/FF4500/ffffff?text=Phoenix+Fire+3"
-        ]
-    },
-    {
-        "id": "scl-029",
-        "name": { "vi": "SCL-029: Hollywood Cool", "en": "SCL-029: Hollywood Cool" },
-        "formattedName": "SCL-029-Hollywood Cool",
-        "description": {
-            "en": "A balanced cinematic formula for tungsten lighting with a cool blue-green bias.\nBased on S-Cinetone, it delivers smooth tones and a sophisticated, professional look reminiscent of classic Hollywood films.",
-            "vi": "Một công thức điện ảnh cân bằng cho ánh sáng tungsten với thiên hướng xanh lam-lục mát mẻ. Dựa trên S-Cinetone, nó mang lại tông màu mượt mà và một vẻ ngoài tinh xảo, chuyên nghiệp gợi nhớ đến các bộ phim Hollywood cổ điển."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["balanced-cinematic", "tungsten-light", "cool-blue-green-bias", "s-cinetone", "smooth-tones", "sophisticated", "professional-look", "classic-hollywood"],
-        "whiteBalance": "8200K, B4.5-G1.75",
-        "settings": { "Black level": "-10", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+16", "Color Phase": "+2" },
-        "colorDepth": { "R": "+5", "G": "+7", "B": "-6", "C": "-5", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#6495ED",
-        "coords": { "x": -8, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/6495ED/ffffff?text=Hollywood+Cool+1",
-            "https://placehold.co/800x600/6495ED/ffffff?text=Hollywood+Cool+2",
-            "https://placehold.co/800x600/6495ED/ffffff?text=Hollywood+Cool+3"
-        ]
-    },
-    {
-        "id": "scl-040",
-        "name": { "vi": "SCL-040: Graphite Standard", "en": "SCL-040: Graphite Standard" },
-        "formattedName": "SCL-040-Graphite Standard",
-        "description": {
-            "en": "A balanced, versatile monochrome style with a full tonal range and clean mid-tones.\nThis is a perfect starting point for black and white photography, delivering classic, timeless results for any subject.",
-            "vi": "Một phong cách đơn sắc cân bằng, đa dụng với dải tông màu đầy đủ và các tông màu trung bình trong trẻo. Đây là điểm khởi đầu hoàn hảo cho nhiếp ảnh đen trắng, mang lại kết quả cổ điển, vượt thời gian cho mọi chủ thể."
-        },
-        "type": "bw",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["balanced-monochrome", "versatile", "full-tonal-range", "clean-midtones", "perfect-starting-point", "black-and-white", "classic", "timeless"],
-        "whiteBalance": "AWB (Ưu tiên trắng)",
-        "settings": { "Black level": "-11", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "-1", "G": "+1", "B": "-1", "C": "+3", "M": "-3", "Y": "-1" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#555555",
-        "coords": { "x": 0, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/555555/ffffff?text=Graphite+Standard+1",
-            "https://placehold.co/800x600/555555/ffffff?text=Graphite+Standard+2",
-            "https://placehold.co/800x600/555555/ffffff?text=Graphite+Standard+3"
-        ]
-    },
-    {
-        "id": "scl-041",
-        "name": { "vi": "SCL-041: Obsidian Contrast", "en": "SCL-041: Obsidian Contrast" },
-        "formattedName": "SCL-041-Obsidian Contrast",
-        "description": {
-            "en": "A dramatic, high-contrast monochrome style with inky blacks and crisp whites.\nIdeal for architectural details, powerful street photography, and making subjects stand out with impressive clarity.",
-            "vi": "Một phong cách đơn sắc kịch tính, tương phản cao với màu đen sâu như mực và màu trắng sắc nét. Lý tưởng cho các chi tiết kiến trúc, nhiếp ảnh đường phố mạnh mẽ và làm nổi bật chủ thể với sự rõ ràng ấn tượng."
-        },
-        "type": "bw",
-        "contrast": "high",
-        "saturation": "normal",
-        "tags": ["dramatic-monochrome", "high-contrast", "inky-blacks", "crisp-whites", "architectural-details", "powerful-street-photography", "impressive-clarity"],
-        "whiteBalance": "AWB (Ưu tiên trắng)",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "+2", "G": "-4", "B": "-1", "C": "+2", "M": "-1", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#333333",
-        "coords": { "x": 8, "y": 5 },
-        "demoImages": [
-            "https://placehold.co/800x600/333333/ffffff?text=Obsidian+Contrast+1",
-            "https://placehold.co/800x600/333333/ffffff?text=Obsidian+Contrast+2",
-            "https://placehold.co/800x600/333333/ffffff?text=Obsidian+Contrast+3"
-        ]
-    },
-    {
-        "id": "scl-042",
-        "name": { "vi": "SCL-042: Newsprint Grit", "en": "SCL-042: Newsprint Grit" },
-        "formattedName": "SCL-042-Newsprint Grit",
-        "description": {
-            "en": "A powerful, high-contrast style that emulates the feel of 'pushed' black and white film used by photojournalists.\nIt's grainy, sharp, and full of character, perfect for capturing raw, unedited moments.",
-            "vi": "Một phong cách mạnh mẽ, tương phản cao mô phỏng cảm giác của phim đen trắng \"pushed\" được các nhà báo ảnh sử dụng. Nó có hạt, sắc nét và đầy cá tính, hoàn hảo để ghi lại những khoảnh khắc thô mộc, không qua chỉnh sửa."
-        },
-        "type": "bw",
-        "contrast": "high",
-        "saturation": "normal",
-        "tags": ["powerful", "high-contrast", "pushed-black-and-white-film", "photojournalism", "grainy", "sharp", "character", "raw", "unedited-moments"],
-        "whiteBalance": "5500K, A3-G2",
-        "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 77.5% +2", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
-        "colorDepth": { "R": "-4", "G": "-1", "B": "+6", "C": "+5", "M": "-3", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#777777",
-        "coords": { "x": 6, "y": -2 },
-        "demoImages": [
-            "https://placehold.co/800x600/777777/ffffff?text=Newsprint+Grit+1",
-            "https://placehold.co/800x600/777777/ffffff?text=Newsprint+Grit+2",
-            "https://placehold.co/800x600/777777/ffffff?text=Newsprint+Grit+3"
-        ]
-    },
-    {
-        "id": "scl-043",
-        "name": { "vi": "SCL-043: Silver Gelatin", "en": "SCL-043: Silver Gelatin" },
-        "formattedName": "SCL-043-Silver Gelatin",
-        "description": {
-            "en": "A flat, soft-contrast profile with rich mid-tones and smooth transitions.\nIt emulates the look of a classic darkroom print on silver gelatin paper, ideal for fine-art portraits and subtle compositions.",
-            "vi": "Một cấu hình tương phản phẳng, mềm mại với các tông màu trung bình phong phú và sự chuyển tiếp mượt mà. Nó mô phỏng vẻ ngoài của một bản in phòng tối cổ điển trên giấy bạc gelatin, lý tưởng cho chân dung nghệ thuật và các bố cục tinh tế."
-        },
-        "type": "bw",
-        "contrast": "soft",
-        "saturation": "normal",
-        "tags": ["flat", "soft-contrast", "rich-midtones", "smooth-transitions", "classic-darkroom-print", "silver-gelatin-paper", "fine-art-portrait", "subtle-compositions"],
-        "whiteBalance": "5500K, A3-G2",
-        "settings": { "Black level": "+3", "Gamma": "Cine1", "Black Gamma": "Narrow +5", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
-        "colorDepth": { "R": "+3", "G": "+3", "B": "+3", "C": "+2", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#AAAAAA",
-        "coords": { "x": -5, "y": -5 },
-        "demoImages": [
-            "https://placehold.co/800x600/AAAAAA/ffffff?text=Silver+Gelatin+1",
-            "https://placehold.co/800x600/AAAAAA/ffffff?text=Silver+Gelatin+2",
-            "https://placehold.co/800x600/AAAAAA/ffffff?text=Silver+Gelatin+3"
-        ]
-    },
-    {
-        "id": "scl-044",
-        "name": { "vi": "SCL-044: Crystal Clear", "en": "SCL-044: Crystal Clear" },
-        "formattedName": "SCL-044-Crystal Clear",
-        "description": {
-            "en": "A clean, crisp, and cool-toned black and white style.\nIt features fine grain and high clarity, perfect for technical subjects, architecture, and portraits where detail is paramount.",
-            "vi": "Một phong cách đen trắng trong trẻo, sắc nét và có tông màu lạnh. Nó có hạt mịn và độ trong cao, hoàn hảo cho các chủ thể kỹ thuật, kiến trúc và chân dung nơi chi tiết là quan trọng nhất."
-        },
-        "type": "bw",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["clean", "crisp", "cool-tone", "fine-grain", "high-clarity", "technical-subjects", "architecture", "detail-oriented-portraits"],
-        "whiteBalance": "AWB, B3-G0.25",
-        "settings": { "Black level": "-12", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 82% +5", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
-        "colorDepth": { "R": "-1", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#BBBBBB",
-        "coords": { "x": 3, "y": 7 },
-        "demoImages": [
-            "https://placehold.co/800x600/BBBBBB/ffffff?text=Crystal+Clear+1",
-            "https://placehold.co/800x600/BBBBBB/ffffff?text=Crystal+Clear+2",
-            "https://placehold.co/800x600/BBBBBB/ffffff?text=Crystal+Clear+3"
-        ]
-    },
-    {
-        "id": "scl-045",
-        "name": { "vi": "SCL-045: Classic Reportage", "en": "SCL-045: Classic Reportage" },
-        "formattedName": "SCL-045-Classic Reportage",
-        "description": {
-            "en": "A versatile, medium-contrast style with a classic grain structure.\nThis is a black and white 'workhorse' choice, ideal for photojournalism, street photography, and capturing everyday life with an authentic feel.",
-            "vi": "Một phong cách đa dụng, có độ tương phản trung bình với cấu trúc hạt cổ điển. Đây là lựa chọn \"chủ lực\" của nhiếp ảnh đen trắng, lý tưởng cho phóng sự, nhiếp ảnh đường phố và ghi lại cuộc sống hàng ngày với cảm giác chân thực."
-        },
-        "type": "bw",
-        "contrast": "medium",
-        "saturation": "normal",
-        "tags": ["versatile", "medium-contrast", "classic-grain", "black-and-white-workhorse", "photojournalism", "street-photography", "everyday-life", "authentic-feel"],
-        "whiteBalance": "AWB, A3",
-        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -5", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
-        "colorDepth": { "R": "0", "G": "+3", "B": "0", "C": "+2", "M": "+3", "Y": "0" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#888888",
-        "coords": { "x": -2, "y": 2 },
-        "demoImages": [
-            "https://placehold.co/800x600/888888/ffffff?text=Classic+Reportage+1",
-            "https://placehold.co/800x600/888888/ffffff?text=Classic+Reportage+2",
-            "https://placehold.co/800x600/888888/ffffff?text=Classic+Reportage+3"
-        ]
-    },
-    {
-        "id": "scl-046",
-        "name": { "vi": "SCL-046: Noir Film", "en": "SCL-046: Noir Film" },
-        "formattedName": "SCL-046-Noir Film",
-        "description": {
-            "en": "A very high-contrast, dramatic black and white style with deep, crushed blacks and bright whites.\nIt evokes the classic film noir aesthetic, perfect for creating mystery, drama, and graphic compositions.",
-            "vi": "Một phong cách đen trắng có độ tương phản rất cao, đầy kịch tính với màu đen sâu, bị nén và màu trắng sáng. Nó gợi lên phong cách của phim noir cổ điển, hoàn hảo để tạo ra sự bí ẩn, kịch tính và các bố cục đồ họa."
-        },
-        "type": "bw",
-        "contrast": "very-high",
-        "saturation": "normal",
-        "tags": ["very-high-contrast", "dramatic", "deep-crushed-blacks", "bright-whites", "classic-film-noir", "mystery", "graphic-compositions"],
-        "whiteBalance": "5500K",
-        "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
-        "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "+7", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#222222",
-        "coords": { "x": 9, "y": 9 },
-        "demoImages": [
-            "https://placehold.co/800x600/222222/ffffff?text=Noir+Film+1",
-            "https://placehold.co/800x600/222222/ffffff?text=Noir+Film+2",
-            "https://placehold.co/800x600/222222/ffffff?text=Noir+Film+3"
-        ]
-    },
-    {
-        "id": "scl-047",
-        "name": { "vi": "SCL-047: Low Light Grain", "en": "SCL-047: Low Light Grain" },
-        "formattedName": "SCL-047-Low Light Grain",
-        "description": {
-            "en": "Designed to emulate high-speed film, this formula uses a cinematic gamma to handle contrast while encouraging grain.\nIt's perfect for low-light situations, adding texture and atmosphere to shots.",
-            "vi": "Được thiết kế để mô phỏng phim tốc độ cao, công thức này sử dụng gamma điện ảnh để xử lý độ tương phản trong khi khuyến khích hạt. Nó hoàn hảo cho các tình huống thiếu sáng, thêm kết cấu và không khí cho ảnh."
-        },
-        "type": "bw",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["high-speed-film-emulation", "cinematic-gamma", "contrast-handling", "grain-encouraged", "low-light-situations", "texture", "atmosphere"],
-        "whiteBalance": "AWB (Ưu tiên trắng)",
-        "settings": { "Black level": "-11", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Manual 82.5% +0", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
-        "colorDepth": { "R": "+3", "G": "+2", "B": "+7", "C": "+7", "M": "+4", "Y": "-5" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#666666",
-        "coords": { "x": -4, "y": -7 },
-        "demoImages": [
-            "https://placehold.co/800x600/666666/ffffff?text=Low+Light+Grain+1",
-            "https://placehold.co/800x600/666666/ffffff?text=Low+Light+Grain+2",
-            "https://placehold.co/800x600/666666/ffffff?text=Low+Light+Grain+3"
-        ]
-    },
-    {
-        "id": "scl-048",
-        "name": { "vi": "SCL-048: Modern B&W", "en": "SCL-048: Modern B&W" },
-        "formattedName": "SCL-048-Modern B&W",
-        "description": {
-            "en": "A contemporary black and white style that utilizes S-Cinetone gamma for smooth, beautiful tonal transitions.\nIt delivers deep blacks without being overly harsh, well-suited for modern portraits and fine art.",
-            "vi": "Một phong cách đen trắng đương đại sử dụng gamma S-Cinetone để tạo ra sự chuyển tông mượt mà, đẹp mắt. Nó mang lại màu đen sâu mà không quá gắt, rất phù hợp cho chân dung hiện đại và nghệ thuật."
-        },
-        "type": "bw",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["contemporary-black-and-white", "s-cinetone-gamma", "smooth-beautiful-tonal-transitions", "deep-blacks", "not-harsh", "modern-portrait", "fine-art"],
-        "whiteBalance": "5500K",
-        "settings": { "Black level": "-15", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "+28", "Color Phase": "0" },
-        "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#444444",
-        "coords": { "x": 5, "y": 4 },
-        "demoImages": [
-            "https://placehold.co/800x600/444444/ffffff?text=Modern+B%26W+1",
-            "https://placehold.co/800x600/444444/ffffff?text=Modern+B%26W+2",
-            "https://placehold.co/800x600/444444/ffffff?text=Modern+B%26W+3"
-        ]
-    },
-    {
-        "id": "scl-049",
-        "name": { "vi": "SCL-049: Ortho Portrait", "en": "SCL-049: Ortho Portrait" },
-        "formattedName": "SCL-049-Ortho Portrait",
-        "description": {
-            "en": "Emulating orthochromatic film, which is insensitive to red light.\nThis results in darkened skin and lip tones, creating a unique, vintage, and often dramatic portrait style.",
-            "vi": "Mô phỏng phim orthochromatic, loại phim không nhạy với ánh sáng đỏ. Điều này dẫn đến tông màu da và môi bị tối đi, tạo ra một phong cách chân dung độc đáo, cổ điển và thường đầy kịch tính."
-        },
-        "type": "color",
-        "contrast": "normal",
-        "saturation": "normal",
-        "tags": ["orthochromatic-film", "red-light-insensitive", "darkened-skin-tones", "lips", "unique-portrait", "vintage", "dramatic"],
-        "whiteBalance": "AWB, A3-M2.75",
-        "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 105% +5", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "0" },
-        "colorDepth": { "R": "+7", "G": "+7", "B": "-7", "C": "-7", "M": "+7", "Y": "+7" },
-        "detailSettings": { "Level": "0" },
-        "personalityColor": "#708090",
-        "coords": { "x": -6, "y": -8 },
-        "demoImages": [
-            "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+1",
-            "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+2",
-            "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+3"
-        ]
-    }
-];
+import recipesData from './recipes.js';
 
 const translations = {
-    // General
-    headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
-    navPictureProfile: {vi: "Picture Profile", en: "Picture Profile"},
+    headerTitle: {vi: "Sony Color Lab", en: "Sony Color Lab"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
     navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
-    noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
-    footerText: {vi: "Phát triển bởi Sony Alpha Vietnam.", en: "Developed by Sony Alpha Vietnam."},
-    exportRecipeBtn: {vi: "Lưu & Xuất Công Thức", en: "Save & Export Recipe"},
-    downloadLutBtn: {vi: "Tải file .CUBE (LUT)", en: "Download .CUBE (LUT) File"},
-    memoryRecallBtn: {vi: "Hướng dẫn lưu vào máy", en: "Camera Save Guide"},
-
-    // Home / Quiz
-    landingTitle: {vi:"Tìm màu sắc của riêng bạn.", en:"Find Your Signature Color."},
-    landingSubtitle: {vi:"Trả lời vài câu hỏi để khám phá công thức màu được AI tạo ra dành riêng cho tâm trạng và phong cách của bạn.", en:"Answer a few questions to discover a unique color recipe, tailored by AI to your mood and style."},
-    startQuizBtn: {vi:"Khám phá màu của bạn", en:"Discover Your Color"},
-    quizResultTitle: {vi: "AI đề xuất lựa chọn cho bạn:", en: "AI suggests an option for you:"},
-    viewInLibraryBtn: {vi: "Xem trong thư viện", en: "View in Library"},
-    loadingAnalyze: {vi: "Đang phân tích lựa chọn...", en: "Analyzing your choices..."},
-
-    // Recipe Formulas
+    landingTitle: {vi:"Thư viện Màu sắc", en:"The Color Library"},
+    landingSubtitle: {vi:"Khám phá bộ sưu tập các công thức Picture Profile độc đáo được tạo ra cho máy ảnh Sony Alpha.", en:"Explore a collection of unique Picture Profile recipes crafted for Sony Alpha cameras."},
+    startExploringBtn: {vi:"Bắt đầu Khám phá", en:"Start Exploring"},
     searchInputPlaceholder: {vi: "🔍 Tìm công thức...", en: "🔍 Search recipes..."},
     filterType: {vi: "Loại", en: "Type"},
     filterTypeColor: {vi: "Màu", en: "Color"},
@@ -1286,60 +152,22 @@ const translations = {
     filterHigh: {vi: "Cao", en: "High"},
     filterMedium: {vi: "Vừa", en: "Med"},
     filterLow: {vi: "Thấp", en: "Low"},
-    compareBtn: {vi: "So sánh bằng AI", en: "Compare with AI"},
     recipeDetailWelcomeTitle: {vi: "Thư viện màu Tương tác", en: "Interactive Color Library"},
     recipeDetailWelcomeText: {vi: "Khám phá các công thức màu Picture Profile một cách trực quan. Nhấp vào một điểm trên biểu đồ hoặc một công thức trong danh sách để xem chi tiết.", en: "Explore Picture Profile color recipes visually. Click a point on the chart or a recipe in the list to see details."},
     whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
     recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
     colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
     detailTitle: {vi: "Chi tiết", en: "Detail"},
-    aiTuningTitle: {vi: "Tinh chỉnh bằng AI", en: "AI Fine-Tuning"},
-    aiTuningPlaceholder: {vi: "Nhập yêu cầu của bạn ở đây... (ví dụ: 'làm cho màu ấm hơn và trong hơn')", en: "Enter your request here... (e.g., 'make it warmer and clearer')"},
-    aiTuningBtn: {vi: "Tạo bằng AI", en: "Generate with AI"},
-    compareWithOriginalBtn: {vi: "So sánh với bản gốc", en: "Compare with Original"},
-    comparisonModalTitle: {vi: "So sánh Công thức", en: "Recipe Comparison"},
-    comparisonLoading: {vi: "AI đang phân tích và so sánh...", en: "AI is analyzing and comparing..."},
     colorChartTitle: {vi: "Biểu đồ Màu", en: "Color Chart"},
     bwChartTitle: {vi: "Biểu đồ Đơn sắc (B&W)", en: "Monochrome (B&W) Chart"},
     axisTonality: {vi: "Tương phản (← Mềm | Cứng →)", en: "Tonality (← Soft | Hard →)"},
     axisSaturation: {vi: "Độ bão hòa (← Thấp | Cao →)", en: "Saturation (← Low | High →)"},
     axisChroma: {vi: "Độ sâu màu (← Thấp | Cao →)", en: "Chroma Depth (← Low | High →)"},
     backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
-    aiExplainRecipeBtn: {vi: "✨ Giải thích bằng AI", en: "✨ Explain with AI"},
-    aiExplanationLoading: {vi: "AI đang phân tích công thức...", en: "AI is analyzing the recipe..."},
-    aiPromptModalTitle: {vi: "Xác nhận yêu cầu AI", en: "Confirm AI Request"},
-    aiPromptModalOriginal: {vi: "Yêu cầu gốc của bạn:", en: "Your Original Request:"},
-    aiPromptModalSuggested: {vi: "Yêu cầu được AI tối ưu hóa:", en: "AI-Optimized Request:"},
-    aiPromptModalCancel: {vi: "Hủy", en: "Cancel"},
-    aiPromptModalConfirm: {vi: "Xác nhận & Tạo", en: "Confirm & Generate"},
-
-    // Featured Photos
     featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
-    featuredCta: {vi: "Hãy cùng làm cho thư viện màu của Alpha AI Color Lab và group cộng đồng Sony Alpha Vietnam thêm phong phú! Chia sẻ ảnh của bạn kèm mã màu (ví dụ: 'SCL-001') để cùng nhau tạo nên một không gian đầy cảm hứng.", en: "Let's enrich the Alpha AI Color Lab gallery and the Sony Alpha Vietnam community group! Share your photos with the color code (e.g., 'SCL-001') to create an inspiring space together."},
+    featuredCta: {vi: "Chia sẻ ảnh của bạn với mã màu (ví dụ: 'SCL-001') để cùng nhau tạo nên một không gian đầy cảm hứng.", en: "Share your photos with the color code (e.g., 'SCL-001') to create an inspiring space together."},
     featuredAlbumBtn: {vi: "Xem Album & Đóng góp Ảnh", en: "View Album & Contribute Photos"},
-    
-    // Quiz Questions
-    quizQ1: {vi: "Chủ đề bạn sắp chụp là gì?", en: "What's your subject?"},
-    quizQ1A1: {vi: "Chân dung", en: "Portrait"},
-    quizQ1A2: {vi: "Phong cảnh", en: "Landscape"},
-    quizQ1A3: {vi: "Đường phố / Đô thị", en: "Street / Urban"},
-    quizQ1A4: {vi: "Đời thường", en: "Everyday"},
-    quizQ2: {vi: "Bạn muốn tông màu chủ đạo nào?", en: "What's your desired primary tone?"},
-    quizQ2A1: {vi: "Ấm áp (Vàng, Cam)", en: "Warm (Yellow, Orange)"},
-    quizQ2A2: {vi: "Mát mẻ (Xanh dương)", en: "Cool (Blue)"},
-    quizQ2A3: {vi: "Trung tính", en: "Natural"},
-    quizQ2A4: {vi: "Hoài cổ (Film)", en: "Nostalgic (Film)"},
-    quizQ3: {vi: "Độ tương phản bạn thích?", en: "How about the contrast?"},
-    quizQ3A1: {vi: "Cao (Gắt)", en: "High (Punchy)"},
-    quizQ3A2: {vi: "Thấp (Mềm mại)", en: "Low (Soft)"},
-    quizQ3A3: {vi: "Trung bình", en: "Medium"},
-    quizQ4: {vi: "Bạn thích ảnh màu hay trắng đen?", en: "Color or Black & White?"},
-    quizQ4A1: {vi: "Màu", en: "Color"},
-    quizQ4A2: {vi: "Trắng Đen", en: "B&W"},
-    quizQ5: {vi: "Độ bão hòa màu sắc bạn muốn?", en: "What's your preferred saturation?"},
-    quizQ5A1: {vi: "Đậm", en: "High"},
-    quizQ5A2: {vi: "Trung bình", en: "Medium"},
-    quizQ5A3: {vi: "Nhạt", en: "Low"},
+    tutorialTitle: { vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide" },
 };
 
 const parameterExplanations = {
@@ -1381,129 +209,17 @@ const parameterExplanations = {
     }
 };
 
-const quizQuestions = [
-    { 
-        id: 'subject', 
-        title: 'quizQ1', 
-        options: [
-            { key: 'quizQ1A1', value: 'portrait', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>` },
-            { key: 'quizQ1A2', value: 'landscape', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.59a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>` },
-            { key: 'quizQ1A3', value: 'urban', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>` },
-            { key: 'quizQ1A4', value: 'everyday', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 3-3 3 3"/><path d="M13 18V2H7"/><path d="M22 15l-3 3-3-3"/><path d="m11 6 10 12"/></svg>` }
-        ] 
-    },
-    { 
-        id: 'tone', 
-        title: 'quizQ2', 
-        options: [
-            { key: 'quizQ2A1', value: 'warm', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>` },
-            { key: 'quizQ2A2', value: 'cool', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.5 3 5.7L12 22l4-7.3c1.8-1.2 3-3.3 3-5.7a7 7 0 0 0-7-7z"/><path d="M12 9a3 3 0 0 0-3 3c0 1.2.8 2.2 2 2.7l1 1.3l1-1.3c1.2-.5 2-1.5 2-2.7a3 3 0 0 0-3-3z"/></svg>` },
-            { key: 'quizQ2A3', value: 'natural', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-2 0-4-1-4-4 0-2 2-3 4-3s4 1 4 3c0 3-2 4-4 4z"/><path d="M12 15V2"/><path d="m5 12-3-3 3-3"/><path d="m19 12 3-3-3-3"/></svg>` },
-            { key: 'quizQ2A4', value: 'vintage', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h4"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M21 7.5h-4"/><path d="M21 12h-4"/><path d="M21 16.5h-4"/></svg>` }
-        ] 
-    },
-    { 
-        id: 'contrast', 
-        title: 'quizQ3', 
-        options: [
-            { key: 'quizQ3A1', value: 'high', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></svg>` },
-            { key: 'quizQ3A2', value: 'low', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" fill="currentColor" fill-opacity="0.2"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></svg>` },
-            { key: 'quizQ3A3', value: 'medium', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z" fill="currentColor" fill-opacity="0.5"/></svg>` }
-        ] 
-    },
-    {
-        id: 'type',
-        title: 'quizQ4',
-        options: [
-            { key: 'quizQ4A1', value: 'color', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z"></path></svg>` },
-            { key: 'quizQ4A2', value: 'bw', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>` }
-        ]
-    },
-    {
-        id: 'saturation',
-        title: 'quizQ5',
-        options: [
-            { key: 'quizQ5A1', value: 'high', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>` },
-            { key: 'quizQ5A2', value: 'medium', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/></svg>` },
-            { key: 'quizQ5A3', value: 'low', icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>` }
-        ]
-    }
-];
-
-async function callAIApi(prompt, isStructured = false) {
-    if (state.isAILoading) return;
-    state.isAILoading = true;
-    updateUIAfterAILoading();
-
-    let result = isStructured ? null : "";
-
-    try {
-        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-        let payload = { contents: chatHistory };
-        
-        const apiKey = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ"; 
-        const modelName = "gemini-1.5-flash-latest";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-
-        if (isStructured) {
-            payload.generationConfig = {
-                responseMimeType: "application/json",
-            };
-        }
-
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`API call failed with status ${response.status}:`, errorText);
-            throw new Error(`API call failed: ${response.statusText}`);
-        }
-
-        const responseData = await response.json();
-        
-        if (responseData.candidates && responseData.candidates[0]?.content?.parts?.[0]?.text) {
-            const text = responseData.candidates[0].content.parts[0].text;
-            if (isStructured) {
-                try {
-                    const cleanedText = text.replace(/^```json\n?/, '').replace(/```$/, '');
-                    result = JSON.parse(cleanedText);
-                } catch (e) {
-                    console.error("AI Response JSON parsing error:", e, "\nRaw text:", text);
-                    result = null;
-                }
-            } else {
-                result = text;
-            }
-        } else {
-            console.error("Unexpected AI response structure or empty content:", responseData);
-        }
-    } catch (error) {
-        console.error("AI API call failed in catch block:", error);
-    } finally {
-        state.isAILoading = false;
-        updateUIAfterAILoading();
-        return result;
-    }
-}
-
+// --- UI & LOGIC FUNCTIONS ---
 function t(key) { return translations[key]?.[state.currentLang] || key; }
 
 function applyTranslations() {
     document.querySelectorAll('[data-translate-key]').forEach(el => {
         const key = el.dataset.translateKey;
-        if (translations[key] && translations[key][state.currentLang]) {
-            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t(key); }    
-            else if (el.tagName === 'OPTION') { el.textContent = t(key); }    
-            else { el.innerHTML = t(key); }
+        if (translations[key]?.[state.currentLang]) {
+            const element = el;
+            if (element.placeholder !== undefined) element.placeholder = t(key);
+            else element.innerHTML = t(key);
         }
-    });
-    document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
-        const key = 'nav' + btn.dataset.view.charAt(0).toUpperCase() + btn.dataset.view.slice(1);
-        btn.textContent = t(key);
     });
     document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
     document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
@@ -1512,21 +228,13 @@ function applyTranslations() {
 function createSettingsGrid(settings) {
     if (!settings) return '';
     return Object.entries(settings).map(([key, value]) => {
-        // Find a matching key in explanations, case-insensitive
-        const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase());
+        const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase().trim());
         const infoIconHTML = explanationKey 
             ? `<svg class="info-icon w-4 h-4 text-gray-400 hover:text-blue-500 cursor-pointer" data-param-key="${explanationKey}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>`
             : '';
-        
-        return `<div class="flex flex-col">
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-xs text-neutral-500 font-medium">${key}</span>
-                        ${infoIconHTML}
-                    </div>
-                    <span class="font-semibold text-lg">${value}</span>
-                </div>`;
+        return `<div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="text-xs text-neutral-500 font-medium">${key}</span>${infoIconHTML}</div><span class="font-semibold text-lg">${value}</span></div>`;
     }).join('');
-};
+}
 
 function createFullRecipeHTML(recipe, isMainView = false) {
     const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
@@ -1538,79 +246,32 @@ function createFullRecipeHTML(recipe, isMainView = false) {
              </div>`;
 }
 
-function updateUIAfterAILoading() {
-    document.querySelectorAll('button').forEach(btn => {
-        if (btn.dataset.originalText && !state.isAILoading) {
-            btn.innerHTML = btn.dataset.originalText;
-            btn.disabled = false;
-            delete btn.dataset.originalText;
-        }
-    });
-}
-
 const viewTemplates = {
     home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
-                 <h1 data-translate-key="landingTitle" class="landing-title"></h1>
-                 <p data-translate-key="landingSubtitle" class="landing-subtitle"></p>
-                 <button id="startQuizBtn" class="btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startQuizBtn"></button>
+                 <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="landingTitle"></h1>
+                 <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="landingSubtitle"></p>
+                 <button data-view="recipeFormulas" class="nav-btn btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startExploringBtn"></button>
              </div>`,
-
-    quiz: () => {
-        const quizHTML = quizQuestions.map(q => {
-            const optionsHTML = q.options.map(opt => `
-                         <div class="quiz-option-card" data-value="${opt.value}">
-                             ${opt.icon}
-                             <span data-translate-key="${opt.key}"></span>
-                         </div>`).join('');
-            const gridCols = q.options.length > 3 ? 'grid-cols-2 lg:grid-cols-4' : (q.options.length === 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-3');
-            return `
-                         <div class="mb-12" data-quiz-group="${q.id}">
-                             <h2 class="text-2xl font-bold text-center mb-6" data-translate-key="${q.title}"></h2>
-                             <div class="grid ${gridCols} gap-4">${optionsHTML}</div>
-                         </div>`;
-        }).join('');
-
-        return `<div id="quizView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-6 md:p-12">
-                     <div class="max-w-4xl mx-auto">
-                         ${quizHTML}
-                         <div class="text-center">
-                             <button id="submitQuizBtn" class="btn btn-primary py-4 px-12 text-xl" disabled>Xem kết quả</button>
-                         </div>
-                     </div>
-                 </div>`;
-    },
-
     recipeFormulas: () => `
                  <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                     <!-- Left Panel: Recipe List & Mobile Filters -->
                      <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
                          <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                         
-                         <!-- FILTERS FOR MOBILE -->
                          <div class="space-y-4 text-sm mb-4 md:hidden">
                               <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
                               <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                               <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                          </div>
-
                          <div id="recipeListContainer" class="space-y-2 md:pt-0 pt-4 border-t md:border-t-0 flex-grow overflow-y-auto pr-2 -mr-3"></div>
-                         
-                         <div id="compareBtnContainer" class="pt-4 flex-shrink-0 border-t mt-auto"></div>
                      </aside>
-
-                     <!-- Right Panel: Details, Charts, and Desktop Filters -->
                      <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                          <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
                             <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
                             <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                             <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
                          </div>
-
                          <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
                             <div id="chartsContainer">
-                                <div class="text-center mb-10">
-                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
-                                </div>
+                                <div class="text-center mb-10"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
                                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                                     <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
                                     <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
@@ -1621,12 +282,9 @@ const viewTemplates = {
                      </main>
                      <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
                          <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
-                         <div class="glass-panel p-6 overflow-y-auto">
-                            <div id="recipeContentMobile"></div>
-                         </div>
+                         <div class="glass-panel p-6 overflow-y-auto"><div id="recipeContentMobile"></div></div>
                      </div>
                  </div>`,
-
     featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
      <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
          <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
@@ -1636,59 +294,11 @@ const viewTemplates = {
              <span data-translate-key="featuredAlbumBtn"></span>
          </a>
          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
-             ${recipesData.slice(0,6).map((recipe) => {
-                 const hasDemoImages = recipe.demoImages && recipe.demoImages.length > 0;
-                 const imgSrc = hasDemoImages ? recipe.demoImages[0] : `https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}`;
-                 return `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="0">
-                       <img src="${imgSrc}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/cccccc/ffffff?text=Image+Not+Found';">
-                 </div>`;
-             }).join('')}
+             ${recipesData.slice(0,6).map((recipe) => `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer" data-recipe-id="${recipe.id}"><img src="${recipe.demoImages?.[0] || ''}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}';"></div>`).join('')}
          </div>
      </div>
     </div>`
 };
-
-function openLightbox(images, initialIndex = 0) {
-    if (!images || images.length === 0) return;
-    state.lightbox.isOpen = true;
-    state.lightbox.images = images;
-    state.lightbox.currentIndex = initialIndex;
-    const lightboxEl = document.getElementById('lightbox');
-    lightboxEl.classList.remove('hidden');
-    updateLightboxContent();
-}
-
-function closeLightbox() {
-    state.lightbox.isOpen = false;
-    document.getElementById('lightbox').classList.add('hidden');
-}
-
-function updateLightboxContent() {
-    if (!state.lightbox.isOpen) return;
-    const mainImageEl = document.getElementById('lightbox-main-image');
-    const thumbnailsContainer = document.getElementById('lightbox-thumbnails');
-    const newSrc = state.lightbox.images[state.lightbox.currentIndex];
-    mainImageEl.style.opacity = '0';
-    setTimeout(() => {
-        mainImageEl.src = newSrc;
-        mainImageEl.onerror = () => { mainImageEl.src = `https://placehold.co/1280x720/cccccc/ffffff?text=Image+Load+Error`; };
-        mainImageEl.onload = () => { mainImageEl.style.opacity = '1'; };
-    }, 150);
-
-    thumbnailsContainer.innerHTML = state.lightbox.images.map((imgSrc, index) => `
-                 <img src="${imgSrc}" loading="lazy" class="lightbox-thumb w-16 h-16 md:w-20 md:h-20 object-cover rounded-md ${index === state.lightbox.currentIndex ? 'active' : ''}" data-index="${index}" onerror="this.style.display='none'">
-             `).join('');
-}
-
-function navigateLightbox(direction) {
-    if (!state.lightbox.isOpen) return;
-    const imageCount = state.lightbox.images.length;
-    let newIndex = state.lightbox.currentIndex + direction;
-    if (newIndex < 0) newIndex = imageCount - 1;
-    else if (newIndex >= imageCount) newIndex = 0;
-    state.lightbox.currentIndex = newIndex;
-    updateLightboxContent();
-}
 
 function destroyAllCharts() {
     Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
@@ -1730,16 +340,9 @@ function handleFilterClick(e) {
     renderLibraryList();
 }
 
-function handleRecipeSelection(id, type) {
-    if (type === 'checkbox') {
-        const index = state.comparisonList.indexOf(id);
-        if (index > -1) { state.comparisonList.splice(index, 1); } 
-        else if (state.comparisonList.length < 2) { state.comparisonList.push(id); }
-    } else {
-        state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
-        state.isMobileDetailActive = !!state.selectedRecipeId;
-        state.comparisonList = [];
-    }
+function handleRecipeSelection(id) {
+    state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
+    state.isMobileDetailActive = !!state.selectedRecipeId;
     renderLibraryList();
     renderLibraryDetails();
 
@@ -1747,228 +350,11 @@ function handleRecipeSelection(id, type) {
     if (activeCharts.bw?.update) { activeCharts.bw.update(); }
 }
 
-async function handleAiComparison(id1, id2, recipe2Obj = null) {
-    const modal = document.getElementById('comparisonModal');
-    const titleEl = document.getElementById('comparisonModalTitle');
-    const contentEl = document.getElementById('comparisonModalContent');
-    modal.classList.remove('hidden');
-    titleEl.textContent = t('comparisonModalTitle');
-    contentEl.innerHTML = `<div class="flex items-center justify-center p-8"><div class="spinner !w-12 !h-12 !border-4"></div><p class="ml-4 text-lg font-semibold">${t('comparisonLoading')}</p></div>`;
-    
-    const recipe1 = recipesData.find(r => r.id === id1);
-    const recipe2 = recipe2Obj ? recipe2Obj : recipesData.find(r => r.id === id2);
-
-    if (!recipe1 || !recipe2) {
-        contentEl.innerHTML = `<p class="text-red-500">Error loading recipe data for comparison.</p>`;
-        return;
-    }
-
-    const prompt = `So sánh hai công thức Sony Picture Profile sau đây. Vui lòng tạo một bảng so sánh chi tiết các thông số kỹ thuật chính. Sau bảng, hãy phân tích cảm giác tổng thể của mỗi công thức và đề xuất các trường hợp sử dụng lý tưởng cho từng công thức. Trình bày kết quả bằng định dạng Markdown.
-
-**Công thức 1: ${recipe1.name[state.currentLang]}**
-* Mô tả: ${recipe1.description[state.currentLang]}
-* Cài đặt: ${JSON.stringify(recipe1.settings)}
-
-**Công thức 2: ${recipe2.name[state.currentLang]}**
-* Mô tả: ${recipe2.description[state.currentLang]}
-* Cài đặt: ${JSON.stringify(recipe2.settings)}
-`;
-
-    const comparisonText = await callAIApi(prompt, false);
-    contentEl.innerHTML = marked.parse(comparisonText || "Error loading comparison.");
-    applyTranslations();
-}
-
-async function handleAiAdjustment(button) {
-    const recipeId = button.dataset.recipeId;
-    const textarea = document.getElementById('aiTuningTextarea');
-    const resultContainer = document.getElementById('aiResultContainer');
-    const originalUserInput = textarea.value;
-
-    if (!originalUserInput || !resultContainer || state.isAILoading) return;
-    
-    button.disabled = true; 
-    button.dataset.originalText = button.innerHTML;
-    button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
-
-    // Step 1: Rewrite the prompt
-    const rewriteLang = state.currentLang === 'vi' ? 'Vietnamese' : 'English';
-    const rewritePrompt = `You are an AI prompt expert. Rewrite the following user request to be a more effective and detailed prompt for another AI that adjusts camera color recipe settings. The user's request is: "${originalUserInput}". Respond ONLY with the rewritten prompt, in the original language (${rewriteLang}).`;
-    
-    const rewrittenPrompt = await callAIApi(rewritePrompt, false);
-
-    if (!rewrittenPrompt) {
-        resultContainer.innerHTML = `<p class="text-red-500 mt-4">Lỗi khi tối ưu hóa yêu cầu. Vui lòng thử lại.</p>`;
-        button.disabled = false;
-        button.innerHTML = button.dataset.originalText;
-        return;
-    }
-
-    // Step 2: Show confirmation modal
-    const modal = document.getElementById('aiPromptModal');
-    document.getElementById('originalPromptText').textContent = originalUserInput;
-    const rewrittenContainer = document.getElementById('rewrittenPromptContainer');
-    rewrittenContainer.textContent = rewrittenPrompt;
-    modal.classList.remove('hidden');
-
-    const confirmBtn = document.getElementById('confirmPromptBtn');
-    const cancelBtn = document.getElementById('cancelPromptBtn');
-
-    const handleConfirmation = async () => {
-        modal.classList.add('hidden');
-        resultContainer.innerHTML = `<div class="flex items-center justify-center p-4"><div class="spinner"></div><p class="ml-2 text-base font-semibold">AI đang tạo công thức mới...</p></div>`;
-        
-        // Step 3: Generate the recipe with the confirmed prompt
-        const originalRecipe = recipesData.find(r => r.id === recipeId);
-        const generationLang = state.currentLang === 'vi' ? 'Vietnamese' : 'English';
-        const generationPrompt = `Based on the original recipe JSON below, adjust the settings according to the user's detailed request. Return a single, complete, and valid JSON object for the adjusted recipe. 
-- The new recipe must keep the original JSON structure exactly.
-- The 'id' should be appended with '-ai'.
-- The 'name' object's values should be appended with '(AI Adjusted)'.
-- Create a new 'description' object with 'vi' and 'en' keys, describing the result of the adjustment in ${generationLang}.
-- Only adjust numeric or string values within 'whiteBalance', 'settings', 'colorDepth', and 'detailSettings' based on the request. Do not add or remove keys.
-
-Original Recipe: ${JSON.stringify(originalRecipe)}
-User's Detailed Request: "${rewrittenPrompt}"
-
-Return ONLY the full JSON object of the new recipe.`;
-
-        const aiResponse = await callAIApi(generationPrompt, true);
-
-        if (aiResponse && typeof aiResponse === 'object' && aiResponse.id) {
-            state.lastGeneratedAiRecipe = aiResponse;
-            resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6">
-                <h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4>
-                <div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div>
-                <button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button>
-            </div>`;
-        } else {
-            resultContainer.innerHTML = `<p class="text-red-500 mt-4">Lỗi khi tạo tinh chỉnh bằng AI. Phản hồi không hợp lệ. Vui lòng thử lại.</p>`;
-        }
-        applyTranslations();
-        button.disabled = false;
-        button.innerHTML = button.dataset.originalText;
-        
-        // Clean up listeners
-        confirmBtn.replaceWith(confirmBtn.cloneNode(true));
-        cancelBtn.replaceWith(cancelBtn.cloneNode(true));
-    };
-
-    const handleCancellation = () => {
-        modal.classList.add('hidden');
-        button.disabled = false;
-        button.innerHTML = button.dataset.originalText;
-        // Clean up listeners
-        confirmBtn.replaceWith(confirmBtn.cloneNode(true));
-        cancelBtn.replaceWith(cancelBtn.cloneNode(true));
-    };
-
-    confirmBtn.addEventListener('click', handleConfirmation, { once: true });
-    cancelBtn.addEventListener('click', handleCancellation, { once: true });
-}
-
-
-async function handleAiRecipeExplanation(button) {
-    const recipeId = button.dataset.recipeId;
-    const explanationContainer = document.getElementById('aiExplanationContainer');
-    if (!explanationContainer || state.isAILoading) return;
-
-    button.disabled = true;
-    button.dataset.originalText = button.innerHTML;
-    button.innerHTML = `<div class="spinner"></div> ${t('aiExplainRecipeBtn')}`;
-    explanationContainer.innerHTML = `<div class="flex items-center justify-center p-4"><div class="spinner"></div><p class="ml-2 text-base font-semibold">${t('aiExplanationLoading')}</p></div>`;
-    explanationContainer.classList.remove('hidden');
-
-    const recipe = recipesData.find(r => r.id === recipeId);
-    if (!recipe) {
-        explanationContainer.innerHTML = `<p class="text-red-500">Error: Recipe not found.</p>`;
-        button.disabled = false;
-        button.innerHTML = button.dataset.originalText;
-        return;
-    }
-
-    const prompt = `Giải thích các đặc điểm và ý đồ nghệ thuật của công thức Sony Picture Profile sau một cách súc tích, dễ hiểu, tập trung vào cách các cài đặt chính đóng góp vào giao diện và cảm nhận tổng thể. Gợi ý các tình huống chụp ảnh lý tưởng.
-       Tên công thức: ${recipe.name[state.currentLang]}
-       Mô tả: ${recipe.description[state.currentLang]}
-       Cài đặt: ${JSON.stringify(recipe.settings)}
-       `;
-
-    const aiResponse = await callAIApi(prompt, false);
-
-    if (aiResponse) {
-        explanationContainer.innerHTML = `<div class="mt-4 p-4 rounded-xl bg-blue-50">
-           <h4 class="font-bold text-lg mb-2" data-translate-key="aiExplanationTitle"></h4>
-           <div class="prose max-w-none text-gray-700">${marked.parse(aiResponse)}</div>
-       </div>`;
-    } else {
-        explanationContainer.innerHTML = `<p class="text-red-500">Lỗi khi tạo giải thích bằng AI. Vui lòng thử lại.</p>`;
-    }
-
-    button.disabled = false;
-    button.innerHTML = button.dataset.originalText;
-    applyTranslations();
-}
-
-async function handleQuizSubmit() {
-    const selectedTags = Object.values(state.quizAnswers);
-    await renderView('home');
-    const homeView = document.getElementById('homeView');
-    if (!homeView) return;
-    homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
-    applyTranslations();
-
-    let maxScore = -1;
-    let recommendedRecipe = null;
-
-    recipesData.forEach(recipe => {
-        let score = 0;
-        selectedTags.forEach(tag => {
-            if (recipe.tags.includes(tag)) score++;
-            if (recipe.type === tag) score += 5; // Strong weight for type match
-            if (recipe.contrast === tag) score += 2;
-            if (recipe.saturation === tag) score += 2;
-        });
-
-        if (score > maxScore) {
-            maxScore = score;
-            recommendedRecipe = recipe;
-        }
-    });
-
-    if (recommendedRecipe) {
-        state.selectedRecipeId = recommendedRecipe.id;
-        state.isMobileDetailActive = true;
-        await renderView('recipeFormulas');
-    } else {
-        homeView.innerHTML = `<p class="text-red-500">Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
-    }
-}
-
 function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
         renderLibraryList();  
         renderLibraryDetails();
         renderInteractiveCharts(state.currentLang);
-    } else if (viewName === 'quiz') {
-        const quizView = document.getElementById('quizView');
-        quizView.addEventListener('click', (e) => {
-            const card = e.target.closest('.quiz-option-card');
-            if (!card) return;
-
-            const group = card.closest('[data-quiz-group]').dataset.quizGroup;
-            const value = card.dataset.value;
-            state.quizAnswers[group] = value;
-
-            document.querySelectorAll(`[data-quiz-group="${group}"] .quiz-option-card`).forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            card.classList.remove('bouncing');
-            void card.offsetWidth;
-            card.classList.add('bouncing');
-
-            const allAnswered = quizQuestions.every(q => state.quizAnswers[q.id]);
-            document.getElementById('submitQuizBtn').disabled = !allAnswered;
-        });
-        document.getElementById('submitQuizBtn').addEventListener('click', handleQuizSubmit);
     }
 }
 
@@ -1986,14 +372,11 @@ function renderLibraryList() {
     });
 
     container.innerHTML = recipesToRender.map(recipe => {
-        const isChecked = state.comparisonList.includes(recipe.id);
         const isSelected = recipe.id === state.selectedRecipeId;
-
-        return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-start gap-4 ${isSelected ? 'selected' : ''}">
-                     <input type="checkbox" class="recipe-compare-cb form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500 self-start mt-1 flex-shrink-0" data-recipe-id="${recipe.id}" ${isChecked ? 'checked' : ''} ${state.comparisonList.length >= 2 && !isChecked ? 'disabled' : ''}>
-                      <div class="flex-grow cursor-pointer recipe-item-content" data-recipe-id="${recipe.id}">
+        return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-start gap-4 ${isSelected ? 'selected' : ''}" data-recipe-id="${recipe.id}">
+                      <div class="flex-grow cursor-pointer">
                           <div class="flex items-start gap-3">
-                                <div class="recipe-dot w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
+                                <div class="w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
                               <div class="flex-grow">
                                     <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
                                   <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
@@ -2002,10 +385,6 @@ function renderLibraryList() {
                       </div>
                  </div>`;
     }).join('');
-
-    const btnContainer = document.getElementById('compareBtnContainer');
-    btnContainer.innerHTML = `<button id="compareBtn" class="btn btn-primary w-full mt-4 py-3" data-translate-key="compareBtn" ${state.comparisonList.length !== 2 ? 'disabled' : ''}></button>`;
-    applyTranslations();
 }
 
 function renderLibraryDetails() {
@@ -2038,42 +417,11 @@ function renderLibraryDetails() {
     if (chartsContainer) chartsContainer.classList.add('hidden');
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
-
-    const images = recipe.demoImages || [];
-    const imageElements = images.map((imgSrc, index) => 
-        `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer lightbox-trigger-thumb" data-recipe-id="${recipe.id}" data-index="${index}">
-            <img src="${imgSrc}" loading="lazy" alt="Ảnh demo ${recipe.name[state.currentLang]} ${index + 1}" class="aspect-[4/3] w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Image+Not+Found';">
-        </div>`
-    ).join('');
     
-    const thumbnailsHTML = `<div class="my-6"><div class="grid grid-cols-3 gap-2 md:gap-4">${imageElements}</div></div>`;
-
-    const exportSectionHTML = `
-                 <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                     <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="exportRecipeBtn"></h3>
-                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                         <button id="downloadLutBtn" data-recipe-id="${recipe.id}" class="btn bg-blue-100 text-blue-800 hover:bg-blue-200 w-full py-3">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                             <span data-translate-key="downloadLutBtn"></span>
-                         </button>
-                         <button id="memoryRecallGuideBtn" class="btn bg-gray-200 text-gray-800 hover:bg-gray-300 w-full py-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                            <span data-translate-key="memoryRecallBtn"></span>
-                         </button>
-                     </div>
-                 </div>
-             `;
-
     recipeContentContainer.innerHTML = `
                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
                  <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
-                 ${thumbnailsHTML}
-                 ${exportSectionHTML}
                  <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
-                 <div class="mt-8 pt-8 border-t-2 border-gray-200/60">
-                     <button id="aiExplainRecipeBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full py-3" data-translate-key="aiExplainRecipeBtn"></button>
-                     <div id="aiExplanationContainer" class="mt-4 hidden"></div>
-                 </div>
                  <div id="setupGuideSection" class="mt-12 pt-8 border-t-2 border-gray-200/60">
                      <details open class="group">
                          <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
@@ -2081,20 +429,9 @@ function renderLibraryDetails() {
                              <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                          </summary>
                          <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
-                             <div><h4 class="font-bold" data-translate-key="tutorialStep1Title"></h4><p data-translate-key="tutorialStep1P1"></p><p data-translate-key="tutorialStep1P2"></p></div>
-                             <div><h4 class="font-bold" data-translate-key="tutorialStep2Title"></h4><p data-translate-key="tutorialStep2P1"></p></div>
-                             <div><h4 class="font-bold" data-translate-key="tutorialStep3Title"></h4><p data-translate-key="tutorialStep3P1"></p></div>
-                             <div><h4 class="font-bold" data-translate-key="tutorialStep4Title"></h4><p data-translate-key="tutorialStep4P1"></p></div>
+                             <p>Cẩn thận nhập tất cả các thông số của công thức vào một Picture Profile trống trên máy ảnh của bạn.</p>
                          </div>
                      </details>
-                 </div>
-                 <div class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                     <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate-key="aiTuningTitle"></h3>
-                     <div class="glass-panel p-4 md:p-6 -mx-2">
-                         <textarea id="aiTuningTextarea" class="w-full p-3 rounded-lg border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 transition-shadow" rows="3" data-translate-key="aiTuningPlaceholder"></textarea>
-                         <button id="aiTuningBtn" data-recipe-id="${recipe.id}" class="btn btn-primary w-full mt-4 py-3" data-translate-key="aiTuningBtn"></button>
-                         <div id="aiResultContainer"></div>
-                     </div>
                  </div>`;
     applyTranslations();
 }
@@ -2110,7 +447,7 @@ function renderInteractiveCharts(lang) {
             if (elements.length) {
                 const firstPoint = elements[0];
                 const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
-                if (recipeId) { handleRecipeSelection(recipeId, 'chart'); }
+                if (recipeId) { handleRecipeSelection(recipeId); }
             }
         },
         plugins: {
@@ -2165,37 +502,6 @@ function renderInteractiveCharts(lang) {
     }
 }
 
-function toggleMobileNav(show) {
-    const menu = document.getElementById('mobileNavMenu');
-    menu.classList.toggle('translate-x-full', !show);
-}
-
-function handleDropdownNav() {
-    const container = document.getElementById('pp-dropdown-container');
-    const btn = document.getElementById('pp-dropdown-btn');
-    const menu = document.getElementById('pp-dropdown-menu');
-    const chevron = document.getElementById('pp-dropdown-chevron');
-    if (!container || !btn || !menu) return;
-
-    const toggle = (open) => {
-        const isHidden = menu.classList.contains('hidden');
-        if (open && isHidden) {
-            menu.classList.remove('hidden');
-            setTimeout(() => {
-                menu.classList.remove('opacity-0', 'scale-95');
-                chevron.style.transform = 'rotate(180deg)';
-            }, 10);
-        } else if (!open && !isHidden) {
-            menu.classList.add('opacity-0', 'scale-95');
-            chevron.style.transform = 'rotate(0deg)';
-            menu.addEventListener('transitionend', () => menu.classList.add('hidden'), { once: true });
-        }
-    };
-    
-    btn.addEventListener('click', (e) => { e.stopPropagation(); toggle(menu.classList.contains('hidden')); });
-    document.addEventListener('click', (e) => { if (!container.contains(e.target)) toggle(false); });
-}
-
 function init() {
     const tooltipEl = document.getElementById('infoTooltip');
 
@@ -2216,95 +522,46 @@ function init() {
     });
 
     document.body.addEventListener('mouseout', (e) => {
-        const icon = e.target.closest('.info-icon');
-        if (icon) {
+        if (e.target.closest('.info-icon')) {
             tooltipEl.classList.remove('visible');
             setTimeout(() => tooltipEl.classList.add('hidden'), 200);
         }
     });
 
     document.body.addEventListener('click', async (e) => {
-        const target = e.target;
+        const target = e.target.closest('[id], [data-view], [data-recipe-id], [data-filter-group]');
+        if (!target) return;
 
-        if (state.lightbox.isOpen) {
-            if (target.id === 'lightbox-bg' || target.closest('#lightbox-close')) closeLightbox();
-            else if (target.closest('#lightbox-next')) navigateLightbox(1);
-            else if (target.closest('#lightbox-prev')) navigateLightbox(-1);
-            else if (target.closest('.lightbox-thumb')) {
-                state.lightbox.currentIndex = parseInt(target.closest('.lightbox-thumb').dataset.index);
-                updateLightboxContent();
-            }
-            return; 
-        }
+        const id = target.id;
+        const dataset = target.dataset;
 
         const navBtnAction = async (view) => {
-            toggleMobileNav(false);
+            document.getElementById('mobileNavMenu')?.classList.add('translate-x-full');
             state.selectedRecipeId = null; 
             state.isMobileDetailActive = false;
             await renderView(view);
         };
 
-        if (target.closest('#homeBtn')) await navBtnAction('home');
-        else if (target.closest('.nav-btn')) await navBtnAction(target.closest('.nav-btn').dataset.view);
-        else if (target.closest('.nav-btn-mobile')) await navBtnAction(target.closest('.nav-btn-mobile').dataset.view);
-        else if (target.closest('.lang-btn')) {
-            state.currentLang = target.closest('.lang-btn').id.replace('lang', '').toLowerCase();
+        if (id === 'homeBtn') await navBtnAction('home');
+        else if (dataset.view) await navBtnAction(dataset.view);
+        else if (id === 'langEN' || id === 'langVI') {
+            state.currentLang = id === 'langEN' ? 'en' : 'vi';
             await renderView(state.currentView);
         }
-        else if (target.closest('#startQuizBtn')) {
-            state.quizStep = 0; 
-            state.quizAnswers = {}; 
-            await renderView('quiz');
-        }
-        else if (target.closest('#hamburgerBtn')) toggleMobileNav(true);
-        else if (target.closest('#closeMobileNavBtn') || (target.id === 'mobileNavMenu' && !target.closest('#mobileNavMenu > div'))) toggleMobileNav(false);
-        else if (target.closest('.recipe-item-content') || target.closest('.recipe-dot')) handleRecipeSelection(target.closest('[data-recipe-id]').dataset.recipeId, 'div');
-        else if (target.closest('.recipe-compare-cb')) handleRecipeSelection(target.closest('.recipe-compare-cb').dataset.recipeId, 'checkbox');
-        else if (target.closest('#compareBtn') && !target.closest('#compareBtn').disabled) handleAiComparison(state.comparisonList[0], state.comparisonList[1]);
-        else if (target.closest('#compareWithOriginalBtn')) handleAiComparison(target.closest('#compareWithOriginalBtn').dataset.originalId, null, state.lastGeneratedAiRecipe);
-        else if (target.closest('#aiTuningBtn')) handleAiAdjustment(target.closest('#aiTuningBtn'));
-        else if (target.closest('#aiExplainRecipeBtn')) handleAiRecipeExplanation(target.closest('#aiExplainRecipeBtn'));
-        else if (target.closest('#backToListBtn')) { state.isMobileDetailActive = false; renderLibraryDetails(); }
-        else if (target.closest('#closeComparisonModalBtn')) document.getElementById('comparisonModal').classList.add('hidden');
-        else if (target.closest('.lightbox-trigger-thumb')) {
-            const recipe = recipesData.find(r => r.id === target.closest('.lightbox-trigger-thumb').dataset.recipeId);
-            if (recipe?.demoImages?.length > 0) {
-                openLightbox(recipe.demoImages, parseInt(target.closest('.lightbox-trigger-thumb').dataset.index));
-            }
-        }
-        else if (target.closest('#downloadLutBtn')) {
-            const recipe = recipesData.find(r => r.id === target.closest('#downloadLutBtn').dataset.recipeId);
-            if (recipe) {
-                const lutContent = `# Generated by Alpha AI Color Lab for ${recipe.name[state.currentLang]}\nTITLE "${recipe.formattedName}"\n# This is a placeholder .CUBE file. Actual LUT generation is complex.\nLUT_3D_SIZE 2\n0.0 0.0 0.0\n1.0 0.0 0.0\n0.0 1.0 0.0\n1.0 1.0 0.0\n0.0 0.0 1.0\n1.0 0.0 1.0\n0.0 1.0 1.0\n1.0 1.0 1.0`;
-                const blob = new Blob([lutContent], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${recipe.formattedName}.cube`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-        }
-        else if (target.closest('#memoryRecallGuideBtn')) {
-            document.getElementById('setupGuideSection')?.scrollIntoView({ behavior: 'smooth' });
-        }
-        else if (target.closest('[data-filter-group]')) {
-             handleFilterClick(e);
-        }
+        else if (id === 'hamburgerBtn') document.getElementById('mobileNavMenu').classList.remove('translate-x-full');
+        else if (id === 'closeMobileNavBtn') document.getElementById('mobileNavMenu').classList.add('translate-x-full');
+        else if (dataset.recipeId) handleRecipeSelection(dataset.recipeId);
+        else if (id === 'backToListBtn') { state.isMobileDetailActive = false; renderLibraryDetails(); }
+        else if (dataset.filterGroup) handleFilterClick(e);
     });
-
-    document.body.addEventListener('input', (e) => {
-        if (e.target.id === 'searchInput') {
-            renderLibraryList();
-        }
+    
+    document.addEventListener('input', e => {
+        if(e.target.id === 'searchInput') renderLibraryList();
     });
 
     window.addEventListener('resize', () => { if(state.currentView === 'recipeFormulas') renderLibraryDetails(); });
 
     renderView('home');
-    handleDropdownNav();
 }
 
 document.addEventListener("DOMContentLoaded", init);
