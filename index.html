@@ -447,7 +447,6 @@ ppInfographicTitle: {vi: "Quy trình Tinh chỉnh Picture Profile", en:"Picture 
 ppInfographicDesc: {vi: "Làm theo các bước sau để thiết lập Picture Profile từ đầu, cho phép bạn kiểm soát hoàn toàn giao diện cuối cùng của hình ảnh.", en:"Follow these steps to set up a Picture Profile from scratch, giving you full control over the final look of your image."},
 ppItemBlackLevel: {vi: "Black Level (Mức độ đen)", en: "Black Level"},
 ppItemBlackLevelDesc: {vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).", en: "Sets the black point. Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more contrast)."},
-ppItemBlackLevelDesc: {vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).", en: "Sets the black point. Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more more contrast)."},
 ppItemGamma: {vi: "Gamma", en: "Gamma"},
 ppItemGammaDesc: {vi: "Thiết lập đường cong tương phản (contrast curve). Đây là nền tảng cho 'look' của bạn. Still & Movie cho độ tương phản cao, trong khi các gamma Cine/S-Log cho dải nhạy sáng rộng hơn.", en: "Sets the contrast curve. This is the foundation of your look. Still & Movie are punchy, while Cine/S-Log gammas offer wider dynamic range."},
 ppItemBlackGamma: {vi: "Black Gamma", en: "Black Gamma"},
@@ -556,20 +555,23 @@ options: [
 }
 ];
 
+async function callAIApi(prompt, isStructured = false, delay = 1200) {
 async function callAIApi(prompt, isStructured = false, customDelay = 500) { // Changed default delay to 500ms
 if (state.isAILoading) return;
 state.isAILoading = true;
-let result = null; // Default to null for structured, or empty string for unstructured
+    let result = null;
+    let result = null; // Default to null for structured, or empty string for unstructured
 
 try {
-await new Promise(resolve => setTimeout(resolve, customDelay)); // Use customDelay
+        await new Promise(resolve => setTimeout(resolve, delay)); // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, customDelay)); // Use customDelay
 
 let chatHistory = [];
 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
 let payload = { contents: chatHistory };
 const apiKey = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ"; // API Key của bạn
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
 if (isStructured) {
 // Define schema for structured output (e.g., quiz results or adjusted recipe)
@@ -586,7 +588,7 @@ properties: {
 }
 };
 } else if (prompt.includes("adjusted settings")) {
-// Explicitly define a robust schema for adjusted recipe
+                // Explicitly define a robust schema for adjusted recipe
 payload.generationConfig = {
 responseMimeType: "application/json",
 responseSchema: {
@@ -605,7 +607,8 @@ properties: {
 "whiteBalance": { "type": "STRING" },
 "settings": {
 "type": "OBJECT",
-properties: { // All possible settings keys
+                                        "properties": {
+                                        properties: { // All possible settings keys
 "Black level": { "type": "STRING" },
 "Gamma": { "type": "STRING" },
 "Black Gamma": { "type": "STRING" },
@@ -613,28 +616,34 @@ properties: { // All possible settings keys
 "Color Mode": { "type": "STRING" },
 "Saturation": { "type": "STRING" },
 "Color Phase": { "type": "STRING" }
-},
-"additionalProperties": true // Allow for other properties if LLM adds them
+                                        }
+                                        },
+                                        "additionalProperties": true // Allow for other properties if LLM adds them
 },
 "colorDepth": {
 "type": "OBJECT",
-properties: { // All possible color depth keys
+                                        "properties": {
+                                        properties: { // All possible color depth keys
 "R": { "type": "STRING" }, "G": { "type": "STRING" }, "B": { "type": "STRING" },
 "C": { "type": "STRING" }, "M": { "type": "STRING" }, "Y": { "type": "STRING" }
-},
-"additionalProperties": true
+                                        }
+                                        },
+                                        "additionalProperties": true
 },
 "detailSettings": {
 "type": "OBJECT",
-properties: {
+                                        "properties": {
+                                        properties: {
 "Level": { "type": "STRING" }
-},
-"additionalProperties": true
+                                        }
+                                        },
+                                        "additionalProperties": true
 },
 "personalityColor": { "type": "STRING" },
 "coords": { "type": "OBJECT", "properties": { "x": { "type": "NUMBER" }, "y": { "type": "NUMBER" } } }
-},
-"required": ["id", "name", "description", "type", "contrast", "saturation", "whiteBalance", "settings", "personalityColor", "coords"] // Ensure these are always present
+                                }
+                                },
+                                "required": ["id", "name", "description", "type", "contrast", "saturation", "whiteBalance", "settings", "personalityColor", "coords"] // Ensure these are always present
 }
 }
 }
@@ -642,20 +651,21 @@ properties: {
 }
 }
 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 const response = await fetch(apiUrl, {
 method: 'POST',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(payload)
 });
 
-if (!response.ok) {
-const errorText = await response.text();
-console.error(`API call failed with status ${response.status}:`, errorText);
-throw new Error(`API call failed: ${response.statusText}`);
-}
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`API call failed with status ${response.status}:`, errorText);
+            throw new Error(`API call failed: ${response.statusText}`);
+        }
 
 const responseData = await response.json();
-console.log("Raw AI responseData:", responseData); // Log raw response for debugging
+        console.log("Raw AI responseData:", responseData); // Log raw response for debugging
 
 if (responseData.candidates && responseData.candidates.length > 0 &&
 responseData.candidates[0].content && responseData.candidates[0].content.parts &&
@@ -665,20 +675,27 @@ if (isStructured) {
 try {
 result = JSON.parse(text);
 } catch (e) {
-console.error("AI Response JSON parsing error:", e);
-console.error("Raw AI response text that failed parsing:", text);
-result = null; // Explicitly null for structured parsing failure
+                    console.error("Failed to parse JSON response from AI:", e);
+                    result = null;
+                    console.error("AI Response JSON parsing error:", e);
+                    console.error("Raw AI response text that failed parsing:", text);
+                    result = null; // Explicitly null for structured parsing failure
 }
 } else {
-result = text; // Return the raw text for unstructured
+                result = text;
+                result = text; // Return the raw text for unstructured
 }
 } else {
-console.error("Unexpected AI response structure or empty content:", responseData);
-result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
+            console.error("Unexpected AI response structure:", responseData);
+            result = null;
+            console.error("Unexpected AI response structure or empty content:", responseData);
+            result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
 }
 } catch (error) {
-console.error("AI API call failed in catch block:", error);
-result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
+        console.error("AI API call failed:", error);
+        result = null;
+        console.error("AI API call failed in catch block:", error);
+        result = isStructured ? null : ""; // Return null for structured, empty string for unstructured
 } finally {
 state.isAILoading = false;
 updateUIAfterAILoading();
@@ -794,8 +811,10 @@ recipeFormulas: () => `
                      <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
 <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
 <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-<div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                     </div>
+ <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+</div>
+ <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
+                      </div>
 
                      <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
                         <div id="chartsContainer">
@@ -1109,6 +1128,7 @@ titleEl.textContent = t('comparisonModalTitle');
 contentEl.innerHTML = `<div class="flex items-center justify-center p-8"><div class="spinner !w-12 !h-12 !border-4"></div><p class="ml-4 text-lg font-semibold">${t('comparisonLoading')}</p></div>`;
 const recipe1 = recipesData.find(r => r.id === id1);
 const recipe2 = recipe2Obj ? { ...recipe2Obj, id: 'ai-adjusted', name: recipe2Obj.name } : recipesData.find(r => r.id === id2);
+const prompt = `Compare the following two recipes: *${recipe1.name[state.currentLang]}* (ID: ${recipe1.id}) and *${recipe2.name[state.currentLang]}* (ID: ${recipe2.id}). Analyze their overall feel, key parameter differences (like White Balance, Black Level, Gamma, Saturation, Color Depth), and suggest ideal use cases for each. Present the result in Markdown.`;
 
 // Construct a detailed prompt for the LLM to generate the comparison table and analysis
 const prompt = `So sánh hai công thức Sony Picture Profile sau đây. Vui lòng tạo một bảng so sánh chi tiết các thông số kỹ thuật chính (như Cân bằng trắng, Black Level, Gamma, Color Mode, Saturation, Color Phase, Color Depth, Detail Level) cho cả hai công thức. Sau bảng, hãy phân tích cảm giác tổng thể của mỗi công thức và đề xuất các trường hợp sử dụng lý tưởng cho từng công thức. Trình bày kết quả bằng định dạng Markdown.
@@ -1146,6 +1166,11 @@ button.innerHTML = `<div class="spinner"></div> ${t('aiTuningBtn')}`;
 
 const originalRecipe = recipesData.find(r => r.id === recipeId);
 // Construct a more detailed prompt for AI adjustment
+const prompt = `Given the original recipe settings: ${JSON.stringify(originalRecipe.settings)}, and color depth: ${JSON.stringify(originalRecipe.colorDepth || {})}, and detail settings: ${JSON.stringify(originalRecipe.detailSettings || {})}.
+The user wants to adjust this recipe with the following request: "${textarea.value}".
+Please provide a new JSON object representing the adjusted recipe. The new recipe should maintain the original structure, including 'id', 'name', 'description' (with 'vi' and 'en' keys, append " (AI Adjusted)" to the name), 'type', 'contrast', 'saturation', 'tags', 'whiteBalance', 'settings', 'colorDepth', 'detailSettings', 'personalityColor', and 'coords'.
+Adjust the 'settings', 'colorDepth', 'detailSettings', and 'whiteBalance' based on the request. For 'name' and 'description', translate the original content and append "(AI Adjusted)" to the name.
+Example of expected JSON structure:
 const prompt = `Dựa trên công thức gốc sau đây, hãy tinh chỉnh các cài đặt theo yêu cầu của người dùng. Vui lòng trả về một đối tượng JSON mới đại diện cho công thức đã điều chỉnh. Công thức mới phải giữ nguyên cấu trúc gốc, bao gồm 'id', 'name' (thêm " (AI Tinh chỉnh)" vào tên), 'description' (mô tả mới dựa trên tinh chỉnh AI), 'type', 'contrast', 'saturation', 'tags', 'whiteBalance', 'settings', 'colorDepth', và 'detailSettings'. Chỉ điều chỉnh các giá trị trong 'settings', 'colorDepth', 'detailSettings' và 'whiteBalance' dựa trên yêu cầu.
 
 Công thức gốc: ${JSON.stringify(originalRecipe)}
@@ -1169,63 +1194,60 @@ Ví dụ cấu trúc JSON mong đợi:
    "coords": { "x": 6, "y": 7 }
  }
 }
+Please ensure all original fields are present and only the requested adjustments are made to the relevant settings.
 Đảm bảo tất cả các trường gốc đều có mặt và chỉ các điều chỉnh được yêu cầu mới được thực hiện cho các cài đặt liên quan.
 `;
 const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON
 
 if (aiResponse && aiResponse.recipe) {
+state.lastGeneratedAiRecipe = aiResponse.recipe;
+resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
+} else { resultContainer.innerHTML = `<p class="text-red-500">Failed to generate adjustment. Please try again.</p>`; }
     // Apply specific adjustments based on user request keywords
     let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe)); // Start with original
-    // Start with a deep copy of the original recipe
-    let adjustedRecipe = JSON.parse(JSON.stringify(originalRecipe));
-adjustedRecipe.id = `${originalRecipe.id}-ai`;
-adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
-adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${textarea.value}"`, en: `Adjusted based on request: "${textarea.value}"` };
+    adjustedRecipe.id = `${originalRecipe.id}-ai`;
+    adjustedRecipe.name = { vi: `${originalRecipe.name.vi} (AI Tinh chỉnh)`, en: `${originalRecipe.name.en} (AI Adjusted)` };
+    adjustedRecipe.description = { vi: `Đã tinh chỉnh theo yêu cầu: "${textarea.value}"`, en: `Adjusted based on request: "${textarea.value}"` };
 
-const userRequestLower = textarea.value.toLowerCase();
+    const userRequestLower = textarea.value.toLowerCase();
 
     // Example adjustments based on common keywords
-    // Apply keyword-based adjustments first (robust fallback)
-if (userRequestLower.includes('ấm hơn') || userRequestLower.includes('warmer')) {
+    if (userRequestLower.includes('ấm hơn') || userRequestLower.includes('warmer')) {
         adjustedRecipe.whiteBalance = "5500K, A6-M1"; // Example warm WB
-        adjustedRecipe.whiteBalance = "5500K, A6-M1";
-if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.R = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.R || 0) + 2));
-if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.Y = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.Y || 0) + 2));
-}
-if (userRequestLower.includes('mát hơn') || userRequestLower.includes('cooler')) {
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.R = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.R || 0) + 2));
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.Y = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.Y || 0) + 2));
+    }
+    if (userRequestLower.includes('mát hơn') || userRequestLower.includes('cooler')) {
         adjustedRecipe.whiteBalance = "2500K, B6-M1"; // Example cool WB
-        adjustedRecipe.whiteBalance = "2500K, B6-M1";
-if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.B = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.B || 0) + 2));
-if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.C = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.C || 0) + 2));
-}
-if (userRequestLower.includes('tăng tương phản') || userRequestLower.includes('more contrast') || userRequestLower.includes('punchy')) {
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.B = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.B || 0) + 2));
+        if (adjustedRecipe.colorDepth) adjustedRecipe.colorDepth.C = String(Math.min(7, parseInt(adjustedRecipe.colorDepth.C || 0) + 2));
+    }
+    if (userRequestLower.includes('tăng tương phản') || userRequestLower.includes('more contrast') || userRequestLower.includes('punchy')) {
         if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Still'; // More contrasty gamma
-        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Still';
-if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.max(-15, parseInt(adjustedRecipe.settings['Black level'] || 0) - 5));
-adjustedRecipe.contrast = 'high';
-}
-if (userRequestLower.includes('giảm tương phản') || userRequestLower.includes('less contrast') || userRequestLower.includes('soft')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.max(-15, parseInt(adjustedRecipe.settings['Black level'] || 0) - 5));
+        adjustedRecipe.contrast = 'high';
+    }
+    if (userRequestLower.includes('giảm tương phản') || userRequestLower.includes('less contrast') || userRequestLower.includes('soft')) {
         if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Cine4'; // Flatter gamma
-        if (adjustedRecipe.settings) adjustedRecipe.settings.Gamma = 'Cine4';
-if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.min(7, parseInt(adjustedRecipe.settings['Black level'] || 0) + 5));
-adjustedRecipe.contrast = 'low';
-}
-if (userRequestLower.includes('tươi hơn') || userRequestLower.includes('more vibrant') || userRequestLower.includes('tăng bão hòa')) {
-if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.min(32, parseInt(adjustedRecipe.settings.Saturation || 0) + 10));
-adjustedRecipe.saturation = 'high';
-}
-if (userRequestLower.includes('nhạt hơn') || userRequestLower.includes('less saturated') || userRequestLower.includes('giảm bão hòa')) {
-if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.max(-7, parseInt(adjustedRecipe.settings.Saturation || 0) - 10));
-adjustedRecipe.saturation = 'low';
-}
-if (userRequestLower.includes('sắc nét hơn') || userRequestLower.includes('sharper')) {
-if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.min(7, parseInt(adjustedRecipe.detailSettings.Level || 0) + 3));
-}
-if (userRequestLower.includes('mềm mại hơn') || userRequestLower.includes('softer') || userRequestLower.includes('giảm chi tiết')) {
-if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.max(-7, parseInt(adjustedRecipe.detailSettings.Level || 0) - 3));
-}
+        if (adjustedRecipe.settings) adjustedRecipe.settings['Black level'] = String(Math.min(7, parseInt(adjustedRecipe.settings['Black level'] || 0) + 5));
+        adjustedRecipe.contrast = 'low';
+    }
+    if (userRequestLower.includes('tươi hơn') || userRequestLower.includes('more vibrant') || userRequestLower.includes('tăng bão hòa')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.min(32, parseInt(adjustedRecipe.settings.Saturation || 0) + 10));
+        adjustedRecipe.saturation = 'high';
+    }
+    if (userRequestLower.includes('nhạt hơn') || userRequestLower.includes('less saturated') || userRequestLower.includes('giảm bão hòa')) {
+        if (adjustedRecipe.settings) adjustedRecipe.settings.Saturation = String(Math.max(-7, parseInt(adjustedRecipe.settings.Saturation || 0) - 10));
+        adjustedRecipe.saturation = 'low';
+    }
+    if (userRequestLower.includes('sắc nét hơn') || userRequestLower.includes('sharper')) {
+        if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.min(7, parseInt(adjustedRecipe.detailSettings.Level || 0) + 3));
+    }
+    if (userRequestLower.includes('mềm mại hơn') || userRequestLower.includes('softer') || userRequestLower.includes('giảm chi tiết')) {
+        if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(Math.max(-7, parseInt(adjustedRecipe.detailSettings.Level || 0) - 3));
+    }
 
-// Attempt to merge AI's suggested changes if available and valid
+    // Attempt to merge AI's suggested changes if available and valid
     if (aiResponse.recipe) {
         // Simple merge: AI's values overwrite if they exist and are valid.
         // For simplicity, directly assign top-level properties if they exist in AI's response
@@ -1239,53 +1261,14 @@ if (adjustedRecipe.detailSettings) adjustedRecipe.detailSettings.Level = String(
         if (aiResponse.recipe.saturation) adjustedRecipe.saturation = aiResponse.recipe.saturation;
         if (aiResponse.recipe.tags) adjustedRecipe.tags = aiResponse.recipe.tags;
     }
-    if (aiResponse && aiResponse.recipe) {
-        const aiRecipe = aiResponse.recipe;
-        // Overwrite with AI's values if they are present and valid
-        if (aiRecipe.whiteBalance !== undefined) adjustedRecipe.whiteBalance = aiRecipe.whiteBalance;
-        if (aiRecipe.settings) {
-            for (const key in aiRecipe.settings) {
-                if (aiRecipe.settings.hasOwnProperty(key)) {
-                    adjustedRecipe.settings[key] = aiRecipe.settings[key];
-                }
-            }
-        }
-        if (aiRecipe.colorDepth) {
-            for (const key in aiRecipe.colorDepth) {
-                if (aiRecipe.colorDepth.hasOwnProperty(key)) {
-                    adjustedRecipe.colorDepth[key] = aiRecipe.colorDepth[key];
-                }
-            }
-        }
-        if (aiRecipe.detailSettings) {
-            for (const key in aiRecipe.detailSettings) {
-                if (aiRecipe.detailSettings.hasOwnProperty(key)) {
-                    adjustedRecipe.detailSettings[key] = aiRecipe.detailSettings[key];
-                }
-            }
-        }
-        // Also update descriptive fields if AI provided them (e.g., name, description, tags, contrast, saturation)
-        if (aiRecipe.name) adjustedRecipe.name = aiRecipe.name;
-        if (aiRecipe.description) adjustedRecipe.description = aiRecipe.description;
-        if (aiRecipe.type) adjustedRecipe.type = aiRecipe.type;
-        if (aiRecipe.contrast) adjustedRecipe.contrast = aiRecipe.contrast;
-        if (aiRecipe.saturation) adjustedRecipe.saturation = aiRecipe.saturation;
-        if (aiRecipe.tags) adjustedRecipe.tags = aiRecipe.tags;
-        if (aiRecipe.personalityColor) adjustedRecipe.personalityColor = aiRecipe.personalityColor;
-        if (aiRecipe.coords) adjustedRecipe.coords = aiRecipe.coords;
 
-    } else {
-        console.warn("AI did not return a valid structured recipe. Proceeding with keyword-based adjustments only.");
-        // No need to set resultContainer.innerHTML here, as it's done below with adjustedRecipe
-    }
 
-state.lastGeneratedAiRecipe = adjustedRecipe; // Use the locally adjusted recipe
-resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
+    state.lastGeneratedAiRecipe = adjustedRecipe; // Use the locally adjusted recipe
+    resultContainer.innerHTML = `<div class="mt-6 border-t border-gray-200/50 pt-6"><h4 class="font-bold text-lg mb-2">${state.lastGeneratedAiRecipe.name[state.currentLang]}</h4><div class="p-4 rounded-xl bg-blue-50">${createFullRecipeHTML(state.lastGeneratedAiRecipe, false)}</div><button id="compareWithOriginalBtn" data-original-id="${recipeId}" class="btn btn-secondary w-full mt-4 py-3 bg-gray-200 text-black" data-translate-key="compareWithOriginalBtn"></button></div>`;
 } else {
     console.error("AI Adjustment failed. AI Response was not valid or missing 'recipe' object:", aiResponse);
     resultContainer.innerHTML = `<p class="text-red-500">Lỗi khi tạo tinh chỉnh bằng AI. Phản hồi không hợp lệ hoặc thiếu dữ liệu công thức. Vui lòng thử lại.</p>`;
 }
-
 button.disabled = false; button.innerHTML = button.dataset.originalText; applyTranslations();
 }
 
@@ -1308,7 +1291,7 @@ button.innerHTML = button.dataset.originalText;
 return;
 }
 
-// This prompt is now for the mock API, it will return a predefined string
+    // This prompt is now for the mock API, it will return a predefined string
 const prompt = `Giải thích các đặc điểm và ý đồ nghệ thuật của công thức Sony Picture Profile sau một cách súc tích, dễ hiểu, tập trung vào cách Cân bằng trắng, Gamma, Mức độ đen, Chế độ màu, Độ bão hòa, Độ sâu màu và cài đặt Chi tiết của nó đóng góp vào giao diện và cảm nhận tổng thể. Đồng thời, gợi ý các tình huống chụp ảnh lý tưởng cho công thức này.
    Tên công thức: ${recipe.name[state.currentLang]}
    Mô tả: ${recipe.description[state.currentLang]}
@@ -1318,7 +1301,8 @@ const prompt = `Giải thích các đặc điểm và ý đồ nghệ thuật c�
    Cài đặt chi tiết: ${JSON.stringify(recipe.detailSettings || {})}
    `;
 
-const aiResponse = await callAIApi(prompt, false); // Expecting plain text/markdown from mock
+    const aiResponse = await callAIApi(prompt, false); // Expecting plain text/markdown
+    const aiResponse = await callAIApi(prompt, false); // Expecting plain text/markdown from mock
 
 if (aiResponse) {
 explanationContainer.innerHTML = `<div class="mt-4 p-4 rounded-xl bg-blue-50">
@@ -1342,77 +1326,96 @@ const homeView = document.getElementById('homeView');
 if (!homeView) { console.error("Quiz Submit Error: homeView not found after render."); return; }
 homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
 applyTranslations();
+    const selectedTags = Object.values(state.quizAnswers);
+    await renderView('home');
+    const homeView = document.getElementById('homeView');
+    if (!homeView) { console.error("Quiz Submit Error: homeView not found after render."); return; }
+    homeView.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="spinner !w-16 !h-16 !border-4"></div><h2 class="landing-title mt-8" data-translate-key="loadingAnalyze"></h2></div>`;
+    applyTranslations();
 
-let recommendedRecipe = null;
-
-try {
-// Step 1: Try to get a recommendation from Gemini API
+// Construct a prompt for the AI to suggest a single best recipe based on quiz answers
 const prompt = `Based on the user's quiz answers (tags): ${JSON.stringify(selectedTags)}.
-       From the following list of available recipes, suggest the single best recipe that matches these tags.
-       Available recipes: ${JSON.stringify(recipesData.map(r => ({ id: r.id, name: r.name[state.currentLang], tags: r.tags })))}
-       Provide the output as a JSON object, with 'recipeId' (the 'id' of the recipe) and 'moodDescription' (the recipe's description in the current language).
-       Example:
-       {"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
-       `;
+Suggest the single best existing recipe from the provided 'recipesData' that best matches these tags.
+Provide the output as a JSON object, with 'recipeId' (the 'id' of the recipe) and 'moodDescription' (the recipe's description in the current language).
+Example:
+{"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
+`;
+    let recommendedRecipe = null;
 
-const aiResponse = await callAIApi(prompt, true, 0); // Set delay to 0 for quick response
-console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
+const aiResponse = await callAIApi(prompt, true); // Expecting structured JSON
+    try {
+        // Step 1: Try to get a recommendation from Gemini API
+        const prompt = `Based on the user's quiz answers (tags): ${JSON.stringify(selectedTags)}.
+        From the following list of available recipes, suggest the single best recipe that matches these tags.
+        Available recipes: ${JSON.stringify(recipesData.map(r => ({ id: r.id, name: r.name[state.currentLang], tags: r.tags })))}
+        Provide the output as a JSON object, with 'recipeId' (the 'id' of the recipe) and 'moodDescription' (the recipe's description in the current language).
+        Example:
+        {"recipeId": "scl-001", "moodDescription": "A nostalgic, sun-drenched style..."}
+        `;
+
+        const aiResponse = await callAIApi(prompt, true, 0); // Set delay to 0 for quick response
+        console.log("AI Response for quiz:", aiResponse); // Log the AI response for debugging
+
+        if (aiResponse && aiResponse.recipeId) {
+            recommendedRecipe = recipesData.find(r => r.id === aiResponse.recipeId);
+            if (!recommendedRecipe) {
+                console.warn(`AI recommended recipe ID '${aiResponse.recipeId}' not found in local data. Falling back to local scoring.`);
+            }
+        } else {
+            console.warn("AI response invalid or missing recipeId. Falling back to local scoring.");
+        }
+
+    } catch (error) {
+        console.error("Error calling AI for quiz, falling back to local scoring:", error);
+    }
 
 if (aiResponse && aiResponse.recipeId) {
-recommendedRecipe = recipesData.find(r => r.id === aiResponse.recipeId);
-if (!recommendedRecipe) {
-console.warn(`AI recommended recipe ID '${aiResponse.recipeId}' not found in local data. Falling back to local scoring.`);
-}
-} else {
-console.warn("AI response invalid or missing recipeId. Falling back to local scoring.");
-}
+    const recommendedRecipe = recipesData.find(r => r.id === aiResponse.recipeId);
+    // Step 2: Fallback to local scoring if AI recommendation failed or was invalid
+    if (!recommendedRecipe) {
+        let maxScore = -1;
+        let bestLocalRecipe = null;
 
-} catch (error) {
-console.error("Error calling AI for quiz, falling back to local scoring:", error);
-}
+        recipesData.forEach(recipe => {
+            let score = 0;
+            selectedTags.forEach(tag => {
+                if (recipe.tags.includes(tag)) {
+                    score++;
+                }
+            });
+            // Give extra weight to type match
+            if (selectedTags.includes(recipe.type)) {
+                score += 5;
+            }
 
-// Step 2: Fallback to local scoring if AI recommendation failed or was invalid
-if (!recommendedRecipe) {
-let maxScore = -1;
-let bestLocalRecipe = null;
+            if (score > maxScore) {
+                maxScore = score;
+                bestLocalRecipe = recipe;
+            }
+        });
 
-recipesData.forEach(recipe => {
-let score = 0;
-selectedTags.forEach(tag => {
-if (recipe.tags.includes(tag)) {
-score++;
-}
-});
-// Give extra weight to type match
-if (selectedTags.includes(recipe.type)) {
-score += 5;
-}
+        if (bestLocalRecipe) {
+            recommendedRecipe = bestLocalRecipe;
+            console.log("Using local scoring fallback. Recommended recipe:", recommendedRecipe.id);
+        } else {
+            // Ultimate fallback if no local recipe matches at all (highly unlikely)
+            recommendedRecipe = recipesData[0];
+            console.warn("No suitable recipe found via AI or local scoring. Defaulting to first recipe:", recommendedRecipe.id);
+        }
+    }
 
-if (score > maxScore) {
-maxScore = score;
-bestLocalRecipe = recipe;
-}
-});
-
-if (bestLocalRecipe) {
-recommendedRecipe = bestLocalRecipe;
-console.log("Using local scoring fallback. Recommended recipe:", recommendedRecipe.id);
-} else {
-// Ultimate fallback if no local recipe matches at all (highly unlikely)
-recommendedRecipe = recipesData[0];
-console.warn("No suitable recipe found via AI or local scoring. Defaulting to first recipe:", recommendedRecipe.id);
-}
-}
-
-// Step 3: Navigate to the recommended recipe's detail page
+    // Step 3: Navigate to the recommended recipe's detail page
 if (recommendedRecipe) {
 state.selectedRecipeId = recommendedRecipe.id;
 state.isMobileDetailActive = true;
 await renderView('recipeFormulas'); // Directly navigate to recipe details
 } else {
-// This case should ideally not be reached with the fallbacks in place
+        homeView.innerHTML = `<p class="text-red-500">Error: Could not find the recommended recipe.</p>`;
+        // This case should ideally not be reached with the fallbacks in place
         homeView.innerHTML = `<p class="text-red-500">Lỗi không mong muốn: Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
-        homeView.innerHTML = `<p class="text-red-500">Lỗi không mong unexpected: Không thể tìm thấy công thức phù hợp. Vui lòng thử lại.</p>`;
+}
+} else { 
+    homeView.innerHTML = `<p class="text-red-500">Lỗi khi lấy đề xuất từ AI. Vui lòng thử lại.</p>`; 
 }
 }
 
@@ -1619,6 +1622,7 @@ callbacks: { label: function(context) { return context.raw.name; } }
 }
 },
 scales: {
+x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t('axisTonality') } },
 x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } },
 y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
 }
