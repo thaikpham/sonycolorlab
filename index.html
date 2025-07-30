@@ -163,57 +163,29 @@
     .lightbox-nav-btn { background-color: rgba(0,0,0,0.4); transition: background-color 0.2s ease; }
     .lightbox-nav-btn:hover { background-color: rgba(0,0,0,0.7); }
     #lightbox-main-image { transition: opacity 0.2s ease-in-out; }
-
-    #abgm-grid-interactive-container {
-        width: 100%;
+    
+    /* New Tooltip Styles */
+    #infoTooltip {
+        position: absolute;
+        z-index: 100;
+        background-color: rgba(29, 29, 31, 0.9);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        line-height: 1.5;
         max-width: 300px;
-        margin: auto;
-        touch-action: none; 
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none; /* Important */
     }
-    #abgm-grid {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        background-image: 
-        linear-gradient(to right, rgba(0, 128, 0, 0.2), rgba(255, 255, 255, 0), rgba(255, 0, 255, 0.2)),
-        linear-gradient(to bottom, rgba(255, 165, 0, 0.2), rgba(255, 255, 255, 0), rgba(0, 0, 255, 0.2));
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
-    }
-    #abgm-pointer {
-        position: absolute;
-        width: 1rem;
-        height: 1rem;
-        background-color: #ef4444;
-        border: 2px solid white;
-        border-radius: 9999px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-    }
-    .pp-infographic-item {
-        background-color: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 1rem;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    }
-    .pp-infographic-item h5 {
-        color: var(--text-primary);
-        font-weight: 700;
-        font-size: 1.125rem;
-    }
-    .pp-infographic-item .param-list li {
-        position: relative;
-        padding-left: 1.5rem;
-    }
-    .pp-infographic-item .param-list li::before {
-        content: "✓";
-        position: absolute;
-        left: 0;
-        color: #16a34a;
-        font-weight: bold;
+    #infoTooltip.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 </style>
 <!-- Google tag (gtag.js) -->
@@ -245,7 +217,6 @@
                     <div id="pp-dropdown-menu" class="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 hidden origin-top-right transition-all duration-200 ease-out transform opacity-0 scale-95">
                         <button data-view="recipeFormulas" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navRecipeFormulas"></button>
                         <button data-view="featuredPhotos" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navFeaturedPhotos"></button>
-                        <button data-view="explain" class="nav-btn text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black" data-translate-key="navExplain"></button>
                     </div>
                 </div>
             </nav>
@@ -262,6 +233,9 @@
     <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
 </div>
 
+<!-- Tooltip Element -->
+<div id="infoTooltip" class="hidden"></div>
+
 <!-- Mobile Nav Menu -->
 <div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
     <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
@@ -269,7 +243,6 @@
         <nav class="mt-16 flex flex-col gap-6 text-center">
             <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navRecipeFormulas"></button>
             <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navFeaturedPhotos"></button>
-            <button data-view="explain" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navExplain"></button>
         </nav>
     </div>
 </div>
@@ -352,7 +325,6 @@ const translations = {
     navPictureProfile: {vi: "Picture Profile", en: "Picture Profile"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
     navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
-    navExplain: {vi:"Giải thích (PP)", en:"Guide (PP)"},
     noteTitle: {vi:"Lưu ý quan trọng", en:"Important Note"},
     footerText: {vi: "Phát triển bởi Sony Alpha Vietnam.", en: "Developed by Sony Alpha Vietnam."},
     exportRecipeBtn: {vi: "Lưu & Xuất Công Thức", en: "Save & Export Recipe"},
@@ -408,29 +380,6 @@ const translations = {
     featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
     featuredCta: {vi: "Hãy cùng làm cho thư viện màu của Alpha AI Color Lab và group cộng đồng Sony Alpha Vietnam thêm phong phú! Chia sẻ ảnh của bạn kèm mã màu (ví dụ: 'SCL-001') để cùng nhau tạo nên một không gian đầy cảm hứng.", en: "Let's enrich the Alpha AI Color Lab gallery and the Sony Alpha Vietnam community group! Share your photos with the color code (e.g., 'SCL-001') to create an inspiring space together."},
     featuredAlbumBtn: {vi: "Xem Album & Đóng góp Ảnh", en: "View Album & Contribute Photos"},
-
-    // Explanation Tab
-    explainHeader: {vi: "Làm Chủ Màu Sắc Cùng Sony Alpha", en:"Mastering Color with Sony Alpha"},
-    explainSubtitle: {vi: "Hướng dẫn toàn diện để tạo ra màu sắc đậm chất riêng cho ảnh tĩnh", en:"A comprehensive guide to creating your unique color signature for stills"},
-    pillarsTitle: {vi: "Hai Trụ Cột Sáng Tạo Màu Sắc", en:"The Two Pillars of Color Creation"},
-    wbPillarTitle: {vi: "Trụ cột 1: White Balance - Nền Tảng Cảm Xúc", en:"Pillar 1: White Balance - The Emotional Foundation"},
-    ppPillarTitle: {vi: "Trụ cột 2: Picture Profile - Tạo Dáng Vẻ Phim Ảnh", en:"Pillar 2: Picture Profile - Crafting the Film Look"},
-    wbKelvinTitle: {vi: "Nhiệt Độ Kelvin (K): Tạo Tông Màu Chủ Đạo", en: "Kelvin Temperature (K): Creating the Main Tone"},
-    wbKelvinDesc: {vi: 'Sử dụng thang đo Kelvin như một nét cọ lớn để "nhuộm" toàn bộ khung hình bằng tông màu ấm hoặc lạnh, định hình "mood" cho bức ảnh.', en: 'Use the Kelvin scale like a broad brush to "tint" the entire frame with warm or cool tones, shaping the photo\'s mood.'},
-    wbShiftTitle: {vi: "Lưới Tinh Chỉnh (A-B/G-M Shift): Thêm Sắc Thái Tinh Vi", en:"Fine-Tuning Grid (A-B/G-M Shift): Adding Subtle Hues"},
-    wbShiftDesc: {vi: 'Nếu Kelvin là nét cọ lớn, lưới tinh chỉnh là cọ tỉa. Đây là chìa khóa để mô phỏng các loại phim đặc trưng bằng cách thêm các sắc thái Hổ phách/Xanh hoặc Xanh lá/Tím.', en: 'If Kelvin is the broad brush, this is the fine-detail brush. It\'s key to simulating specific films by adding Amber/Blue or Green/Magenta tints.'},
-    ppInfographicTitle: {vi: "Quy trình Tinh chỉnh Picture Profile", en:"Picture Profile Adjustment Workflow"},
-    tutorialTitle: { vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide" },
-    tutorialStep1Title: { vi: "Bước 1: Tìm Picture Profile", en: "Step 1: Find Picture Profile" },
-    tutorialStep1P1: { vi: "<strong>Máy ảnh đời mới:</strong> Menu → Exposure/Color (biểu tượng máy ảnh) → Color/Tone → Picture Profile.", en: "<strong>Newer Cameras:</strong> Menu → Exposure/Color (camera icon) → Color/Tone → Picture Profile." },
-    tutorialStep1P2: { vi: "<strong>Máy ảnh đời cũ:</strong> Menu → Color/WB/Img. Processing (biểu tượng bảng màu) → Picture Profile.", en: "<strong>Older Cameras:</strong> Menu → Color/WB/Img. Processing (palette icon) → Picture Profile." },
-    tutorialStep2Title: { vi: "Bước 2: Chọn và Reset", en: "Step 2: Select & Reset" },
-    tutorialStep2P1: { vi: "Chọn một profile trống (ví dụ: PP10), đi vào trong và nhấn nút 'Xoá' để reset về mặc định.", en: "Choose an empty profile (e.g., PP10), enter it, and press the 'Delete' button to reset it to default." },
-    tutorialStep3Title: { vi: "Bước 3: Nhập thông số", en: "Step 3: Enter Parameters" },
-    tutorialStep3P1: { vi: "Cẩn thận nhập tất cả các thông số của công thức, từ Black Level đến Detail.", en: "Carefully enter all parameters from the recipe, from Black Level to Detail." },
-    tutorialStep4Title: { vi: "Bước 4: Cài đặt White Balance", en: "Step 4: Set White Balance" },
-    tutorialStep4P1: { vi: "Thoát khỏi Picture Profile, vào mục <strong>White Balance</strong> và chỉnh theo nhiệt độ K và WB Shift (Color Filter) được ghi trong công thức.", en: "Exit Picture Profile, go to <strong>White Balance</strong>, and adjust the Kelvin temperature and WB Shift (Color Filter) as specified in the recipe." },
-    exposureNoteTitle: { vi: "Lưu ý về Phơi sáng", en: "Note on Exposure" },
     
     // Quiz Questions
     quizQ1: {vi: "Chủ đề bạn sắp chụp là gì?", en: "What's your subject?"},
@@ -454,6 +403,45 @@ const translations = {
     quizQ5A1: {vi: "Đậm", en: "High"},
     quizQ5A2: {vi: "Trung bình", en: "Medium"},
     quizQ5A3: {vi: "Nhạt", en: "Low"},
+};
+
+const parameterExplanations = {
+    'Black level': {
+        vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).",
+        en: "Sets the black point (darkest area). Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more contrast)."
+    },
+    'Gamma': {
+        vi: "Thiết lập đường cong tương phản. Đây là nền tảng cho 'look' của bạn. Still & Movie cho độ tương phản cao, trong khi các gamma Cine/S-Log cho dải nhạy sáng rộng hơn.",
+        en: "Sets the contrast curve. This is the foundation of your look. Still & Movie are punchy, while Cine/S-Log gammas offer wider dynamic range."
+    },
+    'Black Gamma': {
+        vi: "Tinh chỉnh đường cong tương phản ở vùng tối. 'Wide' ảnh hưởng vùng rộng hơn, 'Narrow' ảnh hưởng vùng hẹp hơn.",
+        en: "Fine-tunes the contrast curve in the shadow areas. 'Wide' affects a broader range, 'Narrow' affects a smaller range."
+    },
+    'Knee': {
+        vi: "Kiểm soát độ nén ở vùng sáng (highlight) để tránh bị 'cháy'. Chế độ tự động (Auto) hoạt động tốt, chế độ thủ công (Manual) cho phép kiểm soát chính xác hơn.",
+        en: "Controls highlight compression to prevent 'clipping'. Auto mode works well; Manual mode gives precise control."
+    },
+    'Color Mode': {
+        vi: "Xác định cách màu sắc được tái tạo. Nên chọn chế độ phù hợp với Gamma đã chọn (ví dụ: Cine4 với Pro/Cinema, S-Log3 với S-Gamut3.Cine).",
+        en: "Determines how colors are reproduced. Should be matched with the chosen Gamma (e.g., Cine4 with Pro/Cinema, S-Log3 with S-Gamut3.Cine)."
+    },
+    'Saturation': {
+        vi: "Điều chỉnh độ đậm/nhạt tổng thể của tất cả các màu.",
+        en: "Adjusts the overall intensity of all colors."
+    },
+    'Color Phase': {
+        vi: "Xoay trục màu sắc tổng thể. Hữu ích để tinh chỉnh nhẹ toàn bộ tông màu mà không ảnh hưởng đến từng màu riêng lẻ.",
+        en: "Shifts the overall hue of all colors. Useful for subtle, global color tone adjustments without affecting individual colors."
+    },
+    'Color Depth': {
+        vi: "Công cụ mạnh mẽ nhất. Tăng/giảm độ sáng của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Lục lam, Tím, Vàng).",
+        en: "The most powerful tool. Increases/decreases the brightness of individual color channels (R, G, B, C, M, Y)."
+    },
+    'Detail': {
+        vi: "Kiểm soát độ sắc nét. Để có 'look' phim mềm mại, hãy giảm mạnh (ví dụ: -7).",
+        en: "Controls the sharpening. For a soft, filmic look, decrease it significantly (e.g., -7)."
+    }
 };
 
 const quizQuestions = [
@@ -586,7 +574,21 @@ function applyTranslations() {
 
 function createSettingsGrid(settings) {
     if (!settings) return '';
-    return Object.entries(settings).map(([key, value]) => `<div class="flex flex-col"><span class="text-xs text-neutral-500">${key}</span><span class="font-semibold text-lg">${value}</span></div>`).join('');
+    return Object.entries(settings).map(([key, value]) => {
+        // Find a matching key in explanations, case-insensitive
+        const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase());
+        const infoIconHTML = explanationKey 
+            ? `<svg class="info-icon w-4 h-4 text-gray-400 hover:text-blue-500 cursor-pointer" data-param-key="${explanationKey}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>`
+            : '';
+        
+        return `<div class="flex flex-col">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-xs text-neutral-500 font-medium">${key}</span>
+                        ${infoIconHTML}
+                    </div>
+                    <span class="font-semibold text-lg">${value}</span>
+                </div>`;
+    }).join('');
 };
 
 function createFullRecipeHTML(recipe, isMainView = false) {
@@ -706,64 +708,7 @@ const viewTemplates = {
              }).join('')}
          </div>
      </div>
-    </div>`,
-
-    explain: () => `
-             <div id="explainView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition bg-slate-50 text-gray-800">
-                 <div class="container mx-auto p-4 sm:p-6 md:p-12">
-                     <header class="text-center mb-12 md:mb-16 pt-4 md:pt-8">
-                         <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="explainHeader"></h1>
-                         <h2 class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="explainSubtitle"></h2>
-                     </header>
-             
-                     <main class="space-y-12 md:space-y-20">
-                         <section>
-                             <h3 class="text-2xl md:text-3xl font-bold text-center mb-8" data-translate-key="pillarsTitle"></h3>
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                 <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                                     <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="wbPillarTitle"></h4>
-                                     <div class="mb-8">
-                                         <h5 class="font-bold text-lg" data-translate-key="wbKelvinTitle"></h5>
-                                         <p class="text-sm text-gray-600 mb-3" data-translate-key="wbKelvinDesc"></p>
-                                         <div class="w-full h-8 rounded-full bg-gradient-to-r from-blue-400 via-white to-orange-400 flex justify-between items-center px-2 text-xs font-bold text-gray-700">
-                                             <span>2500K</span>
-                                             <span>5500K</span>
-                                             <span>9900K</span>
-                                         </div>
-                                     </div>
-                                     <div>
-                                         <h5 class="font-bold text-lg" data-translate-key="wbShiftTitle"></h5>
-                                         <p class="text-sm text-gray-600 mb-3" data-translate-key="wbShiftDesc"></p>
-                                         <div id="abgm-grid-interactive-container">
-                                             <div id="abgm-grid" class="relative">
-                                                 <span class="absolute top-1/2 -left-5 -translate-y-1/2 font-bold text-blue-600">B</span>
-                                                 <span class="absolute top-1/2 -right-5 -translate-y-1/2 font-bold text-amber-600">A</span>
-                                                 <span class="absolute left-1/2 -top-5 -translate-x-1/2 font-bold text-green-600">G</span>
-                                                 <span class="absolute left-1/2 -bottom-5 -translate-x-1/2 font-bold text-purple-600">M</span>
-                                                 <div id="abgm-pointer" style="top: 50%; left: 50%;"></div>
-                                             </div>
-                                             <div id="abgm-values" class="text-center mt-2 font-mono font-semibold bg-slate-100 p-2 rounded-md">A-B: 0, G-M: 0</div>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                                     <h4 class="text-xl font-bold mb-6 text-center" data-translate-key="ppPillarTitle"></h4>
-                                     <p class="text-sm text-gray-700 mb-6 text-center">Picture Profile là một hệ thống menu tích hợp trong máy ảnh Sony, cung cấp một loạt các thông số cho phép người dùng điều chỉnh hình ảnh và video ngay bên trong máy ảnh trước khi chúng được xử lý và nén.</p>
-                                      <div class="space-y-4">
-                                          <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">1. Gamma</summary><p class="text-sm text-gray-600 mt-2">Gamma thiết lập độ dốc (đường cong tương phản), xác định mối quan hệ giữa mức tín hiệu đầu vào và mức tín hiệu đầu ra. Hình dạng của đường cong gamma ảnh hưởng đáng kể đến đặc điểm hình ảnh.</p></details>
-                                          <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">2. Color Mode</summary><p class="text-sm text-gray-600 mt-2">Color Mode xác định các đặc tính màu sắc, hoạt động kết hợp với Gamma để thiết lập màu sắc cơ bản của hình ảnh.</p></details>
-                                          <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">3. Black Level</summary><p class="text-sm text-gray-600 mt-2">Chức năng Black Level điều chỉnh điểm đen, kiểm soát điểm tối nhất trong hình ảnh. Một màu đen bị "crush" (ép xuống) có thể thêm kịch tính, trong khi màu đen được "lift" (nâng lên) có thể tạo ra cảm giác mềm mại hoặc cổ điển.</p></details>
-                                          <details class="pp-infographic-item"><summary class="font-bold cursor-pointer">4. Color Depth</summary><p class="text-sm text-gray-600 mt-2">Chức năng Color Depth điều chỉnh độ sáng cho từng kênh màu (Đỏ, Lục, Lam, Lục lam, Tím, Vàng) riêng lẻ, mang lại khả năng kiểm soát chính xác.</p></details>
-                                      </div>
-                                 </div>
-                             </div>
-                         </section>
-                     </main>
-                     <footer class="text-center text-sm text-gray-500 pt-8 mt-12 border-t">
-                         <p data-translate-key="footerText"></p>
-                     </footer>
-                 </div>
-             </div>`
+    </div>`
 };
 
 function openLightbox(images, initialIndex = 0) {
@@ -811,42 +756,6 @@ function navigateLightbox(direction) {
 function destroyAllCharts() {
     Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
     activeCharts = {};
-}
-
-function initInteractiveGrid() {
-    const grid = document.getElementById('abgm-grid');
-    const pointer = document.getElementById('abgm-pointer');
-    const valuesDisplay = document.getElementById('abgm-values');
-    if (!grid || !pointer || !valuesDisplay) return;
-
-    let isDragging = false;
-
-    function updatePosition(clientX, clientY) {
-        const rect = grid.getBoundingClientRect();
-        let x = clientX - rect.left;
-        let y = clientY - rect.top;
-
-        x = Math.max(0, Math.min(x, rect.width));
-        y = Math.max(0, Math.min(y, rect.height));
-
-        pointer.style.left = `${x}px`;
-        pointer.style.top = `${y}px`;
-
-        const abValue = Math.round((x / rect.width) * 18 - 9);
-        const gmValue = Math.round(((rect.height - y) / rect.height) * 18 - 9); 
-
-        const abLabel = abValue > 0 ? `A${abValue}` : (abValue < 0 ? `B${Math.abs(abValue)}` : '0');
-        const gmLabel = gmValue > 0 ? `G${gmValue}` : (gmValue < 0 ? `M${Math.abs(gmValue)}` : '0');
-
-        valuesDisplay.textContent = `${abLabel}, ${gmLabel}`;
-    }
-
-    grid.addEventListener('mousedown', (e) => { isDragging = true; updatePosition(e.clientX, e.clientY); });
-    grid.addEventListener('touchstart', (e) => { isDragging = true; updatePosition(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); });
-    document.addEventListener('mousemove', (e) => { if (isDragging) updatePosition(e.clientX, e.clientY); });
-    document.addEventListener('touchmove', (e) => { if (isDragging) updatePosition(e.touches[0].clientX, e.touches[0].clientY); });
-    document.addEventListener('mouseup', () => { isDragging = false; });
-    document.addEventListener('touchend', () => { isDragging = false; });
 }
 
 function renderView(viewName) {
@@ -1103,8 +1012,6 @@ function attachViewEventListeners(viewName) {
         renderLibraryList();  
         renderLibraryDetails();
         renderInteractiveCharts(state.currentLang);
-    } else if (viewName === 'explain') {
-        initInteractiveGrid();
     } else if (viewName === 'quiz') {
         const quizView = document.getElementById('quizView');
         quizView.addEventListener('click', (e) => {
@@ -1353,6 +1260,32 @@ function handleDropdownNav() {
 }
 
 function init() {
+    const tooltipEl = document.getElementById('infoTooltip');
+
+    document.body.addEventListener('mouseover', (e) => {
+        const icon = e.target.closest('.info-icon');
+        if (icon) {
+            const key = icon.dataset.paramKey;
+            const explanation = parameterExplanations[key]?.[state.currentLang];
+            if (explanation) {
+                tooltipEl.innerHTML = explanation;
+                const iconRect = icon.getBoundingClientRect();
+                tooltipEl.style.left = `${iconRect.left + window.scrollX}px`;
+                tooltipEl.style.top = `${iconRect.bottom + window.scrollY + 8}px`;
+                tooltipEl.classList.remove('hidden');
+                setTimeout(() => tooltipEl.classList.add('visible'), 10);
+            }
+        }
+    });
+
+    document.body.addEventListener('mouseout', (e) => {
+        const icon = e.target.closest('.info-icon');
+        if (icon) {
+            tooltipEl.classList.remove('visible');
+            setTimeout(() => tooltipEl.classList.add('hidden'), 200);
+        }
+    });
+
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
 
@@ -1377,7 +1310,6 @@ function init() {
         if (target.closest('#homeBtn')) await navBtnAction('home');
         else if (target.closest('.nav-btn')) await navBtnAction(target.closest('.nav-btn').dataset.view);
         else if (target.closest('.nav-btn-mobile')) await navBtnAction(target.closest('.nav-btn-mobile').dataset.view);
-        else if (target.closest('#exploreMoreBtn')) await navBtnAction('recipeFormulas');
         else if (target.closest('.lang-btn')) {
             state.currentLang = target.closest('.lang-btn').id.replace('lang', '').toLowerCase();
             await renderView(state.currentView);
@@ -1442,4 +1374,3 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
-
