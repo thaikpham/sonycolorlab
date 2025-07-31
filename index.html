@@ -3,101 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sony Color Lab</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z' stroke='%231d1d1f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3C/path%3E%3C/svg%3E">
+<title>Alpha AI Color Lab</title>
+<!-- Favicon updated to the original logo SVG -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 111 110' xmlns='http://www.w3.org/2000/svg'%3E%3Cg style='mix-blend-mode: multiply;'%3E%3Ccircle cx='34' cy='34' r='34' fill='%23f7b71d'/%3E%3Ccircle cx='77' cy='34' r='34' fill='%23b2b2b2'/%3E%3Ccircle cx='34' cy='76' r='34' fill='%2342b4d1'/%3E%3Ccircle cx='77' cy='76' r='34' fill='%23e62634'/%3E%3C/g%3E%3C/svg%3E">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 <style>
     html { scroll-behavior: smooth; }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #f4f7fc;
-        color: #212529;
+        background-color: #f8f9fa; /* Softer background color */
+        color: #1d1d1f;
         overflow-x: hidden;
         overflow-y: auto;
     }
     :root {
         --primary-accent: #007AFF;
         --primary-accent-darker: #0056B3;
-        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-bg: rgba(255, 255, 255, 0.55); /* Refined glass effect */
         --glass-border: rgba(0, 0, 0, 0.07);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
     }
     .glass-panel {    
         background: var(--glass-bg);    
-        backdrop-filter: blur(30px) saturate(180%);    
-        -webkit-backdrop-filter: blur(30px) saturate(180%);    
+        backdrop-filter: blur(40px) saturate(180%);    
+        -webkit-backdrop-filter: blur(40px) saturate(180%);    
         border: 1px solid var(--glass-border);    
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Refined shadow */
         border-radius: 24px;
     }
     @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
+    
     .recipe-item.selected {    
         background-color: rgba(0, 122, 255, 0.1);    
-        border-left: 4px solid var(--primary-accent);    
         color: var(--text-primary);    
         transform: translateX(4px);
         box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
     }
     .recipe-item:hover:not(.selected) { background-color: rgba(0, 0, 0, 0.04); }
     .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;}
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
     .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 18px rgba(0, 118, 255, 0.45); }
-    .lang-btn { background: #e9ecef; border: none; border-radius: 9999px; padding: 0.25rem; transition: all 0.2s ease; }
-    .lang-btn.active { box-shadow: 0 0 0 2.5px var(--primary-accent); }
-    .lang-btn svg { width: 1.5rem; height: 1.5rem; }
+    .btn:active { transform: translateY(0px) scale(0.98); }
+
     .view-transition { animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
-    .filter-btn { background-color: rgba(0,0,0,0.05); border: 1px solid transparent; transition: all 0.2s ease-in-out; }
-    .filter-btn.active { background-color: rgba(0, 122, 255, 0.1); border-color: var(--primary-accent); color: var(--primary-accent); font-weight: 600; }
-    .chart-container { position: relative; margin: auto; height: 280px; width: 100%;}
-    @media (min-width: 768px) { .chart-container { height: 320px; } }
-    #colorChart, #bwChart { cursor: pointer; }
+    
+    /* Sleek Scrollbar */
+    .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
+    .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .sleek-scrollbar::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0,0);
+        border-radius: 20px;
+        border: 3px solid transparent;
+    }
+    .sleek-scrollbar:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0,0.2);
+    }
+    .sleek-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    /* Modal Styles */
+    .modal.hidden { display: none; }
+    .modal-panel {
+        background: #ffffff;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        border: 1px solid #e5e7eb;
+    }
+    .parameter-title {
+        cursor: help;
+        border-bottom: 1px dashed #ccc;
+    }
     #infoTooltip {
-        position: absolute;
-        z-index: 100;
-        background-color: rgba(29, 29, 31, 0.9);
-        color: white;
-        padding: 0.75rem 1rem;
-        border-radius: 12px;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        max-width: 300px;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        opacity: 0;
-        transform: translateY(10px);
-        transition: opacity 0.2s ease, transform 0.2s ease;
-        pointer-events: none;
+        position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem;
+        border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none;
     }
-    #infoTooltip.visible {
-        opacity: 1;
-        transform: translateY(0);
+    #infoTooltip.visible { opacity: 1; transform: translateY(0); }
+
+    /* AI Lab Specific Styles */
+    .comparison-grid .changed {
+        background-color: #e6f2ff;
+        border: 1px solid #99c8ff;
+        box-shadow: 0 0 0 2px #e6f2ff;
     }
+    .comparison-grid .value-original { color: #6b7280; }
+    .comparison-grid .value-new { color: #1d4ed8; font-weight: 700; }
+    .loader {
+        width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db;
+        border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Quiz Options Styles */
+    .quiz-option {
+        background-color: #f8fafc;
+        border: 2px solid #e2e8f0;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: scale(1);
+    }
+    .quiz-option:hover {
+        border-color: #93c5fd;
+        background-color: #eff6ff;
+        transform: scale(1.03);
+        box-shadow: 0 4px 14px rgba(0, 118, 255, 0.1);
+    }
+    .quiz-option.selected {
+        border-color: var(--primary-accent);
+        background-color: #dbeafe;
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 118, 255, 0.2);
+    }
+    .quiz-option:active {
+        transform: scale(1.02);
+    }
+    .quiz-options-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    .quiz-options-grid .quiz-option {
+        flex: 1 1 45%;
+        min-width: 200px;
+    }
+    .quiz-options-grid.has-three-options .quiz-option:last-child {
+        flex-basis: 100%;
+        max-width: calc(50% - 0.5rem); /* Match width of others */
+    }
+
+    /* Dynamic photo collage and lightbox Styles */
+    .photo-collage {
+        display: grid;
+        gap: 0.75rem;
+        grid-auto-rows: 200px; /* Define a base row height */
+    }
+    .collage-item {
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 0.75rem;
+    }
+    .collage-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
+    }
+    .collage-item:hover img {
+        transform: scale(1.05);
+    }
+    /* Masonry Layouts */
+    .photo-collage.images-1 { grid-template-columns: 1fr; }
+    .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
+    .photo-collage.images-3 { grid-template-columns: repeat(3, 1fr); }
+    .photo-collage.images-4 { 
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: minmax(150px, auto);
+    }
+    .photo-collage.images-5 {
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: minmax(150px, auto);
+    }
+    .photo-collage.images-5 > .collage-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .photo-collage.images-5 > .collage-item:nth-child(2) { grid-row: span 2; }
+    
+    .photo-collage.images-6 { 
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: minmax(150px, auto);
+    }
+    .photo-collage.images-6 > .collage-item:nth-child(3) { grid-column: span 2; }
+    .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
+
+    /* Lightbox Styles */
+    #lightbox {
+        position: fixed; inset: 0; background-color: rgba(0,0,0,0.85);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        z-index: 100; display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+    }
+    #lightbox.visible { opacity: 1; pointer-events: auto; }
+    #lightbox img {
+        max-width: 90vw; max-height: 85vh;
+        border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        transform: scale(0.95); transition: transform 0.3s ease;
+    }
+    #lightbox.visible img { transform: scale(1); }
+    #lightboxClose {
+        position: absolute; top: 2rem; right: 2rem;
+        color: white; font-size: 3rem; font-weight: 200;
+        cursor: pointer; transition: transform 0.2s ease;
+    }
+    #lightboxClose:hover { transform: scale(1.1); }
 </style>
 </head>
 <body>
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
-        <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.253v11.494m-5.747-8.662l11.494 5.747m-11.494 0l11.494-5.747M4.75 12A7.25 7.25 0 0112 4.75v0A7.25 7.25 0 0119.25 12v0a7.25 7.25 0 01-7.25 7.25v0A7.25 7.25 0 014.75 12v0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-3">
+            <svg viewBox="0 0 111 110" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8">
+                <g style="mix-blend-mode: multiply;">
+                    <circle cx="34" cy="34" r="34" fill="#f7b71d"/>
+                    <circle cx="77" cy="34" r="34" fill="#b2b2b2"/>
+                    <circle cx="34" cy="76" r="34" fill="#42b4d1"/>
+                    <circle cx="77" cy="76" r="34" fill="#e62634"/>
+                </g>
+            </svg>
             <span data-translate-key="headerTitle" class="hidden sm:inline"></span>
         </button>
         <div class="flex items-center gap-2 md:gap-4">
             <nav id="mainNav" class="hidden md:flex items-center gap-2">
                 <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navRecipeFormulas"></button>
-                <button data-view="featuredPhotos" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navFeaturedPhotos"></button>
             </nav>
-            <div class="flex items-center gap-2">
-                <button id="langEN" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg></button>
-                <button id="langVI" class="lang-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg></button>
+            <div class="p-1 bg-gray-200/70 rounded-full flex relative">
+                <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
+                <button id="langVI" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-5 h-5 rounded-sm"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
+                    <span class="hidden sm:inline">VIE</span>
+                </button>
+                <button id="langEN" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-5 rounded-sm"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
+                    <span class="hidden sm:inline">ENG</span>
+                </button>
             </div>
             <button id="hamburgerBtn" class="md:hidden p-2 rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-gray-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -106,107 +240,279 @@
     </header>
 
     <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
+    
+    <footer class="text-center py-4 text-gray-500 text-sm flex-shrink-0">
+        Paint emotions with ColorLAB by Sony Alpha Vietnam
+    </footer>
 </div>
 
 <div id="infoTooltip" class="hidden"></div>
+
+<div id="lightbox" class="hidden">
+    <span id="lightboxClose">&times;</span>
+    <img id="lightboxImage" src="" alt="Full size view">
+</div>
 
 <div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
     <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
         <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
         <nav class="mt-16 flex flex-col gap-6 text-center">
             <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navRecipeFormulas"></button>
-            <button data-view="featuredPhotos" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navFeaturedPhotos"></button>
         </nav>
     </div>
 </div>
 
+<!-- Quiz Modal -->
+<div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div id="quizPanel" class="modal-panel w-full max-w-3xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
+        <div class="flex justify-between items-center p-5 flex-shrink-0">
+            <h2 class="text-xl font-bold" data-translate-key="quizTitle"></h2>
+            <button id="closeQuizBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
+        </div>
+        <div id="quizContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar"></div>
+        <div class="p-5 flex-shrink-0">
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="quizProgressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gemini AI Lab Modal -->
+<div id="aiLabModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div id="aiLabPanel" class="modal-panel w-full max-w-4xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
+        <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" />
+                    </svg>
+                </div>
+                 <h2 class="text-xl font-bold" data-translate-key="aiLabTitle"></h2>
+            </div>
+            <button id="closeAILabBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
+        </div>
+        <div id="aiLabContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar">
+            <!-- AI Lab content will be rendered here -->
+        </div>
+    </div>
+</div>
+
+<!-- Caption AI Lab Modal -->
+<div id="captionLabModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div id="captionLabPanel" class="modal-panel w-full max-w-2xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
+        <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg">
+                     <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" />
+                    </svg>
+                </div>
+                 <h2 class="text-xl font-bold" data-translate-key="captionLabTitle"></h2>
+            </div>
+            <button id="closeCaptionLabBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
+        </div>
+        <div id="captionLabContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar">
+            <!-- Caption AI Lab content will be rendered here -->
+        </div>
+    </div>
+</div>
+
+
 <script type="module">
-// --- STATE & CONFIGURATION ---
+// --- CONFIGURATION & STATE ---
+// FIX: Re-introduced the API_KEY and full API_URL from the working version.
+const API_KEY = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ";
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+
 const state = {
     currentLang: 'vi',
     currentView: 'home',
     selectedRecipeId: null,
-    activeFilters: { type: 'all', contrast: 'all', saturation: 'all' },
     isMobileDetailActive: false,
+    ai: {
+        isGenerating: false,
+        originalRecipe: null,
+        userPrompt: '',
+        expertPrompt: '',
+        generatedRecipe: null,
+        generationPromise: null,
+        abortController: null,
+    },
+    captionAI: {
+        isGenerating: false,
+        recipe: null,
+        userPrompt: '',
+        generationPromise: null,
+        abortController: null,
+        result: null,
+    },
+    quiz: {
+        currentQuestionIndex: 0,
+        answers: [],
+    }
 };
 
 const mainContentEl = document.getElementById('mainContent');
-let activeCharts = {};
 
 // --- DATA ---
-import recipesData from './recipes.js';
+const recipesData = [
+    {
+        "id": "scl-001",
+        "name": { "vi": "SCL-001: Mojave Sun", "en": "SCL-001: Mojave Sun" },
+        "formattedName": "SCL-001-Mojave Sun",
+        "description": {
+            "en": "A nostalgic, sun-drenched style that bathes scenes in the warm glow of golden hour.\nPerfect for travel and lifestyle, it recreates rich yellows and deep blues, evoking the feeling of an endless summer road trip.",
+            "vi": "Một phong cách hoài niệm, ngập tràn ánh nắng, bao phủ các khung cảnh trong ánh sáng ấm áp của giờ vàng. Hoàn hảo cho du lịch và đời sống, nó tái tạo màu vàng đậm và xanh dương sâu, gợi lên cảm giác về một chuyến đi mùa hè bất tận."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["nostalgic", "sun-drenched", "warm", "travel", "lifestyle", "summer", "golden-hour"],
+        "whiteBalance": "8300K, B3-M1.5",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+22", "Color Phase": "+4" },
+        "colorDepth": { "R": "-2", "G": "0", "B": "+5", "C": "+5", "M": "0", "Y": "+4" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#FFD700",
+        "coords": { "x": 6, "y": 7 },
+        "demoImages": [
+            "https://lh3.googleusercontent.com/pw/AP1GczPPT3oBJKObBMX8NEdTxe-PLC2BEd0eRGUMSUiYxocel93ljDNFyG58LJiiPhijnKyWkjJbkSim54sWvSLrRxeM22uF82BlckublQ4qsSic7gwhAVe-XX0jEzRuxDJG7j25PHU6tLUGIT0IRHjy_AvXuQ=w1658-h1105-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczPC_ounREkB_Q6oj6ZM7ckVGcKKZ_saJP5O63nURHPk09iTI8l4YwSqUzyxJm8ZG760nUJhm5JgmMWyk4uGlDDaaWwjJJPO4E9IAoF1pNfMHqx-2g3OcDS2COZ1w93K8j16X08W24leuMEhZvXx6L4uyw=w736-h1105-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczPwAttTxhJ89lhQ4Lbp9Klq73D30WWsG21oDGzsTZ9ig_5IYa3hLxdsQnMIb-8xJF-SOUMsNjaoGm-1RbfHrcRDn8lrLR7krn4ubwBkoe7fKqWes36h-8T05_EvDvJiHM04HZYdZzSkJ_4O2y7yhyXc3A=w1658-h1105-s-no?authuser=0",
+            "https://scontent-mxp2-1.xx.fbcdn.net/v/t39.30808-6/524715467_23871084269186656_4899892423308509034_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=24ef35&_nc_eui2=AeGdewaeMibHCZ0p8AZgnnHodzaivFYyjk53NqK8VjKOTgD28VtuYUtFFu37dUHp8v0okvz6FCq0BP3JCDnZ8DgS&nc_ohc=evaYHCdfjMcQ7kNvwF_8WCn&_nc_oc=AdnstQUm2jMUPRkRipKC7Iort2IuqLjgMEeHd1k15NxJqZLEpVGMMDYX7UGBlUBOVqWqJVcdoEj8OVf-D4FQUe9G&_nc_zt=23&_nc_ht=scontent-mxp2-1.xx&_nc_gid=XlqPHHDl2gNc5o586u2hkg&oh=00_AfT_nXeytsXonahqI4CAPN73kT82CCPw_jB5rMvjIqh6DQ&oe=68911A5A"
+        ]
+    },
+    {
+        "id": "scl-002",
+        "name": { "vi": "SCL-002: Kyoto Jade", "en": "SCL-002: Kyoto Jade" },
+        "formattedName": "SCL-002-Kyoto Jade",
+        "description": {
+            "en": "A serene and subtle palette defined by rich jade tones and gentle skin colors.\nIdeal for contemplative portraits, street photography, and landscapes, creating a peaceful, painterly atmosphere.",
+            "vi": "Một bảng màu thanh tĩnh và tinh tế được định hình bởi các tông màu xanh ngọc bích đậm và màu da dịu. Lý tưởng cho chân dung trầm tư, nhiếp ảnh đường phố và phong cảnh, tạo ra một không khí yên bình, tựa như tranh vẽ."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["serene", "subtle", "portrait", "street-photography", "landscape", "peaceful", "painterly"],
+        "whiteBalance": "3700K, A7-M0.5",
+        "settings": { "Black level": "0", "Gamma": "Movie", "Black Gamma": "Wide +7", "Knee": "Manual 80% +4", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-4" },
+        "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-3", "M": "-5", "Y": "-3" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#66CDAA",
+        "coords": { "x": -4, "y": 3 },
+        "demoImages": [
+            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+1",
+            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+2",
+            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+3"
+        ]
+    },
+    ];
+    
+const quizQuestions = [
+    {
+        question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
+        options: [
+            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' },
+            { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: { vi: 'Phong cảnh', en: 'Landscape' }, icon: 'M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z' },
+            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: 'M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21M3 3h18v18H3V3z' },
+            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: 'M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z' }
+        ]
+    },
+    {
+        question: { vi: "Tone màu chủ đạo bạn muốn?", en: "What's your preferred color tone?" },
+        options: [
+            { tags: ['warm', 'golden-hour', 'amber-tint'], text: { vi: 'Ấm', en: 'Warm' }, icon: 'M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z' },
+            { tags: ['neutral', 'clean', 'balanced'], text: { vi: 'Trung tính', en: 'Neutral' }, icon: 'M10.5 6h9.75M10.5 6a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zM3.75 6H7.5m3 12h9.75m-9.75 0a2.25 2.25 0 10-4.5 0 2.25 2.25 0 004.5 0zM3.75 18H7.5m1.5-6h9.75m-9.75 0a2.25 2.25 0 10-4.5 0 2.25 2.25 0 004.5 0zM3.75 12H7.5' },
+            { tags: ['cool-tone', 'deep-blues', 'cyan-teal'], text: { vi: 'Lạnh', en: 'Cool' }, icon: 'M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z' }
+        ]
+    },
+    {
+        question: { vi: "Kiểu tương phản bạn thích?", en: "How do you like your contrast?" },
+        options: [
+            { tags: ['high-contrast', 'dramatic', 'powerful'], text: { vi: 'Gắt', en: 'Punchy' }, icon: 'M12 21a9 9 0 100-18 9 9 0 000 18z' },
+            { tags: ['normal', 'balanced', 'versatile'], text: { vi: 'Trung tính', en: 'Natural' }, icon: 'M12 3v18m9-9a9 9 0 00-18 0h18z' },
+            { tags: ['soft-contrast', 'faded', 'lifted-blacks'], text: { vi: 'Nhẹ & Mờ', en: 'Soft & Faded' }, icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+        ]
+    },
+    {
+        question: { vi: "Độ bão hòa màu sắc?", en: "And saturation?" },
+        options: [
+            { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: { vi: 'Đậm', en: 'Rich' }, icon: 'M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25z' },
+            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Trung tính', en: 'Natural' }, icon: 'M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25z' },
+            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Nhạt', en: 'Muted' }, icon: 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636' },
+            { tags: ['bw'], text: { vi: 'Trắng & Đen', en: 'Black & White' }, icon: 'M12 3v18m9-9a9 9 0 00-18 0h18z' }
+        ]
+    }
+];
 
 const translations = {
-    headerTitle: {vi: "Sony Color Lab", en: "Sony Color Lab"},
+    headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-    navFeaturedPhotos: {vi: "Ảnh nổi bật", en: "Featured Photos"},
-    landingTitle: {vi:"Thư viện Màu sắc", en:"The Color Library"},
-    landingSubtitle: {vi:"Khám phá bộ sưu tập các công thức Picture Profile độc đáo được tạo ra cho máy ảnh Sony Alpha.", en:"Explore a collection of unique Picture Profile recipes crafted for Sony Alpha cameras."},
-    startExploringBtn: {vi:"Bắt đầu Khám phá", en:"Start Exploring"},
-    searchInputPlaceholder: {vi: "🔍 Tìm công thức...", en: "🔍 Search recipes..."},
-    filterType: {vi: "Loại", en: "Type"},
-    filterTypeColor: {vi: "Màu", en: "Color"},
-    filterTypeBW: {vi: "Trắng Đen", en: "B&W"},
-    filterContrast: {vi: "Tương phản", en: "Contrast"},
-    filterSaturation: {vi: "Bão hòa", en: "Saturation"},
-    filterHigh: {vi: "Cao", en: "High"},
-    filterMedium: {vi: "Vừa", en: "Med"},
-    filterLow: {vi: "Thấp", en: "Low"},
+    landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
+    landingSubtitle: {vi:"Không chắc nên bắt đầu từ đâu? Hãy để chúng tôi giúp bạn tìm công thức màu hoàn hảo.", en:"Not sure where to start? Let us help you find the perfect color recipe."},
+    startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
+    findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
+    quizTitle: {vi: "Trắc nghiệm Tìm màu", en: "Color Finder Quiz"},
+    quizResultTitle: {vi: "Gợi ý cho bạn!", en: "Our Suggestion For You!"},
+    quizResultDescription: {vi: "Dựa trên câu trả lời của bạn, chúng tôi nghĩ bạn sẽ thích công thức này:", en: "Based on your answers, we think you'll love this recipe:"},
+    viewRecipeBtn: {vi: "Xem chi tiết công thức", en: "View Recipe Details"},
+    retakeQuizBtn: {vi: "Làm lại trắc nghiệm", en: "Retake Quiz"},
+    searchInputPlaceholder: {vi: "Tìm công thức...", en: "Search recipes..."},
     recipeDetailWelcomeTitle: {vi: "Thư viện màu Tương tác", en: "Interactive Color Library"},
-    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu Picture Profile một cách trực quan. Nhấp vào một điểm trên biểu đồ hoặc một công thức trong danh sách để xem chi tiết.", en: "Explore Picture Profile color recipes visually. Click a point on the chart or a recipe in the list to see details."},
+    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu Picture Profile một cách trực quan. Nhấp vào một công thức trong danh sách để xem chi tiết.", en: "Explore Picture Profile color recipes visually. Click a recipe in the list to see details."},
     whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
     recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
     colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
     detailTitle: {vi: "Chi tiết", en: "Detail"},
-    colorChartTitle: {vi: "Biểu đồ Màu", en: "Color Chart"},
-    bwChartTitle: {vi: "Biểu đồ Đơn sắc (B&W)", en: "Monochrome (B&W) Chart"},
-    axisTonality: {vi: "Tương phản (← Mềm | Cứng →)", en: "Tonality (← Soft | Hard →)"},
-    axisSaturation: {vi: "Độ bão hòa (← Thấp | Cao →)", en: "Saturation (← Low | High →)"},
-    axisChroma: {vi: "Độ sâu màu (← Thấp | Cao →)", en: "Chroma Depth (← Low | High →)"},
+    sonyGuideBtn: {vi: "Xem tài liệu gốc từ Sony", en: "View Official Sony Guide"},
     backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
-    featuredTitle: {vi: "Ảnh Nổi Bật từ Cộng Đồng", en: "Featured Photos from the Community"},
-    featuredCta: {vi: "Chia sẻ ảnh của bạn với mã màu (ví dụ: 'SCL-001') để cùng nhau tạo nên một không gian đầy cảm hứng.", en: "Share your photos with the color code (e.g., 'SCL-001') to create an inspiring space together."},
-    featuredAlbumBtn: {vi: "Xem Album & Đóng góp Ảnh", en: "View Album & Contribute Photos"},
-    tutorialTitle: { vi: "Hướng dẫn Cài đặt Nhanh", en: "Quick Setup Guide" },
+    ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
+    ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
+    ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
+    // AI Lab Translations
+    aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
+    aiLabDescription: {vi: "Mô tả phong cách bạn muốn, Gemini sẽ tinh chỉnh công thức màu <b>{recipeName}</b> cho bạn.", en: "Describe the style you want, and Gemini will tweak the <b>{recipeName}</b> recipe for you."},
+    aiPromptPlaceholder: {vi: "VD: tông màu trong trẻo, hơi ngả xanh như phim của Wes Anderson...", en: "E.g., a clean, slightly teal look like a Wes Anderson film..."},
+    aiGenerateBtn: {vi: "Tinh chỉnh với AI", en: "Tweak with AI"},
+    aiConfirmPromptTitle: {vi: "Xác nhận yêu cầu", en: "Confirm Request"},
+    aiConfirmPromptText: {vi: "OK! Tôi sẽ tạo một phiên bản mới của <b>{recipeName}</b> với phong cách <i>\"{userPrompt}\"</i>. Tiếp tục nhé?", en: "Got it! I will generate a new version of <b>{recipeName}</b> with a style inspired by <i>\"{userPrompt}\"</i>. Shall we proceed?"},
+    aiConfirmBtn: {vi: "Đồng ý", en: "Confirm & Generate"},
+    aiCancelBtn: {vi: "Hủy", en: "Cancel"},
+    aiComparisonTitle: {vi: "Kết quả từ Gemini AI", en: "Result from Gemini AI"},
+    aiComparisonDescription: {vi: "Đây là phiên bản mới được tạo dựa trên yêu cầu của bạn. Các thông số thay đổi đã được làm nổi bật.", en: "Here is the new version based on your request. Changed parameters are highlighted."},
+    aiOriginalTitle: {vi: "Công thức gốc", en: "Original Recipe"},
+    aiNewTitle: {vi: "Công thức mới (AI)", en: "New Recipe (AI)"},
+    aiErrorTitle: {vi: "Đã có lỗi xảy ra", en: "An Error Occurred"},
+    aiErrorText: {vi: "Rất tiếc, không thể tạo công thức lúc này. Vui lòng kiểm tra lại API Key hoặc thử lại sau.", en: "Sorry, the recipe could not be generated at this time. Please check your API Key or try again later."},
+    tweakWithAI: {vi: "Tinh chỉnh với Gemini AI", en: "Tweak with Gemini AI"},
+    // Caption AI Translations
+    captionLabTitle: {vi: "Trợ lý Caption Viral", en: "Viral Caption Assistant"},
+    captionLabDescription: {vi: "Nhập ý tưởng cho bài đăng của bạn. AI sẽ giúp bạn viết một caption thật 'chất' theo phong cách màu <b>{recipeName}</b>.", en: "Enter an idea for your post. AI will help you write a captivating caption in the <b>{recipeName}</b> color style."},
+    captionPromptPlaceholder: {vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt...", en: "E.g., a sunset afternoon in Dalat..."},
+    generateCaptionBtn: {vi: "Tạo Caption", en: "Generate Caption"},
+    captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
+    copyBtn: {vi: "Sao chép", en: "Copy"},
+    copiedBtn: {vi: "Đã sao chép!", en: "Copied!"},
+    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" }
 };
 
 const parameterExplanations = {
-    'Black level': {
-        vi: "Thiết lập điểm đen (vùng tối nhất). Tăng (+) để nâng vùng tối (tạo look 'faded' hoài cổ), giảm (-) để vùng tối sâu hơn (tăng tương phản).",
-        en: "Sets the black point (darkest area). Increase (+) to lift shadows (for a 'faded' look), decrease (-) for deeper blacks (more contrast)."
-    },
-    'Gamma': {
-        vi: "Thiết lập đường cong tương phản. Đây là nền tảng cho 'look' của bạn. Still & Movie cho độ tương phản cao, trong khi các gamma Cine/S-Log cho dải nhạy sáng rộng hơn.",
-        en: "Sets the contrast curve. This is the foundation of your look. Still & Movie are punchy, while Cine/S-Log gammas offer wider dynamic range."
-    },
-    'Black Gamma': {
-        vi: "Tinh chỉnh đường cong tương phản ở vùng tối. 'Wide' ảnh hưởng vùng rộng hơn, 'Narrow' ảnh hưởng vùng hẹp hơn.",
-        en: "Fine-tunes the contrast curve in the shadow areas. 'Wide' affects a broader range, 'Narrow' affects a smaller range."
-    },
-    'Knee': {
-        vi: "Kiểm soát độ nén ở vùng sáng (highlight) để tránh bị 'cháy'. Chế độ tự động (Auto) hoạt động tốt, chế độ thủ công (Manual) cho phép kiểm soát chính xác hơn.",
-        en: "Controls highlight compression to prevent 'clipping'. Auto mode works well; Manual mode gives precise control."
-    },
-    'Color Mode': {
-        vi: "Xác định cách màu sắc được tái tạo. Nên chọn chế độ phù hợp với Gamma đã chọn (ví dụ: Cine4 với Pro/Cinema, S-Log3 với S-Gamut3.Cine).",
-        en: "Determines how colors are reproduced. Should be matched with the chosen Gamma (e.g., Cine4 with Pro/Cinema, S-Log3 with S-Gamut3.Cine)."
-    },
-    'Saturation': {
-        vi: "Điều chỉnh độ đậm/nhạt tổng thể của tất cả các màu.",
-        en: "Adjusts the overall intensity of all colors."
-    },
-    'Color Phase': {
-        vi: "Xoay trục màu sắc tổng thể. Hữu ích để tinh chỉnh nhẹ toàn bộ tông màu mà không ảnh hưởng đến từng màu riêng lẻ.",
-        en: "Shifts the overall hue of all colors. Useful for subtle, global color tone adjustments without affecting individual colors."
-    },
-    'Color Depth': {
-        vi: "Công cụ mạnh mẽ nhất. Tăng/giảm độ sáng của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Lục lam, Tím, Vàng).",
-        en: "The most powerful tool. Increases/decreases the brightness of individual color channels (R, G, B, C, M, Y)."
-    },
-    'Detail': {
-        vi: "Kiểm soát độ sắc nét. Để có 'look' phim mềm mại, hãy giảm mạnh (ví dụ: -7).",
-        en: "Controls the sharpening. For a soft, filmic look, decrease it significantly (e.g., -7)."
-    }
+    'Black level': { vi: "Điều chỉnh điểm đen. Giá trị âm (-) làm vùng tối sâu hơn, tăng tương phản. Giá trị dương (+) nâng vùng tối, tạo hiệu ứng 'mờ' hoài cổ.", en: "Adjusts the black point. Negative (-) values deepen shadows for more contrast. Positive (+) values lift shadows for a 'faded' look." },
+    'Gamma': { vi: "Xác định đường cong tương phản tổng thể, là nền tảng cho 'look' của bạn. Cine & S-Cinetone cho cảm giác điện ảnh, trong khi S-Log tối đa hóa dải tần nhạy sáng để hậu kỳ.", en: "Defines the overall contrast curve, the foundation of your look. Cine & S-Cinetone provide a cinematic feel, while S-Log maximizes dynamic range for post-production." },
+    'Black Gamma': { vi: "Tinh chỉnh độ tương phản riêng trong vùng tối. 'Range' xác định vùng ảnh hưởng (Hẹp/Vừa/Rộng). 'Level' tăng hoặc giảm độ sáng của vùng đó.", en: "Fine-tunes contrast specifically in the shadow areas. 'Range' sets the affected area (Narrow/Middle/Wide). 'Level' brightens or darkens that area." },
+    'Knee': { vi: "Kiểm soát cách các vùng sáng (highlight) được nén lại để tránh bị 'cháy sáng'. Chế độ Tự động hoạt động tốt, trong khi Thủ công cho phép kiểm soát chính xác hơn.", en: "Controls how highlights are compressed to prevent 'clipping' (overexposure). Auto mode works well; Manual mode offers precise control." },
+    'Color Mode': { vi: "Xác định không gian màu và cách màu sắc được tái tạo. Nên chọn chế độ phù hợp với Gamma đã chọn (ví dụ: S-Cinetone, S-Gamut3.Cine).", en: "Determines the color space and how colors are rendered. Should be matched with the chosen Gamma (e.g., S-Cinetone, S-Gamut3.Cine)." },
+    'Saturation': { vi: "Điều chỉnh cường độ tổng thể của tất cả các màu. Tăng để có màu rực rỡ, giảm để có màu dịu hơn hoặc đơn sắc.", en: "Adjusts the overall intensity of all colors. Increase for vibrant colors, decrease for a more muted or monochrome look." },
+    'Color Phase': { vi: "Dịch chuyển nhẹ toàn bộ quang phổ màu về phía đỏ hoặc xanh lá. Hữu ích để tinh chỉnh tông màu tổng thể hoặc cân bằng màu giữa các máy ảnh.", en: "Slightly shifts the entire color spectrum towards red or green. Useful for subtle global tone adjustments or matching cameras." },
+    'Color Depth': { vi: "Công cụ mạnh nhất. Tăng/giảm độ sáng của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Cyan, Magenta, Vàng) để tinh chỉnh màu sắc một cách chính xác.", en: "The most powerful tool. Brightens or darkens individual color channels (R, G, B, C, M, Y) for precise color tuning." },
+    'R': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Đỏ. Tăng (+) để màu đỏ tối và đậm hơn (son môi, da). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Red channel. Increase (+) for darker, richer reds (lipstick, skin). Decrease (-) for lighter, paler reds." },
+    'G': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lục. Tăng (+) để màu xanh lá cây tối và đậm hơn (cây cỏ). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Green channel. Increase (+) for darker, richer greens (foliage). Decrease (-) for lighter, paler greens." },
+    'B': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lam. Tăng (+) để màu xanh dương tối và đậm hơn (quần áo, đường phố). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Blue channel. Increase (+) for darker, richer blues (clothing, streets). Decrease (-) for lighter, paler blues." },
+    'C': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lục lam. Tăng (+) để màu da trời tối và đậm hơn. Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Cyan channel. Increase (+) for darker, richer cyan (sky). Decrease (-) for lighter, paler cyan." },
+    'M': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Cánh sen. Tăng (+) để màu hồng/tím tối và đậm hơn (da người, son môi). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Magenta channel. Increase (+) for darker, richer magenta (skin tones, lipstick). Decrease (-) for lighter, paler magenta." },
+    'Y': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Vàng. Tăng (+) để màu vàng tối và đậm hơn (da người Á Đông). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Yellow channel. Increase (+) for darker, richer yellows (Asian skin tones). Decrease (-) for lighter, paler yellows." },
+    'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
+    'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
 };
 
 // --- UI & LOGIC FUNCTIONS ---
@@ -221,97 +527,516 @@ function applyTranslations() {
             else element.innerHTML = t(key);
         }
     });
-    document.getElementById('langVI').classList.toggle('active', state.currentLang === 'vi');
-    document.getElementById('langEN').classList.toggle('active', state.currentLang === 'en');
 }
 
-function createSettingsGrid(settings) {
-    if (!settings) return '';
-    return Object.entries(settings).map(([key, value]) => {
-        const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase().trim());
-        const infoIconHTML = explanationKey 
-            ? `<svg class="info-icon w-4 h-4 text-gray-400 hover:text-blue-500 cursor-pointer" data-param-key="${explanationKey}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>`
-            : '';
-        return `<div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="text-xs text-neutral-500 font-medium">${key}</span>${infoIconHTML}</div><span class="font-semibold text-lg">${value}</span></div>`;
-    }).join('');
-}
+function createFullRecipeHTML(recipe) {
+    const createCollageHTML = (images) => {
+        if (!images || images.length === 0) return '';
+        const count = Math.min(images.length, 6);
+        const imageElements = images.slice(0, count).map(img => 
+            `<div class="collage-item" data-lightbox-src="${img}">
+                <img src="${img}" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image">
+            </div>`
+        ).join('');
+        return `<div class="photo-collage images-${count} mb-8">${imageElements}</div>`;
+    };
 
-function createFullRecipeHTML(recipe, isMainView = false) {
-    const titleClass = isMainView ? 'text-xl font-bold' : 'text-lg font-bold';
-    return `<div class="space-y-6 mt-6">
-                 <div><h4 class="${titleClass} mb-2" data-translate-key="whiteBalanceTitle"></h4><div class="p-4 bg-black/5 rounded-xl"><p class="font-semibold text-lg">${recipe.whiteBalance || ''}</p></div></div>
-                 <div><h4 class="${titleClass} mb-2" data-translate-key="recipeSettingsTitle"></h4><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.settings)}</div></div>
-                 ${recipe.colorDepth ? `<div><h4 class="${titleClass} mb-2" data-translate-key="colorDepthTitle"></h4><div class="grid grid-cols-3 sm:grid-cols-6 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.colorDepth)}</div></div>` : ''}
-                 ${recipe.detailSettings ? `<div><h4 class="${titleClass} mb-2" data-translate-key="detailTitle"></h4><div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5 p-5 bg-black/5 rounded-xl">${createSettingsGrid(recipe.detailSettings)}</div></div>` : ''}
-             </div>`;
+    const createCTAHTML = (recipe) => {
+        const recipeHashtag = `#${recipe.id.replace(/-/g, '')}`;
+        const ctaText = t('ctaText').replace('{recipeHashtag}', `<b class="font-semibold text-blue-900">${recipeHashtag}</b>`);
+        return `<div class="mt-8 p-5 md:p-6 bg-blue-50 border border-blue-200/50 rounded-2xl text-center"><h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4><p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p><a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-5 py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M12.225 10.162c.37.312.525.812.375 1.312l-.75 2.5a1 1 0 01-1.85.375l-1.375-3.562a1 1 0 01.375-1.125l2.5-2.062a1 1 0 011.375 1.562l-1.5 1.25 2.375 1.125zM10 18a8 8 0 100-16 8 8 0 000 16z"/></svg><span data-translate-key="ctaButton"></span></a></div>`;
+    };
+    
+    const createSettingsGrid = (settings, compareSettings = null) => {
+        if (!settings) return '';
+        return Object.entries(settings).map(([key, value]) => {
+            const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase().trim());
+            const isChanged = compareSettings && settings[key] !== compareSettings[key];
+            return `<div class="flex flex-col p-4 bg-white/50 rounded-xl ${isChanged ? 'changed' : ''}"><div class="flex items-center gap-1.5"><span class="parameter-title text-sm text-gray-500 font-medium" data-param-key="${explanationKey || ''}">${key}</span></div><span class="font-semibold text-xl text-gray-800 mt-1">${value}</span></div>`;
+        }).join('');
+    };
+
+    const sections = [
+        { titleKey: 'whiteBalanceTitle', content: `<div class="p-4 bg-white/50 rounded-xl"><p class="font-semibold text-xl text-gray-800">${recipe.whiteBalance || ''}</p></div>` },
+        { titleKey: 'recipeSettingsTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.settings)}</div>` },
+        recipe.colorDepth ? { titleKey: 'colorDepthTitle', content: `<div class="grid grid-cols-3 md:grid-cols-6 gap-3">${createSettingsGrid(recipe.colorDepth)}</div>` } : null,
+        recipe.detailSettings ? { titleKey: 'detailTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.detailSettings)}</div>` } : null
+    ].filter(Boolean);
+    
+    return `
+        ${createCollageHTML(recipe.demoImages)}
+        <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+            <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                <span data-translate-key="tweakWithAI"></span>
+            </button>
+            <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 shadow-lg shadow-purple-500/30" id="captionAIBtn" data-recipe-id="${recipe.id}">
+                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
+                <span data-translate-key="captionFromAI"></span>
+            </button>
+            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16s2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804s2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z"></path>
+                </svg>
+                <span data-translate-key="sonyGuideBtn"></span>
+            </a>
+        </div>
+        ${createCTAHTML(recipe)}
+        <div class="space-y-8 mt-8">
+            ${sections.map(section => `<div><h4 class="text-xl font-bold mb-3 text-gray-700" data-translate-key="${section.titleKey}"></h4><div class="p-4 bg-gray-500/5 rounded-2xl">${section.content}</div></div>`).join('')}
+        </div>
+    `;
 }
 
 const viewTemplates = {
     home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
-                 <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="landingTitle"></h1>
-                 <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto" data-translate-key="landingSubtitle"></p>
-                 <button data-view="recipeFormulas" class="nav-btn btn btn-primary mt-10 py-4 px-10 text-lg" data-translate-key="startExploringBtn"></button>
-             </div>`,
-    recipeFormulas: () => `
-                 <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                     <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
-                         <input type="search" id="searchInput" class="w-full p-3 my-4 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                         <div class="space-y-4 text-sm mb-4 md:hidden">
-                              <div><h4 class="font-semibold mb-2" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                              <div><h4 class="font-semibold mb-2" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                              <div><h4 class="font-semibold mb-2" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn flex-1 py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                         </div>
-                         <div id="recipeListContainer" class="space-y-2 md:pt-0 pt-4 border-t md:border-t-0 flex-grow overflow-y-auto pr-2 -mr-3"></div>
-                     </aside>
-                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
-                         <div id="filtersContainerDesktop" class="glass-panel p-4 mb-6 hidden md:flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-                            <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterType"></h4><div class="flex gap-2" data-filter-group="type"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeColor" data-filter-value="color"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterTypeBW" data-filter-value="bw"></button></div></div>
-                            <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterContrast"></h4><div class="flex gap-2" data-filter-group="contrast"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                            <div class="flex items-center gap-3"><h4 class="font-semibold shrink-0" data-translate-key="filterSaturation"></h4><div class="flex gap-2" data-filter-group="saturation"><button class="filter-btn py-2 px-3 rounded-full active" data-filter-value="all">All</button><button class="filter-btn py-2 px-3 rounded-full" data-translate-key="filterHigh" data-filter-value="high"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterMedium" data-filter-value="medium"></button><button class="filter-btn flex-1 py-2 px-3 rounded-full" data-translate-key="filterLow" data-filter-value="low"></button></div></div>
-                         </div>
-                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10">
-                            <div id="chartsContainer">
-                                <div class="text-center mb-10"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
-                                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                                    <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="colorChartTitle"></h3><div class="chart-container"><canvas id="colorChart"></canvas></div></div>
-                                    <div><h3 class="text-xl font-bold text-center mb-4" data-translate-key="bwChartTitle"></h3><div class="chart-container"><canvas id="bwChart"></canvas></div></div>
-                                </div>
+                            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2" data-translate-key="landingTitle"></h1>
+                            <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto" data-translate-key="landingSubtitle"></p>
+                            <div class="flex flex-col sm:flex-row gap-4 mt-10">
+                                <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                                    <span data-translate-key="findMyColorBtn"></span>
+                                </button>
+                                <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg" data-translate-key="startExploringBtn"></button>
                             </div>
-                            <div id="recipeContent" class="hidden"></div>
-                         </div>
-                     </main>
-                     <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f4f7fc] p-4 overflow-y-auto hidden">
-                         <button id="backToListBtn" class="btn bg-gray-200 text-gray-800 mb-4 p-4" data-translate-key="backToListBtn"></button>
-                         <div class="glass-panel p-6 overflow-y-auto"><div id="recipeContentMobile"></div></div>
-                     </div>
-                 </div>`,
-    featuredPhotos: () => `<div id="featuredPhotosView" class="w-full h-full absolute inset-0 overflow-y-auto view-transition p-4">
-     <div class="glass-panel p-6 md:p-12 text-center max-w-5xl mx-auto">
-         <h2 class="text-2xl md:text-4xl font-bold" data-translate-key="featuredTitle"></h2>
-         <p class="text-base md:text-lg text-neutral-600 mt-4 max-w-3xl mx-auto" data-translate-key="featuredCta"></p>
-         <a href="https://www.facebook.com/media/set?set=oa.31406519995613930&type=3" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-8 py-3 px-8 text-base md:text-lg">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L12 11M12 11L15 8M12 11L9 8"/><path d="M20 13.33V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H10.67" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-             <span data-translate-key="featuredAlbumBtn"></span>
-         </a>
-         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
-             ${recipesData.slice(0,6).map((recipe) => `<div class="bg-gray-200 group rounded-xl overflow-hidden cursor-pointer" data-recipe-id="${recipe.id}"><img src="${recipe.demoImages?.[0] || ''}" alt="Ảnh demo công thức ${recipe.name[state.currentLang]}" class="aspect-video w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/${recipe.personalityColor.substring(1)}/ffffff?text=${encodeURIComponent(recipe.name[state.currentLang])}';"></div>`).join('')}
-         </div>
-     </div>
-    </div>`
+                        </div>`,
+    recipeFormulas: () => `
+                                <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
+                                    <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
+                                        <div class="relative mb-4 flex-shrink-0">
+                                            <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                                            <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                                            </button>
+                                        </div>
+                                        <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar pr-2 -mr-2"></div>
+                                    </aside>
+                                    <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
+                                        <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
+                                            <div id="chartsContainer" class="flex flex-col items-center justify-center h-full">
+                                                <div class="text-center mb-10"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
+                                            </div>
+                                            <div id="recipeContent" class="hidden"></div>
+                                        </div>
+                                    </main>
+                                    <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
+                                        <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
+                                        <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
+                                    </div>
+                                </div>`,
 };
 
-function destroyAllCharts() {
-    Object.values(activeCharts).forEach(chart => { if(chart && typeof chart.destroy === 'function') chart.destroy(); });
-    activeCharts = {};
+// --- QUIZ LOGIC ---
+function startQuiz() {
+    state.quiz.currentQuestionIndex = 0;
+    state.quiz.answers = [];
+    document.getElementById('quizModal').classList.remove('hidden');
+    renderQuizQuestion();
 }
 
-function renderView(viewName) {
+function closeQuiz() { document.getElementById('quizModal').classList.add('hidden'); }
+
+function renderQuizQuestion() {
+    const quizContent = document.getElementById('quizContent');
+    const progressBar = document.getElementById('quizProgressBar');
+    const qIndex = state.quiz.currentQuestionIndex;
+
+    const render = () => {
+        if (qIndex >= quizQuestions.length) {
+            calculateAndShowQuizResult();
+            return;
+        }
+        const questionData = quizQuestions[qIndex];
+        const hasThreeOptions = questionData.options.length === 3;
+        const gridClass = `quiz-options-grid ${hasThreeOptions ? 'has-three-options' : ''}`;
+
+        quizContent.innerHTML = `
+            <div class="quiz-question-container">
+                <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[state.currentLang]}</h3>
+                <div class="${gridClass}">
+                    ${questionData.options.map(opt => `
+                        <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4" data-tags="${opt.tags.join(',')}">
+                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 border">
+                                <svg class="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="${opt.icon}" />
+                                </svg>
+                            </div>
+                            <span class="font-semibold text-lg text-gray-800">${opt.text[state.currentLang]}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>`;
+        progressBar.style.width = `${((qIndex) / quizQuestions.length) * 100}%`;
+    };
+
+    const container = quizContent.querySelector('.quiz-question-container');
+    if (container) {
+        container.classList.add('exiting');
+        setTimeout(() => { render(); }, 150);
+    } else {
+        render();
+    }
+}
+
+function handleQuizAnswer(e) {
+    const selectedOption = e.target.closest('.quiz-option');
+    if (!selectedOption) return;
+    document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
+    selectedOption.classList.add('selected');
+    const tags = selectedOption.dataset.tags.split(',');
+    state.quiz.answers.push(...tags);
+    setTimeout(() => { state.quiz.currentQuestionIndex++; renderQuizQuestion(); }, 300);
+}
+
+function calculateAndShowQuizResult() {
+    const scores = recipesData.map(recipe => {
+        let score = 0;
+        score += recipe.tags.reduce((acc, tag) => acc + (state.quiz.answers.includes(tag) ? 1 : 0), 0);
+        if (state.quiz.answers.includes('bw') && recipe.type === 'bw') { score += 2; }
+        return { id: recipe.id, score: score };
+    });
+    scores.sort((a, b) => b.score - a.score);
+    const bestMatch = recipesData.find(r => r.id === scores[0].id);
+    const quizContent = document.getElementById('quizContent');
+    document.getElementById('quizProgressBar').style.width = '100%';
+    quizContent.innerHTML = `<div class="text-center view-transition"><h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3><p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p><div class="my-8 p-6 bg-gray-100 rounded-2xl border flex flex-col sm:flex-row items-center gap-6"><img src="${bestMatch.demoImages[0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview"><div class="text-left"><h4 class="text-xl font-bold">${bestMatch.name[state.currentLang]}</h4><p class="text-gray-600 mt-1">${bestMatch.description[state.currentLang]}</p></div></div><div class="flex flex-col sm:flex-row gap-4 justify-center"><button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base"><span data-translate-key="viewRecipeBtn"></span></button><button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base"><span data-translate-key="retakeQuizBtn"></span></button></div></div>`;
+    applyTranslations();
+}
+
+// --- GEMINI AI LAB LOGIC ---
+function openAILab(recipeId) {
+    state.ai.originalRecipe = recipesData.find(r => r.id === recipeId);
+    if (!state.ai.originalRecipe) return;
+
+    Object.assign(state.ai, {
+        generatedRecipe: null,
+        userPrompt: '',
+        expertPrompt: '',
+        generationPromise: null,
+        abortController: state.ai.abortController ? (state.ai.abortController.abort(), null) : null
+    });
+    
+    document.getElementById('aiLabModal').classList.remove('hidden');
+    renderAILab();
+}
+
+function closeAILab() {
+    if (state.ai.abortController) {
+        state.ai.abortController.abort();
+    }
+    document.getElementById('aiLabModal').classList.add('hidden');
+}
+
+function renderAILab() {
+    const contentEl = document.getElementById('aiLabContent');
+    if (!contentEl) return;
+
+    if (state.ai.isGenerating) {
+        contentEl.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader"></div><p class="mt-4 text-gray-600">Gemini is thinking...</p></div>`;
+        return;
+    }
+
+    if (state.ai.generatedRecipe) {
+        renderAIComparison(contentEl);
+        return;
+    }
+
+    if (state.ai.expertPrompt) {
+        renderAIConfirmation(contentEl);
+        return;
+    }
+    
+    renderAIPromptInput(contentEl);
+    applyTranslations();
+}
+
+function renderAIPromptInput(container) {
+    const recipeName = state.ai.originalRecipe.name[state.currentLang];
+    container.innerHTML = `
+        <p class="text-lg text-gray-600 text-center">${t('aiLabDescription').replace('{recipeName}', `<b>${recipeName}</b>`)}</p>
+        <textarea id="aiPromptInput" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${t('aiPromptPlaceholder')}"></textarea>
+        <div class="mt-6 text-center">
+            <button id="generateAIBtn" class="btn btn-primary py-3 px-8 text-lg">
+                <span data-translate-key="aiGenerateBtn"></span>
+            </button>
+        </div>
+    `;
+}
+
+function renderAIConfirmation(container) {
+    const recipeName = state.ai.originalRecipe.name[state.currentLang];
+    const confirmText = t('aiConfirmPromptText')
+        .replace('{recipeName}', `<b>${recipeName}</b>`)
+        .replace('{userPrompt}', state.ai.userPrompt);
+
+    container.innerHTML = `
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <h3 class="text-xl font-bold" data-translate-key="aiConfirmPromptTitle"></h3>
+            <p class="mt-3 text-lg text-gray-700">${confirmText}</p>
+            <div class="mt-6 flex justify-center gap-4">
+                <button id="cancelAIBtn" class="btn bg-gray-200 text-gray-800 py-2 px-6" data-translate-key="aiCancelBtn"></button>
+                <button id="confirmAIBtn" class="btn btn-primary py-2 px-6" data-translate-key="aiConfirmBtn"></button>
+            </div>
+        </div>
+    `;
+    applyTranslations();
+}
+
+function renderAIComparison(container) {
+    const original = state.ai.originalRecipe;
+    const generated = state.ai.generatedRecipe;
+
+    const createComparisonGrid = (titleKey, originalSettings, generatedSettings) => {
+        if (!originalSettings || !generatedSettings) return '';
+        const allKeys = Object.keys(originalSettings);
+        const gridItems = allKeys.map(key => {
+            const originalValue = originalSettings[key];
+            const generatedValue = generatedSettings[key];
+            const isChanged = originalValue !== generatedValue;
+            return `
+                <div class="flex flex-col p-3 rounded-lg ${isChanged ? 'bg-blue-100/50 border border-blue-200' : 'bg-gray-100/70'}">
+                    <span class="text-sm text-gray-500 font-medium">${key}</span>
+                    <div class="flex items-baseline gap-2 mt-1">
+                        <span class="font-semibold text-lg ${isChanged ? 'text-blue-700' : 'text-gray-800'}">${generatedValue}</span>
+                        ${isChanged ? `<span class="text-xs text-gray-500 line-through">${originalValue}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        return `<div><h4 class="text-lg font-bold mb-3 text-gray-700" data-translate-key="${titleKey}"></h4><div class="grid grid-cols-2 md:grid-cols-3 gap-3">${gridItems}</div></div>`;
+    };
+
+    container.innerHTML = `
+        <div class="text-center">
+            <h3 class="text-2xl font-bold" data-translate-key="aiComparisonTitle"></h3>
+            <p class="mt-1 text-gray-600" data-translate-key="aiComparisonDescription"></p>
+        </div>
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Original Recipe Column -->
+            <div class="border border-gray-200 rounded-xl p-4">
+                <h4 class="text-xl font-bold text-center" data-translate-key="aiOriginalTitle"></h4>
+                <p class="text-center text-gray-500">${original.name[state.currentLang]}</p>
+            </div>
+            <!-- New Recipe Column -->
+            <div class="border-2 border-blue-500 rounded-xl p-4 bg-white shadow-lg">
+                <h4 class="text-xl font-bold text-center text-blue-600" data-translate-key="aiNewTitle"></h4>
+                <p class="text-center text-gray-500">${generated.name[state.currentLang]}</p>
+            </div>
+        </div>
+        <div class="mt-6 space-y-6">
+            ${createComparisonGrid('recipeSettingsTitle', original.settings, generated.settings)}
+            ${original.colorDepth ? createComparisonGrid('colorDepthTitle', original.colorDepth, generated.colorDepth) : ''}
+        </div>
+    `;
+    applyTranslations();
+}
+
+function renderAIError(container, feature = 'ai') {
+    const errorTextKey = feature === 'caption' ? 'aiErrorText' : 'aiErrorText';
+    container.innerHTML = `
+        <div class="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
+            <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
+            <p class="mt-2 text-red-700" data-translate-key="${errorTextKey}"></p>
+        </div>
+    `;
+    applyTranslations();
+}
+
+// FIX: Reverted to the direct fetch method with API_KEY
+function handleAIGeneration() {
+    const userInput = document.getElementById('aiPromptInput').value.trim();
+    if (!userInput) return;
+    
+    state.ai.userPrompt = userInput;
+    state.ai.expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${userInput}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${state.currentLang}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
+    
+    renderAILab(); 
+
+    const abortController = new AbortController();
+    state.ai.abortController = abortController;
+    
+    const payload = {
+        contents: [{ parts: [{ text: state.ai.expertPrompt }] }],
+        generationConfig: {
+            responseMimeType: "application/json",
+        }
+    };
+
+    state.ai.generationPromise = fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: abortController.signal
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(`API Error: ${response.status} ${text}`) });
+        }
+        return response.json();
+    })
+    .then(result => {
+        if (!result.candidates?.[0]?.content?.parts?.[0]) {
+            throw new Error("Invalid API response structure.");
+        }
+        const jsonText = result.candidates[0].content.parts[0].text;
+        return JSON.parse(jsonText);
+    });
+}
+
+async function confirmAndCallAI() {
+    state.ai.isGenerating = true;
+    renderAILab(); 
+
+    try {
+        const generatedRecipe = await state.ai.generationPromise;
+        state.ai.generatedRecipe = generatedRecipe;
+
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log('Fetch aborted by user.');
+            return;
+        }
+        console.error("Gemini API call failed:", error);
+        renderAIError(document.getElementById('aiLabContent'));
+    } finally {
+        state.ai.isGenerating = false;
+        state.ai.expertPrompt = '';
+        state.ai.generationPromise = null;
+        state.ai.abortController = null;
+        if (state.ai.generatedRecipe) {
+            renderAILab();
+        }
+    }
+}
+
+// --- CAPTION AI LOGIC ---
+function openCaptionLab(recipeId) {
+    const recipe = recipesData.find(r => r.id === recipeId);
+    if (!recipe) return;
+
+    Object.assign(state.captionAI, {
+        recipe: recipe,
+        isGenerating: false,
+        userPrompt: '',
+        generationPromise: null,
+        abortController: null,
+        result: null,
+    });
+    
+    document.getElementById('captionLabModal').classList.remove('hidden');
+    renderCaptionLab();
+}
+
+function closeCaptionLab() {
+    if (state.captionAI.abortController) {
+        state.captionAI.abortController.abort();
+    }
+    document.getElementById('captionLabModal').classList.add('hidden');
+}
+
+function renderCaptionLab() {
+    const contentEl = document.getElementById('captionLabContent');
+    if (!contentEl) return;
+
+    if (state.captionAI.isGenerating) {
+        contentEl.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader"></div><p class="mt-4 text-gray-600">Gemini is thinking...</p></div>`;
+        return;
+    }
+
+    if (state.captionAI.result) {
+        const { caption, hashtags } = state.captionAI.result;
+        contentEl.innerHTML = `
+            <h3 class="text-xl font-bold text-center" data-translate-key="captionResultTitle"></h3>
+            <div class="mt-4 p-4 bg-gray-50 border rounded-lg">
+                <p id="caption-text" class="text-gray-800 whitespace-pre-wrap">${caption}</p>
+                <p id="hashtags-text" class="mt-3 text-purple-700 font-semibold">${hashtags}</p>
+            </div>
+            <div class="mt-4 flex gap-2 justify-end">
+                 <button class="btn bg-gray-200 text-gray-800 py-2 px-4" data-copy-target="hashtags-text">
+                     <span data-translate-key="copyBtn"></span> Hashtags
+                 </button>
+                 <button class="btn btn-primary py-2 px-4" data-copy-target="caption-text">
+                     <span data-translate-key="copyBtn"></span> Caption
+                 </button>
+            </div>
+        `;
+    } else {
+        const recipeName = state.captionAI.recipe.name[state.currentLang];
+        contentEl.innerHTML = `
+            <p class="text-base text-gray-600 text-center">${t('captionLabDescription').replace('{recipeName}', `<b>${recipeName}</b>`)}</p>
+            <textarea id="captionPromptInput" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all min-h-[80px]" placeholder="${t('captionPromptPlaceholder')}"></textarea>
+            <div class="mt-6 text-center">
+                <button id="generateCaptionBtn" class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-8 text-lg">
+                    <span data-translate-key="generateCaptionBtn"></span>
+                </button>
+            </div>
+        `;
+    }
+    applyTranslations();
+}
+
+// FIX: Reverted to the direct fetch method with API_KEY
+async function handleCaptionGeneration() {
+    const userInput = document.getElementById('captionPromptInput').value.trim();
+    if (!userInput) return;
+
+    state.captionAI.userPrompt = userInput;
+    state.captionAI.isGenerating = true;
+    renderCaptionLab();
+
+    const { recipe } = state.captionAI;
+    const recipeHashtag = `#${recipe.id.replace(/-/g, '')}${recipe.name.en.split(': ')[1].replace(/\s/g, '')}`;
+    const prompt = `You are a witty, trendy, and creative social media expert for Sony Alpha Vietnam, specializing in Gen Z vocabulary and viral content. Your task is to generate a compelling social media post.
+**CRITICAL RULES:**
+1.  **Mandatory Hashtags:** The final hashtag string MUST include '#sonycolorlab', '#sonyalphavietnam', and '${recipeHashtag}'. This is non-negotiable.
+2.  **Tone & Style:** The caption's tone must be creative, subtle, sophisticated, and potentially humorous. Use trendy Vietnamese Gen Z slang and phrasing to make it highly shareable and viral.
+3.  **Language:** The entire response (caption and hashtags) MUST be in the same language as the User's Idea, which is: ${state.currentLang}.
+
+**CONTEXT:**
+* **Photographic Style:** "${recipe.name[state.currentLang]}" - This style is known for: "${recipe.description[state.currentLang]}".
+* **User's Idea:** "${userInput}"
+
+**TASK:**
+Based on all the rules and context, generate a caption and a set of hashtags.
+
+**OUTPUT FORMAT:**
+You must respond with only a single, valid JSON object with two keys: "caption" (string) and "hashtags" (string).`;
+
+    const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: "application/json" }
+    };
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        const result = await response.json();
+        const jsonText = result.candidates[0].content.parts[0].text;
+        state.captionAI.result = JSON.parse(jsonText);
+    } catch (error) {
+        console.error("Caption AI call failed:", error);
+        renderAIError(document.getElementById('captionLabContent'), 'caption');
+    } finally {
+        state.captionAI.isGenerating = false;
+        if (state.captionAI.result) {
+            renderCaptionLab();
+        }
+    }
+}
+
+
+// --- CORE APP LOGIC ---
+function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
+    if (selectedId) { state.selectedRecipeId = selectedId; }
     return new Promise(resolve => {
         const currentContent = mainContentEl.children[0];
         if (currentContent) {
             currentContent.classList.add('view-transition-out');
-            destroyAllCharts();
             currentContent.addEventListener('animationend', () => {
                 mainContentEl.innerHTML = viewTemplates[viewName]();
                 attachViewEventListeners(viewName);
@@ -327,63 +1052,44 @@ function renderView(viewName) {
     });
 }
 
-function handleFilterClick(e) {
-    const btn = e.target.closest('.filter-btn'); if (!btn) return;
-    const group = btn.closest('[data-filter-group]').dataset.filterGroup;
-    const value = btn.dataset.filterValue; 
-    state.activeFilters[group] = value;
-
-    document.querySelectorAll(`[data-filter-group="${group}"] .filter-btn`).forEach(b => {
-        b.classList.toggle('active', b.dataset.filterValue === value);
-    });
-
-    renderLibraryList();
-}
-
 function handleRecipeSelection(id) {
     state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
     state.isMobileDetailActive = !!state.selectedRecipeId;
     renderLibraryList();
     renderLibraryDetails();
+}
 
-    if (activeCharts.color?.update) { activeCharts.color.update(); }
-    if (activeCharts.bw?.update) { activeCharts.bw.update(); }
+function updateLangSlider() {
+    const glider = document.getElementById('lang-glider');
+    const langVI = document.getElementById('langVI');
+    const langEN = document.getElementById('langEN');
+    if (!glider || !langVI || !langEN) return;
+    langVI.classList.toggle('text-blue-600', state.currentLang === 'vi');
+    langVI.classList.toggle('text-gray-500', state.currentLang !== 'vi');
+    langEN.classList.toggle('text-blue-600', state.currentLang === 'en');
+    langEN.classList.toggle('text-gray-500', state.currentLang !== 'en');
+    glider.style.transform = state.currentLang === 'vi' ? 'translateX(0%)' : 'translateX(100%)';
 }
 
 function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
         renderLibraryList();  
         renderLibraryDetails();
-        renderInteractiveCharts(state.currentLang);
+        updateLangSlider();
     }
 }
 
 function renderLibraryList() {
     const container = document.getElementById('recipeListContainer'); if (!container) return;
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-    
-    let recipesToRender = recipesData.filter(recipe => {
-        const nameMatch = recipe.name[state.currentLang].toLowerCase().includes(searchTerm);
-        const descriptionMatch = recipe.description[state.currentLang].toLowerCase().includes(searchTerm);
-        const typeMatch = state.activeFilters.type === 'all' || recipe.type === state.activeFilters.type;
-        const contrastMatch = state.activeFilters.contrast === 'all' || recipe.contrast === state.activeFilters.contrast;
-        const saturationMatch = state.activeFilters.saturation === 'all' || recipe.saturation === state.activeFilters.saturation;
-        return (nameMatch || descriptionMatch) && typeMatch && contrastMatch && saturationMatch;
-    });
-
+    const recipesToRender = recipesData.filter(r => r.name[state.currentLang].toLowerCase().includes(searchTerm) || r.description[state.currentLang].toLowerCase().includes(searchTerm));
     container.innerHTML = recipesToRender.map(recipe => {
         const isSelected = recipe.id === state.selectedRecipeId;
-        return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 border-l-4 border-transparent flex items-start gap-4 ${isSelected ? 'selected' : ''}" data-recipe-id="${recipe.id}">
-                      <div class="flex-grow cursor-pointer">
-                          <div class="flex items-start gap-3">
-                                <div class="w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background-color: ${recipe.personalityColor}" title="${recipe.name[state.currentLang]}"></div>
-                              <div class="flex-grow">
-                                    <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
-                                  <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
-                              </div>
-                          </div>
-                      </div>
-                 </div>`;
+        const borderColor = isSelected ? recipe.personalityColor : 'transparent';
+        return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 border-l-4 cursor-pointer ${isSelected ? 'selected' : ''}" style="border-left-color: ${borderColor};" data-recipe-id="${recipe.id}">
+            <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
+        </div>`;
     }).join('');
 }
 
@@ -402,159 +1108,167 @@ function renderLibraryDetails() {
     }
 
     const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
-    
     let recipeContentContainer = isMobile && state.isMobileDetailActive ? document.getElementById('recipeContentMobile') : document.getElementById('recipeContent');
     let chartsContainer = document.getElementById('chartsContainer');
-
     if (!recipeContentContainer) return;
 
     if (!recipe) {  
         if (chartsContainer) chartsContainer.classList.remove('hidden');
         recipeContentContainer.classList.add('hidden');
         if(!isMobile) recipeMainPanel?.classList.remove('hidden');
-        return;   
+        return;  
     }
     if (chartsContainer) chartsContainer.classList.add('hidden');
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
     
     recipeContentContainer.innerHTML = `
-               <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
-                 <p class="text-lg text-neutral-600 mt-2 italic">"${recipe.description[state.currentLang]}"</p>
-                 <div id="originalRecipeContainer" class="mt-8">${createFullRecipeHTML(recipe, true)}</div>
-                 <div id="setupGuideSection" class="mt-12 pt-8 border-t-2 border-gray-200/60">
-                     <details open class="group">
-                         <summary class="text-xl md:text-2xl font-bold cursor-pointer list-none flex justify-between items-center group-hover:text-blue-600 transition-colors">
-                             <span data-translate-key="tutorialTitle"></span>
-                             <svg class="w-6 h-6 transition-transform transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                         </summary>
-                         <div class="prose max-w-none mt-6 space-y-4 text-base text-gray-700">
-                             <p>Cẩn thận nhập tất cả các thông số của công thức vào một Picture Profile trống trên máy ảnh của bạn.</p>
-                         </div>
-                     </details>
-                 </div>`;
+        <div>
+            <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+            <p class="text-lg text-neutral-600 mt-1">"${recipe.description[state.currentLang]}"</p>
+        </div>
+        <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
+    `;
     applyTranslations();
-}
-
-function renderInteractiveCharts(lang) {
-    destroyAllCharts();
-    const chartDefaultOptions = (yAxisTitleKey, xAxisTitleKey) => ({
-        responsive: true,
-        maintainAspectRatio: false,
-        onClick: (e) => {
-            const chart = e.chart;
-            const elements = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
-            if (elements.length) {
-                const firstPoint = elements[0];
-                const recipeId = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].id;
-                if (recipeId) { handleRecipeSelection(recipeId); }
-            }
-        },
-        plugins: {
-            legend: { display: false },
-            tooltip: {
-                backgroundColor: 'rgba(0,0,0,0.8)',
-                callbacks: { label: (context) => context.raw.name || '' }
-            }
-        },
-        scales: {
-            x: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(xAxisTitleKey) } },
-            y: { min: -10, max: 10, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { display: false }, border: { dash: [4, 4] }, title: { display: true, text: t(yAxisTitleKey) } }
-        }
-    });
-
-    const colorCtx = document.getElementById('colorChart')?.getContext('2d');
-    if (colorCtx) {
-        const colorData = recipesData.filter(r => r.type === 'color' && r.coords).map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
-        activeCharts.color = new Chart(colorCtx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    data: colorData,
-                    pointBackgroundColor: colorData.map(d => recipesData.find(r => r.id === d.id)?.personalityColor || '#CCCCCC'),
-                    pointBorderColor: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 'var(--primary-accent)' : 'rgba(255, 255, 255, 0.8)'),
-                    pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
-                    pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
-                    pointHoverRadius: 11
-                }]
-            },
-            options: chartDefaultOptions('axisSaturation', 'axisTonality')
-        });
-    }
-
-    const bwCtx = document.getElementById('bwChart')?.getContext('2d');
-    if (bwCtx) {
-        const bwData = recipesData.filter(r => r.type === 'bw' && r.coords).map(r => ({ ...r.coords, id: r.id, name: r.name[lang] }));
-        activeCharts.bw = new Chart(bwCtx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    data: bwData,
-                    pointBackgroundColor: bwData.map(d => recipesData.find(r => r.id === d.id)?.personalityColor || '#475569'),
-                    pointBorderColor: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 'var(--primary-accent)' : 'rgba(255, 255, 255, 0.8)'),
-                    pointBorderWidth: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 4 : 2),
-                    pointRadius: (ctx) => (ctx.raw?.id === state.selectedRecipeId ? 11 : 7),
-                    pointHoverRadius: 11,
-                }]
-            },
-            options: chartDefaultOptions('axisChroma', 'axisTonality')
-        });
-    }
 }
 
 function init() {
     const tooltipEl = document.getElementById('infoTooltip');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightboxImage');
+    const lightboxClose = document.getElementById('lightboxClose');
 
     document.body.addEventListener('mouseover', (e) => {
-        const icon = e.target.closest('.info-icon');
-        if (icon) {
-            const key = icon.dataset.paramKey;
+        const title = e.target.closest('.parameter-title');
+        if (title) {
+            const key = title.dataset.paramKey;
             const explanation = parameterExplanations[key]?.[state.currentLang];
             if (explanation) {
                 tooltipEl.innerHTML = explanation;
-                const iconRect = icon.getBoundingClientRect();
-                tooltipEl.style.left = `${iconRect.left + window.scrollX}px`;
-                tooltipEl.style.top = `${iconRect.bottom + window.scrollY + 8}px`;
+                const titleRect = title.getBoundingClientRect();
+                tooltipEl.style.left = `${titleRect.left + window.scrollX}px`;
+                tooltipEl.style.top = `${titleRect.top + window.scrollY - tooltipEl.offsetHeight - 8}px`;
                 tooltipEl.classList.remove('hidden');
                 setTimeout(() => tooltipEl.classList.add('visible'), 10);
             }
         }
     });
-
     document.body.addEventListener('mouseout', (e) => {
-        if (e.target.closest('.info-icon')) {
+        if (e.target.closest('.parameter-title')) {
             tooltipEl.classList.remove('visible');
             setTimeout(() => tooltipEl.classList.add('hidden'), 200);
         }
     });
 
     document.body.addEventListener('click', async (e) => {
-        const target = e.target.closest('[id], [data-view], [data-recipe-id], [data-filter-group]');
-        if (!target) return;
-
-        const id = target.id;
-        const dataset = target.dataset;
-
-        const navBtnAction = async (view) => {
-            document.getElementById('mobileNavMenu')?.classList.add('translate-x-full');
-            state.selectedRecipeId = null; 
-            state.isMobileDetailActive = false;
-            await renderView(view);
-        };
-
-        if (id === 'homeBtn') await navBtnAction('home');
-        else if (dataset.view) await navBtnAction(dataset.view);
-        else if (id === 'langEN' || id === 'langVI') {
-            state.currentLang = id === 'langEN' ? 'en' : 'vi';
-            await renderView(state.currentView);
+        const target = e.target;
+        const navBtn = target.closest('[data-view]');
+        const langBtn = target.closest('.lang-btn-slider');
+        const recipeItem = target.closest('.recipe-item');
+        
+        const collageItem = target.closest('.collage-item');
+        if (collageItem) {
+            const imgSrc = collageItem.dataset.lightboxSrc;
+            if (imgSrc) {
+                lightboxImage.src = imgSrc;
+                lightbox.classList.remove('hidden');
+                setTimeout(() => lightbox.classList.add('visible'), 10);
+            }
+            return;
         }
-        else if (id === 'hamburgerBtn') document.getElementById('mobileNavMenu').classList.remove('translate-x-full');
-        else if (id === 'closeMobileNavBtn') document.getElementById('mobileNavMenu').classList.add('translate-x-full');
-        else if (dataset.recipeId) handleRecipeSelection(dataset.recipeId);
-        else if (id === 'backToListBtn') { state.isMobileDetailActive = false; renderLibraryDetails(); }
-        else if (dataset.filterGroup) handleFilterClick(e);
+
+        if (target.closest('#homeBtn')) { await renderView('home'); return; }
+        if (target.closest('#hamburgerBtn')) { document.getElementById('mobileNavMenu').classList.remove('translate-x-full'); return; }
+        if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
+        if (target.closest('#backToListBtn')) { state.isMobileDetailActive = false; renderLibraryDetails(); return; }
+        
+        if (target.closest('#quizModal')) {
+            if (target.closest('#closeQuizBtn')) { closeQuiz(); return; }
+            if (target.closest('#retakeQuizBtn')) { state.quiz.currentQuestionIndex = 0; state.quiz.answers = []; renderQuizQuestion(); return; }
+            if (target.closest('#viewResultBtn')) { 
+                const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
+                closeQuiz(); 
+                await renderView('recipeFormulas', recipeId); 
+                return; 
+            }
+            if (target.closest('.quiz-option')) { handleQuizAnswer(e); return; }
+        }
+        
+        if (target.closest('#aiLabModal')) {
+            if (target.closest('#closeAILabBtn')) { closeAILab(); return; }
+            if (target.closest('#cancelAIBtn')) { 
+                if (state.ai.abortController) state.ai.abortController.abort();
+                Object.assign(state.ai, { expertPrompt: '', userPrompt: '', generatedRecipe: null, generationPromise: null, abortController: null });
+                renderAILab();
+                return; 
+            }
+            if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
+            if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
+        }
+
+        if (target.closest('#captionLabModal')) {
+            if (target.closest('#closeCaptionLabBtn')) { closeCaptionLab(); return; }
+            if (target.closest('#generateCaptionBtn')) { handleCaptionGeneration(); return; }
+            const copyBtn = target.closest('[data-copy-target]');
+            if (copyBtn) {
+                const targetId = copyBtn.dataset.copyTarget;
+                const textToCopy = document.getElementById(targetId).innerText;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = copyBtn.querySelector('span').innerText;
+                    copyBtn.querySelector('span').innerText = t('copiedBtn');
+                    copyBtn.disabled = true;
+                    setTimeout(() => {
+                        copyBtn.querySelector('span').innerText = originalText;
+                        copyBtn.disabled = false;
+                    }, 2000);
+                });
+                return;
+            }
+        }
+
+        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) { startQuiz(); return; }
+        if (target.closest('#tweakWithAIBtn')) { openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId); return; }
+        if (target.closest('#captionAIBtn')) { openCaptionLab(target.closest('#captionAIBtn').dataset.recipeId); return; }
+        
+        if (navBtn) {
+            await renderView(navBtn.dataset.view);
+            if(target.closest('.nav-btn-mobile')) {
+                 document.getElementById('mobileNavMenu').classList.add('translate-x-full');
+            }
+            return;
+        }
+        
+        if (langBtn) {
+            state.currentLang = langBtn.id === 'langEN' ? 'en' : 'vi';
+            updateLangSlider();
+            applyTranslations();
+            if (state.currentView === 'recipeFormulas') {
+                renderLibraryList();
+                if (state.selectedRecipeId) renderLibraryDetails();
+            }
+            return;
+        }
+
+        if (recipeItem) {
+            handleRecipeSelection(recipeItem.dataset.recipeId);
+            return;
+        }
     });
     
+    const closeLightbox = () => {
+        lightbox.classList.remove('visible');
+        setTimeout(() => {
+            lightbox.classList.add('hidden');
+            lightboxImage.src = ''; // Clear src to prevent loading in background
+        }, 300);
+    };
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) { // Only close if clicking on the backdrop
+            closeLightbox();
+        }
+    });
+
     document.addEventListener('input', e => {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
