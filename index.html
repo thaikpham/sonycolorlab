@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alpha AI Color Lab</title>
-<!-- Favicon updated to the original logo SVG -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 111 110' xmlns='http://www.w3.org/2000/svg'%3E%3Cg style='mix-blend-mode: multiply;'%3E%3Ccircle cx='34' cy='34' r='34' fill='%23f7b71d'/%3E%3Ccircle cx='77' cy='34' r='34' fill='%23b2b2b2'/%3E%3Ccircle cx='34' cy='76' r='34' fill='%2342b4d1'/%3E%3Ccircle cx='77' cy='76' r='34' fill='%23e62634'/%3E%3C/g%3E%3C/svg%3E">
+<!-- Favicon đã được cập nhật. Đường dẫn bây giờ là tương đối. -->
+<link rel="icon" type="image/png" href="logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -207,16 +207,9 @@
 <body>
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
-        <button id="homeBtn" class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-3">
-            <svg viewBox="0 0 111 110" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8">
-                <g style="mix-blend-mode: multiply;">
-                    <circle cx="34" cy="34" r="34" fill="#f7b71d"/>
-                    <circle cx="77" cy="34" r="34" fill="#b2b2b2"/>
-                    <circle cx="34" cy="76" r="34" fill="#42b4d1"/>
-                    <circle cx="77" cy="76" r="34" fill="#e62634"/>
-                </g>
-            </svg>
-            <span data-translate-key="headerTitle" class="hidden sm:inline"></span>
+        <!-- Logo đã được cập nhật. Đường dẫn bây giờ là tương đối. -->
+        <button id="homeBtn" class="flex items-center">
+             <img src="logo_black.png" alt="Alpha AI Color Lab Logo" class="h-12 w-auto">
         </button>
         <div class="flex items-center gap-2 md:gap-4">
             <nav id="mainNav" class="hidden md:flex items-center gap-2">
@@ -285,7 +278,7 @@
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" />
+                        <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0-1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" />
                     </svg>
                 </div>
                  <h2 class="text-xl font-bold" data-translate-key="aiLabTitle"></h2>
@@ -321,7 +314,6 @@
 
 <script type="module">
 // --- CONFIGURATION & STATE ---
-// FIX: Re-introduced the API_KEY and full API_URL from the working version.
 const API_KEY = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
 
@@ -791,7 +783,6 @@ function renderAIError(container, feature = 'ai') {
     applyTranslations();
 }
 
-// FIX: Reverted to the direct fetch method with API_KEY
 function handleAIGeneration() {
     const userInput = document.getElementById('aiPromptInput').value.trim();
     if (!userInput) return;
@@ -924,7 +915,6 @@ function renderCaptionLab() {
     applyTranslations();
 }
 
-// FIX: Reverted to the direct fetch method with API_KEY
 async function handleCaptionGeneration() {
     const userInput = document.getElementById('captionPromptInput').value.trim();
     if (!userInput) return;
@@ -982,6 +972,14 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
 function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
+
+    // Logic để ẩn/hiện footer
+    const footerEl = document.querySelector('footer');
+    if (footerEl) {
+        // Thêm hoặc xóa class 'hidden' của Tailwind dựa trên view hiện tại
+        footerEl.classList.toggle('hidden', viewName === 'recipeFormulas');
+    }
+
     return new Promise(resolve => {
         const currentContent = mainContentEl.children[0];
         if (currentContent) {
@@ -1231,3 +1229,4 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
+"
