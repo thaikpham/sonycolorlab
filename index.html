@@ -7,6 +7,7 @@
 <!-- Favicon đã được cập nhật. Đường dẫn bây giờ là tương đối. -->
 <link rel="icon" type="image/png" href="logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script> <!-- D3.js Library Added -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -81,13 +82,13 @@
         cursor: help;
         border-bottom: 1px dashed #ccc;
     }
-    #infoTooltip {
+    #infoTooltip, #chartTooltip {
         position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem;
         border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px);
         transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none;
     }
-    #infoTooltip.visible { opacity: 1; transform: translateY(0); }
+    #infoTooltip.visible, #chartTooltip.visible { opacity: 1; transform: translateY(0); }
 
     /* AI Lab Specific Styles */
     .comparison-grid .changed {
@@ -272,6 +273,64 @@
         opacity: 0;
         animation: text-fade-in 1s ease-out 0.5s forwards;
     }
+
+    /* Sleek Color Map Chart Styles */
+    #colorMapContainer {
+        width: 100%;
+        height: 100%;
+        min-height: 500px;
+        position: relative;
+    }
+    #colorMapContainer svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible; /* Allow glows to extend beyond svg edge */
+    }
+    .color-map-node-group {
+        cursor: pointer;
+    }
+    .color-map-node-aura {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .color-map-node-core {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .color-map-node-group:hover .color-map-node-aura {
+        opacity: 0.5;
+        transform: scale(1.8);
+    }
+    .color-map-node-group:hover .color-map-node-core {
+        transform: scale(1.2);
+    }
+    .color-map-node-group.selected .color-map-node-core {
+        stroke: white;
+        stroke-width: 3px;
+        transform: scale(1.3);
+    }
+    .color-map-node-group.selected .color-map-node-aura {
+        opacity: 0.6;
+        transform: scale(2);
+    }
+
+    .axis-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        fill: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .quadrant-label {
+        font-size: 1.8rem;
+        font-weight: 800;
+        fill: rgba(203, 213, 225, 0.5);
+        text-anchor: middle;
+        pointer-events: none;
+        opacity: 0;
+        animation: text-fade-in 1s ease-out 0.5s forwards;
+    }
 </style>
 </head>
 <body>
@@ -324,6 +383,7 @@
 </div>
 
 <div id="infoTooltip" class="hidden"></div>
+<div id="chartTooltip" class="hidden"></div> <!-- Tooltip for Chart -->
 
 <div id="lightbox" class="hidden">
     <span id="lightboxClose">&times;</span>
@@ -406,6 +466,10 @@ const state = {
     currentView: 'home',
     selectedRecipeId: null,
     isMobileDetailActive: false,
+    chart: {
+        nodes: null,
+        simulation: null,
+    },
     ai: {
         isGenerating: false,
         originalRecipe: null,
@@ -482,13 +546,14 @@ const translations = {
     viewRecipeBtn: {vi: "Xem chi tiết công thức", en: "View Recipe Details"},
     retakeQuizBtn: {vi: "Làm lại trắc nghiệm", en: "Retake Quiz"},
     searchInputPlaceholder: {vi: "Tìm công thức...", en: "Search recipes..."},
-    recipeDetailWelcomeTitle: {vi: "Thư viện màu<br>Tương tác", en: "Interactive<br>Color Library"},
-    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu Picture Profile một cách trực quan.<br>Nhấp vào một công thức trong danh sách để xem chi tiết.", en: "Explore Picture Profile color recipes visually.<br>Click a recipe in the list to see details."},
+    recipeDetailWelcomeTitle: {vi: "Bản đồ màu<br>Tương tác", en: "Interactive<br>Color Map"},
+    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan.<br>Chọn một công thức trong danh sách hoặc trên biểu đồ để xem chi tiết.", en: "Explore color recipes visually.<br>Select a recipe from the list or the chart to see details."},
     whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
     recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
     colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
     detailTitle: {vi: "Chi tiết", en: "Detail"},
     sonyGuideBtn: {vi: "Xem tài liệu gốc từ Sony", en: "View Official Sony Guide"},
+    backToChartBtn: {vi: "← Quay lại Bản đồ màu", en: "← Back to Color Map"},
     backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
     ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
     ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b><br>với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group<br>with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
@@ -637,8 +702,9 @@ const viewTemplates = {
                                     </aside>
                                     <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
                                         <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
-                                            <div id="chartsContainer" class="flex flex-col items-center justify-center h-full">
-                                                <div class="text-center mb-10"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
+                                            <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
+                                                <div id="welcomeText" class="text-center mb-10"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
+                                                <div id="colorMapContainer"></div>
                                             </div>
                                             <div id="recipeContent" class="hidden"></div>
                                         </div>
@@ -649,6 +715,150 @@ const viewTemplates = {
                                     </div>
                                 </div>`,
 };
+
+// --- SLEEK COLOR MAP CHART ---
+function renderColorMapChart(containerSelector, data) {
+    const container = d3.select(containerSelector);
+    if (container.empty() || !data || data.length === 0) {
+        console.warn("Chart container not found or no data provided.");
+        return;
+    }
+    container.html(''); // Clear previous chart
+
+    const bounds = container.node().getBoundingClientRect();
+    if (bounds.width === 0 || bounds.height === 0) {
+        return; // Wait for the container to have dimensions
+    }
+
+    const margin = { top: 40, right: 30, bottom: 50, left: 30 };
+    const width = bounds.width - margin.left - margin.right;
+    const height = bounds.height - margin.top - margin.bottom;
+
+    const svg = container.append("svg")
+        .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // Add definitions for filters
+    const defs = svg.append("defs");
+    const filter = defs.append("filter")
+        .attr("id", "soft-glow")
+        .attr("x", "-50%").attr("y", "-50%")
+        .attr("width", "200%").attr("height", "200%");
+    filter.append("feGaussianBlur")
+        .attr("in", "SourceGraphic")
+        .attr("stdDeviation", "4")
+        .attr("result", "blur");
+
+    // Define scales
+    const xScale = d3.scaleLinear().domain([-11, 11]).range([0, width]);
+    const yScale = d3.scaleLinear().domain([-11, 11]).range([height, 0]);
+    const rScale = d3.scaleSqrt().domain([0, 10]).range([7, 12]); // Slightly smaller radii
+
+    // Add background quadrant labels
+    const quadrantLabels = [
+        { x: width * 0.25, y: height * 0.25, text: {vi: 'LẠNH & GẮT', en: 'COOL & PUNCHY'} },
+        { x: width * 0.75, y: height * 0.25, text: {vi: 'ẤM & RỰC RỠ', en: 'WARM & VIBRANT'} },
+        { x: width * 0.25, y: height * 0.75, text: {vi: 'LẠNH & DỊU', en: 'COOL & MUTED'} },
+        { x: width * 0.75, y: height * 0.75, text: {vi: 'ẤM & MỜ', en: 'WARM & FADED'} },
+    ];
+    svg.selectAll(".quadrant-label")
+        .data(quadrantLabels)
+        .enter().append("text")
+        .attr("class", "quadrant-label")
+        .attr("x", d => d.x)
+        .attr("y", d => d.y)
+        .attr("dy", "0.35em")
+        .text(d => d.text[state.currentLang]);
+
+    // Add subtle grid lines
+    svg.append("g").attr("class", "grid")
+        .call(d3.axisBottom(xScale).ticks(10).tickSize(height).tickFormat(""))
+        .selectAll("line").attr("stroke", "#f1f5f9").attr("stroke-opacity", 0.7);
+    svg.append("g").attr("class", "grid")
+        .call(d3.axisLeft(yScale).ticks(10).tickSize(-width).tickFormat(""))
+        .selectAll("line").attr("stroke", "#f1f5f9").attr("stroke-opacity", 0.7);
+    
+    svg.selectAll(".domain").remove();
+
+    // Add axis labels
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(state.currentLang === 'vi' ? '← Lạnh' : '← Cool');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(state.currentLang === 'vi' ? 'Ấm →' : 'Warm →');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(state.currentLang === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(state.currentLang === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
+
+    const tooltip = d3.select("#chartTooltip");
+    
+    // Create node data copies for simulation
+    const nodesData = data.filter(d => d.coords).map(d => ({...d}));
+
+    state.chart.nodes = svg.selectAll(".color-map-node-group")
+        .data(nodesData, d => d.id)
+        .enter()
+        .append("g")
+        .attr("class", "color-map-node-group")
+        .attr("transform", d => `translate(${xScale(d.coords.x)}, ${yScale(d.coords.y)})`) // Initial position
+        .on("mouseover", function(event, d) {
+            d3.select(this).raise();
+            tooltip.html(`<b>${d.name[state.currentLang]}</b>`)
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 15) + "px")
+                .classed("visible", true);
+        })
+        .on("mouseout", function() {
+            tooltip.classed("visible", false);
+        })
+        .on("click", (event, d) => {
+            handleRecipeSelection(d.id);
+        });
+
+    state.chart.nodes.append("circle")
+        .attr("class", "color-map-node-aura")
+        .attr("r", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)))
+        .attr("fill", d => d.personalityColor)
+        .attr("filter", "url(#soft-glow)")
+        .attr("opacity", 0.3);
+
+    state.chart.nodes.append("circle")
+        .attr("class", "color-map-node-core")
+        .attr("r", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)))
+        .attr("fill", d => d.personalityColor);
+
+    // Gentle collision detection
+    state.chart.simulation = d3.forceSimulation(nodesData)
+        .force("collide", d3.forceCollide().radius(d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 3).strength(0.8))
+        .force("x", d3.forceX(d => xScale(d.coords.x)).strength(0.1))
+        .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.1))
+        .stop();
+
+    // Run simulation for a fixed number of iterations
+    for (let i = 0; i < 120; ++i) state.chart.simulation.tick();
+
+    // Animate nodes to their final, collision-free positions
+    state.chart.nodes
+        .transition()
+        .duration(1200)
+        .delay((d, i) => i * 10)
+        .ease(d3.easeCubicOut)
+        .attr("transform", d => `translate(${d.x}, ${d.y})`);
+
+
+    updateChartSelection();
+}
+
+function updateChartSelection() {
+    if (!state.chart.nodes) return;
+    state.chart.nodes.classed("selected", d => d.id === state.selectedRecipeId);
+}
+
+function resetToChartView() {
+    state.selectedRecipeId = null;
+    state.isMobileDetailActive = false;
+    renderLibraryList();
+    renderLibraryDetails();
+    updateChartSelection();
+}
+
 
 // --- QUIZ LOGIC ---
 function startQuiz() {
@@ -1056,10 +1266,8 @@ function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
 
-    // Logic để ẩn/hiện footer
     const footerEl = document.querySelector('footer');
     if (footerEl) {
-        // Thêm hoặc xóa class 'hidden' của Tailwind dựa trên view hiện tại
         footerEl.classList.toggle('hidden', viewName === 'recipeFormulas');
     }
 
@@ -1087,6 +1295,7 @@ function handleRecipeSelection(id) {
     state.isMobileDetailActive = !!state.selectedRecipeId;
     renderLibraryList();
     renderLibraryDetails();
+    updateChartSelection();
 }
 
 function updateLangSlider() {
@@ -1105,6 +1314,18 @@ function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
         renderLibraryList();  
         renderLibraryDetails();
+        
+        const chartContainer = document.getElementById('colorMapContainer');
+        if (chartContainer) {
+            const resizeObserver = new ResizeObserver(entries => {
+                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
+                     renderColorMapChart('#colorMapContainer', recipesData);
+                     resizeObserver.unobserve(chartContainer); // Render once and stop observing
+                }
+            });
+            resizeObserver.observe(chartContainer);
+        }
+        
         updateLangSlider();
     }
 }
@@ -1139,20 +1360,23 @@ function renderLibraryDetails() {
 
     const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
     let recipeContentContainer = isMobile && state.isMobileDetailActive ? document.getElementById('recipeContentMobile') : document.getElementById('recipeContent');
-    let chartsContainer = document.getElementById('chartsContainer');
+    let welcomeAndChartContainer = document.getElementById('welcomeAndChartContainer');
     if (!recipeContentContainer) return;
 
     if (!recipe) {  
-        if (chartsContainer) chartsContainer.classList.remove('hidden');
+        if (welcomeAndChartContainer) welcomeAndChartContainer.classList.remove('hidden');
         recipeContentContainer.classList.add('hidden');
         if(!isMobile) recipeMainPanel?.classList.remove('hidden');
         return;  
     }
-    if (chartsContainer) chartsContainer.classList.add('hidden');
+    if (welcomeAndChartContainer) welcomeAndChartContainer.classList.add('hidden');
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
     
     recipeContentContainer.innerHTML = `
+        <div class="mb-4">
+            <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
+        </div>
         <div>
             <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
             <p class="text-lg text-neutral-600 mt-1">"${recipe.description[state.currentLang]}"</p>
@@ -1220,7 +1444,10 @@ function init() {
         if (target.closest('#homeBtn')) { await renderView('home'); return; }
         if (target.closest('#hamburgerBtn')) { document.getElementById('mobileNavMenu').classList.remove('translate-x-full'); return; }
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
-        if (target.closest('#backToListBtn')) { state.isMobileDetailActive = false; renderLibraryDetails(); return; }
+        if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) {
+            resetToChartView();
+            return; 
+        }
         
         if (target.closest('#quizModal')) {
             if (target.closest('#closeQuizBtn')) { closeQuiz(); return; }
@@ -1271,7 +1498,12 @@ function init() {
         if (target.closest('#captionAIBtn')) { openCaptionLab(target.closest('#captionAIBtn').dataset.recipeId); return; }
         
         if (navBtn) {
-            await renderView(navBtn.dataset.view);
+            // If user is already on the recipe page and clicks the nav link, reset to chart view
+            if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
+                resetToChartView();
+            } else {
+                await renderView(navBtn.dataset.view);
+            }
             if(target.closest('.nav-btn-mobile')) {
                  document.getElementById('mobileNavMenu').classList.add('translate-x-full');
             }
@@ -1284,7 +1516,11 @@ function init() {
             applyTranslations();
             if (state.currentView === 'recipeFormulas') {
                 renderLibraryList();
-                if (state.selectedRecipeId) renderLibraryDetails();
+                if (state.selectedRecipeId) {
+                    renderLibraryDetails();
+                } else {
+                    renderColorMapChart('#colorMapContainer', recipesData);
+                }
             }
             return;
         }
@@ -1312,8 +1548,6 @@ function init() {
     document.addEventListener('input', e => {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
-
-    window.addEventListener('resize', () => { if(state.currentView === 'recipeFormulas') renderLibraryDetails(); });
 
     renderView('home');
 }
