@@ -1431,16 +1431,39 @@ function handleRecipeSelection(id) {
 
     // Push event to dataLayer for Google Tag Manager
     if (state.selectedRecipeId) {
-        const recipe = recipesData.find(r => r.id === id);
-        if (recipe) {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'view_recipe',
-                recipe_id: recipe.id,
-                recipe_name: recipe.name.en,
-                recipe_name_vi: recipe.name.vi
-            });
-        }
+    // 1. Find the recipe using the CORRECT id
+    const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+
+    if (recipe) {
+        // 2. Push to dataLayer for Google Analytics (your original code, fixed)
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'view_recipe',
+            recipe_id: recipe.id,
+            recipe_name: recipe.name.en,
+            recipe_name_vi: recipe.name.vi
+        });
+
+        // 3. Save the event to Firestore (the new functionality)
+        logRecipeViewToFirebase(recipe);
+    }
+}}
+    
+
+
+// --- Paste this helper function elsewhere in your file ---
+async function logRecipeViewToFirebase(recipe) {
+    try {
+        const db = getFirestore();
+        const docRef = await addDoc(collection(db, "recipeViews"), {
+            recipe_id: recipe.id,
+            recipe_name: recipe.name.en,
+            recipe_name_vi: recipe.name.vi,
+            viewed_at: serverTimestamp()
+        });
+        console.log("Recipe view logged with ID: ", docRef.id);
+    } catch (e) {
+        console.error("Error adding document: ", e);
     }
 }
 
