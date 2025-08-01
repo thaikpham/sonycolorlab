@@ -961,7 +961,9 @@ function displayTrendingRecipes(trendingIDs) {
 }
 
 
-function listenForTrendingRecipes() {
+// --- Replace your old function with this new one ---
+
+async function listenForTrendingRecipes() {
     const container = document.getElementById('trendingContainer');
     if (!container) return;
 
@@ -973,28 +975,46 @@ function listenForTrendingRecipes() {
         return;
     }
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const trendingDocRef = collection(db, "recipeViews");
-const querySnapshot = await getDocs(trendingDocRef); // Renamed to be clearer
+    try {
+        // Correctly reference the 'recipeViews' collection using state.firebase.db
+        const recipeViewsRef = collection(state.firebase.db, "recipeViews");
+        const querySnapshot = await getDocs(recipeViewsRef);
 
-// Use the .forEach loop to handle each document
-querySnapshot.forEach((doc) => {
-    // doc is now a DocumentSnapshot, so it has .exists() and .data()
-    // The .exists() check is often redundant here because forEach only loops over existing docs,
-    // but it's good practice to know it's available on 'doc'.
- const trendingIDs = doc.data().ids;
-            displayTrendingRecipes(trendingIDs);
-    // --- Place your original logic that was inside the 'if' block here ---
-});
-
-// Or, if you just want to check if ANY document was returned:
-if (querySnapshot.empty) {
-console.log("No trending data in Firestore, using mock data as fallback.");
+        if (querySnapshot.empty) {
+            // This case handles when the collection exists but has no documents.
+            console.log("No recipe views found, using mock data.");
             const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
-            displayTrendingRecipes(mockTrendingIDs);}
+            displayTrendingRecipes(mockTrendingIDs);
+            return;
+        }
 
+        // --- Logic to count views and find the most popular recipes ---
+
+        const viewCounts = {};
+        // 1. Loop through every document in the 'recipeViews' collection
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.recipe_id) {
+                // 2. For each recipe_id, increment its count
+                viewCounts[data.recipe_id] = (viewCounts[data.recipe_id] || 0) + 1;
+            }
+        });
+
+        // 3. Sort the recipe_ids by their view count (most popular first)
+        const sortedRecipeIDs = Object.keys(viewCounts).sort((a, b) => viewCounts[b] - viewCounts[a]);
+
+        // 4. Get the top 4 trending recipes
+        const trendingIDs = sortedRecipeIDs.slice(0, 4);
+
+        console.log("Fetched trending IDs from Firestore:", trendingIDs);
+        displayTrendingRecipes(trendingIDs);
+
+    } catch (error) {
+        console.error("Error fetching trending data from Firestore, using mock data:", error);
+        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
+        displayTrendingRecipes(mockTrendingIDs);
+    }
 }
-
 
 // --- QUIZ LOGIC ---
 function startQuiz() {
