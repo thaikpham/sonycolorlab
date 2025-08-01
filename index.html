@@ -511,7 +511,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 // --- Firebase SDK Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp,doc,onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp,doc,onSnapshot,getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- CONFIGURATION & STATE ---
 const API_KEY = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ";
@@ -974,22 +974,25 @@ function listenForTrendingRecipes() {
     }
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const trendingDocRef =collection(state.firebase.db, "recipeViews");
+    const trendingDocRef = collection(db, "recipeViews");
+const querySnapshot = await getDocs(trendingDocRef); // Renamed to be clearer
 
-    onSnapshot(trendingDocRef, (docSnap) => {
-        if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
-            const trendingIDs = docSnap.data().ids;
+// Use the .forEach loop to handle each document
+querySnapshot.forEach((doc) => {
+    // doc is now a DocumentSnapshot, so it has .exists() and .data()
+    // The .exists() check is often redundant here because forEach only loops over existing docs,
+    // but it's good practice to know it's available on 'doc'.
+ const trendingIDs = doc.data().ids;
             displayTrendingRecipes(trendingIDs);
-        } else {
-            console.log("No trending data in Firestore, using mock data as fallback.");
+    // --- Place your original logic that was inside the 'if' block here ---
+});
+
+// Or, if you just want to check if ANY document was returned:
+if (querySnapshot.empty) {
+console.log("No trending data in Firestore, using mock data as fallback.");
             const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
-            displayTrendingRecipes(mockTrendingIDs);
-        }
-    }, (error) => {
-        console.error("Error fetching trending data from Firestore, using mock data:", error);
-        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
-        displayTrendingRecipes(mockTrendingIDs);
-    });
+            displayTrendingRecipes(mockTrendingIDs);}
+
 }
 
 
