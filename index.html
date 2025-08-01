@@ -974,7 +974,7 @@ function listenForTrendingRecipes() {
     }
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const trendingDocRef = doc(state.firebase.db, "recipeViews");
+    const trendingDocRef =collection(state.firebase.db, "recipeViews");
 
     onSnapshot(trendingDocRef, (docSnap) => {
         if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
