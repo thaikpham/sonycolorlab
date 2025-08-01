@@ -1533,6 +1533,10 @@ function renderLibraryDetails() {
     applyTranslations();
 }
 
+// Environment variables injected at build time
+const __firebase_config = "%%FIREBASE_CONFIG%%";
+const __app_id = "%%APP_ID%%";
+
 async function initializeFirebase() {
     // These global variables are expected to be injected by the environment.
     if (typeof __firebase_config === 'undefined' || typeof __app_id === 'undefined') {
