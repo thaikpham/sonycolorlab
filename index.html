@@ -4,13 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alpha AI Color Lab</title>
-<!-- Favicon đã được cập nhật. Đường dẫn bây giờ là tương đối. -->
 <link rel="icon" type="image/png" href="logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script> <!-- D3.js Library Added -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T4CCCKFW');</script>
+<!-- End Google Tag Manager -->
 <style>
     html { scroll-behavior: smooth; }
     body {
@@ -53,7 +59,7 @@
     
     /* New highlight style for hover sync */
     .recipe-item.hover-highlight:not(.selected) {
-        background-color: rgba(230, 242, 255, 0.8); /* A light blue glow */
+        background-color: rgba(230, 242, 255, 0.8); 
         box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.15);
         transform: translateX(2px);
     }
@@ -151,14 +157,14 @@
     }
     .quiz-options-grid.has-three-options .quiz-option:last-child {
         flex-basis: 100%;
-        max-width: calc(50% - 0.5rem); /* Match width of others */
+        max-width: calc(50% - 0.5rem); 
     }
 
     /* Dynamic photo collage and lightbox Styles */
     .photo-collage {
         display: grid;
         gap: 0.75rem;
-        grid-auto-rows: 200px; /* Define a base row height */
+        grid-auto-rows: 200px; 
     }
     .collage-item {
         cursor: pointer;
@@ -291,7 +297,7 @@
     #colorMapContainer {
         width: 100%;
         height: 100%;
-        min-height: 450px; /* Adjusted min-height */
+        min-height: 450px; 
         position: relative;
     }
     #colorMapContainer svg {
@@ -300,7 +306,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        overflow: visible; /* Allow glows to extend beyond svg edge */
+        overflow: visible; 
     }
     .color-map-node-group {
         cursor: pointer;
@@ -330,10 +336,10 @@
     .color-map-node-label {
         font-size: 12px;
         font-weight: 600;
-        fill: #334155; /* slate-700 */
-        pointer-events: none; /* So it doesn't interfere with mouse events on the circle */
+        fill: #334155; 
+        pointer-events: none; 
         transition: opacity 0.3s ease;
-        text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white; /* Make it readable */
+        text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white;
         opacity: 0;
     }
     .color-map-node-group:hover .color-map-node-label {
@@ -377,6 +383,9 @@
 </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- Welcome Modal -->
 <div id="welcomeModal">
@@ -393,7 +402,6 @@
 
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
-        <!-- Logo đã được cập nhật kích thước. -->
         <button id="homeBtn" class="flex items-center">
              <img src="logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 w-auto">
         </button>
@@ -472,7 +480,6 @@
             <button id="closeAILabBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
         </div>
         <div id="aiLabContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar">
-            <!-- AI Lab content will be rendered here -->
         </div>
     </div>
 </div>
@@ -492,13 +499,17 @@
             <button id="closeCaptionLabBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
         </div>
         <div id="captionLabContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar">
-            <!-- Caption AI Lab content will be rendered here -->
         </div>
     </div>
 </div>
 
 
 <script type="module">
+// --- Firebase SDK Imports ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
 // --- CONFIGURATION & STATE ---
 const API_KEY = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
@@ -532,6 +543,9 @@ const state = {
     quiz: {
         currentQuestionIndex: 0,
         answers: [],
+    },
+    firebase: {
+        db: null,
     }
 };
 
@@ -771,7 +785,7 @@ function renderColorMapChart(containerSelector, data) {
 
     const bounds = container.node().getBoundingClientRect();
     if (bounds.width === 0 || bounds.height === 0) {
-        return; // Wait for the container to have dimensions
+        return; 
     }
 
     const margin = { top: 40, right: 30, bottom: 50, left: 30 };
@@ -839,7 +853,7 @@ function renderColorMapChart(containerSelector, data) {
         .enter()
         .append("g")
         .attr("class", "color-map-node-group")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`) // Start all nodes at the center
+        .attr("transform", `translate(${width / 2}, ${height / 2})`) 
         .on("mouseover", function(event, d) {
             d3.select(this).raise();
             const recipeItem = document.querySelector(`.recipe-item[data-recipe-id='${d.id}']`);
@@ -914,32 +928,52 @@ function resetToChartView() {
 
 function renderTrendingRecipes() {
     const container = document.getElementById('trendingContainer');
-    if (!container) return;
+    if (!container || !state.firebase.db) {
+        if(container) container.style.display = 'none';
+        return;
+    }
 
-    // --- Data Simulation ---
-    // In a real app, you'd fetch this from your analytics or database.
-    // For now, we'll use a predefined list of popular recipe IDs.
-    const trendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
-    const trendingRecipes = trendingIDs.map(id => recipesData.find(r => r.id === id)).filter(Boolean);
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const trendingDocRef = doc(state.firebase.db, `artifacts/${appId}/public/data/trending/latest`);
 
-    if (trendingRecipes.length === 0) return;
+    onSnapshot(trendingDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const trendingIDs = data.ids || [];
+            const trendingRecipes = trendingIDs.map(id => recipesData.find(r => r.id === id)).filter(Boolean);
 
-    container.innerHTML = `
-        <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            ${trendingRecipes.map(recipe => `
-                <div class="trending-item rounded-xl p-3 cursor-pointer" 
-                     data-recipe-id="${recipe.id}" 
-                     style="--glow-color: ${recipe.personalityColor};">
-                    <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
-                        <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[state.currentLang]}</p>
-                    </div>
+            if (trendingRecipes.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = `
+                <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    ${trendingRecipes.map(recipe => `
+                        <div class="trending-item rounded-xl p-3 cursor-pointer" 
+                             data-recipe-id="${recipe.id}" 
+                             style="--glow-color: ${recipe.personalityColor};">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
+                                <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[state.currentLang]}</p>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
-            `).join('')}
-        </div>
-    `;
-    applyTranslations();
+            `;
+            applyTranslations();
+            container.style.display = 'block';
+        } else {
+            console.log("Không tìm thấy dữ liệu trending. Tạm ẩn mục này.");
+            container.innerHTML = '';
+            container.style.display = 'none';
+        }
+    }, (error) => {
+        console.error("Lỗi khi lấy dữ liệu trending từ Firestore:", error);
+        container.innerHTML = '';
+        container.style.display = 'none';
+    });
 }
 
 
@@ -1343,7 +1377,6 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
     }
 }
 
-
 // --- CORE APP LOGIC ---
 function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
@@ -1379,6 +1412,20 @@ function handleRecipeSelection(id) {
     renderLibraryList();
     renderLibraryDetails();
     updateChartSelection();
+
+    // Push event to dataLayer for Google Tag Manager
+    if (state.selectedRecipeId) {
+        const recipe = recipesData.find(r => r.id === id);
+        if (recipe) {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'view_recipe',
+                recipe_id: recipe.id,
+                recipe_name: recipe.name.en,
+                recipe_name_vi: recipe.name.vi
+            });
+        }
+    }
 }
 
 function updateLangSlider() {
@@ -1404,7 +1451,7 @@ function attachViewEventListeners(viewName) {
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
                      renderColorMapChart('#colorMapContainer', recipesData);
-                     resizeObserver.unobserve(chartContainer); // Render once and stop observing
+                     resizeObserver.unobserve(chartContainer); 
                 }
             });
             resizeObserver.observe(chartContainer);
@@ -1471,7 +1518,28 @@ function renderLibraryDetails() {
     applyTranslations();
 }
 
-function init() {
+async function initializeFirebase() {
+    if (typeof __firebase_config === 'undefined' || typeof __app_id === 'undefined') {
+        console.warn("Firebase config not found. Trending feature will be disabled.");
+        return;
+    }
+
+    try {
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        state.firebase.db = getFirestore(app);
+        const auth = getAuth(app);
+        await signInAnonymously(auth);
+        console.log("Firebase initialized and user signed in anonymously.");
+    } catch (error) {
+        console.error("Firebase initialization failed:", error);
+        state.firebase.db = null; 
+    }
+}
+
+async function init() {
+    await initializeFirebase();
+
     const welcomeModal = document.getElementById('welcomeModal');
     const stopWelcomeAnimation = () => {
         if (welcomeModal) {
@@ -1626,12 +1694,12 @@ function init() {
         lightbox.classList.remove('visible');
         setTimeout(() => {
             lightbox.classList.add('hidden');
-            lightboxImage.src = ''; // Clear src to prevent loading in background
+            lightboxImage.src = ''; 
         }, 300);
     };
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) { // Only close if clicking on the backdrop
+        if (e.target === lightbox) {
             closeLightbox();
         }
     });
@@ -1647,3 +1715,4 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
+
