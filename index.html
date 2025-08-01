@@ -1534,12 +1534,12 @@ function renderLibraryDetails() {
 }
 
 // Environment variables injected at build time
-const __firebase_config = process.env.FIREBASE_CONFIG || window.FIREBASE_CONFIG;
-const __app_id = process.env.APP_ID || window.APP_ID;
+const __firebase_config = "%%FIREBASE_CONFIG%%";
+const __app_id = "%%APP_ID%%";
 
 async function initializeFirebase() {
     // These global variables are expected to be injected by the environment.
-    if (typeof __firebase_config === 'undefined' || typeof __app_id === 'undefined') {
+    if (typeof __firebase_config === 'undefined' || typeof __app_id === 'undefined' || __firebase_config === "%%FIREBASE_CONFIG%%" || __app_id === "%%APP_ID%%") {
         console.warn("Firebase config not found. Trending feature will be disabled.");
         return;
     }
