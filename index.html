@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alpha AI Color Lab</title>
+<!-- Favicon đã được cập nhật. Đường dẫn bây giờ là tương đối. -->
 <link rel="icon" type="image/png" href="logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script> <!-- D3.js Library Added -->
@@ -59,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
     /* New highlight style for hover sync */
     .recipe-item.hover-highlight:not(.selected) {
-        background-color: rgba(230, 242, 255, 0.8); 
+        background-color: rgba(230, 242, 255, 0.8); /* A light blue glow */
         box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.15);
         transform: translateX(2px);
     }
@@ -386,6 +387,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <!-- Welcome Modal -->
 <div id="welcomeModal">
@@ -926,10 +928,47 @@ function resetToChartView() {
     updateChartSelection();
 }
 
-function renderTrendingRecipes() {
+function displayTrendingRecipes(trendingIDs) {
     const container = document.getElementById('trendingContainer');
-    if (!container || !state.firebase.db) {
-        if(container) container.style.display = 'none';
+    if (!container) return;
+
+    const trendingRecipes = trendingIDs.map(id => recipesData.find(r => r.id === id)).filter(Boolean);
+
+    if (trendingRecipes.length === 0) {
+        container.innerHTML = '';
+        container.style.display = 'none';
+        return;
+    }
+
+    container.innerHTML = `
+        <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            ${trendingRecipes.map(recipe => `
+                <div class="trending-item rounded-xl p-3 cursor-pointer" 
+                     data-recipe-id="${recipe.id}" 
+                     style="--glow-color: ${recipe.personalityColor};">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
+                        <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[state.currentLang]}</p>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    applyTranslations();
+    container.style.display = 'block';
+}
+
+
+function listenForTrendingRecipes() {
+    const container = document.getElementById('trendingContainer');
+    if (!container) return;
+
+    // Fallback to mock data if Firebase isn't initialized
+    if (!state.firebase.db) {
+        console.warn("Firebase not available, using mock trending data.");
+        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
+        displayTrendingRecipes(mockTrendingIDs);
         return;
     }
 
@@ -937,42 +976,18 @@ function renderTrendingRecipes() {
     const trendingDocRef = doc(state.firebase.db, `artifacts/${appId}/public/data/trending/latest`);
 
     onSnapshot(trendingDocRef, (docSnap) => {
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            const trendingIDs = data.ids || [];
-            const trendingRecipes = trendingIDs.map(id => recipesData.find(r => r.id === id)).filter(Boolean);
-
-            if (trendingRecipes.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-
-            container.innerHTML = `
-                <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    ${trendingRecipes.map(recipe => `
-                        <div class="trending-item rounded-xl p-3 cursor-pointer" 
-                             data-recipe-id="${recipe.id}" 
-                             style="--glow-color: ${recipe.personalityColor};">
-                            <div class="flex items-center gap-3">
-                                <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
-                                <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[state.currentLang]}</p>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            applyTranslations();
-            container.style.display = 'block';
+        if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
+            const trendingIDs = docSnap.data().ids;
+            displayTrendingRecipes(trendingIDs);
         } else {
-            console.log("Không tìm thấy dữ liệu trending. Tạm ẩn mục này.");
-            container.innerHTML = '';
-            container.style.display = 'none';
+            console.log("No trending data in Firestore, using mock data as fallback.");
+            const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
+            displayTrendingRecipes(mockTrendingIDs);
         }
     }, (error) => {
-        console.error("Lỗi khi lấy dữ liệu trending từ Firestore:", error);
-        container.innerHTML = '';
-        container.style.display = 'none';
+        console.error("Error fetching trending data from Firestore, using mock data:", error);
+        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
+        displayTrendingRecipes(mockTrendingIDs);
     });
 }
 
@@ -1444,7 +1459,7 @@ function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
         renderLibraryList();  
         renderLibraryDetails();
-        renderTrendingRecipes();
+        listenForTrendingRecipes();
         
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
@@ -1519,6 +1534,7 @@ function renderLibraryDetails() {
 }
 
 async function initializeFirebase() {
+    // These global variables are expected to be injected by the environment.
     if (typeof __firebase_config === 'undefined' || typeof __app_id === 'undefined') {
         console.warn("Firebase config not found. Trending feature will be disabled.");
         return;
@@ -1674,7 +1690,7 @@ async function init() {
                     renderLibraryDetails();
                 } else {
                     renderColorMapChart('#colorMapContainer', recipesData);
-                    renderTrendingRecipes();
+                    listenForTrendingRecipes();
                 }
             }
             return;
@@ -1715,4 +1731,5 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
+
 
