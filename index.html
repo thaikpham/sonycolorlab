@@ -1708,16 +1708,58 @@ async function initializeFirebase() {
 let deferredInstallPrompt = null;
 
 async function init() {
+    // --- Service Worker Registration ---
+    if ('serviceWorker' in navigator) {
+        try {
+            const swCode = `
+                const CACHE_NAME = 'sonycolorlab-cache-v1';
+                const urlsToCache = [
+                    '/',
+                    './',
+                    'index.html',
+                    'logo.png',
+                    'logo_black.png',
+                    'https://cdn.tailwindcss.com',
+                    'https://d3js.org/d3.v7.min.js',
+                    'https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap'
+                ];
+                self.addEventListener('install', event => {
+                    self.skipWaiting();
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+                self.addEventListener('activate', event => {
+                    event.waitUntil(
+                        caches.keys().then(cacheNames => {
+                            return Promise.all(
+                                cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
+                            );
+                        })
+                    );
+                });
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request).then(response => response || fetch(event.request))
+                    );
+                });
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            const registration = await navigator.serviceWorker.register(swUrl);
+            console.log('Service Worker registered with scope:', registration.scope);
+        } catch (error) {
+            console.error('Service Worker registration failed:', error);
+        }
+    }
+
     await initializeFirebase();
 
     const installButton = document.getElementById('addToHomeScreenBtn');
 
     window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent the mini-infobar from appearing on mobile
         e.preventDefault();
-        // Stash the event so it can be triggered later.
         deferredInstallPrompt = e;
-        // Update UI to notify the user they can install the PWA
         installButton.classList.add('visible');
         installButton.classList.remove('hidden');
     });
@@ -1726,14 +1768,10 @@ async function init() {
         if (!deferredInstallPrompt) {
             return;
         }
-        // Show the install prompt
         deferredInstallPrompt.prompt();
-        // Wait for the user to respond to the prompt
         const { outcome } = await deferredInstallPrompt.userChoice;
         console.log(`User response to the install prompt: ${outcome}`);
-        // We've used the prompt, and can't use it again, throw it away
         deferredInstallPrompt = null;
-        // Hide the install button
         installButton.classList.remove('visible');
         installButton.classList.add('hidden');
     });
@@ -1787,7 +1825,6 @@ async function init() {
         const recipeItem = target.closest('.recipe-item');
         const trendingItem = target.closest('.trending-item');
         
-        // IMPROVEMENT: Handle clicks on collage items to open the lightbox
         const collageItem = target.closest('.collage-item');
         if (collageItem) {
             const recipeId = collageItem.dataset.recipeId;
