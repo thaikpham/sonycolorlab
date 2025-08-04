@@ -169,8 +169,6 @@ const recipesData = [
             "https://lh3.googleusercontent.com/pw/AP1GczO5SUcH8aBigGJL12L47zr9l-5zhzD9f2LRX4u7V_wlvfD5gfHck6I-fehhzQEIZxacLUIYP9T1-v1Q19MPNjIGBh0fHvVGDsq1v9GlFXy2WXFGtOY8SjiFiA0w9tP8hi1BRdfd32vtAArOI0fEkG0wDA=w1505-h1003-s-no?authuser=0",
             "https://lh3.googleusercontent.com/pw/AP1GczO3_-KWTQuxTL9L8y7jEWY1zQevDvcWvpPgxJH3sDqa6Ngz_AhEcwo0rpYmMhCv8V1g-AZeuPb6soI-yxGJraPXZSzEnVqfwtAKl7CF31E0VjX6MBV1XGsysZy0ZvFuTKfSy7sbuX27U9UGY8FCB4Riqg=w1505-h1003-s-no?authuser=0",
             "https://lh3.googleusercontent.com/pw/AP1GczPl115MMMy6ly00qF_lY7njx3Hsmf96wSDtknELjmwXiueyyz9AQ-_delPgDP8bRlbr73cJN_NdZBUclNX3xO0sjmykjL_kNwV9HtT6tqAm0ZLztmMVX8E_8hJYxiyIukqysnBXb18Y5P07rBn4Ajv4_Q=w1505-h1003-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOzjHgr4eN_zfm3mHKjyFSoQp1A2DNRoXtu7MIpvkS-TTUZJfcRoZToBQy-XKRROkH0hsYbv-fSs-EEG4nOAUa-j-AwlP1BKOGDnvlKnsf8UBEkP5MtgZk5Y76ea0AcIA6oJXkfflNbRwKANmcSZ4Z_Nw=w1505-h1003-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczP8SHU45N8inO-CkroVkR_rjReWxpLBwUuUL_U2MS5r9W5kRWIn3agIiBnNlR4iTQ6V_-qubNu0jWS-XPlkTDPGds_QHDWXndTGNggTVOUUkQN1EQgWkwmcyyXH6WsreEZDF92ocoP5G5Qk9G16u5n3IQ=w1505-h1003-s-no?authuser=0"
         ]
     },
     {
