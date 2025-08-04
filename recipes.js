@@ -355,9 +355,11 @@ const recipesData = [
         "personalityColor": "#BC8F8F",
         "coords": { "x": 1, "y": -4 },
         "demoImages": [
-            "https://placehold.co/800x600/BC8F8F/ffffff?text=Vintage+Slide+1",
-            "https://placehold.co/800x600/BC8F8F/ffffff?text=Vintage+Slide+2",
-            "https://placehold.co/800x600/BC8F8F/ffffff?text=Vintage+Slide+3"
+            "https://lh3.googleusercontent.com/pw/AP1GczNJ3RXM0585Sa5XfkKlkTNS984e9cNlb0RisEQmafa9UkYgK-VFiPLk5Z7FBqXbWx4aZfP6cLYqrJznVW5-sa7oeWJEA88xV--tF2Ii_38QbW9jAtQfxD6qhicMOUUMYA7wwIk3ZY4imY7zq6Yi0I47rA=w736-h1105-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczN1BaNaDzKjA13jI00EqgyQFLloAuIrwQUK6ukrbr2urqQNTEjwndCJZ8VScevfMakAuKRDqHf1TVPEcsZaOUZCTjbeYFJ7OOmmOVyiWrcnGVhxrEXhkxgebjbmgwY2ebIT1wRP__0WHPWvlEjw00p--g=w1658-h1105-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczNHf35toE3B_O7cvaYdN9E2lEe17qrNodlcoco0xN2w-C4hZ-CyFnKR8zFi3V3YiC14_8fUFirOTjcu9g0hpfCbAjrStzKvD_OIGCQUtipRveVi5aZpfCDCaM2hXCdFkhsmkgHaailH_wL_ZpAQvjKQPg=w736-h1105-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczPwuN6kjA8C_Txs4TivJ6ccayeqe0ELhzSu3S4KSCgftD6bI5S1_K6sw1HRs1WTsHGzl-ELjLQZarkvQAJyVOCTcLV8KFxlHwlWoR2aYqGfnOJKvv9eiqOtpcPqwB1uUvzLUKTWA6MLwB3GmVmQwv8Lyg=w736-h1105-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczP3pw_-lNaE6VWJqE4xrTsu1ci0hwApdt5W6ygqU3XyLr5mbfq0rwwBS0R_7-7KL375lKvRbuaMZbEwUFKff5eVvu4xU1N48BcqshERAxsDNCLrDIiDKhPF0sNjCmJKwbAc8Ylarn4AIkjgnv_JCYSEqQ=w736-h1105-s-no?authuser=0"
         ]
     },
     {
