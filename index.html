@@ -1704,8 +1704,47 @@ async function initializeFirebase() {
     }
 }
 
+// --- Add to Home Screen Logic ---
+let deferredInstallPrompt = null;
+
 async function init() {
     await initializeFirebase();
+
+    const installButton = document.getElementById('addToHomeScreenBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredInstallPrompt = e;
+        // Update UI to notify the user they can install the PWA
+        installButton.classList.add('visible');
+        installButton.classList.remove('hidden');
+    });
+
+    installButton.addEventListener('click', async () => {
+        if (!deferredInstallPrompt) {
+            return;
+        }
+        // Show the install prompt
+        deferredInstallPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        // We've used the prompt, and can't use it again, throw it away
+        deferredInstallPrompt = null;
+        // Hide the install button
+        installButton.classList.remove('visible');
+        installButton.classList.add('hidden');
+    });
+
+    window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        console.log('PWA was installed');
+        installButton.classList.remove('visible');
+        installButton.classList.add('hidden');
+    });
+
 
     const welcomeModal = document.getElementById('welcomeModal');
     const stopWelcomeAnimation = () => {
@@ -1874,4 +1913,3 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
-
