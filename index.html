@@ -4,7 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alpha AI Color Lab</title>
+
+<!-- PWA and Add to Home Screen Configuration -->
 <link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<meta name="apple-mobile-web-app-title" content="ColorLAB">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="data:application/manifest+json,{
+    &quot;name&quot;: &quot;Alpha AI Color Lab&quot;,
+    &quot;short_name&quot;: &quot;ColorLAB&quot;,
+    &quot;start_url&quot;: &quot;https://www.sonycolorlab.app&quot;,
+    &quot;display&quot;: &quot;standalone&quot;,
+    &quot;background_color&quot;: &quot;#ffffff&quot;,
+    &quot;theme_color&quot;: &quot;#ffffff&quot;,
+    &quot;icons&quot;: [
+        { &quot;src&quot;: &quot;logo.png&quot;, &quot;sizes&quot;: &quot;192x192&quot;, &quot;type&quot;: &quot;image/png&quot; },
+        { &quot;src&quot;: &quot;logo.png&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/png&quot; }
+    ]
+}">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script> <!-- D3.js Library Added -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1830,3 +1850,4 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
+
