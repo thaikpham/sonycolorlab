@@ -405,8 +405,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
-    <img src="logo_black.png" alt="Alpha AI Color Lab Logo" class="h-20 w-auto">
-</button>
+			<img src="logo_black.png" alt="Alpha AI Color Lab Logo" class="h-20 w-auto">
+		</button>
         <div class="flex items-center gap-2 md:gap-4">
             <nav id="mainNav" class="hidden md:flex items-center gap-2">
                 <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navRecipeFormulas"></button>
@@ -493,7 +493,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg">
                      <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" />
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" />
                     </svg>
                 </div>
                  <h2 class="text-xl font-bold" data-translate-key="captionLabTitle"></h2>
@@ -510,11 +510,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 // --- Firebase SDK Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp, doc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- CONFIGURATION & STATE ---
-// SECURITY UPDATE: API Key is now a placeholder. It must be replaced during the build/deployment process.
-const API_KEY = "%%GEMINI_API_KEY%%"; 
+const API_KEY = "%%GEMINI_API_KEY%%";
 const isAIEnabled = API_KEY && API_KEY !== '%%GEMINI_API_KEY%%';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
 
@@ -531,16 +530,13 @@ const state = {
         isGenerating: false,
         originalRecipe: null,
         userPrompt: '',
-        expertPrompt: '',
         generatedRecipe: null,
-        generationPromise: null,
         abortController: null,
     },
     captionAI: {
         isGenerating: false,
         recipe: null,
         userPrompt: '',
-        generationPromise: null,
         abortController: null,
         result: null,
     },
@@ -556,7 +552,7 @@ const state = {
 const mainContentEl = document.getElementById('mainContent');
 
 import recipesData from './recipes.js';
-    
+
 const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
@@ -684,7 +680,7 @@ function createFullRecipeHTML(recipe) {
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
         const count = Math.min(images.length, 6);
-        const imageElements = images.slice(0, count).map(img => 
+        const imageElements = images.slice(0, count).map(img =>
             `<div class="collage-item" data-lightbox-src="${img}">
                 <img src="${img}" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image">
             </div>`
@@ -697,13 +693,12 @@ function createFullRecipeHTML(recipe) {
         const ctaText = t('ctaText').replace('{recipeHashtag}', `<b class="font-semibold text-blue-900">${recipeHashtag}</b>`);
         return `<div class="mt-8 p-5 md:p-6 bg-blue-50 border border-blue-200/50 rounded-2xl text-center"><h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4><p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p><a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-5 py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M12.225 10.162c.37.312.525.812.375 1.312l-.75 2.5a1 1 0 01-1.85.375l-1.375-3.562a1 1 0 01.375-1.125l2.5-2.062a1 1 0 011.375 1.562l-1.5 1.25 2.375 1.125zM10 18a8 8 0 100-16 8 8 0 000 16z"/></svg><span data-translate-key="ctaButton"></span></a></div>`;
     };
-    
-    const createSettingsGrid = (settings, compareSettings = null) => {
+
+    const createSettingsGrid = (settings) => {
         if (!settings) return '';
         return Object.entries(settings).map(([key, value]) => {
             const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase().trim());
-            const isChanged = compareSettings && settings[key] !== compareSettings[key];
-            return `<div class="flex flex-col p-4 bg-white/50 rounded-xl ${isChanged ? 'changed' : ''}"><div class="flex items-center gap-1.5"><span class="parameter-title text-sm text-gray-500 font-medium" data-param-key="${explanationKey || ''}">${key}</span></div><span class="font-semibold text-xl text-gray-800 mt-1">${value}</span></div>`;
+            return `<div class="flex flex-col p-4 bg-white/50 rounded-xl"><div class="flex items-center gap-1.5"><span class="parameter-title text-sm text-gray-500 font-medium" data-param-key="${explanationKey || ''}">${key}</span></div><span class="font-semibold text-xl text-gray-800 mt-1">${value}</span></div>`;
         }).join('');
     };
 
@@ -713,8 +708,7 @@ function createFullRecipeHTML(recipe) {
         recipe.colorDepth ? { titleKey: 'colorDepthTitle', content: `<div class="grid grid-cols-3 md:grid-cols-6 gap-3">${createSettingsGrid(recipe.colorDepth)}</div>` } : null,
         recipe.detailSettings ? { titleKey: 'detailTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.detailSettings)}</div>` } : null
     ].filter(Boolean);
-    
-    // Disable AI buttons if API key is not configured
+
     const aiDisabledAttr = !isAIEnabled ? `disabled title="${t('aiKeyNotConfigured')}"` : '';
 
     return `
@@ -744,42 +738,42 @@ function createFullRecipeHTML(recipe) {
 
 const viewTemplates = {
     home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 view-transition p-4">
-                            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2 mt-8" data-translate-key="landingTitle"></h1>
-                            <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto" data-translate-key="landingSubtitle"></p>
-                            <div class="flex flex-col sm:flex-row gap-4 mt-10">
-                                <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                                    <span data-translate-key="findMyColorBtn"></span>
-                                </button>
-                                <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg" data-translate-key="startExploringBtn"></button>
-                            </div>
-                        </div>`,
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2 mt-8" data-translate-key="landingTitle"></h1>
+                    <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto" data-translate-key="landingSubtitle"></p>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-10">
+                        <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                            <span data-translate-key="findMyColorBtn"></span>
+                        </button>
+                        <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg" data-translate-key="startExploringBtn"></button>
+                    </div>
+                </div>`,
     recipeFormulas: () => `
-                                <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-                                    <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
-                                        <div class="relative mb-4 flex-shrink-0">
-                                            <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                                            <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                                            </button>
-                                        </div>
-                                        <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar pr-2 -mr-2"></div>
-                                    </aside>
-                                    <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
-                                        <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
-                                            <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
-                                                <div id="welcomeText" class="text-center"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
-                                                <div id="colorMapContainer" class="flex-grow w-full"></div>
-                                                <div id="trendingContainer" class="w-full mt-4"></div>
-                                            </div>
-                                            <div id="recipeContent" class="hidden"></div>
-                                        </div>
-                                    </main>
-                                    <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
-                                        <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
-                                        <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
-                                    </div>
-                                </div>`,
+        <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
+            <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
+                <div class="relative mb-4 flex-shrink-0">
+                    <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                    <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    </button>
+                </div>
+                <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar pr-2 -mr-2"></div>
+            </aside>
+            <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
+                <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
+                    <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
+                        <div id="welcomeText" class="text-center"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
+                        <div id="colorMapContainer" class="flex-grow w-full"></div>
+                        <div id="trendingContainer" class="w-full mt-4"></div>
+                    </div>
+                    <div id="recipeContent" class="hidden"></div>
+                </div>
+            </main>
+            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
+                <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
+                <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
+            </div>
+        </div>`,
 };
 
 // --- SLEEK COLOR MAP CHART ---
@@ -793,7 +787,7 @@ function renderColorMapChart(containerSelector, data) {
 
     const bounds = container.node().getBoundingClientRect();
     if (bounds.width === 0 || bounds.height === 0) {
-        return; 
+        return;
     }
 
     const margin = { top: 40, right: 30, bottom: 50, left: 30 };
@@ -804,8 +798,7 @@ function renderColorMapChart(containerSelector, data) {
         .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
-    
-    // Add definitions for filters
+
     const defs = svg.append("defs");
     const filter = defs.append("filter")
         .attr("id", "soft-glow")
@@ -816,12 +809,10 @@ function renderColorMapChart(containerSelector, data) {
         .attr("stdDeviation", "4")
         .attr("result", "blur");
 
-    // Define scales
     const xScale = d3.scaleLinear().domain([-11, 11]).range([0, width]);
     const yScale = d3.scaleLinear().domain([-11, 11]).range([height, 0]);
-    const rScale = d3.scaleSqrt().domain([0, 10]).range([7, 12]); // Slightly smaller radii
+    const rScale = d3.scaleSqrt().domain([0, 10]).range([7, 12]);
 
-    // Add background quadrant labels
     const quadrantLabels = [
         { x: width * 0.25, y: height * 0.25, text: {vi: 'LẠNH & GẮT', en: 'COOL & PUNCHY'} },
         { x: width * 0.75, y: height * 0.25, text: {vi: 'ẤM & RỰC RỠ', en: 'WARM & VIBRANT'} },
@@ -837,23 +828,20 @@ function renderColorMapChart(containerSelector, data) {
         .attr("dy", "0.35em")
         .text(d => d.text[state.currentLang]);
 
-    // Add subtle grid lines
     svg.append("g").attr("class", "grid")
         .call(d3.axisBottom(xScale).ticks(10).tickSize(height).tickFormat(""))
         .selectAll("line").attr("stroke", "#f1f5f9").attr("stroke-opacity", 0.7);
     svg.append("g").attr("class", "grid")
         .call(d3.axisLeft(yScale).ticks(10).tickSize(-width).tickFormat(""))
         .selectAll("line").attr("stroke", "#f1f5f9").attr("stroke-opacity", 0.7);
-    
+
     svg.selectAll(".domain").remove();
 
-    // Add axis labels
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(state.currentLang === 'vi' ? '← Lạnh' : '← Cool');
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(state.currentLang === 'vi' ? 'Ấm →' : 'Warm →');
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(state.currentLang === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(state.currentLang === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
-    
-    // Create node data copies for simulation
+
     const nodesData = data.filter(d => d.coords).map(d => ({...d}));
 
     state.chart.nodes = svg.selectAll(".color-map-node-group")
@@ -861,7 +849,7 @@ function renderColorMapChart(containerSelector, data) {
         .enter()
         .append("g")
         .attr("class", "color-map-node-group")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`) 
+        .attr("transform", `translate(${width / 2}, ${height / 2})`)
         .on("mouseover", function(event, d) {
             d3.select(this).raise();
             const recipeItem = document.querySelector(`.recipe-item[data-recipe-id='${d.id}']`);
@@ -891,32 +879,27 @@ function renderColorMapChart(containerSelector, data) {
         .attr("class", "color-map-node-core")
         .attr("r", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)))
         .attr("fill", d => d.personalityColor);
-    
-    // Add text label to each node group
+
     state.chart.nodes.append("text")
         .attr("class", "color-map-node-label")
         .attr("x", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 6)
         .attr("dy", "0.35em")
         .text(d => d.name[state.currentLang]);
 
-    // Gentle collision detection
     state.chart.simulation = d3.forceSimulation(nodesData)
         .force("collide", d3.forceCollide().radius(d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 3).strength(0.8))
         .force("x", d3.forceX(d => xScale(d.coords.x)).strength(0.1))
         .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.1))
         .stop();
 
-    // Run simulation for a fixed number of iterations
     for (let i = 0; i < 120; ++i) state.chart.simulation.tick();
 
-    // Animate nodes to their final, collision-free positions
     state.chart.nodes
         .transition()
         .duration(1200)
         .delay((d, i) => i * 10)
         .ease(d3.easeCubicOut)
         .attr("transform", d => `translate(${d.x}, ${d.y})`);
-
 
     updateChartSelection();
 }
@@ -950,8 +933,8 @@ function displayTrendingRecipes(trendingIDs) {
         <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             ${trendingRecipes.map(recipe => `
-                <div class="trending-item rounded-xl p-3 cursor-pointer" 
-                     data-recipe-id="${recipe.id}" 
+                <div class="trending-item rounded-xl p-3 cursor-pointer"
+                     data-recipe-id="${recipe.id}"
                      style="--glow-color: ${recipe.personalityColor};">
                     <div class="flex items-center gap-3">
                         <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
@@ -965,13 +948,7 @@ function displayTrendingRecipes(trendingIDs) {
     container.style.display = 'block';
 }
 
-
-// --- LOGIC IMPROVEMENT: Renamed function for clarity ---
 async function fetchTrendingRecipes() {
-    const container = document.getElementById('trendingContainer');
-    if (!container) return;
-
-    // Fallback to mock data if Firebase isn't initialized
     if (!state.firebase.db) {
         console.warn("Firebase not available, using mock trending data.");
         const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
@@ -980,18 +957,15 @@ async function fetchTrendingRecipes() {
     }
 
     try {
-        // Correctly reference the 'recipeViews' collection using the initialized db instance
         const recipeViewsRef = collection(state.firebase.db, "recipeViews");
         const querySnapshot = await getDocs(recipeViewsRef);
 
         if (querySnapshot.empty) {
-            console.log("No recipe views found, using mock data.");
             const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
             displayTrendingRecipes(mockTrendingIDs);
             return;
         }
 
-        // Count views and find the most popular recipes
         const viewCounts = {};
         querySnapshot.forEach(doc => {
             const data = doc.data();
@@ -1002,12 +976,9 @@ async function fetchTrendingRecipes() {
 
         const sortedRecipeIDs = Object.keys(viewCounts).sort((a, b) => viewCounts[b] - viewCounts[a]);
         const trendingIDs = sortedRecipeIDs.slice(0, 4);
-
-        console.log("Fetched trending IDs from Firestore:", trendingIDs);
         displayTrendingRecipes(trendingIDs);
-
     } catch (error) {
-        console.error("Error fetching trending data from Firestore, using mock data:", error);
+        console.error("Error fetching trending data, using mock data:", error);
         const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
         displayTrendingRecipes(mockTrendingIDs);
     }
@@ -1077,8 +1048,7 @@ function handleQuizAnswer(e) {
 
 function calculateAndShowQuizResult() {
     const scores = recipesData.map(recipe => {
-        let score = 0;
-        score += recipe.tags.reduce((acc, tag) => acc + (state.quiz.answers.includes(tag) ? 1 : 0), 0);
+        let score = recipe.tags.reduce((acc, tag) => acc + (state.quiz.answers.includes(tag) ? 1 : 0), 0);
         if (state.quiz.answers.includes('bw') && recipe.type === 'bw') { score += 2; }
         return { id: recipe.id, score: score };
     });
@@ -1090,6 +1060,48 @@ function calculateAndShowQuizResult() {
     applyTranslations();
 }
 
+// --- OPTIMIZATION: Centralized Gemini API call function ---
+/**
+ * A reusable function to call the Gemini API.
+ * @param {string} prompt - The complete prompt to send to the API.
+ * @param {AbortSignal} signal - An AbortSignal to allow cancelling the request.
+ * @returns {Promise<object>} - A promise that resolves to the parsed JSON object from the API.
+ */
+async function callGeminiAPI(prompt, signal) {
+    if (!isAIEnabled) {
+        console.error("Gemini API key not configured.");
+        throw new Error("API key not configured.");
+    }
+
+    const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+            responseMimeType: "application/json",
+        }
+    };
+
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: signal
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} ${errorText}`);
+    }
+
+    const result = await response.json();
+
+    if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
+        throw new Error("Invalid API response structure.");
+    }
+    // The API returns a JSON string, so we need to parse it.
+    return JSON.parse(result.candidates[0].content.parts[0].text);
+}
+
+
 // --- GEMINI AI LAB LOGIC ---
 function openAILab(recipeId) {
     state.ai.originalRecipe = recipesData.find(r => r.id === recipeId);
@@ -1098,11 +1110,10 @@ function openAILab(recipeId) {
     Object.assign(state.ai, {
         generatedRecipe: null,
         userPrompt: '',
-        expertPrompt: '',
-        generationPromise: null,
+        isGenerating: false,
         abortController: state.ai.abortController ? (state.ai.abortController.abort(), null) : null
     });
-    
+
     document.getElementById('aiLabModal').classList.remove('hidden');
     renderAILab();
 }
@@ -1128,11 +1139,11 @@ function renderAILab() {
         return;
     }
 
-    if (state.ai.expertPrompt) {
+    if (state.ai.userPrompt) { // Show confirmation view if user has entered a prompt
         renderAIConfirmation(contentEl);
         return;
     }
-    
+
     renderAIPromptInput(contentEl);
     applyTranslations();
 }
@@ -1198,14 +1209,8 @@ function renderAIComparison(container) {
             <h3 class="text-2xl font-bold" data-translate-key="aiComparisonTitle"></h3>
             <p class="mt-1 text-gray-600" data-translate-key="aiComparisonDescription"></p>
         </div>
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Original Recipe Column -->
-            <div class="border border-gray-200 rounded-xl p-4">
-                <h4 class="text-xl font-bold text-center" data-translate-key="aiOriginalTitle"></h4>
-                <p class="text-center text-gray-500">${original.name[state.currentLang]}</p>
-            </div>
-            <!-- New Recipe Column -->
-            <div class="border-2 border-blue-500 rounded-xl p-4 bg-white shadow-lg">
+        <div class="mt-6 grid grid-cols-1">
+             <div class="border-2 border-blue-500 rounded-xl p-4 bg-white shadow-lg">
                 <h4 class="text-xl font-bold text-center text-blue-600" data-translate-key="aiNewTitle"></h4>
                 <p class="text-center text-gray-500">${generated.name[state.currentLang]}</p>
             </div>
@@ -1218,82 +1223,51 @@ function renderAIComparison(container) {
     applyTranslations();
 }
 
-function renderAIError(container, feature = 'ai') {
-    const errorTextKey = feature === 'caption' ? 'aiErrorText' : 'aiErrorText';
+function renderAIError(container) {
     container.innerHTML = `
         <div class="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
             <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
-            <p class="mt-2 text-red-700" data-translate-key="${errorTextKey}"></p>
+            <p class="mt-2 text-red-700" data-translate-key="aiErrorText"></p>
         </div>
     `;
     applyTranslations();
 }
 
+// OPTIMIZATION: Simplified logic flow
 function handleAIGeneration() {
     const userInput = document.getElementById('aiPromptInput').value.trim();
     if (!userInput) return;
-    
+
     state.ai.userPrompt = userInput;
-    state.ai.expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${userInput}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${state.currentLang}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
-    
-    renderAILab(); 
-
-    const abortController = new AbortController();
-    state.ai.abortController = abortController;
-    
-    const payload = {
-        contents: [{ parts: [{ text: state.ai.expertPrompt }] }],
-        generationConfig: {
-            responseMimeType: "application/json",
-        }
-    };
-
-    state.ai.generationPromise = fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: abortController.signal
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => { throw new Error(`API Error: ${response.status} ${text}`) });
-        }
-        return response.json();
-    })
-    .then(result => {
-        if (!result.candidates?.[0]?.content?.parts?.[0]) {
-            throw new Error("Invalid API response structure.");
-        }
-        const jsonText = result.candidates[0].content.parts[0].text;
-        return JSON.parse(jsonText);
-    });
+    renderAILab(); // Renders the confirmation screen
 }
 
+// OPTIMIZATION: Simplified logic flow, uses the new helper function
 async function confirmAndCallAI() {
     state.ai.isGenerating = true;
-    renderAILab(); 
+    state.ai.abortController = new AbortController();
+    renderAILab(); // Renders the loading spinner
+
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${state.ai.userPrompt}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${state.currentLang}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
 
     try {
-        const generatedRecipe = await state.ai.generationPromise;
+        const generatedRecipe = await callGeminiAPI(expertPrompt, state.ai.abortController.signal);
         state.ai.generatedRecipe = generatedRecipe;
-
     } catch (error) {
-        if (error.name === 'AbortError') {
-            console.log('Fetch aborted by user.');
-            return;
+        if (error.name !== 'AbortError') {
+            console.error("Gemini API call failed:", error);
+            renderAIError(document.getElementById('aiLabContent'));
         }
-        console.error("Gemini API call failed:", error);
-        renderAIError(document.getElementById('aiLabContent'));
     } finally {
         state.ai.isGenerating = false;
-        state.ai.expertPrompt = '';
-        state.ai.generationPromise = null;
+        state.ai.userPrompt = ''; // Clear prompt after attempt
         state.ai.abortController = null;
-        if (state.ai.generatedRecipe) {
+        if (!document.querySelector('.bg-red-50')) { // Only re-render if there wasn't an error
             renderAILab();
         }
     }
 }
+
 
 // --- CAPTION AI LOGIC ---
 function openCaptionLab(recipeId) {
@@ -1304,11 +1278,10 @@ function openCaptionLab(recipeId) {
         recipe: recipe,
         isGenerating: false,
         userPrompt: '',
-        generationPromise: null,
         abortController: null,
         result: null,
     });
-    
+
     document.getElementById('captionLabModal').classList.remove('hidden');
     renderCaptionLab();
 }
@@ -1361,16 +1334,17 @@ function renderCaptionLab() {
     applyTranslations();
 }
 
+// OPTIMIZATION: Uses the new helper function
 async function handleCaptionGeneration() {
     const userInput = document.getElementById('captionPromptInput').value.trim();
     if (!userInput) return;
 
-    state.captionAI.userPrompt = userInput;
     state.captionAI.isGenerating = true;
+    state.captionAI.abortController = new AbortController();
     renderCaptionLab();
 
     const { recipe } = state.captionAI;
-    const recipeHashtag = `#${recipe.id.replace(/-/g, '')}${recipe.name.en.split(': ')[1].replace(/\s/g, '')}`;
+    const recipeHashtag = `#${recipe.id.replace(/-/g, '')}${recipe.name.en.split(': ')[1]?.replace(/\s/g, '') || ''}`;
     const prompt = `You are a witty, trendy, and creative social media expert for Sony Alpha Vietnam, specializing in Gen Z vocabulary and viral content. Your task is to generate a compelling social media post.
 **CRITICAL RULES:**
 1.  **Mandatory Hashtags:** The final hashtag string MUST include '#sonycolorlab', '#sonyalphavietnam', and '${recipeHashtag}'. This is non-negotiable.
@@ -1387,31 +1361,22 @@ Based on all the rules and context, generate a caption and a set of hashtags.
 **OUTPUT FORMAT:**
 You must respond with only a single, valid JSON object with two keys: "caption" (string) and "hashtags" (string).`;
 
-    const payload = {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" }
-    };
-
     try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-        const result = await response.json();
-        const jsonText = result.candidates[0].content.parts[0].text;
-        state.captionAI.result = JSON.parse(jsonText);
+        state.captionAI.result = await callGeminiAPI(prompt, state.captionAI.abortController.signal);
     } catch (error) {
-        console.error("Caption AI call failed:", error);
-        renderAIError(document.getElementById('captionLabContent'), 'caption');
+        if (error.name !== 'AbortError') {
+            console.error("Caption AI call failed:", error);
+            renderAIError(document.getElementById('captionLabContent'));
+        }
     } finally {
         state.captionAI.isGenerating = false;
-        if (state.captionAI.result) {
-            renderCaptionLab();
+        state.captionAI.abortController = null;
+        if (!document.querySelector('.bg-red-50')) {
+             renderCaptionLab();
         }
     }
 }
+
 
 // --- CORE APP LOGIC ---
 function renderView(viewName, selectedId = null) {
@@ -1452,7 +1417,6 @@ function handleRecipeSelection(id) {
     if (state.selectedRecipeId) {
         const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
         if (recipe) {
-            // Push event to dataLayer for Google Tag Manager
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 event: 'view_recipe',
@@ -1460,30 +1424,23 @@ function handleRecipeSelection(id) {
                 recipe_name: recipe.name.en,
                 recipe_name_vi: recipe.name.vi
             });
-
-            // Save the event to Firestore
             logRecipeViewToFirebase(recipe);
         }
     }
 }
-    
 
-// --- LOGIC IMPROVEMENT: This function now correctly uses the initialized Firestore instance ---
 async function logRecipeViewToFirebase(recipe) {
-    // Check if Firestore DB is initialized before using it.
     if (!state.firebase.db) {
         console.warn("Firestore is not initialized. Skipping log.");
         return;
     }
     try {
-        // Use the db instance from the global state.
-        const docRef = await addDoc(collection(state.firebase.db, "recipeViews"), {
+        await addDoc(collection(state.firebase.db, "recipeViews"), {
             recipe_id: recipe.id,
             recipe_name: recipe.name.en,
             recipe_name_vi: recipe.name.vi,
             viewed_at: serverTimestamp()
         });
-        console.log("Recipe view logged with ID: ", docRef.id);
     } catch (e) {
         console.error("Error adding document to Firestore: ", e);
     }
@@ -1503,28 +1460,26 @@ function updateLangSlider() {
 
 function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
-        renderLibraryList();  
+        renderLibraryList();
         renderLibraryDetails();
-        // LOGIC IMPROVEMENT: Call the renamed function
         fetchTrendingRecipes();
-        
+
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
                      renderColorMapChart('#colorMapContainer', recipesData);
-                     resizeObserver.unobserve(chartContainer); 
+                     resizeObserver.unobserve(chartContainer);
                 }
             });
             resizeObserver.observe(chartContainer);
         }
-        
         updateLangSlider();
     }
 }
 
 function renderLibraryList() {
-    const container = document.getElementById('recipeListContainer'); 
+    const container = document.getElementById('recipeListContainer');
     if (!container) return;
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
     const recipesToRender = recipesData.filter(r => r.name[state.currentLang].toLowerCase().includes(searchTerm) || r.description[state.currentLang].toLowerCase().includes(searchTerm));
@@ -1557,16 +1512,16 @@ function renderLibraryDetails() {
     let welcomeAndChartContainer = document.getElementById('welcomeAndChartContainer');
     if (!recipeContentContainer) return;
 
-    if (!recipe) {  
+    if (!recipe) {
         if (welcomeAndChartContainer) welcomeAndChartContainer.classList.remove('hidden');
         recipeContentContainer.classList.add('hidden');
         if(!isMobile) recipeMainPanel?.classList.remove('hidden');
-        return;  
+        return;
     }
     if (welcomeAndChartContainer) welcomeAndChartContainer.classList.add('hidden');
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
-    
+
     recipeContentContainer.innerHTML = `
         <div class="mb-4">
             <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
@@ -1580,17 +1535,14 @@ function renderLibraryDetails() {
     applyTranslations();
 }
 
-// Environment variables injected at build time
 const __firebase_config = "%%FIREBASE_CONFIG%%";
 const __app_id = "%%APP_ID%%";
 
 async function initializeFirebase() {
-    // These global variables are expected to be injected by the environment.
     if (typeof __firebase_config === 'undefined' || typeof __app_id === 'undefined' || __firebase_config === "%%FIREBASE_CONFIG%%" || __app_id === "%%APP_ID%%") {
         console.warn("Firebase config not found. Trending feature will be disabled.");
         return;
     }
-
     try {
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
@@ -1600,7 +1552,7 @@ async function initializeFirebase() {
         console.log("Firebase initialized and user signed in anonymously.");
     } catch (error) {
         console.error("Firebase initialization failed:", error);
-        state.firebase.db = null; 
+        state.firebase.db = null;
     }
 }
 
@@ -1631,7 +1583,7 @@ async function init() {
                 tooltipEl.innerHTML = explanation;
                 const titleRect = title.getBoundingClientRect();
                 tooltipEl.style.left = `${titleRect.left + window.scrollX}px`;
-                tooltipEl.style.top = `${titleRect.top + window.scrollY - tooltipEl.offsetHeight - 8}px`;
+                tooltipEl.style.top = `${titleRect.bottom + window.scrollY + 8}px`; // Position below the title
                 tooltipEl.classList.remove('hidden');
                 setTimeout(() => tooltipEl.classList.add('visible'), 10);
             }
@@ -1650,8 +1602,8 @@ async function init() {
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
         const trendingItem = target.closest('.trending-item');
-        
         const collageItem = target.closest('.collage-item');
+
         if (collageItem) {
             const imgSrc = collageItem.dataset.lightboxSrc;
             if (imgSrc) {
@@ -1667,28 +1619,27 @@ async function init() {
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) {
             resetToChartView();
-            return; 
+            return;
         }
-        
+
         if (target.closest('#quizModal')) {
             if (target.closest('#closeQuizBtn')) { closeQuiz(); return; }
             if (target.closest('#retakeQuizBtn')) { state.quiz.currentQuestionIndex = 0; state.quiz.answers = []; renderQuizQuestion(); return; }
-            if (target.closest('#viewResultBtn')) { 
+            if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
-                closeQuiz(); 
-                await renderView('recipeFormulas', recipeId); 
-                return; 
+                closeQuiz();
+                await renderView('recipeFormulas', recipeId);
+                return;
             }
             if (target.closest('.quiz-option')) { handleQuizAnswer(e); return; }
         }
-        
+
         if (target.closest('#aiLabModal')) {
             if (target.closest('#closeAILabBtn')) { closeAILab(); return; }
-            if (target.closest('#cancelAIBtn')) { 
-                if (state.ai.abortController) state.ai.abortController.abort();
-                Object.assign(state.ai, { expertPrompt: '', userPrompt: '', generatedRecipe: null, generationPromise: null, abortController: null });
-                renderAILab();
-                return; 
+            if (target.closest('#cancelAIBtn')) {
+                 Object.assign(state.ai, { userPrompt: '', generatedRecipe: null });
+                 renderAILab();
+                 return;
             }
             if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
@@ -1717,9 +1668,8 @@ async function init() {
         if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) { startQuiz(); return; }
         if (target.closest('#tweakWithAIBtn')) { openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId); return; }
         if (target.closest('#captionAIBtn')) { openCaptionLab(target.closest('#captionAIBtn').dataset.recipeId); return; }
-        
+
         if (navBtn) {
-            // If user is already on the recipe page and clicks the nav link, reset to chart view
             if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
                 resetToChartView();
             } else {
@@ -1730,7 +1680,7 @@ async function init() {
             }
             return;
         }
-        
+
         if (langBtn) {
             state.currentLang = langBtn.id === 'langEN' ? 'en' : 'vi';
             updateLangSlider();
@@ -1747,21 +1697,15 @@ async function init() {
             return;
         }
 
-        if (recipeItem) {
-            handleRecipeSelection(recipeItem.dataset.recipeId);
-            return;
-        }
-        if (trendingItem) {
-            handleRecipeSelection(trendingItem.dataset.recipeId);
-            return;
-        }
+        if (recipeItem) { handleRecipeSelection(recipeItem.dataset.recipeId); return; }
+        if (trendingItem) { handleRecipeSelection(trendingItem.dataset.recipeId); return; }
     });
-    
+
     const closeLightbox = () => {
         lightbox.classList.remove('visible');
         setTimeout(() => {
             lightbox.classList.add('hidden');
-            lightboxImage.src = ''; 
+            lightboxImage.src = '';
         }, 300);
     };
     lightboxClose.addEventListener('click', closeLightbox);
@@ -1782,4 +1726,3 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
-
