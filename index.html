@@ -418,7 +418,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <span class="hidden sm:inline">VIE</span>
                 </button>
                 <button id="langEN" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-5 rounded-sm"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-5 rounded-sm"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
                     <span class="hidden sm:inline">ENG</span>
                 </button>
             </div>
@@ -510,10 +510,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 // --- Firebase SDK Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp,doc,onSnapshot,getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- CONFIGURATION & STATE ---
-const API_KEY = "AIzaSyDxctVkghoMzVFNTLbIfHmHQ_szw-omYbQ";
+// SECURITY UPDATE: API Key is now a placeholder. It must be replaced during the build/deployment process.
+const API_KEY = "%%GEMINI_API_KEY%%"; 
+const isAIEnabled = API_KEY && API_KEY !== '%%GEMINI_API_KEY%%';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
 
 const state = {
@@ -633,6 +635,7 @@ const translations = {
     aiErrorTitle: {vi: "Đã có lỗi xảy ra", en: "An Error Occurred"},
     aiErrorText: {vi: "Rất tiếc, không thể tạo công thức lúc này.<br>Vui lòng kiểm tra lại API Key hoặc thử lại sau.", en: "Sorry, the recipe could not be generated at this time.<br>Please check your API Key or try again later."},
     tweakWithAI: {vi: "Tinh chỉnh với Gemini AI", en: "Tweak with Gemini AI"},
+    aiKeyNotConfigured: { vi: "Chưa cấu hình Gemini API Key", en: "Gemini API Key not configured" },
     // Caption AI Translations
     captionLabTitle: {vi: "Trợ lý Caption Viral", en: "Viral Caption Assistant"},
     captionLabDescription: {vi: "Nhập ý tưởng cho bài đăng của bạn.<br>AI sẽ giúp bạn viết một caption thật 'chất' theo phong cách màu <b>{recipeName}</b>.", en: "Enter an idea for your post.<br>AI will help you write a captivating caption in the <b>{recipeName}</b> color style."},
@@ -711,14 +714,17 @@ function createFullRecipeHTML(recipe) {
         recipe.detailSettings ? { titleKey: 'detailTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.detailSettings)}</div>` } : null
     ].filter(Boolean);
     
+    // Disable AI buttons if API key is not configured
+    const aiDisabledAttr = !isAIEnabled ? `disabled title="${t('aiKeyNotConfigured')}"` : '';
+
     return `
         ${createCollageHTML(recipe.demoImages)}
         <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
-            <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}">
+            <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                 <span data-translate-key="tweakWithAI"></span>
             </button>
-            <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 shadow-lg shadow-purple-500/30" id="captionAIBtn" data-recipe-id="${recipe.id}">
+            <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 shadow-lg shadow-purple-500/30" id="captionAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
                 <span data-translate-key="captionFromAI"></span>
             </button>
@@ -960,9 +966,8 @@ function displayTrendingRecipes(trendingIDs) {
 }
 
 
-// --- Replace your old function with this new one ---
-
-async function listenForTrendingRecipes() {
+// --- LOGIC IMPROVEMENT: Renamed function for clarity ---
+async function fetchTrendingRecipes() {
     const container = document.getElementById('trendingContainer');
     if (!container) return;
 
@@ -975,34 +980,27 @@ async function listenForTrendingRecipes() {
     }
 
     try {
-        // Correctly reference the 'recipeViews' collection using state.firebase.db
+        // Correctly reference the 'recipeViews' collection using the initialized db instance
         const recipeViewsRef = collection(state.firebase.db, "recipeViews");
         const querySnapshot = await getDocs(recipeViewsRef);
 
         if (querySnapshot.empty) {
-            // This case handles when the collection exists but has no documents.
             console.log("No recipe views found, using mock data.");
             const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
             displayTrendingRecipes(mockTrendingIDs);
             return;
         }
 
-        // --- Logic to count views and find the most popular recipes ---
-
+        // Count views and find the most popular recipes
         const viewCounts = {};
-        // 1. Loop through every document in the 'recipeViews' collection
         querySnapshot.forEach(doc => {
             const data = doc.data();
             if (data.recipe_id) {
-                // 2. For each recipe_id, increment its count
                 viewCounts[data.recipe_id] = (viewCounts[data.recipe_id] || 0) + 1;
             }
         });
 
-        // 3. Sort the recipe_ids by their view count (most popular first)
         const sortedRecipeIDs = Object.keys(viewCounts).sort((a, b) => viewCounts[b] - viewCounts[a]);
-
-        // 4. Get the top 4 trending recipes
         const trendingIDs = sortedRecipeIDs.slice(0, 4);
 
         console.log("Fetched trending IDs from Firestore:", trendingIDs);
@@ -1451,33 +1449,35 @@ function handleRecipeSelection(id) {
     renderLibraryDetails();
     updateChartSelection();
 
-    // Push event to dataLayer for Google Tag Manager
     if (state.selectedRecipeId) {
-    // 1. Find the recipe using the CORRECT id
-    const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+        const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+        if (recipe) {
+            // Push event to dataLayer for Google Tag Manager
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'view_recipe',
+                recipe_id: recipe.id,
+                recipe_name: recipe.name.en,
+                recipe_name_vi: recipe.name.vi
+            });
 
-    if (recipe) {
-        // 2. Push to dataLayer for Google Analytics (your original code, fixed)
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            event: 'view_recipe',
-            recipe_id: recipe.id,
-            recipe_name: recipe.name.en,
-            recipe_name_vi: recipe.name.vi
-        });
-
-        // 3. Save the event to Firestore (the new functionality)
-        logRecipeViewToFirebase(recipe);
+            // Save the event to Firestore
+            logRecipeViewToFirebase(recipe);
+        }
     }
-}}
+}
     
 
-
-// --- Paste this helper function elsewhere in your file ---
+// --- LOGIC IMPROVEMENT: This function now correctly uses the initialized Firestore instance ---
 async function logRecipeViewToFirebase(recipe) {
+    // Check if Firestore DB is initialized before using it.
+    if (!state.firebase.db) {
+        console.warn("Firestore is not initialized. Skipping log.");
+        return;
+    }
     try {
-        const db = getFirestore();
-        const docRef = await addDoc(collection(db, "recipeViews"), {
+        // Use the db instance from the global state.
+        const docRef = await addDoc(collection(state.firebase.db, "recipeViews"), {
             recipe_id: recipe.id,
             recipe_name: recipe.name.en,
             recipe_name_vi: recipe.name.vi,
@@ -1485,7 +1485,7 @@ async function logRecipeViewToFirebase(recipe) {
         });
         console.log("Recipe view logged with ID: ", docRef.id);
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error adding document to Firestore: ", e);
     }
 }
 
@@ -1505,7 +1505,8 @@ function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
         renderLibraryList();  
         renderLibraryDetails();
-        listenForTrendingRecipes();
+        // LOGIC IMPROVEMENT: Call the renamed function
+        fetchTrendingRecipes();
         
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
@@ -1740,7 +1741,7 @@ async function init() {
                     renderLibraryDetails();
                 } else {
                     renderColorMapChart('#colorMapContainer', recipesData);
-                    listenForTrendingRecipes();
+                    fetchTrendingRecipes();
                 }
             }
             return;
@@ -1781,3 +1782,4 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
+
