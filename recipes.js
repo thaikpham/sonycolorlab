@@ -940,6 +940,29 @@ const recipesData = [
             "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+3"
         ]
     }
+            "id": "PROCOLOR-001",
+        "name": { "vi": "PROCOLOR-001: ClearCast Pro", "en": "PRO-SCL-001: ClearCast Pro" },
+        "formattedName": "PRO-SCL-001: ClearCast Pro",
+        "description": {
+            "en": "A color recipe for crystal-clear images, featuring rich colors on a neutral foundation. Specially designed for livestreaming, it renders Asian skin tones authentically and radiantly.",
+            "vi": "Công thức màu cho hình ảnh trong trẻo, sắc màu đậm đà trên một tông nền trung tính. Được thiết kế chuyên biệt cho livestream, giúp tái tạo màu da Á Đông một cách chân thực và rạng rỡ."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["pro-color", "live-stream", "neutral", "lips", "portrait", "color", "high-contrast", "crystal-clear"],
+        "whiteBalance": "AWB, A3-M2.75",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Auto", "Color Mode": "Movie", "Saturation": "+8", "Color Phase": "0" },
+        "colorDepth": { "R": "-2", "G": "0", "B": "+2", "C": "0", "M": "+1", "Y": "-2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#708090",
+        "coords": { "x": 1, "y": 1 },
+        "demoImages": [
+            "https://lh3.googleusercontent.com/pw/AP1GczPmLIHsjvNCznHFuucwCpJ4U2ru2MYo_-WZDeqHUPr3gTbk3cMJelWjvIki5wRPx1a-M-asYIyOhqvPnFY825DJCP_pLm3eE5zcjfyaFrMJ3Tnl3JLp14qCokZCqmaH3IWrxVYEYnphPhsMsjR93BVRGg=w481-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczPxaOjzhD4jE_WqMK3d_-E0xMbf62ixSg0ccUYS51nYXHOk-y4HJ3wwq3F3Hmd51W_jjYo0JWWCTMLQ1vhmOTCV7YXO6eBW1_CmzD0bRY9Iv2u24oYSctIa0TolR1beQFo7sFoE5UaWCoN4rpl50GwnUw=w481-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczOukBYkXG6Tx4wyZVr6SG-4KO7SDu_hOHlqqWH7lXECgaSQd-E1Y5Gei5OM7tpYtdqJPG3T3GviII7Lbq3ytJpFe5hn2j2eZmQYOkyhIVlronmdHn2p-i_Ikfg4JQNMCa7GOALUFPOTUSVGW1MTgVr5bA=w484-h1048-s-no?authuser=0"
+                 ]
+    }
 ];
 
 export default recipesData;
