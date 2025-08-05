@@ -964,5 +964,3 @@ const recipesData = [
                  ]
     }
 ];
-
-export default recipesData;
