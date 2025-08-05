@@ -939,7 +939,7 @@ const recipesData = [
             "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+2",
             "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+3"
         ]
-    }
+    },
             "id": "PROCOLOR-001",
         "name": { "vi": "PROCOLOR-001: ClearCast Pro", "en": "PRO-SCL-001: ClearCast Pro" },
         "formattedName": "PRO-SCL-001: ClearCast Pro",
