@@ -952,16 +952,17 @@ const recipesData = [
         "contrast": "normal",
         "saturation": "normal",
         "tags": ["pro-color", "live-stream", "neutral", "lips", "portrait", "color", "high-contrast", "crystal-clear"],
-        "whiteBalance": "AWB, A3-M2.75",
-        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Auto", "Color Mode": "Movie", "Saturation": "+8", "Color Phase": "0" },
-        "colorDepth": { "R": "-2", "G": "0", "B": "+2", "C": "0", "M": "+1", "Y": "-2" },
+        "whiteBalance": "AWB, B1-M0.75",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Auto", "Color Mode": "Movie", "Saturation": "+5", "Color Phase": "0" },
+        "colorDepth": { "R": "-1", "G": "-1", "B": "+1", "C": "+1", "M": "+1", "Y": "-1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#708090",
         "coords": { "x": 1, "y": 1 },
         "demoImages": [
             "https://lh3.googleusercontent.com/pw/AP1GczPmLIHsjvNCznHFuucwCpJ4U2ru2MYo_-WZDeqHUPr3gTbk3cMJelWjvIki5wRPx1a-M-asYIyOhqvPnFY825DJCP_pLm3eE5zcjfyaFrMJ3Tnl3JLp14qCokZCqmaH3IWrxVYEYnphPhsMsjR93BVRGg=w481-h1048-s-no?authuser=0",
             "https://lh3.googleusercontent.com/pw/AP1GczPxaOjzhD4jE_WqMK3d_-E0xMbf62ixSg0ccUYS51nYXHOk-y4HJ3wwq3F3Hmd51W_jjYo0JWWCTMLQ1vhmOTCV7YXO6eBW1_CmzD0bRY9Iv2u24oYSctIa0TolR1beQFo7sFoE5UaWCoN4rpl50GwnUw=w481-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOukBYkXG6Tx4wyZVr6SG-4KO7SDu_hOHlqqWH7lXECgaSQd-E1Y5Gei5OM7tpYtdqJPG3T3GviII7Lbq3ytJpFe5hn2j2eZmQYOkyhIVlronmdHn2p-i_Ikfg4JQNMCa7GOALUFPOTUSVGW1MTgVr5bA=w484-h1048-s-no?authuser=0"
+            "https://lh3.googleusercontent.com/pw/AP1GczOukBYkXG6Tx4wyZVr6SG-4KO7SDu_hOHlqqWH7lXECgaSQd-E1Y5Gei5OM7tpYtdqJPG3T3GviII7Lbq3ytJpFe5hn2j2eZmQYOkyhIVlronmdHn2p-i_Ikfg4JQNMCa7GOALUFPOTUSVGW1MTgVr5bA=w484-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczOiKfRCji6HVmrDbEjGkPSMq2AhbTcb_yrVtbh_jB_sdosTRQqgZrQNpi10frovhZfIOQiaTkwpM297DcA1cLf5VtZLYh6MjOXRd1itNsZZF5BJlJ4_CloE9YdOIF9ceLzlVymOP55hTkYJQ4_D3edM-Q=w484-h1048-s-no?authuser=0"
         ]
     }
 ];
