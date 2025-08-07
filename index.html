@@ -44,37 +44,36 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     :root {
         --primary-accent: #007AFF;
         --primary-accent-darker: #0056B3;
-        --glass-bg: rgba(255, 255, 255, 0.65); /* Made glass slightly more opaque */
+        --glass-bg: rgba(255, 255, 255, 0.65);
         --glass-border: rgba(0, 0, 0, 0.05);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
-        /* NEW: Professional easing functions for smoother animations */
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
         --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
     }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #f4f5f7; /* Slightly warmer off-white for a softer feel */
+        background-color: #f4f5f7;
         color: var(--text-primary);
         overflow-x: hidden;
         overflow-y: auto;
-        position: relative; /* Required for background elements */
+        position: relative;
     }
 
-    /* --- NEW: Animated Gradient Blobs for Homepage --- */
+    /* --- PERFORMANCE OPTIMIZATION for Animated Blobs --- */
     .bg-blob {
         position: fixed;
         border-radius: 50%;
-        filter: blur(100px); /* Increased blur for a softer effect */
+        filter: blur(100px);
         opacity: 0;
         z-index: -1;
-        /* Smoother transition for visibility */
         transition: opacity 1.5s var(--ease-out-cubic);
-        /* The core animation */
         animation: move 25s infinite alternate var(--ease-in-out-quint);
+        /* Hint to the browser to optimize animations */
+        will-change: transform, opacity;
     }
     .bg-blob.visible {
-        opacity: 0.15; /* Reduced opacity for subtlety */
+        opacity: 0.15;
     }
     .bg-blob-1 { width: 450px; height: 450px; background: #ffae00; animation-duration: 30s; }
     .bg-blob-2 { width: 550px; height: 550px; background: #3498db; animation-duration: 25s; animation-delay: -5s; }
@@ -91,7 +90,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         backdrop-filter: blur(50px) saturate(180%);    
         -webkit-backdrop-filter: blur(50px) saturate(180%);    
         border: 1px solid var(--glass-border);    
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); /* Softer, more diffuse shadow */
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
         border-radius: 24px;
         transition: all 0.4s var(--ease-out-cubic);
     }
@@ -104,7 +103,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .recipe-item.selected {    
         background-color: rgba(0, 122, 255, 0.1);    
         color: var(--text-primary);    
-        transform: translateX(4px) scale(1.02); /* Added scale for pop effect */
+        transform: translateX(4px) scale(1.02);
         border-left-color: var(--glow-color);
         box-shadow: 0 0 20px -2px var(--glow-color);
     }
@@ -124,13 +123,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.45); }
     .btn:active { transform: translateY(0px) scale(0.97); }
 
-    /* --- NEW: Refined & Unified View Transitions --- */
+    /* --- Refined & Unified View Transitions --- */
     .view-transition {
         animation: fadeInScale 0.7s var(--ease-out-cubic) forwards;
     }
     .view-transition-out {
         animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards;
-        position: absolute; /* Keep it from affecting layout during transition */
+        position: absolute;
     }
     @keyframes fadeInScale {
         from { opacity: 0; transform: scale(0.98); }
@@ -141,7 +140,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         to { opacity: 0; transform: scale(0.98); }
     }
 
-    /* --- NEW: Staggered List Animation --- */
+    /* --- Staggered List Animation --- */
     .recipe-item-stagger {
         opacity: 0;
         transform: translateY(20px);
@@ -151,7 +150,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         to { opacity: 1; transform: translateY(0); }
     }
     
-    /* --- NEW: Homepage Content Animations --- */
+    /* --- Homepage Content Animations --- */
     .home-content-anim {
         opacity: 0;
         transform: translateY(25px);
@@ -167,14 +166,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         animation: pulse-slow 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
-    /* --- Sleek Scrollbar (Unchanged) --- */
+    /* --- Sleek Scrollbar --- */
     .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
     .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .sleek-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0); border-radius: 20px; border: 3px solid transparent; }
     .sleek-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); }
     .sleek-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.4); }
 
-    /* --- Other styles (Modals, Quiz, etc.) are largely unchanged --- */
+    /* --- Other styles --- */
     .modal.hidden { display: none; }
     .modal-panel { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e5e7eb; }
     .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
@@ -328,9 +327,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0-1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0-1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" /></svg>
                 </div>
                  <h2 class="text-xl font-bold" data-translate-key="aiLabTitle"></h2>
             </div>
@@ -347,9 +344,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg">
-                     <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                         <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" />
-                    </svg>
+                     <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
                 </div>
                  <h2 class="text-xl font-bold" data-translate-key="captionLabTitle"></h2>
             </div>
@@ -452,17 +447,17 @@ const quizQuestions = [
 const translations = {
     headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-    landingTitle: {vi:"Tìm kiếm<br>phong cách của bạn", en:"Find Your<br>Signature Style"},
+    landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
     startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
     findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
     quizTitle: {vi: "Trắc nghiệm Tìm màu", en: "Color Finder Quiz"},
     quizResultTitle: {vi: "Gợi ý cho bạn!", en: "Our Suggestion For You!"},
-    quizResultDescription: {vi: "Dựa trên câu trả lời của bạn,<br>chúng tôi nghĩ bạn sẽ thích công thức này:", en: "Based on your answers,<br>we think you'll love this recipe:"},
+    quizResultDescription: {vi: "Dựa trên câu trả lời của bạn, chúng tôi nghĩ bạn sẽ thích công thức này:", en: "Based on your answers, we think you'll love this recipe:"},
     viewRecipeBtn: {vi: "Xem chi tiết công thức", en: "View Recipe Details"},
     retakeQuizBtn: {vi: "Làm lại trắc nghiệm", en: "Retake Quiz"},
     searchInputPlaceholder: {vi: "Tìm công thức...", en: "Search recipes..."},
-    recipeDetailWelcomeTitle: {vi: "Bản đồ màu<br>Tương tác", en: "Interactive<br>Color Map"},
-    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan.<br>Chọn một công thức trong danh sách hoặc trên biểu đồ để xem chi tiết.", en: "Explore color recipes visually.<br>Select a recipe from the list or the chart to see details."},
+    recipeDetailWelcomeTitle: {vi: "Bản đồ màu Tương tác", en: "Interactive Color Map"},
+    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan. Chọn một công thức trong danh sách hoặc trên biểu đồ để xem chi tiết.", en: "Explore color recipes visually. Select a recipe from the list or the chart to see details."},
     whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
     recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
     colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
@@ -471,29 +466,27 @@ const translations = {
     backToChartBtn: {vi: "← Quay lại Bản đồ màu", en: "← Back to Color Map"},
     backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
     ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
-    ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b><br>với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group<br>with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
+    ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
     ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
     trendingTitle: {vi: "Thịnh hành nhất", en: "Trending Now"},
-    // AI Lab Translations
     aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
-    aiLabDescription: {vi: "Mô tả phong cách bạn muốn,<br>Gemini sẽ tinh chỉnh công thức màu <b>{recipeName}</b> cho bạn.", en: "Describe the style you want,<br>and Gemini will tweak the <b>{recipeName}</b> recipe for you."},
+    aiLabDescription: {vi: "Mô tả phong cách bạn muốn, Gemini sẽ tinh chỉnh công thức màu <b>{recipeName}</b> cho bạn.", en: "Describe the style you want, and Gemini will tweak the <b>{recipeName}</b> recipe for you."},
     aiPromptPlaceholder: {vi: "VD: tông màu trong trẻo, hơi ngả xanh như phim của Wes Anderson...", en: "E.g., a clean, slightly teal look like a Wes Anderson film..."},
     aiGenerateBtn: {vi: "Tinh chỉnh với AI", en: "Tweak with AI"},
     aiConfirmPromptTitle: {vi: "Xác nhận yêu cầu", en: "Confirm Request"},
-    aiConfirmPromptText: {vi: "OK! Tôi sẽ tạo một phiên bản mới của <b>{recipeName}</b><br>với phong cách <i>\"{userPrompt}\"</i>. Tiếp tục nhé?", en: "Got it! I will generate a new version of <b>{recipeName}</b><br>with a style inspired by <i>\"{userPrompt}\"</i>. Shall we proceed?"},
+    aiConfirmPromptText: {vi: "OK! Tôi sẽ tạo một phiên bản mới của <b>{recipeName}</b> với phong cách <i>\"{userPrompt}\"</i>. Tiếp tục nhé?", en: "Got it! I will generate a new version of <b>{recipeName}</b> with a style inspired by <i>\"{userPrompt}\"</i>. Shall we proceed?"},
     aiConfirmBtn: {vi: "Đồng ý", en: "Confirm & Generate"},
     aiCancelBtn: {vi: "Hủy", en: "Cancel"},
     aiComparisonTitle: {vi: "Kết quả từ Gemini AI", en: "Result from Gemini AI"},
-    aiComparisonDescription: {vi: "Đây là phiên bản mới được tạo dựa trên yêu cầu của bạn.<br>Các thông số thay đổi đã được làm nổi bật.", en: "Here is the new version based on your request.<br>Changed parameters are highlighted."},
+    aiComparisonDescription: {vi: "Đây là phiên bản mới được tạo dựa trên yêu cầu của bạn. Các thông số thay đổi đã được làm nổi bật.", en: "Here is the new version based on your request. Changed parameters are highlighted."},
     aiOriginalTitle: {vi: "Công thức gốc", en: "Original Recipe"},
     aiNewTitle: {vi: "Công thức mới (AI)", en: "New Recipe (AI)"},
     aiErrorTitle: {vi: "Đã có lỗi xảy ra", en: "An Error Occurred"},
-    aiErrorText: {vi: "Rất tiếc, không thể tạo công thức lúc này.<br>Vui lòng kiểm tra lại API Key hoặc thử lại sau.", en: "Sorry, the recipe could not be generated at this time.<br>Please check your API Key or try again later."},
+    aiErrorText: {vi: "Rất tiếc, không thể tạo công thức lúc này. Vui lòng kiểm tra lại API Key hoặc thử lại sau.", en: "Sorry, the recipe could not be generated at this time. Please check your API Key or try again later."},
     tweakWithAI: {vi: "Tinh chỉnh với Gemini AI", en: "Tweak with Gemini AI"},
     aiKeyNotConfigured: { vi: "Chưa cấu hình Gemini API Key", en: "Gemini API Key not configured" },
-    // Caption AI Translations
     captionLabTitle: {vi: "Trợ lý Caption Viral", en: "Viral Caption Assistant"},
-    captionLabDescription: {vi: "Nhập ý tưởng cho bài đăng của bạn.<br>AI sẽ giúp bạn viết một caption thật 'chất' theo phong cách màu <b>{recipeName}</b>.", en: "Enter an idea for your post.<br>AI will help you write a captivating caption in the <b>{recipeName}</b> color style."},
+    captionLabDescription: {vi: "Nhập ý tưởng cho bài đăng của bạn. AI sẽ giúp bạn viết một caption thật 'chất' theo phong cách màu <b>{recipeName}</b>.", en: "Enter an idea for your post. AI will help you write a captivating caption in the <b>{recipeName}</b> color style."},
     captionPromptPlaceholder: {vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt...", en: "E.g., a sunset afternoon in Dalat..."},
     generateCaptionBtn: {vi: "Tạo Caption", en: "Generate Caption"},
     captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
@@ -541,7 +534,7 @@ function createFullRecipeHTML(recipe) {
         const count = Math.min(images.length, 6);
         const imageElements = images.slice(0, count).map((img, index) =>
             `<div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
-                <img src="${img}" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image ${index + 1}">
+                <img src="${img}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image ${index + 1}">
             </div>`
         ).join('');
         return `<div class="photo-collage images-${count}">${imageElements}</div>`;
@@ -600,7 +593,7 @@ const viewTemplates = {
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-8 w-full max-w-6xl mx-auto items-center">
                 <div class="md:col-span-2 text-center md:text-left">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4 home-content-anim" style="animation-delay: 0.2s;" data-translate-key="landingTitle"></h1>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4 home-content-anim max-w-md mx-auto md:mx-0" style="animation-delay: 0.2s;" data-translate-key="landingTitle"></h1>
                     <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center md:justify-start home-content-anim" style="animation-delay: 0.4s;">
                         <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
@@ -653,7 +646,7 @@ function renderColorMapChart(containerSelector, data) {
         console.warn("Chart container not found or no data provided.");
         return;
     }
-    container.html(''); // Clear previous chart
+    container.html('');
 
     const bounds = container.node().getBoundingClientRect();
     if (bounds.width === 0 || bounds.height === 0) {
