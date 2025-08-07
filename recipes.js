@@ -20,8 +20,7 @@ const recipesData = [
         "demoImages": [
             "https://lh3.googleusercontent.com/pw/AP1GczPPT3oBJKObBMX8NEdTxe-PLC2BEd0eRGUMSUiYxocel93ljDNFyG58LJiiPhijnKyWkjJbkSim54sWvSLrRxeM22uF82BlckublQ4qsSic7gwhAVe-XX0jEzRuxDJG7j25PHU6tLUGIT0IRHjy_AvXuQ=w1658-h1105-s-no?authuser=0",
             "https://lh3.googleusercontent.com/pw/AP1GczPC_ounREkB_Q6oj6ZM7ckVGcKKZ_saJP5O63nURHPk09iTI8l4YwSqUzyxJm8ZG760nUJhm5JgmMWyk4uGlDDaaWwjJJPO4E9IAoF1pNfMHqx-2g3OcDS2COZ1w93K8j16X08W24leuMEhZvXx6L4uyw=w736-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPwAttTxhJ89lhQ4Lbp9Klq73D30WWsG21oDGzsTZ9ig_5IYa3hLxdsQnMIb-8xJF-SOUMsNjaoGm-1RbfHrcRDn8lrLR7krn4ubwBkoe7fKqWes36h-8T05_EvDvJiHM04HZYdZzSkJ_4O2y7yhyXc3A=w1658-h1105-s-no?authuser=0",
-            "https://scontent-mxp2-1.xx.fbcdn.net/v/t39.30808-6/524715467_23871084269186656_4899892423308509034_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=24ef35&_nc_eui2=AeGdewaeMibHCZ0p8AZgnnHodzaivFYyjk53NqK8VjKOTgD28VtuYUtFFu37dUHp8v0okvz6FCq0BP3JCDnZ8DgS&_nc_ohc=evaYHCdfjMcQ7kNvwF_8WCn&_nc_oc=AdnstQUm2jMUPRkRipKC7Iort2IuqLjgMEeHd1k15NxJqZLEpVGMMDYX7UGBlUBOVqWqJVcdoEj8OVf-D4FQUe9G&_nc_zt=23&_nc_ht=scontent-mxp2-1.xx&_nc_gid=XlqPHHDl2gNc5o586u2hkg&oh=00_AfT_nXeytsXonahqI4CAPN73kT82CCPw_jB5rMvjIqh6DQ&oe=68911A5A"
+            "https://lh3.googleusercontent.com/pw/AP1GczPwAttTxhJ89lhQ4Lbp9Klq73D30WWsG21oDGzsTZ9ig_5IYa3hLxdsQnMIb-8xJF-SOUMsNjaoGm-1RbfHrcRDn8lrLR7krn4ubwBkoe7fKqWes36h-8T05_EvDvJiHM04HZYdZzSkJ_4O2y7yhyXc3A=w1658-h1105-s-no?authuser=0"
         ]
     },
     {
@@ -616,7 +615,7 @@ const recipesData = [
         "contrast": "normal",
         "saturation": "high",
         "tags": ["hlg", "hybrid-log-gamma", "wide-dynamic-range", "high-saturation", "vivid", "impactful", "cinematic-feel", "surreal", "high-energy-shots"],
-        "whiteBalance": "3900K, A7",
+        "whiteBalance": "3500K, A7",
         "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto", "Color Mode": "BT.2020", "Saturation": "+32", "Color Phase": "+7" },
         "colorDepth": { "R": "-4", "G": "-1", "B": "+5", "C": "+4", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "0" },
