@@ -26,7 +26,7 @@
 }">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://d3js.org/d3.v7.min.js"></script> <!-- D3.js Library Added -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -39,358 +39,210 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     
 <style>
+    /* --- REFINED STYLES & ANIMATION OVERHAUL --- */
     html { scroll-behavior: smooth; }
-    body {
-        font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #f8f9fa; /* Softer background color */
-        color: #1d1d1f;
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
     :root {
         --primary-accent: #007AFF;
         --primary-accent-darker: #0056B3;
-        --glass-bg: rgba(255, 255, 255, 0.55); /* Refined glass effect */
-        --glass-border: rgba(0, 0, 0, 0.07);
+        --glass-bg: rgba(255, 255, 255, 0.65); /* Made glass slightly more opaque */
+        --glass-border: rgba(0, 0, 0, 0.05);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
+        /* NEW: Professional easing functions for smoother animations */
+        --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
+        --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
     }
+    body {
+        font-family: 'Be Vietnam Pro', sans-serif;
+        background-color: #f4f5f7; /* Slightly warmer off-white for a softer feel */
+        color: var(--text-primary);
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: relative; /* Required for background elements */
+    }
+
+    /* --- NEW: Animated Gradient Blobs for Homepage --- */
+    .bg-blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(100px); /* Increased blur for a softer effect */
+        opacity: 0;
+        z-index: -1;
+        /* Smoother transition for visibility */
+        transition: opacity 1.5s var(--ease-out-cubic);
+        /* The core animation */
+        animation: move 25s infinite alternate var(--ease-in-out-quint);
+    }
+    .bg-blob.visible {
+        opacity: 0.15; /* Reduced opacity for subtlety */
+    }
+    .bg-blob-1 { width: 450px; height: 450px; background: #ffae00; animation-duration: 30s; }
+    .bg-blob-2 { width: 550px; height: 550px; background: #3498db; animation-duration: 25s; animation-delay: -5s; }
+    .bg-blob-3 { width: 400px; height: 400px; background: #e74c3c; animation-duration: 35s; animation-delay: -10s; }
+
+    @keyframes move {
+        from { transform: translate(var(--start-x), var(--start-y)) rotate(0deg) scale(1); }
+        to { transform: translate(var(--end-x), var(--end-y)) rotate(360deg) scale(1.2); }
+    }
+
+    /* --- Core Component Styling --- */
     .glass-panel {    
         background: var(--glass-bg);    
-        backdrop-filter: blur(40px) saturate(180%);    
-        -webkit-backdrop-filter: blur(40px) saturate(180%);    
+        backdrop-filter: blur(50px) saturate(180%);    
+        -webkit-backdrop-filter: blur(50px) saturate(180%);    
         border: 1px solid var(--glass-border);    
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Refined shadow */
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); /* Softer, more diffuse shadow */
         border-radius: 24px;
+        transition: all 0.4s var(--ease-out-cubic);
     }
     @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
     
     .recipe-item {
         border-left: 4px solid transparent;
-        transition: all 0.2s ease-in-out;
+        transition: all 0.3s var(--ease-out-cubic);
     }
     .recipe-item.selected {    
         background-color: rgba(0, 122, 255, 0.1);    
         color: var(--text-primary);    
-        transform: translateX(4px);
+        transform: translateX(4px) scale(1.02); /* Added scale for pop effect */
         border-left-color: var(--glow-color);
-        box-shadow: 0 0 15px -2px var(--glow-color); /* The glow effect */
+        box-shadow: 0 0 20px -2px var(--glow-color);
     }
-    .recipe-item:hover:not(.selected) { background-color: rgba(0, 0, 0, 0.04); }
-    
-    /* New highlight style for hover sync */
+    .recipe-item:hover:not(.selected) { 
+        background-color: rgba(0, 0, 0, 0.04);
+        transform: translateX(2px);
+    }
     .recipe-item.hover-highlight:not(.selected) {
-        background-color: rgba(230, 242, 255, 0.8); /* A light blue glow */
+        background-color: rgba(230, 242, 255, 0.8);
         box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.15);
         transform: translateX(2px);
     }
 
-    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;}
+    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transform: scale(1); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
-    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 18px rgba(0, 118, 255, 0.45); }
-    .btn:active { transform: translateY(0px) scale(0.98); }
+    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.45); }
+    .btn:active { transform: translateY(0px) scale(0.97); }
 
-    .view-transition { animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-    .view-transition-out { animation: fadeOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+    /* --- NEW: Refined & Unified View Transitions --- */
+    .view-transition {
+        animation: fadeInScale 0.7s var(--ease-out-cubic) forwards;
+    }
+    .view-transition-out {
+        animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards;
+        position: absolute; /* Keep it from affecting layout during transition */
+    }
+    @keyframes fadeInScale {
+        from { opacity: 0; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeOutScale {
+        from { opacity: 1; transform: scale(1); }
+        to { opacity: 0; transform: scale(0.98); }
+    }
+
+    /* --- NEW: Staggered List Animation --- */
+    .recipe-item-stagger {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
+    }
+    @keyframes listItemFadeIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
     
-    /* Sleek Scrollbar */
+    /* --- NEW: Homepage Content Animations --- */
+    .home-content-anim {
+        opacity: 0;
+        transform: translateY(25px);
+        animation: homeContentFadeIn 0.8s var(--ease-out-cubic) forwards;
+    }
+    @keyframes homeContentFadeIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-slow {
+        50% { opacity: 0.8; transform: scale(1.03); }
+    }
+    .animate-pulse-slow {
+        animation: pulse-slow 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* --- Sleek Scrollbar (Unchanged) --- */
     .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
     .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .sleek-scrollbar::-webkit-scrollbar-thumb {
-        background-color: rgba(0,0,0,0);
-        border-radius: 20px;
-        border: 3px solid transparent;
-    }
-    .sleek-scrollbar:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(0,0,0,0.2);
-    }
-    .sleek-scrollbar::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(0,0,0,0.4);
-    }
+    .sleek-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0); border-radius: 20px; border: 3px solid transparent; }
+    .sleek-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); }
+    .sleek-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.4); }
 
-    /* Modal Styles */
+    /* --- Other styles (Modals, Quiz, etc.) are largely unchanged --- */
     .modal.hidden { display: none; }
-    .modal-panel {
-        background: #ffffff;
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-        border: 1px solid #e5e7eb;
-    }
-    .parameter-title {
-        cursor: help;
-        border-bottom: 1px dashed #ccc;
-    }
-    #infoTooltip {
-        position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem;
-        border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px);
-        transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none;
-    }
+    .modal-panel { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e5e7eb; }
+    .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
+    #infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
     #infoTooltip.visible { opacity: 1; transform: translateY(0); }
-
-    /* AI Lab Specific Styles */
-    .comparison-grid .changed {
-        background-color: #e6f2ff;
-        border: 1px solid #99c8ff;
-        box-shadow: 0 0 0 2px #e6f2ff;
-    }
+    .comparison-grid .changed { background-color: #e6f2ff; border: 1px solid #99c8ff; box-shadow: 0 0 0 2px #e6f2ff; }
     .comparison-grid .value-original { color: #6b7280; }
     .comparison-grid .value-new { color: #1d4ed8; font-weight: 700; }
-    .loader {
-        width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db;
-        border-radius: 50%; animation: spin 1s linear infinite;
-    }
+    .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    /* Quiz Options Styles */
-    .quiz-option {
-        background-color: #f8fafc;
-        border: 2px solid #e2e8f0;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: scale(1);
-    }
-    .quiz-option:hover {
-        border-color: #93c5fd;
-        background-color: #eff6ff;
-        transform: scale(1.03);
-        box-shadow: 0 4px 14px rgba(0, 118, 255, 0.1);
-    }
-    .quiz-option.selected {
-        border-color: var(--primary-accent);
-        background-color: #dbeafe;
-        transform: scale(1.05);
-        box-shadow: 0 6px 20px rgba(0, 118, 255, 0.2);
-    }
-    .quiz-option:active {
-        transform: scale(1.02);
-    }
-    .quiz-options-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
-    }
-    .quiz-options-grid .quiz-option {
-        flex: 1 1 45%;
-        min-width: 200px;
-    }
-    .quiz-options-grid.has-three-options .quiz-option:last-child {
-        flex-basis: 100%;
-        max-width: calc(50% - 0.5rem); 
-    }
-
-    /* --- IMPROVEMENT: Professional Photo Collage Styles --- */
-    .photo-collage {
-        display: grid;
-        gap: 0.75rem;
-    }
-    .collage-item {
-        cursor: pointer;
-        overflow: hidden;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
-    }
-    .collage-item:hover {
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
-    }
-    .collage-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease-in-out;
-    }
-    .collage-item:hover img {
-        transform: scale(1.05);
-    }
-    /* Layouts for different image counts */
+    .quiz-option { background-color: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(1); }
+    .quiz-option:hover { border-color: #93c5fd; background-color: #eff6ff; transform: scale(1.03); box-shadow: 0 4px 14px rgba(0, 118, 255, 0.1); }
+    .quiz-option.selected { border-color: var(--primary-accent); background-color: #dbeafe; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 118, 255, 0.2); }
+    .quiz-option:active { transform: scale(1.02); }
+    .quiz-options-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+    .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
+    .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
+    .photo-collage { display: grid; gap: 0.75rem; }
+    .collage-item { cursor: pointer; overflow: hidden; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: box-shadow 0.3s ease, transform 0.3s ease; }
+    .collage-item:hover { box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .collage-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease-in-out; }
+    .collage-item:hover img { transform: scale(1.05); }
     .photo-collage.images-1 { grid-template-columns: 1fr; }
     .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
-    .photo-collage.images-3 {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .photo-collage.images-3 { grid-template-columns: repeat(2, 1fr); }
     .photo-collage.images-3 > .collage-item:nth-child(1) { grid-column: span 2; }
-
-    .photo-collage.images-4 { 
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .photo-collage.images-4 { grid-template-columns: repeat(3, 1fr); }
     .photo-collage.images-4 > .collage-item:nth-child(1) { grid-column: span 3; }
-
-    .photo-collage.images-5 {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .photo-collage.images-5 { grid-template-columns: repeat(3, 1fr); }
     .photo-collage.images-5 > .collage-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
-    
-    .photo-collage.images-6 { 
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .photo-collage.images-6 { grid-template-columns: repeat(3, 1fr); }
     .photo-collage.images-6 > .collage-item:nth-child(1) { grid-column: span 2; }
     .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
-
-
-    /* --- IMPROVEMENT: Lightbox Gallery Styles --- */
-    #lightbox {
-        position: fixed; inset: 0; background-color: rgba(0,0,0,0.85);
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        z-index: 100; display: flex; align-items: center; justify-content: center;
-        opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
-    }
+    #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     #lightbox.visible { opacity: 1; pointer-events: auto; }
-    #lightbox img {
-        max-width: 85vw; max-height: 80vh;
-        border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease;
-        opacity: 1;
-    }
+    #lightbox img { max-width: 85vw; max-height: 80vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 1; }
     #lightbox.visible img { transform: scale(1); }
-    .lightbox-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
-        background-color: rgba(255,255,255,0.1);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        user-select: none;
-    }
+    .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
     .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
     #lightboxPrev { left: 2rem; }
     #lightboxNext { right: 2rem; }
-    #lightboxClose {
-        position: absolute; top: 1.5rem; right: 2rem;
-        color: white; font-size: 3rem; font-weight: 200;
-        cursor: pointer; transition: transform 0.2s ease;
-    }
+    #lightboxClose { position: absolute; top: 1.5rem; right: 2rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
     #lightboxClose:hover { transform: scale(1.1); }
-    #lightboxCounter {
-        position: absolute;
-        bottom: 1.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(0,0,0,0.5);
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 99px;
-        font-size: 0.875rem;
-    }
-
-    /* Sleek Color Map Chart Styles */
-    #colorMapContainer {
-        width: 100%;
-        height: 100%;
-        min-height: 450px; 
-        position: relative;
-    }
-    #colorMapContainer svg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: visible; 
-    }
-    .color-map-node-group {
-        cursor: pointer;
-    }
-    .color-map-node-aura {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .color-map-node-core {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .color-map-node-group:hover .color-map-node-aura {
-        opacity: 0.5;
-        transform: scale(1.8);
-    }
-    .color-map-node-group:hover .color-map-node-core {
-        transform: scale(1.2);
-    }
-    .color-map-node-group.selected .color-map-node-core {
-        stroke: white;
-        stroke-width: 3px;
-        transform: scale(1.3);
-    }
-    .color-map-node-group.selected .color-map-node-aura {
-        opacity: 0.6;
-        transform: scale(2);
-    }
-    .color-map-node-label {
-        font-size: 12px;
-        font-weight: 600;
-        fill: #334155; 
-        pointer-events: none; 
-        transition: opacity 0.3s ease;
-        text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white;
-        opacity: 0;
-    }
-    .color-map-node-group:hover .color-map-node-label {
-        opacity: 1;
-    }
-
-    .axis-label {
-        font-size: 0.75rem;
-        font-weight: 600;
-        fill: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    .quadrant-label {
-        font-size: 1.8rem;
-        font-weight: 800;
-        fill: rgba(203, 213, 225, 0.5);
-        text-anchor: middle;
-        pointer-events: none;
-        opacity: 0;
-        animation: text-fade-in 1s ease-out 0.5s forwards;
-    }
-    
-    /* Trending Section Styles */
-    #trendingContainer {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
-    }
-    .trending-item {
-        background-color: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-    .trending-item:hover {
-        transform: translateY(-4px) scale(1.03);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        border-color: var(--glow-color);
-    }
-
-    /* Add to Home Screen Button Style */
-    #addToHomeScreenBtn.visible {
-        display: inline-flex;
-        animation: fadeInDown 0.5s ease-out;
-    }
-
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+    #lightboxCounter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; }
+    #colorMapContainer { width: 100%; height: 100%; min-height: 450px; position: relative; }
+    #colorMapContainer svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; }
+    .color-map-node-group { cursor: pointer; }
+    .color-map-node-aura { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .color-map-node-core { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .color-map-node-group:hover .color-map-node-aura { opacity: 0.5; transform: scale(1.8); }
+    .color-map-node-group:hover .color-map-node-core { transform: scale(1.2); }
+    .color-map-node-group.selected .color-map-node-core { stroke: white; stroke-width: 3px; transform: scale(1.3); }
+    .color-map-node-group.selected .color-map-node-aura { opacity: 0.6; transform: scale(2); }
+    .color-map-node-label { font-size: 12px; font-weight: 600; fill: #334155; pointer-events: none; transition: opacity 0.3s ease; text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white; opacity: 0; }
+    .color-map-node-group:hover .color-map-node-label { opacity: 1; }
+    .axis-label { font-size: 0.75rem; font-weight: 600; fill: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+    .quadrant-label { font-size: 1.8rem; font-weight: 800; fill: rgba(203, 213, 225, 0.5); text-anchor: middle; pointer-events: none; opacity: 0; animation: text-fade-in 1s ease-out 0.5s forwards; }
+    #trendingContainer { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards; }
+    .trending-item { background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.05); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
+    #addToHomeScreenBtn.visible { display: inline-flex; animation: fadeInDown 0.5s ease-out; }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
+<!-- Background Blobs will be injected here by the home view template -->
+<div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
+
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -405,7 +257,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <nav id="mainNav" class="hidden md:flex items-center gap-2">
                 <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navRecipeFormulas"></button>
             </nav>
-            <!-- Add to Home Screen Button -->
             <button id="addToHomeScreenBtn" class="hidden items-center gap-2 bg-blue-50 text-blue-700 font-semibold px-4 py-2 rounded-full hover:bg-blue-100 transition-colors duration-200 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -438,7 +289,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div id="infoTooltip" class="hidden"></div>
 
-<!-- IMPROVEMENT: Lightbox HTML with navigation and counter -->
 <div id="lightbox" class="hidden">
     <span id="lightboxClose">&times;</span>
     <div id="lightboxPrev" class="lightbox-arrow">&#x2039;</div>
@@ -446,7 +296,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="lightboxNext" class="lightbox-arrow">&#x203A;</div>
     <div id="lightboxCounter"></div>
 </div>
-
 
 <div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
     <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
@@ -553,7 +402,6 @@ const state = {
     firebase: {
         db: null,
     },
-    // IMPROVEMENT: State for lightbox gallery
     lightbox: {
         images: [],
         currentIndex: 0,
@@ -691,7 +539,6 @@ function createFullRecipeHTML(recipe) {
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
         const count = Math.min(images.length, 6);
-        // IMPROVEMENT: Pass image index to each item for the lightbox
         const imageElements = images.slice(0, count).map((img, index) =>
             `<div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
                 <img src="${img}" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image ${index + 1}">
@@ -749,20 +596,31 @@ function createFullRecipeHTML(recipe) {
 }
 
 const viewTemplates = {
-home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 p-4">
-                    <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 mb-2 mt-8" data-translate-key="landingTitle"></h1>
-                    <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto" data-translate-key="landingSubtitle"></p>
-                    <div class="flex flex-col sm:flex-row gap-4 mt-10">
-                        <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                            <span data-translate-key="findMyColorBtn"></span>
-                        </button>
-                        <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg" data-translate-key="startExploringBtn"></button>
-                    </div>
-                </div>`,
+    home: () => `
+        <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 w-full max-w-6xl mx-auto items-center">
+                <div class="md:col-span-2 text-center md:text-left">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4 home-content-anim" style="animation-delay: 0.2s;" data-translate-key="landingTitle"></h1>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center md:justify-start home-content-anim" style="animation-delay: 0.4s;">
+                        <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                            <span data-translate-key="findMyColorBtn"></span>
+                        </button>
+                        <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg" data-translate-key="startExploringBtn"></button>
+                    </div>
+                </div>
+                <div class="md:col-span-3 hidden md:flex justify-center items-center h-full">
+                    <div class="relative w-80 h-80 lg:w-96 lg:h-96">
+                        <div class="absolute inset-0 home-content-anim" style="animation-delay: 0.6s;">
+                            <img src="logo.png" alt="Color Lab Logo Abstract" class="w-full h-full object-contain animate-pulse-slow">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`,
     recipeFormulas: () => `
         <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-            <aside id="recipeListPanel" class="w-full md:w-1/3 lg:w-[30%] xl:w-1/4 glass-panel p-4 md:p-6 flex flex-col flex-shrink-0 md:flex">
+            <aside id="recipeListPanel" class="w-full md:w-2/5 lg:w-1/3 flex-shrink-0 glass-panel p-4 md:p-6 flex flex-col md:flex">
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                     <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
@@ -771,7 +629,7 @@ home: () => `<div id="homeView" class="w-full h-full flex flex-col items-center 
                 </div>
                 <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar pr-2 -mr-2"></div>
             </aside>
-            <main id="recipeMainPanel" class="w-full md:w-2/3 lg:w-[70%] xl:w-3/4 flex-col min-h-0 hidden md:flex">
+            <main id="recipeMainPanel" class="w-full md:w-3/5 lg:w-2/3 flex flex-col min-h-0 hidden md:flex">
                 <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
                         <div id="welcomeText" class="text-center"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
@@ -1073,12 +931,6 @@ function calculateAndShowQuizResult() {
 }
 
 // --- OPTIMIZATION: Centralized Gemini API call function ---
-/**
- * A reusable function to call the Gemini API.
- * @param {string} prompt - The complete prompt to send to the API.
- * @param {AbortSignal} signal - An AbortSignal to allow cancelling the request.
- * @returns {Promise<object>} - A promise that resolves to the parsed JSON object from the API.
- */
 async function callGeminiAPI(prompt, signal) {
     if (!isAIEnabled) {
         console.error("Gemini API key not configured.");
@@ -1109,7 +961,6 @@ async function callGeminiAPI(prompt, signal) {
     if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
         throw new Error("Invalid API response structure.");
     }
-    // The API returns a JSON string, so we need to parse it.
     return JSON.parse(result.candidates[0].content.parts[0].text);
 }
 
@@ -1151,7 +1002,7 @@ function renderAILab() {
         return;
     }
 
-    if (state.ai.userPrompt) { // Show confirmation view if user has entered a prompt
+    if (state.ai.userPrompt) {
         renderAIConfirmation(contentEl);
         return;
     }
@@ -1245,20 +1096,18 @@ function renderAIError(container) {
     applyTranslations();
 }
 
-// OPTIMIZATION: Simplified logic flow
 function handleAIGeneration() {
     const userInput = document.getElementById('aiPromptInput').value.trim();
     if (!userInput) return;
 
     state.ai.userPrompt = userInput;
-    renderAILab(); // Renders the confirmation screen
+    renderAILab();
 }
 
-// OPTIMIZATION: Simplified logic flow, uses the new helper function
 async function confirmAndCallAI() {
     state.ai.isGenerating = true;
     state.ai.abortController = new AbortController();
-    renderAILab(); // Renders the loading spinner
+    renderAILab();
 
     const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${state.ai.userPrompt}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${state.currentLang}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
 
@@ -1272,9 +1121,9 @@ async function confirmAndCallAI() {
         }
     } finally {
         state.ai.isGenerating = false;
-        state.ai.userPrompt = ''; // Clear prompt after attempt
+        state.ai.userPrompt = '';
         state.ai.abortController = null;
-        if (!document.querySelector('.bg-red-50')) { // Only re-render if there wasn't an error
+        if (!document.querySelector('.bg-red-50')) {
             renderAILab();
         }
     }
@@ -1346,7 +1195,6 @@ function renderCaptionLab() {
     applyTranslations();
 }
 
-// OPTIMIZATION: Uses the new helper function
 async function handleCaptionGeneration() {
     const userInput = document.getElementById('captionPromptInput').value.trim();
     if (!userInput) return;
@@ -1394,6 +1242,28 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
 function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
+
+    const blobContainer = document.getElementById('blobContainer');
+    if (viewName === 'home') {
+        blobContainer.innerHTML = `
+            <div class="bg-blob bg-blob-1"></div>
+            <div class="bg-blob bg-blob-2"></div>
+            <div class="bg-blob bg-blob-3"></div>
+        `;
+        const blobs = blobContainer.querySelectorAll('.bg-blob');
+        blobs.forEach(blob => {
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            blob.style.setProperty('--start-x', `${Math.random() * vw - vw / 2}px`);
+            blob.style.setProperty('--start-y', `${Math.random() * vh - vh / 2}px`);
+            blob.style.setProperty('--end-x', `${Math.random() * vw - vw / 2}px`);
+            blob.style.setProperty('--end-y', `${Math.random() * vh - vh / 2}px`);
+            setTimeout(() => blob.classList.add('visible'), 100);
+        });
+    } else {
+        blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
+        setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
+    }
 
     const footerEl = document.querySelector('footer');
     if (footerEl) {
@@ -1495,10 +1365,15 @@ function renderLibraryList() {
     if (!container) return;
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
     const recipesToRender = recipesData.filter(r => r.name[state.currentLang].toLowerCase().includes(searchTerm) || r.description[state.currentLang].toLowerCase().includes(searchTerm));
-    container.innerHTML = recipesToRender.map(recipe => {
+    
+    container.innerHTML = recipesToRender.map((recipe, index) => {
         const isSelected = recipe.id === state.selectedRecipeId;
-        const style = isSelected ? `style="--glow-color: ${recipe.personalityColor}"` : '';
-        return `<div class="recipe-item p-3 rounded-xl transition-all duration-200 cursor-pointer ${isSelected ? 'selected' : ''}" data-recipe-id="${recipe.id}" ${style}>
+        const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
+        const animationStyle = `animation-delay: ${index * 40}ms;`;
+        
+        return `<div class="recipe-item p-3 rounded-xl cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
+                     data-recipe-id="${recipe.id}" 
+                     style="${glowStyle} ${animationStyle}">
             <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
             <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
         </div>`;
@@ -1547,7 +1422,6 @@ function renderLibraryDetails() {
     applyTranslations();
 }
 
-// --- IMPROVEMENT: Lightbox Gallery Functions ---
 function openLightbox(recipeId, startIndex) {
     const recipe = recipesData.find(r => r.id === recipeId);
     if (!recipe || !recipe.demoImages) return;
@@ -1575,15 +1449,13 @@ function showLightboxImage() {
     const lightboxImage = document.getElementById('lightboxImage');
     const lightboxCounter = document.getElementById('lightboxCounter');
 
-    // Fade out the current image
     lightboxImage.style.opacity = '0';
 
     setTimeout(() => {
         lightboxImage.src = images[currentIndex];
         lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
-        // Fade in the new image
         lightboxImage.style.opacity = '1';
-    }, 150); // Match half of the transition duration
+    }, 150);
 }
 
 function showNextImage() {
@@ -1634,7 +1506,7 @@ async function init() {
                 tooltipEl.innerHTML = explanation;
                 const titleRect = title.getBoundingClientRect();
                 tooltipEl.style.left = `${titleRect.left + window.scrollX}px`;
-                tooltipEl.style.top = `${titleRect.bottom + window.scrollY + 8}px`; // Position below the title
+                tooltipEl.style.top = `${titleRect.bottom + window.scrollY + 8}px`;
                 tooltipEl.classList.remove('hidden');
                 setTimeout(() => tooltipEl.classList.add('visible'), 10);
             }
@@ -1654,7 +1526,6 @@ async function init() {
         const recipeItem = target.closest('.recipe-item');
         const trendingItem = target.closest('.trending-item');
         
-        // IMPROVEMENT: Handle clicks on collage items to open the lightbox
         const collageItem = target.closest('.collage-item');
         if (collageItem) {
             const recipeId = collageItem.dataset.recipeId;
@@ -1750,16 +1621,14 @@ async function init() {
         if (trendingItem) { handleRecipeSelection(trendingItem.dataset.recipeId); return; }
     });
 
-    // --- IMPROVEMENT: Lightbox Gallery Event Listeners ---
     document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
     document.getElementById('lightboxNext').addEventListener('click', showNextImage);
     document.getElementById('lightboxPrev').addEventListener('click', showPrevImage);
     document.getElementById('lightbox').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) { // Close only if clicking on the background
+        if (e.target === e.currentTarget) {
             closeLightbox();
         }
     });
-    // Keyboard navigation for lightbox
     document.addEventListener('keydown', (e) => {
         if (document.getElementById('lightbox').classList.contains('visible')) {
             if (e.key === 'ArrowRight') showNextImage();
