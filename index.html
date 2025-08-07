@@ -81,36 +81,37 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         to { transform: translate(var(--end-x), var(--end-y)) rotate(360deg) scale(1.2); }
     }
 
-    /* --- NEW: Animated Logo Styles --- */
+    /* --- NEW: SVG Animated Logo Styles for Performance --- */
     .animated-logo-container {
         position: relative;
         width: 100%;
         height: 100%;
-        min-height: 250px; /* Ensure container has size */
     }
-    .logo-piece {
-        position: absolute;
-        width: 55%; /* Size relative to container */
-        height: 55%;
+    .animated-logo-svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    .logo-circle {
         will-change: transform;
-        animation-name: enter-and-float;
+        animation-name: enter-and-float-svg;
         animation-duration: 20s;
         animation-timing-function: var(--ease-in-out-quint);
         animation-iteration-count: infinite;
         animation-direction: alternate;
     }
-    .logo-piece.yellow { top: 0; left: 0; animation-delay: 0s; }
-    .logo-piece.grey { top: 0; right: 0; animation-delay: -15s; } /* Offset delays for variety */
-    .logo-piece.cyan { bottom: 0; left: 0; animation-delay: -10s; }
-    .logo-piece.red { bottom: 0; right: 0; animation-delay: -5s; }
+    .logo-circle.yellow { animation-delay: 0s; }
+    .logo-circle.grey { animation-delay: -15s; }
+    .logo-circle.cyan { animation-delay: -10s; }
+    .logo-circle.red { animation-delay: -5s; }
 
-    @keyframes enter-and-float {
+    @keyframes enter-and-float-svg {
         0% {
-            transform: scale(0) translate(0, 0);
+            transform: scale(0);
             opacity: 0;
         }
         5% {
-            transform: scale(1) translate(0, 0);
+            transform: scale(1);
             opacity: 1;
         }
         50% {
@@ -624,10 +625,12 @@ const viewTemplates = {
                 <div class="md:col-span-3 hidden md:flex justify-center items-center h-full">
                     <div class="relative w-80 h-80 lg:w-96 lg:h-96 home-content-anim" style="animation-delay: 0.6s;">
                         <div class="animated-logo-container">
-                            <img src="Yellow.png" alt="Yellow circle piece" class="logo-piece yellow" style="--float-x: -10px; --float-y: 15px;">
-                            <img src="Grey.png" alt="Grey circle piece" class="logo-piece grey" style="--float-x: 10px; --float-y: -12px;">
-                            <img src="Cyan.png" alt="Cyan circle piece" class="logo-piece cyan" style="--float-x: -12px; --float-y: -10px;">
-                            <img src="Red.png" alt="Red circle piece" class="logo-piece red" style="--float-x: 15px; --float-y: 10px;">
+                            <svg class="animated-logo-svg" viewBox="0 0 200 200">
+                                <circle class="logo-circle yellow" cx="50" cy="50" r="50" fill="#f1c40f" style="--float-x: -5px; --float-y: 8px;"></circle>
+                                <circle class="logo-circle grey" cx="150" cy="50" r="50" fill="#bdc3c7" style="--float-x: 5px; --float-y: -6px;"></circle>
+                                <circle class="logo-circle cyan" cx="50" cy="150" r="50" fill="#1abc9c" style="--float-x: -6px; --float-y: -5px;"></circle>
+                                <circle class="logo-circle red" cx="150" cy="150" r="50" fill="#e74c3c" style="--float-x: 8px; --float-y: 5px;"></circle>
+                            </svg>
                         </div>
                     </div>
                 </div>
