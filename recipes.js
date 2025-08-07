@@ -701,9 +701,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-040",
-        "name": { "vi": "SCL-040: Graphite Standard", "en": "SCL-040: Graphite Standard" },
-        "formattedName": "SCL-040-Graphite Standard",
+        "id": "scl-030",
+        "name": { "vi": "SCL-030: Graphite Standard", "en": "SCL-030: Graphite Standard" },
+        "formattedName": "SCL-030-Graphite Standard",
         "description": {
             "en": "A balanced, versatile monochrome style with a full tonal range and clean mid-tones.\nThis is a perfect starting point for black and white photography, delivering classic, timeless results for any subject.",
             "vi": "Một phong cách đơn sắc cân bằng, đa dụng với dải tông màu đầy đủ và các tông màu trung bình trong trẻo. Đây là điểm khởi đầu hoàn hảo cho nhiếp ảnh đen trắng, mang lại kết quả cổ điển, vượt thời gian cho mọi chủ thể."
@@ -725,9 +725,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-041",
-        "name": { "vi": "SCL-041: Obsidian Contrast", "en": "SCL-041: Obsidian Contrast" },
-        "formattedName": "SCL-041-Obsidian Contrast",
+        "id": "scl-031",
+        "name": { "vi": "SCL-031: Obsidian Contrast", "en": "SCL-031: Obsidian Contrast" },
+        "formattedName": "SCL-031-Obsidian Contrast",
         "description": {
             "en": "A dramatic, high-contrast monochrome style with inky blacks and crisp whites.\nIdeal for architectural details, powerful street photography, and making subjects stand out with impressive clarity.",
             "vi": "Một phong cách đơn sắc kịch tính, tương phản cao với màu đen sâu như mực và màu trắng sắc nét. Lý tưởng cho các chi tiết kiến trúc, nhiếp ảnh đường phố mạnh mẽ và làm nổi bật chủ thể với sự rõ ràng ấn tượng."
@@ -749,9 +749,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-042",
-        "name": { "vi": "SCL-042: Newsprint Grit", "en": "SCL-042: Newsprint Grit" },
-        "formattedName": "SCL-042-Newsprint Grit",
+        "id": "scl-032",
+        "name": { "vi": "SCL-032: Newsprint Grit", "en": "SCL-032: Newsprint Grit" },
+        "formattedName": "SCL-032-Newsprint Grit",
         "description": {
             "en": "A powerful, high-contrast style that emulates the feel of 'pushed' black and white film used by photojournalists.\nIt's grainy, sharp, and full of character, perfect for capturing raw, unedited moments.",
             "vi": "Một phong cách mạnh mẽ, tương phản cao mô phỏng cảm giác của phim đen trắng \"pushed\" được các nhà báo ảnh sử dụng. Nó có hạt, sắc nét và đầy cá tính, hoàn hảo để ghi lại những khoảnh khắc thô mộc, không qua chỉnh sửa."
@@ -773,9 +773,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-043",
-        "name": { "vi": "SCL-043: Silver Gelatin", "en": "SCL-043: Silver Gelatin" },
-        "formattedName": "SCL-043-Silver Gelatin",
+        "id": "scl-033",
+        "name": { "vi": "SCL-033: Silver Gelatin", "en": "SCL-033: Silver Gelatin" },
+        "formattedName": "SCL-033-Silver Gelatin",
         "description": {
             "en": "A flat, soft-contrast profile with rich mid-tones and smooth transitions.\nIt emulates the look of a classic darkroom print on silver gelatin paper, ideal for fine-art portraits and subtle compositions.",
             "vi": "Một cấu hình tương phản phẳng, mềm mại với các tông màu trung bình phong phú và sự chuyển tiếp mượt mà. Nó mô phỏng vẻ ngoài của một bản in phòng tối cổ điển trên giấy bạc gelatin, lý tưởng cho chân dung nghệ thuật và các bố cục tinh tế."
@@ -797,9 +797,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-044",
-        "name": { "vi": "SCL-044: Crystal Clear", "en": "SCL-044: Crystal Clear" },
-        "formattedName": "SCL-044-Crystal Clear",
+        "id": "scl-034",
+        "name": { "vi": "SCL-034: Crystal Clear", "en": "SCL-034: Crystal Clear" },
+        "formattedName": "SCL-034-Crystal Clear",
         "description": {
             "en": "A clean, crisp, and cool-toned black and white style.\nIt features fine grain and high clarity, perfect for technical subjects, architecture, and portraits where detail is paramount.",
             "vi": "Một phong cách đen trắng trong trẻo, sắc nét và có tông màu lạnh. Nó có hạt mịn và độ trong cao, hoàn hảo cho các chủ thể kỹ thuật, kiến trúc và chân dung nơi chi tiết là quan trọng nhất."
@@ -821,9 +821,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-045",
-        "name": { "vi": "SCL-045: Classic Reportage", "en": "SCL-045: Classic Reportage" },
-        "formattedName": "SCL-045-Classic Reportage",
+        "id": "scl-035",
+        "name": { "vi": "SCL-035: Classic Reportage", "en": "SCL-035: Classic Reportage" },
+        "formattedName": "SCL-035-Classic Reportage",
         "description": {
             "en": "A versatile, medium-contrast style with a classic grain structure.\nThis is a black and white 'workhorse' choice, ideal for photojournalism, street photography, and capturing everyday life with an authentic feel.",
             "vi": "Một phong cách đa dụng, có độ tương phản trung bình với cấu trúc hạt cổ điển. Đây là lựa chọn \"chủ lực\" của nhiếp ảnh đen trắng, lý tưởng cho phóng sự, nhiếp ảnh đường phố và ghi lại cuộc sống hàng ngày với cảm giác chân thực."
@@ -845,9 +845,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-046",
-        "name": { "vi": "SCL-046: Noir Film", "en": "SCL-046: Noir Film" },
-        "formattedName": "SCL-046-Noir Film",
+        "id": "scl-036",
+        "name": { "vi": "SCL-036: Noir Film", "en": "SCL-036: Noir Film" },
+        "formattedName": "SCL-036-Noir Film",
         "description": {
             "en": "A very high-contrast, dramatic black and white style with deep, crushed blacks and bright whites.\nIt evokes the classic film noir aesthetic, perfect for creating mystery, drama, and graphic compositions.",
             "vi": "Một phong cách đen trắng có độ tương phản rất cao, đầy kịch tính với màu đen sâu, bị nén và màu trắng sáng. Nó gợi lên phong cách của phim noir cổ điển, hoàn hảo để tạo ra sự bí ẩn, kịch tính và các bố cục đồ họa."
@@ -869,9 +869,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-047",
-        "name": { "vi": "SCL-047: Low Light Grain", "en": "SCL-047: Low Light Grain" },
-        "formattedName": "SCL-047-Low Light Grain",
+        "id": "scl-037",
+        "name": { "vi": "SCL-037: Low Light Grain", "en": "SCL-037: Low Light Grain" },
+        "formattedName": "SCL-037-Low Light Grain",
         "description": {
             "en": "Designed to emulate high-speed film, this formula uses a cinematic gamma to handle contrast while encouraging grain.\nIt's perfect for low-light situations, adding texture and atmosphere to shots.",
             "vi": "Được thiết kế để mô phỏng phim tốc độ cao, công thức này sử dụng gamma điện ảnh để xử lý độ tương phản trong khi khuyến khích hạt. Nó hoàn hảo cho các tình huống thiếu sáng, thêm kết cấu và không khí cho ảnh."
@@ -893,9 +893,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-048",
-        "name": { "vi": "SCL-048: Modern B&W", "en": "SCL-048: Modern B&W" },
-        "formattedName": "SCL-048-Modern B&W",
+        "id": "scl-038",
+        "name": { "vi": "SCL-038: Modern B&W", "en": "SCL-038: Modern B&W" },
+        "formattedName": "SCL-038-Modern B&W",
         "description": {
             "en": "A contemporary black and white style that utilizes S-Cinetone gamma for smooth, beautiful tonal transitions.\nIt delivers deep blacks without being overly harsh, well-suited for modern portraits and fine art.",
             "vi": "Một phong cách đen trắng đương đại sử dụng gamma S-Cinetone để tạo ra sự chuyển tông mượt mà, đẹp mắt. Nó mang lại màu đen sâu mà không quá gắt, rất phù hợp cho chân dung hiện đại và nghệ thuật."
@@ -917,9 +917,9 @@ const recipesData = [
         ]
     },
     {
-        "id": "scl-049",
-        "name": { "vi": "SCL-049: Ortho Portrait", "en": "SCL-049: Ortho Portrait" },
-        "formattedName": "SCL-049-Ortho Portrait",
+        "id": "scl-039",
+        "name": { "vi": "SCL-039: Ortho Portrait", "en": "SCL-039: Ortho Portrait" },
+        "formattedName": "SCL-039-Ortho Portrait",
         "description": {
             "en": "Emulating orthochromatic film, which is insensitive to red light.\nThis results in darkened skin and lip tones, creating a unique, vintage, and often dramatic portrait style.",
             "vi": "Mô phỏng phim orthochromatic, loại phim không nhạy với ánh sáng đỏ. Điều này dẫn đến tông màu da và môi bị tối đi, tạo ra một phong cách chân dung độc đáo, cổ điển và thường đầy kịch tính."
