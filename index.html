@@ -69,12 +69,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         z-index: -1;
         transition: opacity 1.5s var(--ease-out-cubic);
         animation: move 25s infinite alternate var(--ease-in-out-quint);
-        /* Hint to the browser to optimize animations */
         will-change: transform, opacity;
     }
-    .bg-blob.visible {
-        opacity: 0.15;
-    }
+    .bg-blob.visible { opacity: 0.15; }
     .bg-blob-1 { width: 450px; height: 450px; background: #ffae00; animation-duration: 30s; }
     .bg-blob-2 { width: 550px; height: 550px; background: #3498db; animation-duration: 25s; animation-delay: -5s; }
     .bg-blob-3 { width: 400px; height: 400px; background: #e74c3c; animation-duration: 35s; animation-delay: -10s; }
@@ -124,21 +121,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .btn:active { transform: translateY(0px) scale(0.97); }
 
     /* --- Refined & Unified View Transitions --- */
-    .view-transition {
-        animation: fadeInScale 0.7s var(--ease-out-cubic) forwards;
-    }
-    .view-transition-out {
-        animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards;
-        position: absolute;
-    }
-    @keyframes fadeInScale {
-        from { opacity: 0; transform: scale(0.98); }
-        to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes fadeOutScale {
-        from { opacity: 1; transform: scale(1); }
-        to { opacity: 0; transform: scale(0.98); }
-    }
+    .view-transition { animation: fadeInScale 0.7s var(--ease-out-cubic) forwards; }
+    .view-transition-out { animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards; position: absolute; }
+    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeOutScale { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
 
     /* --- Staggered List Animation --- */
     .recipe-item-stagger {
@@ -146,9 +132,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         transform: translateY(20px);
         animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
     }
-    @keyframes listItemFadeIn {
-        to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
     
     /* --- Homepage Content Animations --- */
     .home-content-anim {
@@ -156,17 +140,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         transform: translateY(25px);
         animation: homeContentFadeIn 0.8s var(--ease-out-cubic) forwards;
     }
-    @keyframes homeContentFadeIn {
-        to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse-slow {
-        50% { opacity: 0.8; transform: scale(1.03); }
-    }
-    .animate-pulse-slow {
-        animation: pulse-slow 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
+    @keyframes homeContentFadeIn { to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-slow { 50% { opacity: 0.8; transform: scale(1.03); } }
+    .animate-pulse-slow { animation: pulse-slow 5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-    /* --- Sleek Scrollbar --- */
+    /* --- Sleek Scrollbar with iOS Momentum Scrolling --- */
+    .sleek-scrollbar {
+        -webkit-overflow-scrolling: touch; /* This enables momentum scrolling in WebKit browsers (iOS) */
+    }
     .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
     .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .sleek-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0); border-radius: 20px; border: 3px solid transparent; }
@@ -282,7 +263,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
     
     <footer class="text-center py-4 text-gray-500 text-sm flex-shrink-0">
-        Paint emotions with ColorLAB<br>by Sony Alpha Vietnam
+        Paint emotions with ColorLAB by Sony Alpha Vietnam
     </footer>
 </div>
 
@@ -775,7 +756,7 @@ function updateChartSelection() {
 function resetToChartView() {
     state.selectedRecipeId = null;
     state.isMobileDetailActive = false;
-    renderLibraryList();
+    updateListSelectionAndScroll(null);
     renderLibraryDetails();
     updateChartSelection();
 }
@@ -1282,10 +1263,36 @@ function renderView(viewName, selectedId = null) {
     });
 }
 
+function updateListSelectionAndScroll(id) {
+    const listContainer = document.getElementById('recipeListContainer');
+    if (!listContainer) return;
+
+    const oldSelectedItem = listContainer.querySelector('.recipe-item.selected');
+    if (oldSelectedItem) {
+        oldSelectedItem.classList.remove('selected');
+    }
+
+    if (id) {
+        const newSelectedItem = listContainer.querySelector(`.recipe-item[data-recipe-id="${id}"]`);
+        if (newSelectedItem) {
+            newSelectedItem.classList.add('selected');
+            const recipe = recipesData.find(r => r.id === id);
+            if (recipe) {
+                newSelectedItem.style.setProperty('--glow-color', recipe.personalityColor);
+            }
+            newSelectedItem.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    }
+}
+
 function handleRecipeSelection(id) {
     state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
     state.isMobileDetailActive = !!state.selectedRecipeId;
-    renderLibraryList();
+
+    updateListSelectionAndScroll(state.selectedRecipeId);
     renderLibraryDetails();
     updateChartSelection();
 
