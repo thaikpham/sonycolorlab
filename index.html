@@ -351,7 +351,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 // --- Firebase SDK Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- CONFIGURATION & STATE ---
 const API_KEY = "%%GEMINI_API_KEY%%";
@@ -812,28 +812,21 @@ async function fetchTrendingRecipes() {
     }
 
     try {
-        const recipeViewsRef = collection(state.firebase.db, "recipeViews");
-        const querySnapshot = await getDocs(recipeViewsRef);
+        const docRef = doc(state.firebase.db, "artifacts/default-app-id/public/data/trending/latest");
+        const docSnap = await getDoc(docRef);
 
-        if (querySnapshot.empty) {
-            const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
-            displayTrendingRecipes(mockTrendingIDs);
-            return;
-        }
-
-        const viewCounts = {};
-        querySnapshot.forEach(doc => {
-            const data = doc.data();
-            if (data.recipe_id) {
-                viewCounts[data.recipe_id] = (viewCounts[data.recipe_id] || 0) + 1;
+        if (docSnap.exists()) {
+            const trendingData = docSnap.data();
+            if (trendingData.ids && trendingData.ids.length > 0) {
+                displayTrendingRecipes(trendingData.ids);
+            } else {
+                 throw new Error("Trending IDs array is empty or missing.");
             }
-        });
-
-        const sortedRecipeIDs = Object.keys(viewCounts).sort((a, b) => viewCounts[b] - viewCounts[a]);
-        const trendingIDs = sortedRecipeIDs.slice(0, 4);
-        displayTrendingRecipes(trendingIDs);
+        } else {
+            throw new Error("Trending document does not exist.");
+        }
     } catch (error) {
-        console.error("Error fetching trending data, using mock data:", error);
+        console.error("Error fetching real trending data, falling back to mock data:", error);
         const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
         displayTrendingRecipes(mockTrendingIDs);
     }
@@ -1304,25 +1297,7 @@ function handleRecipeSelection(id) {
                 recipe_name: recipe.name.en,
                 recipe_name_vi: recipe.name.vi
             });
-            logRecipeViewToFirebase(recipe);
         }
-    }
-}
-
-async function logRecipeViewToFirebase(recipe) {
-    if (!state.firebase.db) {
-        console.warn("Firestore is not initialized. Skipping log.");
-        return;
-    }
-    try {
-        await addDoc(collection(state.firebase.db, "recipeViews"), {
-            recipe_id: recipe.id,
-            recipe_name: recipe.name.en,
-            recipe_name_vi: recipe.name.vi,
-            viewed_at: serverTimestamp()
-        });
-    } catch (e) {
-        console.error("Error adding document to Firestore: ", e);
     }
 }
 
