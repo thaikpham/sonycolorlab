@@ -178,16 +178,39 @@ function getSizedImageUrl(originalUrl, size) {
     return `${baseUrl}=w${size}`;
 }
 
+function getImageOrientation(url) {
+    if (!url || !url.includes('googleusercontent.com')) {
+        return 'landscape'; // Default assumption
+    }
+    const match = url.match(/=w(\d+)-h(\d+)/);
+    if (match && match[1] && match[2]) {
+        const width = parseInt(match[1], 10);
+        const height = parseInt(match[2], 10);
+        return height > width ? 'portrait' : 'landscape';
+    }
+    return 'landscape';
+}
+
 function createFullRecipeHTML(recipe) {
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
         const count = Math.min(images.length, 6);
+        const firstImageOrientation = getImageOrientation(images[0]);
+
+        let layoutClass = `images-${count}`;
+        if (firstImageOrientation === 'portrait') {
+            // Only apply portrait layouts where they have been specifically created
+            if ([3, 4, 5, 6].includes(count)) {
+                layoutClass = `images-${count}-portrait`;
+            }
+        }
+
         const imageElements = images.slice(0, count).map((img, index) =>
             `<div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
                 <img src="${getSizedImageUrl(img, 400)}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image ${index + 1}">
             </div>`
         ).join('');
-        return `<div class="photo-collage images-${count}">${imageElements}</div>`;
+        return `<div class="photo-collage ${layoutClass}">${imageElements}</div>`;
     };
 
     const createCTAHTML = (recipe) => {
