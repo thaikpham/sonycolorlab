@@ -396,7 +396,8 @@ const state = {
 
 const mainContentEl = document.getElementById('mainContent');
 
-import recipesData from './recipes.js';
+// Cache-busting: Thêm version query để buộc tải lại file mới
+import recipesData from './recipes.js?v=2.0';
 
 const quizQuestions = [
     {
@@ -1403,10 +1404,10 @@ function initializePhysicsBlobs() {
     function ticked() {
         blobElements.each(d => {
             // Giữ các chấm màu trong màn hình với hiệu ứng nảy nhẹ
-            if (d.x < d.r) { d.x = d.r; d.vx *= -0.8; }
-            if (d.x > vw - d.r) { d.x = vw - d.r; d.vx *= -0.8; }
-            if (d.y < d.r) { d.y = d.r; d.vy *= -0.8; }
-            if (d.y > vh - d.r) { d.y = vh - d.r; d.vy *= -0.8; }
+            if (d.x < d.r) { d.x = d.r; d.vx *= -0.9; }
+            if (d.x > vw - d.r) { d.x = vw - d.r; d.vx *= -0.9; }
+            if (d.y < d.r) { d.y = d.r; d.vy *= -0.9; }
+            if (d.y > vh - d.r) { d.y = vh - d.r; d.vy *= -0.9; }
         })
         .style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
     }
@@ -1414,8 +1415,8 @@ function initializePhysicsBlobs() {
     // Thêm một lực "gió" nhẹ và ngẫu nhiên liên tục
     d3.timer(() => {
         nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.25;
-            node.vy += (Math.random() - 0.5) * 0.25;
+            node.vx += (Math.random() - 0.5) * 0.3;
+            node.vy += (Math.random() - 0.5) * 0.3;
         });
         simulation.alpha(0.1).restart(); // "Hâm nóng" lại mô phỏng
     });
