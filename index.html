@@ -26,10 +26,14 @@
 }">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<!-- Tối ưu: Tải D3.js bất đồng bộ -->
+<script src="https://d3js.org/d3.v7.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Tối ưu: Tải trước (preload) font để tăng tốc độ hiển thị -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
+
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -60,21 +64,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         position: relative;
     }
 
-    /* --- PERFORMANCE OPTIMIZATION for Animated Blobs --- */
+    /* --- Nâng cấp hiệu ứng blobs --- */
     .bg-blob {
         position: fixed;
         border-radius: 50%;
-        filter: blur(100px);
+        /* Tăng độ mờ để hiệu ứng mềm mại hơn */
+        filter: blur(120px); 
         opacity: 0;
         z-index: -1;
         transition: opacity 1.5s var(--ease-out-cubic);
         animation: move 25s infinite alternate var(--ease-in-out-quint);
         will-change: transform, opacity;
     }
-    .bg-blob.visible { opacity: 0.15; }
+    .bg-blob.visible { 
+        /* Tăng nhẹ độ mờ để các blobs nổi bật hơn */
+        opacity: 0.2; 
+    }
+    /* Các blobs cũ */
     .bg-blob-1 { width: 450px; height: 450px; background: #ffae00; animation-duration: 30s; }
     .bg-blob-2 { width: 550px; height: 550px; background: #3498db; animation-duration: 25s; animation-delay: -5s; }
     .bg-blob-3 { width: 400px; height: 400px; background: #e74c3c; animation-duration: 35s; animation-delay: -10s; }
+    /* Thêm các blobs mới cho sinh động */
+    .bg-blob-4 { width: 500px; height: 500px; background: #2ecc71; animation-duration: 28s; animation-delay: -15s; }
+    .bg-blob-5 { width: 350px; height: 350px; background: #9b59b6; animation-duration: 32s; animation-delay: -20s; }
+    .bg-blob-6 { width: 480px; height: 480px; background: #1abc9c; animation-duration: 26s; animation-delay: -2s; }
+
 
     @keyframes move {
         from { transform: translate(var(--start-x), var(--start-y)) rotate(0deg) scale(1); }
@@ -1232,19 +1246,24 @@ function renderView(viewName, selectedId = null) {
 
     const blobContainer = document.getElementById('blobContainer');
     if (viewName === 'home') {
+        // Nâng cấp: Thêm nhiều blobs hơn
         blobContainer.innerHTML = `
             <div class="bg-blob bg-blob-1"></div>
             <div class="bg-blob bg-blob-2"></div>
             <div class="bg-blob bg-blob-3"></div>
+            <div class="bg-blob bg-blob-4"></div>
+            <div class="bg-blob bg-blob-5"></div>
+            <div class="bg-blob bg-blob-6"></div>
         `;
         const blobs = blobContainer.querySelectorAll('.bg-blob');
         blobs.forEach(blob => {
             const vw = window.innerWidth;
             const vh = window.innerHeight;
-            blob.style.setProperty('--start-x', `${Math.random() * vw - vw / 2}px`);
-            blob.style.setProperty('--start-y', `${Math.random() * vh - vh / 2}px`);
-            blob.style.setProperty('--end-x', `${Math.random() * vw - vw / 2}px`);
-            blob.style.setProperty('--end-y', `${Math.random() * vh - vh / 2}px`);
+            // Nâng cấp: Tăng biên độ di chuyển để bao phủ màn hình tốt hơn
+            blob.style.setProperty('--start-x', `${(Math.random() * 1.5 - 0.25) * vw}px`);
+            blob.style.setProperty('--start-y', `${(Math.random() * 1.5 - 0.25) * vh}px`);
+            blob.style.setProperty('--end-x', `${(Math.random() * 1.5 - 0.25) * vw}px`);
+            blob.style.setProperty('--end-y', `${(Math.random() * 1.5 - 0.25) * vh}px`);
             setTimeout(() => blob.classList.add('visible'), 100);
         });
     } else {
