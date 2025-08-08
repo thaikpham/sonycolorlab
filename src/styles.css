@@ -1,0 +1,184 @@
+/* --- REFINED STYLES & ANIMATION OVERHAUL --- */
+    html { scroll-behavior: smooth; }
+    :root {
+        --primary-accent: #007AFF;
+        --primary-accent-darker: #0056B3;
+        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(0, 0, 0, 0.05);
+        --text-primary: #1d1d1f;
+        --text-secondary: #6e6e73;
+        --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
+        --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
+    }
+    body {
+        font-family: 'Be Vietnam Pro', sans-serif;
+        background-color: #f4f5f7;
+        color: var(--text-primary);
+        overflow: hidden; /* Ngăn scroll khi landing page hiển thị */
+        position: relative;
+    }
+
+    /* --- Nâng cấp hiệu ứng blobs với vật lý --- */
+    .bg-blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0;
+        z-index: -1;
+        /* Loại bỏ animation CSS, thay bằng điều khiển JS */
+        transition: opacity 1.5s var(--ease-out-cubic);
+        will-change: transform; /* Chỉ cần transform thay đổi */
+    }
+    .bg-blob.visible {
+        opacity: 0.25; /* Tăng nhẹ opacity */
+    }
+
+    /* --- INTERACTIVE SVG Logo Styles --- */
+    .animated-logo-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    .animated-logo-svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    .logo-circle {
+        will-change: transform;
+    }
+
+    /* --- Core Component Styling --- */
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(50px) saturate(180%);
+        -webkit-backdrop-filter: blur(50px) saturate(180%);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        border-radius: 24px;
+        transition: all 0.4s var(--ease-out-cubic);
+    }
+    @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
+
+    .recipe-item {
+        border-left: 4px solid transparent;
+        transition: all 0.3s var(--ease-out-cubic);
+    }
+    .recipe-item.selected {
+        background-color: rgba(0, 122, 255, 0.1);
+        color: var(--text-primary);
+        transform: translateX(4px) scale(1.02);
+        border-left-color: var(--glow-color);
+        box-shadow: 0 0 20px -2px var(--glow-color);
+    }
+    .recipe-item:hover:not(.selected) {
+        background-color: rgba(0, 0, 0, 0.04);
+        transform: translateX(2px);
+    }
+    .recipe-item.hover-highlight:not(.selected) {
+        background-color: rgba(230, 242, 255, 0.8);
+        box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.15);
+        transform: translateX(2px);
+    }
+
+    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transform: scale(1); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
+    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.45); }
+    .btn:active { transform: translateY(0px) scale(0.97); }
+
+    /* --- Refined & Unified View Transitions --- */
+    .view-transition { animation: fadeInScale 0.7s var(--ease-out-cubic) forwards; }
+    .view-transition-out { animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards; position: absolute; }
+    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeOutScale { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
+
+    /* --- Staggered List Animation --- */
+    .recipe-item-stagger {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
+    }
+    @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
+
+    /* --- Homepage Content Animations --- */
+    .home-content-anim {
+        opacity: 0;
+        transform: translateY(25px);
+        animation: homeContentFadeIn 0.8s var(--ease-out-cubic) forwards;
+    }
+    @keyframes homeContentFadeIn { to { opacity: 1; transform: translateY(0); } }
+
+    /* --- Sleek Scrollbar with iOS Momentum Scrolling --- */
+    .sleek-scrollbar {
+        -webkit-overflow-scrolling: touch;
+    }
+    .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
+    .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .sleek-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0); border-radius: 20px; border: 3px solid transparent; }
+    .sleek-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); }
+    .sleek-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.4); }
+
+    /* --- Other styles --- */
+    .modal.hidden { display: none; }
+    .modal-panel { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e5e7eb; }
+    .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
+    #infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
+    #infoTooltip.visible { opacity: 1; transform: translateY(0); }
+    .comparison-grid .changed { background-color: #e6f2ff; border: 1px solid #99c8ff; box-shadow: 0 0 0 2px #e6f2ff; }
+    .comparison-grid .value-original { color: #6b7280; }
+    .comparison-grid .value-new { color: #1d4ed8; font-weight: 700; }
+    .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .quiz-option { background-color: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(1); }
+    .quiz-option:hover { border-color: #93c5fd; background-color: #eff6ff; transform: scale(1.03); box-shadow: 0 4px 14px rgba(0, 118, 255, 0.1); }
+    .quiz-option.selected { border-color: var(--primary-accent); background-color: #dbeafe; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 118, 255, 0.2); }
+    .quiz-option:active { transform: scale(1.02); }
+    .quiz-options-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+    .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
+    .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
+    .photo-collage { display: grid; gap: 0.75rem; }
+    .collage-item { cursor: pointer; overflow: hidden; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: box-shadow 0.3s ease, transform 0.3s ease; }
+    .collage-item:hover { box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .collage-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease-in-out; }
+    .collage-item:hover img { transform: scale(1.05); }
+    .photo-collage.images-1 { grid-template-columns: 1fr; }
+    .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
+    .photo-collage.images-3 { grid-template-columns: repeat(2, 1fr); }
+    .photo-collage.images-3 > .collage-item:nth-child(1) { grid-column: span 2; }
+    .photo-collage.images-4 { grid-template-columns: repeat(3, 1fr); }
+    .photo-collage.images-4 > .collage-item:nth-child(1) { grid-column: span 3; }
+    .photo-collage.images-5 { grid-template-columns: repeat(3, 1fr); }
+    .photo-collage.images-5 > .collage-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .photo-collage.images-6 { grid-template-columns: repeat(3, 1fr); }
+    .photo-collage.images-6 > .collage-item:nth-child(1) { grid-column: span 2; }
+    .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
+    #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    #lightbox.visible { opacity: 1; pointer-events: auto; }
+    #lightbox img { max-width: 85vw; max-height: 80vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 1; }
+    #lightbox.visible img { transform: scale(1); }
+    .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
+    .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
+    #lightboxPrev { left: 2rem; }
+    #lightboxNext { right: 2rem; }
+    #lightboxClose { position: absolute; top: 1.5rem; right: 2rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
+    #lightboxClose:hover { transform: scale(1.1); }
+    #lightboxCounter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; }
+    #colorMapContainer { width: 100%; height: 100%; min-height: 450px; position: relative; }
+    #colorMapContainer svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; }
+    .color-map-node-group { cursor: pointer; }
+    .color-map-node-aura { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .color-map-node-core { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .color-map-node-group:hover .color-map-node-aura { opacity: 0.5; transform: scale(1.8); }
+    .color-map-node-group:hover .color-map-node-core { transform: scale(1.2); }
+    .color-map-node-group.selected .color-map-node-core { stroke: white; stroke-width: 3px; transform: scale(1.3); }
+    .color-map-node-group.selected .color-map-node-aura { opacity: 0.6; transform: scale(2); }
+    .color-map-node-label { font-size: 12px; font-weight: 600; fill: #334155; pointer-events: none; transition: opacity 0.3s ease; text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white; opacity: 0; }
+    .color-map-node-group:hover .color-map-node-label { opacity: 1; }
+    .axis-label { font-size: 0.75rem; font-weight: 600; fill: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+    .quadrant-label { font-size: 1.8rem; font-weight: 800; fill: rgba(203, 213, 225, 0.5); text-anchor: middle; pointer-events: none; opacity: 0; animation: text-fade-in 1s ease-out 0.5s forwards; }
+    #trendingContainer { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards; }
+    .trending-item { background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.05); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
+    #addToHomeScreenBtn.visible { display: inline-flex; animation: fadeInDown 0.5s ease-out; }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }

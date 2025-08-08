@@ -1,0 +1,6 @@
+node_modules/
+dist/
+/colorlab-backend/gen-lang-client-*.json
+/colorlab-backend/service-account-key.json
+npm-debug.log*
+.DS_Store
