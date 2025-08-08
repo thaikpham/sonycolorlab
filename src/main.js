@@ -169,13 +169,22 @@ function applyTranslations() {
     });
 }
 
+function getSizedImageUrl(originalUrl, size) {
+    if (!originalUrl || !originalUrl.includes('googleusercontent.com')) {
+        return originalUrl;
+    }
+    // Remove existing sizing parameters like =w...-h... or =s...
+    const baseUrl = originalUrl.split('?')[0].split('=')[0];
+    return `${baseUrl}=w${size}`;
+}
+
 function createFullRecipeHTML(recipe) {
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
         const count = Math.min(images.length, 6);
         const imageElements = images.slice(0, count).map((img, index) =>
             `<div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
-                <img src="${img}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image ${index + 1}">
+                <img src="${getSizedImageUrl(img, 400)}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image ${index + 1}">
             </div>`
         ).join('');
         return `<div class="photo-collage images-${count}">${imageElements}</div>`;
@@ -1157,6 +1166,17 @@ function renderLibraryList() {
             <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
         </div>`;
     }).join('');
+
+    // Preload images
+    recipesToRender.forEach(recipe => {
+        if (recipe.demoImages && recipe.demoImages.length > 0) {
+            const preloadLink = document.createElement('link');
+            preloadLink.rel = 'preload';
+            preloadLink.as = 'image';
+            preloadLink.href = getSizedImageUrl(recipe.demoImages[0], 400);
+            document.head.appendChild(preloadLink);
+        }
+    });
 }
 
 function renderLibraryDetails() {
@@ -1231,7 +1251,7 @@ function showLightboxImage() {
     lightboxImage.style.opacity = '0';
 
     setTimeout(() => {
-        lightboxImage.src = images[currentIndex];
+        lightboxImage.src = getSizedImageUrl(images[currentIndex], 1600);
         lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
         lightboxImage.style.opacity = '1';
     }, 150);
