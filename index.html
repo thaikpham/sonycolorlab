@@ -59,8 +59,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         font-family: 'Be Vietnam Pro', sans-serif;
         background-color: #f4f5f7;
         color: var(--text-primary);
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: hidden; /* Ngăn scroll khi landing page hiển thị */
         position: relative;
     }
 
@@ -76,9 +75,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         will-change: transform; /* Chỉ cần transform thay đổi */
     }
     .bg-blob.visible { 
-        opacity: 0.2; 
+        opacity: 0.25; /* Tăng nhẹ opacity */
     }
-    /* Xóa keyframes vì không còn sử dụng */
 
     /* --- INTERACTIVE SVG Logo Styles --- */
     .animated-logo-container {
@@ -1231,8 +1229,11 @@ function renderView(viewName, selectedId = null) {
 
     const blobContainer = document.getElementById('blobContainer');
     if (viewName !== 'home') {
+        document.body.style.overflowY = 'auto'; // Cho phép scroll lại ở các view khác
         blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
         setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
+    } else {
+        document.body.style.overflowY = 'hidden'; // Khóa scroll ở trang chủ
     }
 
     const footerEl = document.querySelector('footer');
@@ -1356,7 +1357,7 @@ function initializePhysicsBlobs() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    // Dữ liệu cho các chấm màu (nodes)
+    // Dữ liệu cho các chấm màu (nodes) với nhiều kích thước hơn
     const nodes = [
         { id: 1, color: '#ffae00', r: vw * 0.12 },
         { id: 2, color: '#3498db', r: vw * 0.15 },
@@ -1365,11 +1366,15 @@ function initializePhysicsBlobs() {
         { id: 5, color: '#9b59b6', r: vw * 0.10 },
         { id: 6, color: '#1abc9c', r: vw * 0.13 },
         { id: 7, color: '#f1c40f', r: vw * 0.09 },
-        { id: 8, color: '#e67e22', r: vw * 0.12 }
+        { id: 8, color: '#e67e22', r: vw * 0.12 },
+        { id: 9, color: '#34495e', r: vw * 0.10 },
+        { id: 10, color: '#d35400', r: vw * 0.11 },
     ].map(d => ({
         ...d,
         x: Math.random() * vw,
-        y: Math.random() * vh
+        y: Math.random() * vh,
+        vx: (Math.random() - 0.5) * 4, // Vận tốc ban đầu
+        vy: (Math.random() - 0.5) * 4,
     }));
 
     // Tạo các element div cho mỗi chấm màu
@@ -1388,34 +1393,31 @@ function initializePhysicsBlobs() {
 
     // Thiết lập mô phỏng vật lý
     const simulation = d3.forceSimulation(nodes)
-        // Lực va chạm, giúp chúng nảy ra khi gặp nhau
-        .force("collide", d3.forceCollide().radius(d => d.r + 5).strength(0.8))
-        // Lực hút về trung tâm, giữ chúng không bay ra khỏi màn hình
-        .force("center", d3.forceCenter(vw / 2, vh / 2).strength(0.01))
-        // Lực đẩy giữa các chấm, giúp chúng không bị dính vào nhau
-        .force("charge", d3.forceManyBody().strength(-20))
+        .alphaTarget(0.3) // Giữ cho simulation luôn "nóng"
+        .velocityDecay(0.1) // Giảm ma sát để chúng di chuyển lâu hơn
+        .force("collide", d3.forceCollide().radius(d => d.r + 8).strength(0.8)) // Tăng khoảng cách va chạm, giảm nhẹ lực
+        .force("charge", d3.forceManyBody().strength(-50)) // Tăng lực đẩy
         .on("tick", ticked);
 
     // Hàm được gọi mỗi khi có sự thay đổi vị trí trong mô phỏng
     function ticked() {
-        blobElements.style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
+        blobElements.each(d => {
+            // Giữ các chấm màu trong màn hình với hiệu ứng nảy nhẹ
+            if (d.x < d.r) { d.x = d.r; d.vx *= -0.8; }
+            if (d.x > vw - d.r) { d.x = vw - d.r; d.vx *= -0.8; }
+            if (d.y < d.r) { d.y = d.r; d.vy *= -0.8; }
+            if (d.y > vh - d.r) { d.y = vh - d.r; d.vy *= -0.8; }
+        })
+        .style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
     }
-
-    // Thêm một lực "gió" nhẹ và ngẫu nhiên để animation luôn sống động
+    
+    // Thêm một lực "gió" nhẹ và ngẫu nhiên liên tục
     d3.timer(() => {
         nodes.forEach(node => {
-            // Tác động một lực ngẫu nhiên rất nhỏ
-            node.vx += (Math.random() - 0.5) * 0.15;
-            node.vy += (Math.random() - 0.5) * 0.15;
-
-            // Giữ các chấm màu trong màn hình
-            if (node.x < node.r) node.vx = Math.abs(node.vx) * 1.1;
-            if (node.x > vw - node.r) node.vx = -Math.abs(node.vx) * 1.1;
-            if (node.y < node.r) node.vy = Math.abs(node.vy) * 1.1;
-            if (node.y > vh - node.r) node.vy = -Math.abs(node.vy) * 1.1;
+            node.vx += (Math.random() - 0.5) * 0.25;
+            node.vy += (Math.random() - 0.5) * 0.25;
         });
-        // "Hâm nóng" lại mô phỏng để nó không dừng lại
-        simulation.alpha(0.05);
+        simulation.alpha(0.1).restart(); // "Hâm nóng" lại mô phỏng
     });
 }
 
