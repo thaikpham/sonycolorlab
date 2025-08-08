@@ -941,19 +941,19 @@ const recipesData = [
     },
     {
         "id": "scl-040",
-        "name": { "vi": "SCL-040: Santa Color", "en": "SCL-040: Santa Color" },
-        "formattedName": "SCL-040-Santa-Color",
+        "name": { "vi": "SCL-040: Sunbath", "en": "SCL-040: Sunbath" },
+        "formattedName": "SCL-040-Sunbath",
         "description": {
-            "en": "Based on the unique Santa Color 100 film, this recipe offers a creative and unpredictable look with distinct color shifts, especially in reds and greens. It's perfect for photographers looking to experiment with a quirky, analog-inspired palette.",
-            "vi": "Dựa trên loại phim độc đáo Santa Color 100, công thức này mang lại một diện mạo sáng tạo và khó đoán với sự chuyển màu đặc biệt, nhất là ở các tông màu đỏ và xanh lá. Hoàn hảo cho các nhiếp ảnh gia muốn thử nghiệm với một bảng màu độc đáo, lấy cảm hứng từ phim analog."
+            "en": "Based on the unique film style, this recipe offers a creative and unpredictable look with distinct color shifts, especially in reds and greens. It's perfect for photographers looking to experiment with a quirky, analog-inspired palette.",
+            "vi": "Dựa trên loại phim độc đáo, công thức này mang lại một diện mạo sáng tạo và khó đoán với sự chuyển màu đặc biệt, nhất là ở các tông màu đỏ và xanh lá. Hoàn hảo cho các nhiếp ảnh gia muốn thử nghiệm với một bảng màu độc đáo, lấy cảm hứng từ phim analog."
         },
         "type": "color",
         "contrast": "normal",
         "saturation": "normal",
         "tags": ["film-emulation", "analog-inspired", "quirky", "experimental", "color-shift"],
-        "whiteBalance": "AWB, A5-G0.25",
-        "settings": { "Black level": "-7", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "Manual 105% +5", "Color Mode": "Still", "Saturation": "+13", "Color Phase": "+4" },
-        "colorDepth": { "R": "+3", "G": "+7", "B": "-4", "C": "-5", "M": "+4", "Y": "+2" },
+        "whiteBalance": "AWB, A5-G0.5",
+        "settings": { "Black level": "-7", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "Manual 95% +4", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "+2" },
+        "colorDepth": { "R": "+1", "G": "+5", "B": "-4", "C": "-5", "M": "+4", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#E53935",
         "coords": { "x": 2, "y": 3 },
@@ -965,11 +965,11 @@ const recipesData = [
     },
     {
         "id": "scl-041",
-        "name": { "vi": "SCL-041: Ayon 200", "en": "SCL-041: Ayon 200" },
-        "formattedName": "SCL-041-Ayon-200",
+        "name": { "vi": "SCL-041: Aya", "en": "SCL-041: Aya" },
+        "formattedName": "SCL-041-Aya",
         "description": {
             "en": "A highly stylized and atmospheric recipe with a dominant, warm yellow-green cast. It dramatically transforms landscapes and scenes, creating a surreal, vintage, or even dystopian feel. Ideal for bold artistic statements.",
-            "vi": "Một công thức màu có tính cách điệu cao và đầy không khí với tông màu vàng-lục ấm áp chiếm ưu thế. Nó biến đổi đáng kể phong cảnh và khung cảnh, tạo ra cảm giác siêu thực, cổ điển hoặc thậm chí là phản địa đàng. Lý tưởng cho những tuyên bố nghệ thuật táo bạo."
+            "vi": "Màu có tính cách điệu cao và đầy không khí với tông màu vàng-lục ấm áp chiếm ưu thế. Nó biến đổi đáng kể phong cảnh và khung cảnh, tạo ra cảm giác siêu thực, cổ điển hoặc thậm chí là phản địa đàng. Lý tưởng cho những tuyên bố nghệ thuật táo bạo."
         },
         "type": "color",
         "contrast": "high",
