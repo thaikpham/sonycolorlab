@@ -940,6 +940,54 @@ const recipesData = [
         ]
     },
     {
+        "id": "scl-040",
+        "name": { "vi": "SCL-040: Santa Color", "en": "SCL-040: Santa Color" },
+        "formattedName": "SCL-040-Santa-Color",
+        "description": {
+            "en": "Based on the unique Santa Color 100 film, this recipe offers a creative and unpredictable look with distinct color shifts, especially in reds and greens. It's perfect for photographers looking to experiment with a quirky, analog-inspired palette.",
+            "vi": "Dựa trên loại phim độc đáo Santa Color 100, công thức này mang lại một diện mạo sáng tạo và khó đoán với sự chuyển màu đặc biệt, nhất là ở các tông màu đỏ và xanh lá. Hoàn hảo cho các nhiếp ảnh gia muốn thử nghiệm với một bảng màu độc đáo, lấy cảm hứng từ phim analog."
+        },
+        "type": "color",
+        "contrast": "normal",
+        "saturation": "normal",
+        "tags": ["film-emulation", "analog-inspired", "quirky", "experimental", "color-shift"],
+        "whiteBalance": "AWB, A5-G0.25",
+        "settings": { "Black level": "-7", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "Manual 105% +5", "Color Mode": "Still", "Saturation": "+13", "Color Phase": "+4" },
+        "colorDepth": { "R": "+3", "G": "+7", "B": "-4", "C": "-5", "M": "+4", "Y": "+2" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#E53935",
+        "coords": { "x": 2, "y": 3 },
+        "demoImages": [
+            "https://placehold.co/800x600/E53935/ffffff?text=Santa+Color+1",
+            "https://placehold.co/800x600/E53935/ffffff?text=Santa+Color+2",
+            "https://placehold.co/800x600/E53935/ffffff?text=Santa+Color+3"
+        ]
+    },
+    {
+        "id": "scl-041",
+        "name": { "vi": "SCL-041: Ayon 200", "en": "SCL-041: Ayon 200" },
+        "formattedName": "SCL-041-Ayon-200",
+        "description": {
+            "en": "A highly stylized and atmospheric recipe with a dominant, warm yellow-green cast. It dramatically transforms landscapes and scenes, creating a surreal, vintage, or even dystopian feel. Ideal for bold artistic statements.",
+            "vi": "Một công thức màu có tính cách điệu cao và đầy không khí với tông màu vàng-lục ấm áp chiếm ưu thế. Nó biến đổi đáng kể phong cảnh và khung cảnh, tạo ra cảm giác siêu thực, cổ điển hoặc thậm chí là phản địa đàng. Lý tưởng cho những tuyên bố nghệ thuật táo bạo."
+        },
+        "type": "color",
+        "contrast": "high",
+        "saturation": "high",
+        "tags": ["stylized", "atmospheric", "yellow-green-cast", "surreal", "vintage", "dystopian", "artistic"],
+        "whiteBalance": "8000K, A7-G5.5",
+        "settings": { "Black level": "-12", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+7" },
+        "colorDepth": { "R": "+4", "G": "+5", "B": "0", "C": "0", "M": "-3", "Y": "+7" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#CDDC39",
+        "coords": { "x": 8, "y": 7 },
+        "demoImages": [
+            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+1",
+            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+2",
+            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+3"
+        ]
+    },
+        {
         "id": "PROCOLOR-001",
         "name": { "vi": "PROCOLOR-001: ClearCast Pro", "en": "PRO-SCL-001: ClearCast Pro" },
         "formattedName": "PRO-SCL-001: ClearCast Pro",
@@ -963,7 +1011,7 @@ const recipesData = [
             "https://lh3.googleusercontent.com/pw/AP1GczOukBYkXG6Tx4wyZVr6SG-4KO7SDu_hOHlqqWH7lXECgaSQd-E1Y5Gei5OM7tpYtdqJPG3T3GviII7Lbq3ytJpFe5hn2j2eZmQYOkyhIVlronmdHn2p-i_Ikfg4JQNMCa7GOALUFPOTUSVGW1MTgVr5bA=w484-h1048-s-no?authuser=0",
             "https://lh3.googleusercontent.com/pw/AP1GczOiKfRCji6HVmrDbEjGkPSMq2AhbTcb_yrVtbh_jB_sdosTRQqgZrQNpi10frovhZfIOQiaTkwpM297DcA1cLf5VtZLYh6MjOXRd1itNsZZF5BJlJ4_CloE9YdOIF9ceLzlVymOP55hTkYJQ4_D3edM-Q=w484-h1048-s-no?authuser=0"
         ]
-    }
+    },
 ];
 
 export default recipesData;
