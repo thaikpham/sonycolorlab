@@ -64,36 +64,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         position: relative;
     }
 
-    /* --- Nâng cấp hiệu ứng blobs --- */
+    /* --- Nâng cấp hiệu ứng blobs với vật lý --- */
     .bg-blob {
         position: fixed;
         border-radius: 50%;
-        /* Tăng độ mờ để hiệu ứng mềm mại hơn */
         filter: blur(120px); 
         opacity: 0;
         z-index: -1;
+        /* Loại bỏ animation CSS, thay bằng điều khiển JS */
         transition: opacity 1.5s var(--ease-out-cubic);
-        animation: move 25s infinite alternate var(--ease-in-out-quint);
-        will-change: transform, opacity;
+        will-change: transform; /* Chỉ cần transform thay đổi */
     }
     .bg-blob.visible { 
-        /* Tăng nhẹ độ mờ để các blobs nổi bật hơn */
         opacity: 0.2; 
     }
-    /* Các blobs cũ */
-    .bg-blob-1 { width: 450px; height: 450px; background: #ffae00; animation-duration: 30s; }
-    .bg-blob-2 { width: 550px; height: 550px; background: #3498db; animation-duration: 25s; animation-delay: -5s; }
-    .bg-blob-3 { width: 400px; height: 400px; background: #e74c3c; animation-duration: 35s; animation-delay: -10s; }
-    /* Thêm các blobs mới cho sinh động */
-    .bg-blob-4 { width: 500px; height: 500px; background: #2ecc71; animation-duration: 28s; animation-delay: -15s; }
-    .bg-blob-5 { width: 350px; height: 350px; background: #9b59b6; animation-duration: 32s; animation-delay: -20s; }
-    .bg-blob-6 { width: 480px; height: 480px; background: #1abc9c; animation-duration: 26s; animation-delay: -2s; }
-
-
-    @keyframes move {
-        from { transform: translate(var(--start-x), var(--start-y)) rotate(0deg) scale(1); }
-        to { transform: translate(var(--end-x), var(--end-y)) rotate(360deg) scale(1.2); }
-    }
+    /* Xóa keyframes vì không còn sử dụng */
 
     /* --- INTERACTIVE SVG Logo Styles --- */
     .animated-logo-container {
@@ -1245,28 +1230,7 @@ function renderView(viewName, selectedId = null) {
     if (selectedId) { state.selectedRecipeId = selectedId; }
 
     const blobContainer = document.getElementById('blobContainer');
-    if (viewName === 'home') {
-        // Nâng cấp: Thêm nhiều blobs hơn
-        blobContainer.innerHTML = `
-            <div class="bg-blob bg-blob-1"></div>
-            <div class="bg-blob bg-blob-2"></div>
-            <div class="bg-blob bg-blob-3"></div>
-            <div class="bg-blob bg-blob-4"></div>
-            <div class="bg-blob bg-blob-5"></div>
-            <div class="bg-blob bg-blob-6"></div>
-        `;
-        const blobs = blobContainer.querySelectorAll('.bg-blob');
-        blobs.forEach(blob => {
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            // Nâng cấp: Tăng biên độ di chuyển để bao phủ màn hình tốt hơn
-            blob.style.setProperty('--start-x', `${(Math.random() * 1.5 - 0.25) * vw}px`);
-            blob.style.setProperty('--start-y', `${(Math.random() * 1.5 - 0.25) * vh}px`);
-            blob.style.setProperty('--end-x', `${(Math.random() * 1.5 - 0.25) * vw}px`);
-            blob.style.setProperty('--end-y', `${(Math.random() * 1.5 - 0.25) * vh}px`);
-            setTimeout(() => blob.classList.add('visible'), 100);
-        });
-    } else {
+    if (viewName !== 'home') {
         blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
         setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
     }
@@ -1372,11 +1336,87 @@ function updateLangSlider() {
     glider.style.transform = state.currentLang === 'vi' ? 'translateX(0%)' : 'translateX(100%)';
 }
 
+/**
+ * Nâng cấp: Khởi tạo các chấm màu với hiệu ứng vật lý D3.js
+ * Tạo ra các chấm màu di chuyển, va chạm và tương tác với nhau.
+ */
+function initializePhysicsBlobs() {
+    const container = d3.select("#blobContainer");
+    if (container.empty()) return;
+
+    container.html(''); // Xóa các blob cũ nếu có
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Dữ liệu cho các chấm màu (nodes)
+    const nodes = [
+        { id: 1, color: '#ffae00', r: vw * 0.12 },
+        { id: 2, color: '#3498db', r: vw * 0.15 },
+        { id: 3, color: '#e74c3c', r: vw * 0.11 },
+        { id: 4, color: '#2ecc71', r: vw * 0.14 },
+        { id: 5, color: '#9b59b6', r: vw * 0.10 },
+        { id: 6, color: '#1abc9c', r: vw * 0.13 },
+        { id: 7, color: '#f1c40f', r: vw * 0.09 },
+        { id: 8, color: '#e67e22', r: vw * 0.12 }
+    ].map(d => ({
+        ...d,
+        x: Math.random() * vw,
+        y: Math.random() * vh
+    }));
+
+    // Tạo các element div cho mỗi chấm màu
+    const blobElements = container.selectAll(".bg-blob")
+        .data(nodes, d => d.id)
+        .join("div")
+        .attr("class", "bg-blob")
+        .style("width", d => `${d.r * 2}px`)
+        .style("height", d => `${d.r * 2}px`)
+        .style("background-color", d => d.color);
+
+    // Hiển thị các chấm màu
+    setTimeout(() => {
+        blobElements.classed("visible", true);
+    }, 100);
+
+    // Thiết lập mô phỏng vật lý
+    const simulation = d3.forceSimulation(nodes)
+        // Lực va chạm, giúp chúng nảy ra khi gặp nhau
+        .force("collide", d3.forceCollide().radius(d => d.r + 5).strength(0.8))
+        // Lực hút về trung tâm, giữ chúng không bay ra khỏi màn hình
+        .force("center", d3.forceCenter(vw / 2, vh / 2).strength(0.01))
+        // Lực đẩy giữa các chấm, giúp chúng không bị dính vào nhau
+        .force("charge", d3.forceManyBody().strength(-20))
+        .on("tick", ticked);
+
+    // Hàm được gọi mỗi khi có sự thay đổi vị trí trong mô phỏng
+    function ticked() {
+        blobElements.style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
+    }
+
+    // Thêm một lực "gió" nhẹ và ngẫu nhiên để animation luôn sống động
+    d3.timer(() => {
+        nodes.forEach(node => {
+            // Tác động một lực ngẫu nhiên rất nhỏ
+            node.vx += (Math.random() - 0.5) * 0.15;
+            node.vy += (Math.random() - 0.5) * 0.15;
+
+            // Giữ các chấm màu trong màn hình
+            if (node.x < node.r) node.vx = Math.abs(node.vx) * 1.1;
+            if (node.x > vw - node.r) node.vx = -Math.abs(node.vx) * 1.1;
+            if (node.y < node.r) node.vy = Math.abs(node.vy) * 1.1;
+            if (node.y > vh - node.r) node.vy = -Math.abs(node.vy) * 1.1;
+        });
+        // "Hâm nóng" lại mô phỏng để nó không dừng lại
+        simulation.alpha(0.05);
+    });
+}
+
+
 function initializeInteractiveLogo() {
     const svg = d3.select(".animated-logo-svg");
     if (svg.empty()) return;
 
-    // Make the SVG larger to fill more space
     const container = d3.select(".animated-logo-container");
     const bounds = container.node().getBoundingClientRect();
     const width = bounds.width;
@@ -1384,7 +1424,6 @@ function initializeInteractiveLogo() {
 
     svg.attr("viewBox", `0 0 ${width} ${height}`);
 
-    // Function to generate a random number in a range
     const randomInRange = (min, max) => Math.random() * (max - min) + min;
 
     const nodes = [
@@ -1395,26 +1434,19 @@ function initializeInteractiveLogo() {
         { id: 'magenta', color: '#9b59b6' },
         { id: 'yellow', color: '#f1c40f' },
         { id: 'grey', color: '#95a5a6' },
-        // Add more nodes for a fuller look
         { id: 'orange', color: '#e67e22' },
         { id: 'purple', color: '#8e44ad' }
     ].map(node => ({
         ...node,
-        // Assign a random radius for size variation
-        r: randomInRange(40, 80), // Increased size range
-        // Start at random positions
+        r: randomInRange(40, 80),
         x: randomInRange(0, width),
         y: randomInRange(0, height)
     }));
 
     const simulation = d3.forceSimulation(nodes)
-        // A gentle pull towards the center to keep them from flying off
         .force("center", d3.forceCenter(width / 2, height / 2).strength(0.01))
-        // Prevent nodes from overlapping
         .force("collide", d3.forceCollide().radius(d => d.r + 5).strength(0.7))
-        // A gentle "charge" to make them repel each other slightly, creating movement
         .force("charge", d3.forceManyBody().strength(20))
-         // Add a very slow, random "wind" force
         .on("tick", ticked);
 
     const circles = svg.selectAll("circle")
@@ -1424,7 +1456,7 @@ function initializeInteractiveLogo() {
         .attr("r", d => d.r)
         .attr("fill", d => d.color)
         .style("mix-blend-mode", "multiply")
-        .style("filter", "blur(5px)") // Add a slight blur for a softer, more organic look
+        .style("filter", "blur(5px)")
         .attr("opacity", 0.8);
 
     function ticked() {
@@ -1433,20 +1465,20 @@ function initializeInteractiveLogo() {
             .attr("cy", d => d.y);
     }
     
-    // Add a gentle, continuous "nudge" to keep the simulation alive and moving naturally
     d3.timer(() => {
         nodes.forEach(node => {
-            // Apply a tiny random force
             node.vx += (Math.random() - 0.5) * 0.05;
             node.vy += (Math.random() - 0.5) * 0.05;
         });
-        simulation.alpha(0.1); // Keep the simulation "warm" to prevent it from stopping
+        simulation.alpha(0.1);
     });
 }
 
 
 function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
+        // Thay thế animation cũ bằng animation vật lý mới
+        initializePhysicsBlobs();
         initializeInteractiveLogo();
     }
     if (viewName === 'recipeFormulas') {
