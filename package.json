@@ -1,0 +1,14 @@
+{
+  "name": "sony-colorlab",
+  "version": "1.0.0",
+  "description": "Alpha AI Color Lab",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "serve .",
+    "preview": "serve dist"
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}
