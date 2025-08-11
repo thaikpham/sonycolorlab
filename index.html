@@ -26,11 +26,11 @@
 }">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- Tối ưu: Tải D3.js bất đồng bộ -->
+<!-- Tải D3.js bất đồng bộ -->
 <script src="https://d3js.org/d3.v7.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Tối ưu: Tải trước (preload) font để tăng tốc độ hiển thị -->
+<!-- Tải trước (preload) font để tăng tốc độ hiển thị -->
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 
@@ -41,232 +41,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-T4CCCKFW');</script>
 <!-- End Google Tag Manager -->
-    
-<style>
-    /* --- REFINED STYLES & ANIMATION OVERHAUL --- */
-    html { scroll-behavior: smooth; }
-    :root {
-        --primary-accent: #007AFF;
-        --primary-accent-darker: #0056B3;
-        --glass-bg: rgba(255, 255, 255, 0.65);
-        --glass-border: rgba(0, 0, 0, 0.05);
-        --text-primary: #1d1d1f;
-        --text-secondary: #6e6e73;
-        --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
-        --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
-    }
-    body {
-        font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #f4f5f7;
-        color: var(--text-primary);
-        overflow: hidden; /* Ngăn scroll khi landing page hiển thị */
-        position: relative;
-    }
 
-    /* --- Nâng cấp hiệu ứng blobs với vật lý --- */
-    .bg-blob {
-        position: fixed;
-        border-radius: 50%;
-        filter: blur(120px); 
-        opacity: 0;
-        z-index: -1;
-        /* Loại bỏ animation CSS, thay bằng điều khiển JS */
-        transition: opacity 1.5s var(--ease-out-cubic);
-        will-change: transform; /* Chỉ cần transform thay đổi */
-    }
-    .bg-blob.visible { 
-        opacity: 0.25; /* Tăng nhẹ opacity */
-    }
+<!-- ✅ TÁCH CSS RA FILE RIÊNG -->
+<link rel="stylesheet" href="styles.css">
 
-    /* --- INTERACTIVE SVG Logo Styles --- */
-    .animated-logo-container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-    }
-    .animated-logo-svg {
-        width: 100%;
-        height: 100%;
-        overflow: visible;
-    }
-    .logo-circle {
-        will-change: transform;
-    }
-
-    /* --- Core Component Styling --- */
-    .glass-panel {    
-        background: var(--glass-bg);    
-        backdrop-filter: blur(50px) saturate(180%);    
-        -webkit-backdrop-filter: blur(50px) saturate(180%);    
-        border: 1px solid var(--glass-border);    
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-        border-radius: 24px;
-        transition: all 0.4s var(--ease-out-cubic);
-    }
-    @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
-    
-    .recipe-item {
-        border-left: 4px solid transparent;
-        transition: all 0.3s var(--ease-out-cubic);
-    }
-    .recipe-item.selected {    
-        background-color: rgba(0, 122, 255, 0.1);    
-        color: var(--text-primary);    
-        transform: translateX(4px) scale(1.02);
-        border-left-color: var(--glow-color);
-        box-shadow: 0 0 20px -2px var(--glow-color);
-    }
-    .recipe-item:hover:not(.selected) { 
-        background-color: rgba(0, 0, 0, 0.04);
-        transform: translateX(2px);
-    }
-    .recipe-item.hover-highlight:not(.selected) {
-        background-color: rgba(230, 242, 255, 0.8);
-        box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.15);
-        transform: translateX(2px);
-    }
-
-    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transform: scale(1); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
-    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.45); }
-    .btn:active { transform: translateY(0px) scale(0.97); }
-
-    /* --- Refined & Unified View Transitions --- */
-    .view-transition { animation: fadeInScale 0.7s var(--ease-out-cubic) forwards; }
-    .view-transition-out { animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards; position: absolute; }
-    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-    @keyframes fadeOutScale { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
-
-    /* --- Staggered List Animation --- */
-    .recipe-item-stagger {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
-    }
-    @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
-    
-    /* --- Homepage Content Animations --- */
-    .home-content-anim {
-        opacity: 0;
-        transform: translateY(25px);
-        animation: homeContentFadeIn 0.8s var(--ease-out-cubic) forwards;
-    }
-    @keyframes homeContentFadeIn { to { opacity: 1; transform: translateY(0); } }
-
-    /* --- Sleek Scrollbar with iOS Momentum Scrolling --- */
-    .sleek-scrollbar {
-        -webkit-overflow-scrolling: touch;
-    }
-    .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
-    .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .sleek-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0); border-radius: 20px; border: 3px solid transparent; }
-    .sleek-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); }
-    .sleek-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.4); }
-
-    /* --- Other styles --- */
-    .modal.hidden { display: none; }
-    .modal-panel { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e5e7eb; }
-    .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
-    #infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
-    #infoTooltip.visible { opacity: 1; transform: translateY(0); }
-    .comparison-grid .changed { background-color: #e6f2ff; border: 1px solid #99c8ff; box-shadow: 0 0 0 2px #e6f2ff; }
-    .comparison-grid .value-original { color: #6b7280; }
-    .comparison-grid .value-new { color: #1d4ed8; font-weight: 700; }
-    .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .quiz-option { background-color: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(1); }
-    .quiz-option:hover { border-color: #93c5fd; background-color: #eff6ff; transform: scale(1.03); box-shadow: 0 4px 14px rgba(0, 118, 255, 0.1); }
-    .quiz-option.selected { border-color: var(--primary-accent); background-color: #dbeafe; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 118, 255, 0.2); }
-    .quiz-option:active { transform: scale(1.02); }
-    .quiz-options-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-    .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
-    .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
-    
-    /* === IMAGE COMPOSITION & LOADING IMPROVEMENTS === */
-    .photo-collage { display: grid; gap: 0.75rem; }
-    .collage-item { 
-        cursor: pointer; 
-        overflow: hidden; 
-        border-radius: 0.75rem; 
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-        transition: box-shadow 0.3s ease, transform 0.3s ease; 
-        background-color: #f0f2f5; /* Add a background for loading state */
-    }
-    .collage-item:hover { 
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1); 
-        transform: translateY(-2px); 
-    }
-    .collage-item img { 
-        width: 100%; 
-        height: 100%; 
-        /* 🎯 CẢI TIẾN 1: Giữ đúng tỷ lệ ảnh và lấp đầy khung chứa, tránh méo ảnh */
-        object-fit: cover; 
-        object-position: center center; /* Căn giữa ảnh, tốt cho ảnh chân dung */
-        /* 🎯 CẢI TIẾN 2: Chuyển động mượt mà hơn khi hover */
-        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .collage-item:hover img { 
-        /* 🎯 CẢI TIẾN 3: Hiệu ứng zoom-in tinh tế hơn */
-        transform: scale(1.08); 
-    }
-    /* === END IMAGE IMPROVEMENTS === */
-
-    .photo-collage.images-1 { grid-template-columns: 1fr; }
-    .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
-    .photo-collage.images-3 { grid-template-columns: repeat(2, 1fr); }
-    .photo-collage.images-3 > .collage-item:nth-child(1) { grid-column: span 2; }
-    .photo-collage.images-4 { grid-template-columns: repeat(3, 1fr); }
-    .photo-collage.images-4 > .collage-item:nth-child(1) { grid-column: span 3; }
-    .photo-collage.images-5 { grid-template-columns: repeat(3, 1fr); }
-    .photo-collage.images-5 > .collage-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
-    .photo-collage.images-6 { grid-template-columns: repeat(3, 1fr); }
-    .photo-collage.images-6 > .collage-item:nth-child(1) { grid-column: span 2; }
-    .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
-    
-    #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
-    #lightbox.visible { opacity: 1; pointer-events: auto; }
-    #lightbox img { 
-        max-width: 90vw; 
-        max-height: 85vh; 
-        border-radius: 0.5rem; 
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-        transform: scale(0.95); 
-        transition: transform 0.3s ease, opacity 0.3s ease; 
-        opacity: 1; 
-        /* 🎯 CẢI TIẾN 4: Đảm bảo ảnh trong lightbox không bị méo */
-        object-fit: contain;
-    }
-    #lightbox.visible img { transform: scale(1); }
-    .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
-    .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
-    #lightboxPrev { left: 2rem; }
-    #lightboxNext { right: 2rem; }
-    #lightboxClose { position: absolute; top: 1.5rem; right: 2rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
-    #lightboxClose:hover { transform: scale(1.1); }
-    #lightboxCounter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; }
-    #colorMapContainer { width: 100%; height: 100%; min-height: 450px; position: relative; }
-    #colorMapContainer svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; }
-    .color-map-node-group { cursor: pointer; }
-    .color-map-node-aura { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .color-map-node-core { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .color-map-node-group:hover .color-map-node-aura { opacity: 0.5; transform: scale(1.8); }
-    .color-map-node-group:hover .color-map-node-core { transform: scale(1.2); }
-    .color-map-node-group.selected .color-map-node-core { stroke: white; stroke-width: 3px; transform: scale(1.3); }
-    .color-map-node-group.selected .color-map-node-aura { opacity: 0.6; transform: scale(2); }
-    .color-map-node-label { font-size: 12px; font-weight: 600; fill: #334155; pointer-events: none; transition: opacity 0.3s ease; text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white; opacity: 0; }
-    .color-map-node-group:hover .color-map-node-label { opacity: 1; }
-    .axis-label { font-size: 0.75rem; font-weight: 600; fill: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
-    .quadrant-label { font-size: 1.8rem; font-weight: 800; fill: rgba(203, 213, 225, 0.5); text-anchor: middle; pointer-events: none; opacity: 0; animation: text-fade-in 1s ease-out 0.5s forwards; }
-    #trendingContainer { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards; }
-    .trending-item { background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.05); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-    .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
-    #addToHomeScreenBtn.visible { display: inline-flex; animation: fadeInDown 0.5s ease-out; }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-</style>
 </head>
 <body>
-<!-- Background Blobs will be injected here by the home view template -->
+<!-- ✅ TỐI ƯU ANIMATION NỀN BẰNG CSS -->
 <div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
 
 <!-- Google Tag Manager (noscript) -->
@@ -281,16 +62,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		</button>
         <div class="flex items-center gap-2 md:gap-4">
             <nav id="mainNav" class="hidden md:flex items-center gap-2">
-                <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navRecipeFormulas"></button>
+                <button data-view="recipeFormulas" class="nav-btn font-semibold text-text-secondary hover:text-text-primary transition-colors px-4 py-2 rounded-full hover:bg-bg-accent-hover" data-translate-key="navRecipeFormulas"></button>
+                <!-- ✅ THÊM NÚT XEM CÁC CÔNG THỨC ĐÃ LƯU -->
+                <button data-view="savedRecipes" class="nav-btn font-semibold text-text-secondary hover:text-text-primary transition-colors px-4 py-2 rounded-full hover:bg-bg-accent-hover flex items-center gap-2" data-translate-key="navSavedRecipes">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" /></svg>
+                    <span class="hidden sm:inline">Đã lưu</span>
+                </button>
             </nav>
-            <button id="addToHomeScreenBtn" class="hidden items-center gap-2 bg-blue-50 text-blue-700 font-semibold px-4 py-2 rounded-full hover:bg-blue-100 transition-colors duration-200 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <span class="hidden sm:inline">Cài đặt App</span>
-            </button>
             <div class="p-1 bg-gray-200/70 rounded-full flex relative">
-                <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
+                <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm"></div>
                 <button id="langVI" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-5 h-5 rounded-sm"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
                     <span class="hidden sm:inline">VIE</span>
@@ -308,13 +88,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
     
-    <footer class="text-center py-4 text-gray-500 text-sm flex-shrink-0">
+    <footer class="text-center py-4 text-text-secondary text-sm flex-shrink-0">
         Paint emotions with ColorLAB by Sony Alpha Vietnam
     </footer>
 </div>
 
-<div id="infoTooltip" class="hidden"></div>
+<!-- Container cho các thông báo -->
+<div id="toast-container"></div>
 
+<!-- Các modal và popup khác -->
+<div id="infoTooltip" class="hidden"></div>
 <div id="lightbox" class="hidden">
     <span id="lightboxClose">&times;</span>
     <div id="lightboxPrev" class="lightbox-arrow">&#x2039;</div>
@@ -322,22 +105,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="lightboxNext" class="lightbox-arrow">&#x203A;</div>
     <div id="lightboxCounter"></div>
 </div>
-
-<div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
-    <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
+<div id="mobileNavMenu" class="fixed inset-0 z-40 transform translate-x-full md:hidden">
+    <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm p-6">
         <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
         <nav class="mt-16 flex flex-col gap-6 text-center">
-            <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-gray-700 py-2" data-translate-key="navRecipeFormulas"></button>
+            <button data-view="recipeFormulas" class="nav-btn-mobile text-2xl font-semibold text-text-primary py-2" data-translate-key="navRecipeFormulas"></button>
+            <button data-view="savedRecipes" class="nav-btn-mobile text-2xl font-semibold text-text-primary py-2" data-translate-key="navSavedRecipes"></button>
         </nav>
     </div>
 </div>
-
-<!-- Quiz Modal -->
 <div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div id="quizPanel" class="modal-panel w-full max-w-3xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
         <div class="flex justify-between items-center p-5 flex-shrink-0">
             <h2 class="text-xl font-bold" data-translate-key="quizTitle"></h2>
-            <button id="closeQuizBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
+            <button id="closeQuizBtn" class="text-3xl font-light text-gray-400 hover:text-text-primary">&times;</button>
         </div>
         <div id="quizContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar"></div>
         <div class="p-5 flex-shrink-0">
@@ -347,35 +128,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
 </div>
-
-<!-- Gemini AI Lab Modal -->
 <div id="aiLabModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div id="aiLabPanel" class="modal-panel w-full max-w-4xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
-        <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
+        <div class="flex justify-between items-center p-5 border-b border-border-secondary flex-shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0-1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" /></svg>
                 </div>
                  <h2 class="text-xl font-bold" data-translate-key="aiLabTitle"></h2>
             </div>
-            <button id="closeAILabBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
+            <button id="closeAILabBtn" class="text-3xl font-light text-gray-400 hover:text-text-primary">&times;</button>
         </div>
         <div id="aiLabContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar">
         </div>
     </div>
 </div>
-
-<!-- Caption AI Lab Modal -->
 <div id="captionLabModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div id="captionLabPanel" class="modal-panel w-full max-w-2xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
-        <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
+        <div class="flex justify-between items-center p-5 border-b border-border-secondary flex-shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg">
                      <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
                 </div>
                  <h2 class="text-xl font-bold" data-translate-key="captionLabTitle"></h2>
             </div>
-            <button id="closeCaptionLabBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
+            <button id="closeCaptionLabBtn" class="text-3xl font-light text-gray-400 hover:text-text-primary">&times;</button>
         </div>
         <div id="captionLabContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar">
         </div>
@@ -427,14 +204,17 @@ const state = {
     lightbox: {
         images: [],
         currentIndex: 0,
-    }
+    },
+    // ✅ Trạng thái lưu trữ tạm thời các công thức đã lưu
+    savedRecipes: []
 };
 
 const mainContentEl = document.getElementById('mainContent');
 
 // Cache-busting: Thêm version query để buộc tải lại file mới
-import recipesData from './recipes.js?v=2.0';
+import recipesData from './recipes.js?v=2.1';
 
+// Dữ liệu Quiz và Dịch thuật không đổi
 const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
@@ -475,6 +255,7 @@ const quizQuestions = [
 const translations = {
     headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
+    navSavedRecipes: {vi: "Công thức đã lưu", en: "Saved Recipes"},
     landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
     startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
     findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
@@ -520,7 +301,17 @@ const translations = {
     captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
     copyBtn: {vi: "Sao chép", en: "Copy"},
     copiedBtn: {vi: "Đã sao chép!", en: "Copied!"},
-    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" }
+    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" },
+    saveAIRecipeBtn: {vi: "Lưu công thức AI", en: "Save AI Recipe"},
+    recipeSavedToast: {vi: "Đã lưu công thức!", en: "Recipe saved!"},
+    nameYourRecipe: {vi: "Đặt tên cho công thức của bạn", en: "Name your recipe"},
+    saveBtn: {vi: "Lưu", en: "Save"},
+    cancelBtn: {vi: "Hủy", en: "Cancel"},
+    savedRecipesTitle: {vi: "Công thức đã lưu của bạn", en: "Your Saved Recipes"},
+    noSavedRecipes: {vi: "Bạn chưa lưu công thức nào. Các công thức do AI tạo và được bạn lưu sẽ xuất hiện ở đây.", en: "You haven't saved any recipes yet. AI-generated recipes you save will appear here."},
+    captionResultSubTitle: {vi: "Gợi ý đăng bài:", en: "Posting Suggestions:"},
+    captionResultTime: {vi: "Khung giờ vàng", en: "Golden Hours"},
+    captionResultVisual: {vi: "Ý tưởng hình ảnh", en: "Visual Ideas"},
 };
 
 const parameterExplanations = {
@@ -556,56 +347,46 @@ function applyTranslations() {
     });
 }
 
+// ✅ HÀM MỚI: HIỂN THỊ THÔNG BÁO (TOAST)
+function showToast(messageKey) {
+    const toastContainer = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+        <svg class="w-5 h-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <span>${t(messageKey)}</span>
+    `;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'toast-out 0.5s ease-out forwards';
+        toast.addEventListener('animationend', () => toast.remove());
+    }, 3000);
+}
+
 function createFullRecipeHTML(recipe) {
-    // 🎯 HÀM ĐÃ ĐƯỢC CẬP NHẬT HOÀN TOÀN
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
         const count = Math.min(images.length, 6);
-
         const imageElements = images.slice(0, count).map((imgUrl, index) => {
-            let src = imgUrl;
-            let srcset = '';
-            
-            // Xử lý thông minh cho các loại URL khác nhau
-            if (imgUrl.includes('placehold.co')) {
-                // Có thể tạo srcset cho placeholder
-                try {
-                    const url = new URL(imgUrl);
-                    const pathParts = url.pathname.split('/');
-                    const bgColor = pathParts[2] || 'e2e8f0';
-                    const fgColor = pathParts[3] || '475569';
-                    const text = url.searchParams.get('text') || 'Image';
-                    
-                    const src400 = `${url.protocol}//${url.hostname}/400x300/${bgColor}/${fgColor}?text=${encodeURIComponent(text)}`;
-                    const src800 = `${url.protocol}//${url.hostname}/800x600/${bgColor}/${fgColor}?text=${encodeURIComponent(text)}`;
-                    const src1200 = `${url.protocol}//${url.hostname}/1200x900/${bgColor}/${fgColor}?text=${encodeURIComponent(text)}`;
-                    
-                    src = src800;
-                    srcset = `${src400} 400w, ${src800} 800w, ${src1200} 1200w`;
-                } catch (e) {
-                    // Nếu URL không hợp lệ, giữ nguyên
-                    srcset = `${imgUrl} 800w`;
-                }
-            } else {
-                // Đối với Google Photos hoặc các URL khác, không thể giả định các kích thước khác nhau
-                // Chỉ sử dụng lazy loading.
-                srcset = `${imgUrl} 800w`; // Cung cấp chiều rộng để trình duyệt biết
-            }
-
+            // Sử dụng ảnh WebP nếu có thể (giả định)
+            const webpUrl = imgUrl.replace(/\.(jpg|jpeg|png)/, '.webp');
             return `
                 <div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
-                    <img 
-                        src="${src}" 
-                        ${srcset ? `srcset="${srcset}"` : ''}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        loading="lazy" 
-                        decoding="async"
-                        alt="Ảnh demo ${index + 1} cho công thức màu ${recipe.name[state.currentLang]}"
-                        onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Không tải được ảnh</div>';"
-                    >
+                    <picture>
+                        <source srcset="${webpUrl}" type="image/webp">
+                        <img 
+                            src="${imgUrl}" 
+                            loading="lazy" 
+                            decoding="async"
+                            alt="Ảnh demo ${index + 1} cho công thức màu ${recipe.name[state.currentLang]}"
+                            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Không tải được ảnh</div>';"
+                        >
+                    </picture>
                 </div>`;
         }).join('');
-
         return `<div class="photo-collage images-${count}">${imageElements}</div>`;
     };
 
@@ -657,6 +438,7 @@ function createFullRecipeHTML(recipe) {
     `;
 }
 
+// ✅ TEMPLATE MỚI CHO TRANG CÔNG THỨC ĐÃ LƯU
 const viewTemplates = {
     home: () => `
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
@@ -701,14 +483,22 @@ const viewTemplates = {
                     <div id="recipeContent" class="hidden"></div>
                 </div>
             </main>
-            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
+            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-bg-tertiary p-4 overflow-y-auto hidden">
                 <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
                 <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
             </div>
         </div>`,
+    savedRecipes: () => `
+        <div id="savedRecipesView" class="w-full h-full absolute inset-0 view-transition p-4 md:p-8">
+            <h2 class="text-3xl font-bold mb-6" data-translate-key="savedRecipesTitle"></h2>
+            <div id="savedRecipeList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Saved recipes will be injected here -->
+            </div>
+        </div>
+    `,
 };
 
-// --- SLEEK COLOR MAP CHART ---
+// --- SLEEK COLOR MAP CHART (Không đổi) ---
 function renderColorMapChart(containerSelector, data) {
     const container = d3.select(containerSelector);
     if (container.empty() || !data || data.length === 0) {
@@ -909,16 +699,14 @@ async function fetchTrendingRecipes() {
     }
 }
 
-// --- QUIZ LOGIC ---
+// --- QUIZ LOGIC (Không đổi) ---
 function startQuiz() {
     state.quiz.currentQuestionIndex = 0;
     state.quiz.answers = [];
     document.getElementById('quizModal').classList.remove('hidden');
     renderQuizQuestion();
 }
-
 function closeQuiz() { document.getElementById('quizModal').classList.add('hidden'); }
-
 function renderQuizQuestion() {
     const quizContent = document.getElementById('quizContent');
     const progressBar = document.getElementById('quizProgressBar');
@@ -960,7 +748,6 @@ function renderQuizQuestion() {
         render();
     }
 }
-
 function handleQuizAnswer(e) {
     const selectedOption = e.target.closest('.quiz-option');
     if (!selectedOption) return;
@@ -970,7 +757,6 @@ function handleQuizAnswer(e) {
     state.quiz.answers.push(...tags);
     setTimeout(() => { state.quiz.currentQuestionIndex++; renderQuizQuestion(); }, 300);
 }
-
 function calculateAndShowQuizResult() {
     const scores = recipesData.map(recipe => {
         let score = recipe.tags.reduce((acc, tag) => acc + (state.quiz.answers.includes(tag) ? 1 : 0), 0);
@@ -1016,7 +802,10 @@ async function callGeminiAPI(prompt, signal) {
     if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
         throw new Error("Invalid API response structure.");
     }
-    return JSON.parse(result.candidates[0].content.parts[0].text);
+    // Handle potential markdown code block
+    const rawText = result.candidates[0].content.parts[0].text;
+    const cleanJson = rawText.replace(/```json\n?|```/g, '').trim();
+    return JSON.parse(cleanJson);
 }
 
 
@@ -1090,7 +879,7 @@ function renderAIConfirmation(container) {
             <h3 class="text-xl font-bold" data-translate-key="aiConfirmPromptTitle"></h3>
             <p class="mt-3 text-lg text-gray-700">${confirmText}</p>
             <div class="mt-6 flex justify-center gap-4">
-                <button id="cancelAIBtn" class="btn bg-gray-200 text-gray-800 py-2 px-6" data-translate-key="aiCancelBtn"></button>
+                <button id="cancelAIBtn" class="btn bg-gray-200 text-gray-800 py-2 px-6" data-translate-key="cancelBtn"></button>
                 <button id="confirmAIBtn" class="btn btn-primary py-2 px-6" data-translate-key="aiConfirmBtn"></button>
             </div>
         </div>
@@ -1098,6 +887,7 @@ function renderAIConfirmation(container) {
     applyTranslations();
 }
 
+// ✅ CẬP NHẬT GIAO DIỆN SO SÁNH VỚI NÚT LƯU
 function renderAIComparison(container) {
     const original = state.ai.originalRecipe;
     const generated = state.ai.generatedRecipe;
@@ -1127,15 +917,19 @@ function renderAIComparison(container) {
             <h3 class="text-2xl font-bold" data-translate-key="aiComparisonTitle"></h3>
             <p class="mt-1 text-gray-600" data-translate-key="aiComparisonDescription"></p>
         </div>
-        <div class="mt-6 grid grid-cols-1">
-             <div class="border-2 border-blue-500 rounded-xl p-4 bg-white shadow-lg">
-                <h4 class="text-xl font-bold text-center text-blue-600" data-translate-key="aiNewTitle"></h4>
-                <p class="text-center text-gray-500">${generated.name[state.currentLang]}</p>
-            </div>
+        <div class="mt-6 border-2 border-blue-500 rounded-xl p-4 bg-white shadow-lg">
+            <h4 class="text-xl font-bold text-center text-blue-600">${generated.name[state.currentLang]}</h4>
+            <p class="text-center text-gray-500">${generated.description[state.currentLang]}</p>
         </div>
         <div class="mt-6 space-y-6">
             ${createComparisonGrid('recipeSettingsTitle', original.settings, generated.settings)}
             ${original.colorDepth ? createComparisonGrid('colorDepthTitle', original.colorDepth, generated.colorDepth) : ''}
+        </div>
+        <div class="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+            <button id="saveAIRecipeBtn" class="btn btn-primary py-3 px-8 text-lg">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" /></svg>
+                <span data-translate-key="saveAIRecipeBtn"></span>
+            </button>
         </div>
     `;
     applyTranslations();
@@ -1184,6 +978,33 @@ async function confirmAndCallAI() {
     }
 }
 
+// ✅ HÀM MỚI: LƯU CÔNG THỨC AI
+function saveAIRecipe() {
+    const recipeToSave = state.ai.generatedRecipe;
+    if (!recipeToSave) return;
+    
+    // Yêu cầu người dùng đặt tên
+    const recipeName = prompt(t('nameYourRecipe'), recipeToSave.name[state.currentLang]);
+    if (!recipeName || recipeName.trim() === '') return; // User cancelled or entered empty name
+
+    // Cập nhật tên và tạo ID mới
+    const finalRecipe = {
+        ...recipeToSave,
+        id: `ai-${Date.now()}`, // Tạo ID độc nhất
+        name: {
+            vi: recipeName,
+            en: recipeName
+        },
+        isAISaved: true, // Đánh dấu đây là công thức do người dùng lưu
+    };
+
+    state.savedRecipes.push(finalRecipe);
+    localStorage.setItem('colorlab_saved_recipes', JSON.stringify(state.savedRecipes));
+    
+    showToast('recipeSavedToast');
+    closeAILab();
+}
+
 
 // --- CAPTION AI LOGIC ---
 function openCaptionLab(recipeId) {
@@ -1209,6 +1030,7 @@ function closeCaptionLab() {
     document.getElementById('captionLabModal').classList.add('hidden');
 }
 
+// ✅ CẬP NHẬT GIAO DIỆN KẾT QUẢ CAPTION
 function renderCaptionLab() {
     const contentEl = document.getElementById('captionLabContent');
     if (!contentEl) return;
@@ -1219,7 +1041,7 @@ function renderCaptionLab() {
     }
 
     if (state.captionAI.result) {
-        const { caption, hashtags } = state.captionAI.result;
+        const { caption, hashtags, posting_times, visual_ideas } = state.captionAI.result;
         contentEl.innerHTML = `
             <h3 class="text-xl font-bold text-center" data-translate-key="captionResultTitle"></h3>
             <div class="mt-4 p-4 bg-gray-50 border rounded-lg">
@@ -1233,6 +1055,13 @@ function renderCaptionLab() {
                  <button class="btn btn-primary py-2 px-4" data-copy-target="caption-text">
                      <span data-translate-key="copyBtn"></span> Caption
                  </button>
+            </div>
+            <div class="mt-6 pt-4 border-t">
+                <h4 class="text-lg font-semibold" data-translate-key="captionResultSubTitle"></h4>
+                <div class="mt-2 space-y-3 text-sm">
+                    <p><strong>${t('captionResultTime')}:</strong> ${posting_times}</p>
+                    <p><strong>${t('captionResultVisual')}:</strong> ${visual_ideas}</p>
+                </div>
             </div>
         `;
     } else {
@@ -1250,6 +1079,7 @@ function renderCaptionLab() {
     applyTranslations();
 }
 
+// ✅ CẬP NHẬT PROMPT CHO CAPTION AI
 async function handleCaptionGeneration() {
     const userInput = document.getElementById('captionPromptInput').value.trim();
     if (!userInput) return;
@@ -1264,17 +1094,21 @@ async function handleCaptionGeneration() {
 **CRITICAL RULES:**
 1.  **Mandatory Hashtags:** The final hashtag string MUST include '#sonycolorlab', '#sonyalphavietnam', and '${recipeHashtag}'. This is non-negotiable.
 2.  **Tone & Style:** The caption's tone must be creative, subtle, sophisticated, and potentially humorous. Use trendy Vietnamese Gen Z slang and phrasing to make it highly shareable and viral.
-3.  **Language:** The entire response (caption and hashtags) MUST be in the same language as the User's Idea, which is: ${state.currentLang}.
+3.  **Language:** The entire response MUST be in the same language as the User's Idea, which is: ${state.currentLang}.
 
 **CONTEXT:**
 * **Photographic Style:** "${recipe.name[state.currentLang]}" - This style is known for: "${recipe.description[state.currentLang]}".
 * **User's Idea:** "${userInput}"
 
 **TASK:**
-Based on all the rules and context, generate a caption and a set of hashtags.
+Based on all the rules and context, generate a complete social media package.
 
 **OUTPUT FORMAT:**
-You must respond with only a single, valid JSON object with two keys: "caption" (string) and "hashtags" (string).`;
+You must respond with only a single, valid JSON object with four keys:
+1. "caption": (string) The main, engaging caption.
+2. "hashtags": (string) The complete string of hashtags.
+3. "posting_times": (string) Suggest the best times of day to post for maximum engagement (e.g., "Sáng 8-9h, Tối 20-22h").
+4. "visual_ideas": (string) Suggest 1-2 concrete visual ideas that would pair well with the caption (e.g., "Một video slow-motion lướt qua ly cà phê buổi sáng, hoặc một bức ảnh flatlay với cuốn sách và kính mắt.").`;
 
     try {
         state.captionAI.result = await callGeminiAPI(prompt, state.captionAI.abortController.signal);
@@ -1299,17 +1133,22 @@ function renderView(viewName, selectedId = null) {
     if (selectedId) { state.selectedRecipeId = selectedId; }
 
     const blobContainer = document.getElementById('blobContainer');
-    if (viewName !== 'home') {
-        document.body.style.overflowY = 'auto'; // Cho phép scroll lại ở các view khác
-        blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
-        setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
+    blobContainer.innerHTML = ''; // Xóa các blob cũ
+    if (viewName === 'home') {
+        document.body.style.overflowY = 'hidden';
+        // Thêm các blob mới bằng CSS
+        blobContainer.innerHTML = `
+            <div class="bg-blob-css blob-1"></div>
+            <div class="bg-blob-css blob-2"></div>
+            <div class="bg-blob-css blob-3"></div>
+        `;
     } else {
-        document.body.style.overflowY = 'hidden'; // Khóa scroll ở trang chủ
+        document.body.style.overflowY = 'auto';
     }
 
     const footerEl = document.querySelector('footer');
     if (footerEl) {
-        footerEl.classList.toggle('hidden', viewName === 'recipeFormulas');
+        footerEl.classList.toggle('hidden', viewName === 'recipeFormulas' || viewName === 'savedRecipes');
     }
 
     return new Promise(resolve => {
@@ -1344,9 +1183,10 @@ function updateListSelectionAndScroll(id) {
         const newSelectedItem = listContainer.querySelector(`.recipe-item[data-recipe-id="${id}"]`);
         if (newSelectedItem) {
             newSelectedItem.classList.add('selected');
-            const recipe = recipesData.find(r => r.id === id);
+            const allRecipes = [...recipesData, ...state.savedRecipes];
+            const recipe = allRecipes.find(r => r.id === id);
             if (recipe) {
-                newSelectedItem.style.setProperty('--glow-color', recipe.personalityColor);
+                newSelectedItem.style.setProperty('--glow-color', recipe.personalityColor || '#007AFF');
             }
             newSelectedItem.scrollIntoView({
                 behavior: 'smooth',
@@ -1365,7 +1205,8 @@ function handleRecipeSelection(id) {
     updateChartSelection();
 
     if (state.selectedRecipeId) {
-        const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+        const allRecipes = [...recipesData, ...state.savedRecipes];
+        const recipe = allRecipes.find(r => r.id === state.selectedRecipeId);
         if (recipe) {
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
@@ -1389,101 +1230,6 @@ function updateLangSlider() {
     langEN.classList.toggle('text-gray-500', state.currentLang !== 'en');
     glider.style.transform = state.currentLang === 'vi' ? 'translateX(0%)' : 'translateX(100%)';
 }
-
-/**
- * Nâng cấp: Khởi tạo các chấm màu với hiệu ứng vật lý D3.js
- * Tạo ra các chấm màu di chuyển, va chạm và tương tác với nhau.
- */
-function initializePhysicsBlobs() {
-    // Sửa lỗi: Kiểm tra xem D3 đã tải xong chưa trước khi chạy
-    if (typeof d3 === 'undefined') {
-        console.warn("D3 is not loaded yet. Retrying in 100ms.");
-        setTimeout(initializePhysicsBlobs, 100); // Thử lại sau 100ms
-        return;
-    }
-
-    const container = d3.select("#blobContainer");
-    if (container.empty()) return;
-
-    container.html(''); // Xóa các blob cũ nếu có
-
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    // Dữ liệu cho các chấm màu (nodes) với nhiều kích thước hơn
-    const nodes = [
-        { id: 1, color: '#ffae00', r: vw * 0.12 },
-        { id: 2, color: '#3498db', r: vw * 0.15 },
-        { id: 3, color: '#e74c3c', r: vw * 0.11 },
-        { id: 4, color: '#2ecc71', r: vw * 0.14 },
-        { id: 5, color: '#9b59b6', r: vw * 0.10 },
-        { id: 6, color: '#1abc9c', r: vw * 0.13 },
-        { id: 7, color: '#f1c40f', r: vw * 0.09 },
-        { id: 8, color: '#e67e22', r: vw * 0.12 },
-        { id: 9, color: '#34495e', r: vw * 0.10 },
-        { id: 10, color: '#d35400', r: vw * 0.11 },
-    ].map(d => ({
-        ...d,
-        x: Math.random() * vw,
-        y: Math.random() * vh,
-        vx: (Math.random() - 0.5) * 4, // Vận tốc ban đầu
-        vy: (Math.random() - 0.5) * 4,
-    }));
-
-    // Tạo các element div cho mỗi chấm màu
-    const blobElements = container.selectAll(".bg-blob")
-        .data(nodes, d => d.id)
-        .join("div")
-        .attr("class", "bg-blob")
-        .style("width", d => `${d.r * 2}px`)
-        .style("height", d => `${d.r * 2}px`)
-        .style("background-color", d => d.color);
-
-    // Hiển thị các chấm màu
-    setTimeout(() => {
-        blobElements.classed("visible", true);
-    }, 100);
-
-    // Thiết lập mô phỏng vật lý
-    const simulation = d3.forceSimulation(nodes)
-        .alphaTarget(0.3) // Giữ cho simulation luôn "nóng"
-        .velocityDecay(0.1) // Giảm ma sát để chúng di chuyển lâu hơn
-        .force("collide", d3.forceCollide().radius(d => d.r + 8).strength(0.8)) // Tăng khoảng cách va chạm, giảm nhẹ lực
-        .force("charge", d3.forceManyBody().strength(-50)) // Tăng lực đẩy
-        .on("tick", ticked);
-
-    // Hàm được gọi mỗi khi có sự thay đổi vị trí trong mô phỏng
-    function ticked() {
-        blobElements.each(d => {
-            // Giữ các chấm màu trong màn hình với hiệu ứng nảy nhẹ
-            if (d.x < d.r) { d.x = d.r; d.vx *= -0.9; }
-            if (d.x > vw - d.r) { d.x = vw - d.r; d.vx *= -0.9; }
-            if (d.y < d.r) { d.y = d.r; d.vy *= -0.9; }
-            if (d.y > vh - d.r) { d.y = vh - d.r; d.vy *= -0.9; }
-        })
-        .style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
-    }
-    
-    // 🎯 CẢI TIẾN HIỆU NĂNG: Thay thế d3.timer bằng setInterval
-    const windInterval = setInterval(() => {
-        // Nếu không còn ở trang chủ, dừng animation để tiết kiệm tài nguyên
-        if (state.currentView !== 'home') {
-            clearInterval(windInterval);
-            simulation.stop();
-            return;
-        }
-        
-        // Thêm một lực "gió" nhẹ và ngẫu nhiên
-        nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.15;
-            node.vy += (Math.random() - 0.5) * 0.15;
-        });
-
-        // "Hâm nóng" lại mô phỏng một cách nhẹ nhàng
-        simulation.alpha(0.1).restart();
-    }, 3000); // Áp dụng lực gió mỗi 3 giây
-}
-
 
 function initializeInteractiveLogo() {
     if (typeof d3 === 'undefined') {
@@ -1510,12 +1256,9 @@ function initializeInteractiveLogo() {
         { id: 'cyan', color: '#1abc9c' },
         { id: 'magenta', color: '#9b59b6' },
         { id: 'yellow', color: '#f1c40f' },
-        { id: 'grey', color: '#95a5a6' },
-        { id: 'orange', color: '#e67e22' },
-        { id: 'purple', color: '#8e44ad' }
     ].map(node => ({
         ...node,
-        r: randomInRange(40, 80),
+        r: randomInRange(width * 0.1, width * 0.2),
         x: randomInRange(0, width),
         y: randomInRange(0, height)
     }));
@@ -1531,10 +1274,7 @@ function initializeInteractiveLogo() {
         .join("circle")
         .attr("class", d => `logo-circle ${d.id}`)
         .attr("r", d => d.r)
-        .attr("fill", d => d.color)
-        .style("mix-blend-mode", "multiply")
-        .style("filter", "blur(5px)")
-        .attr("opacity", 0.8);
+        .attr("fill", d => d.color);
 
     function ticked() {
         circles
@@ -1542,20 +1282,12 @@ function initializeInteractiveLogo() {
             .attr("cy", d => d.y);
     }
     
-    d3.timer(() => {
-        nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.05;
-            node.vy += (Math.random() - 0.5) * 0.05;
-        });
-        simulation.alpha(0.1);
-    });
+    // Tối ưu: Chỉ "hâm nóng" simulation khi có tương tác
+    container.on('mouseenter', () => simulation.alpha(0.3).restart());
 }
-
 
 function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
-        // Thay thế animation cũ bằng animation vật lý mới
-        initializePhysicsBlobs();
         initializeInteractiveLogo();
     }
     if (viewName === 'recipeFormulas') {
@@ -1573,30 +1305,47 @@ function attachViewEventListeners(viewName) {
             });
             resizeObserver.observe(chartContainer);
         }
-        updateLangSlider();
+    }
+    if (viewName === 'savedRecipes') {
+        renderSavedRecipes();
     }
 }
 
+// ✅ CẬP NHẬT: THÊM KHUNG CHỜ (SKELETON)
 function renderLibraryList() {
     const container = document.getElementById('recipeListContainer');
     if (!container) return;
-    const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-    const recipesToRender = recipesData.filter(r => r.name[state.currentLang].toLowerCase().includes(searchTerm) || r.description[state.currentLang].toLowerCase().includes(searchTerm));
     
-    container.innerHTML = recipesToRender.map((recipe, index) => {
-        const isSelected = recipe.id === state.selectedRecipeId;
-        const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
-        const animationStyle = `animation-delay: ${index * 40}ms;`;
+    // Hiển thị skeleton trước
+    let skeletonHTML = '<div class="skeleton-list">';
+    for (let i = 0; i < 8; i++) {
+        skeletonHTML += '<div class="skeleton"></div>';
+    }
+    skeletonHTML += '</div>';
+    container.innerHTML = skeletonHTML;
+
+    // Tải dữ liệu và render sau một khoảng trễ nhỏ để người dùng thấy skeleton
+    setTimeout(() => {
+        const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+        const allRecipes = [...recipesData, ...state.savedRecipes];
+        const recipesToRender = allRecipes.filter(r => r.name[state.currentLang].toLowerCase().includes(searchTerm) || r.description[state.currentLang].toLowerCase().includes(searchTerm));
         
-        return `<div class="recipe-item p-3 rounded-xl cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
-                     data-recipe-id="${recipe.id}" 
-                     style="${glowStyle} ${animationStyle}">
-            <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
-            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
-        </div>`;
-    }).join('');
+        container.innerHTML = recipesToRender.map((recipe, index) => {
+            const isSelected = recipe.id === state.selectedRecipeId;
+            const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor || '#007AFF'};` : '';
+            const animationStyle = `animation-delay: ${index * 40}ms;`;
+            
+            return `<div class="recipe-item p-3 rounded-xl cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
+                         data-recipe-id="${recipe.id}" 
+                         style="${glowStyle} ${animationStyle}">
+                <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
+                <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
+            </div>`;
+        }).join('');
+    }, 250); // Giả lập thời gian tải
 }
 
+// ✅ CẬP NHẬT: THÊM KHUNG CHỜ (SKELETON)
 function renderLibraryDetails() {
     const isMobile = window.innerWidth < 768;
     const recipeListPanel = document.getElementById('recipeListPanel');
@@ -1610,8 +1359,9 @@ function renderLibraryDetails() {
         recipeListPanel?.classList.remove('hidden');
         recipeDetailPanelMobile?.classList.add('hidden');
     }
-
-    const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+    
+    const allRecipes = [...recipesData, ...state.savedRecipes];
+    const recipe = allRecipes.find(r => r.id === state.selectedRecipeId);
     let recipeContentContainer = isMobile && state.isMobileDetailActive ? document.getElementById('recipeContentMobile') : document.getElementById('recipeContent');
     let welcomeAndChartContainer = document.getElementById('welcomeAndChartContainer');
     if (!recipeContentContainer) return;
@@ -1626,22 +1376,61 @@ function renderLibraryDetails() {
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
 
+    // Hiển thị skeleton
     recipeContentContainer.innerHTML = `
-        <div class="mb-4">
-            <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
+        <div class="skeleton-details">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text short"></div>
+            <div class="mt-8 skeleton-grid">
+                <div class="skeleton skeleton-box"></div>
+                <div class="skeleton skeleton-box"></div>
+                <div class="skeleton skeleton-box"></div>
+            </div>
         </div>
-        <div>
-            <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
-            <p class="text-lg text-neutral-600 mt-1">"${recipe.description[state.currentLang]}"</p>
-        </div>
-        <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
     `;
-    applyTranslations();
+
+    // Render nội dung thật sau độ trễ
+    setTimeout(() => {
+        recipeContentContainer.innerHTML = `
+            <div class="mb-4">
+                <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
+            </div>
+            <div>
+                <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
+                <p class="text-lg text-neutral-600 mt-1">"${recipe.description[state.currentLang]}"</p>
+            </div>
+            <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
+        `;
+        applyTranslations();
+    }, 250);
 }
 
+// ✅ HÀM MỚI: RENDER TRANG CÔNG THỨC ĐÃ LƯU
+function renderSavedRecipes() {
+    const container = document.getElementById('savedRecipeList');
+    if (!container) return;
+
+    if (state.savedRecipes.length === 0) {
+        container.innerHTML = `<p class="text-text-secondary md:col-span-2 lg:col-span-3 text-center" data-translate-key="noSavedRecipes"></p>`;
+        applyTranslations();
+        return;
+    }
+
+    container.innerHTML = state.savedRecipes.map(recipe => `
+        <div class="glass-panel p-4 cursor-pointer recipe-item" data-recipe-id="${recipe.id}">
+            <h4 class="font-bold text-lg">${recipe.name[state.currentLang]}</h4>
+            <p class="text-text-secondary text-sm mt-1">${recipe.description[state.currentLang]}</p>
+        </div>
+    `).join('');
+}
+
+
+// --- LIGHTBOX (Không đổi) ---
 function openLightbox(recipeId, startIndex) {
-    const recipe = recipesData.find(r => r.id === recipeId);
-    if (!recipe || !recipe.demoImages) return;
+    const allRecipes = [...recipesData, ...state.savedRecipes];
+    const recipe = allRecipes.find(r => r.id === recipeId);
+    if (!recipe || !recipe.demoImages || recipe.demoImages.length === 0) return;
 
     state.lightbox.images = recipe.demoImages;
     state.lightbox.currentIndex = parseInt(startIndex, 10);
@@ -1652,15 +1441,11 @@ function openLightbox(recipeId, startIndex) {
 
     showLightboxImage();
 }
-
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
     lightbox.classList.remove('visible');
-    setTimeout(() => {
-        lightbox.classList.add('hidden');
-    }, 300);
+    setTimeout(() => { lightbox.classList.add('hidden'); }, 300);
 }
-
 function showLightboxImage() {
     const { images, currentIndex } = state.lightbox;
     const lightboxImage = document.getElementById('lightboxImage');
@@ -1674,23 +1459,20 @@ function showLightboxImage() {
         lightboxImage.style.opacity = '1';
     }, 150);
 }
-
 function showNextImage() {
     const { images } = state.lightbox;
     state.lightbox.currentIndex = (state.lightbox.currentIndex + 1) % images.length;
     showLightboxImage();
 }
-
 function showPrevImage() {
     const { images } = state.lightbox;
     state.lightbox.currentIndex = (state.lightbox.currentIndex - 1 + images.length) % images.length;
     showLightboxImage();
 }
 
-
+// --- FIREBASE (Không đổi) ---
 const __firebase_config = "%%FIREBASE_CONFIG%%";
 const __app_id = "%%APP_ID%%";
-
 async function initializeFirebase() {
     if (typeof __firebase_config === 'undefined' || typeof __app_id === 'undefined' || __firebase_config === "%%FIREBASE_CONFIG%%" || __app_id === "%%APP_ID%%") {
         console.warn("Firebase config not found. Trending feature will be disabled.");
@@ -1709,11 +1491,18 @@ async function initializeFirebase() {
     }
 }
 
+// --- KHỞI TẠO ỨNG DỤNG ---
 async function init() {
     await initializeFirebase();
+    
+    // ✅ Tải các công thức đã lưu từ localStorage
+    const saved = localStorage.getItem('colorlab_saved_recipes');
+    if (saved) {
+        state.savedRecipes = JSON.parse(saved);
+    }
+
 
     const tooltipEl = document.getElementById('infoTooltip');
-
     document.body.addEventListener('mouseover', (e) => {
         const title = e.target.closest('.parameter-title');
         if (title) {
@@ -1765,7 +1554,8 @@ async function init() {
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
                 closeQuiz();
-                await renderView('recipeFormulas', recipeId);
+                await renderView('recipeFormulas');
+                handleRecipeSelection(recipeId);
                 return;
             }
             if (target.closest('.quiz-option')) { handleQuizAnswer(e); return; }
@@ -1780,6 +1570,7 @@ async function init() {
             }
             if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
+            if (target.closest('#saveAIRecipeBtn')) { saveAIRecipe(); return; }
         }
 
         if (target.closest('#captionLabModal')) {
@@ -1822,6 +1613,7 @@ async function init() {
             state.currentLang = langBtn.id === 'langEN' ? 'en' : 'vi';
             updateLangSlider();
             applyTranslations();
+            // Re-render current view with new language
             if (state.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 if (state.selectedRecipeId) {
@@ -1830,11 +1622,20 @@ async function init() {
                     renderColorMapChart('#colorMapContainer', recipesData);
                     fetchTrendingRecipes();
                 }
+            } else if (state.currentView === 'savedRecipes') {
+                renderSavedRecipes();
             }
             return;
         }
 
-        if (recipeItem) { handleRecipeSelection(recipeItem.dataset.recipeId); return; }
+        if (recipeItem) { 
+            // Nếu đang ở trang "Đã lưu", chuyển về trang chính để xem chi tiết
+            if (state.currentView === 'savedRecipes') {
+                await renderView('recipeFormulas');
+            }
+            handleRecipeSelection(recipeItem.dataset.recipeId); 
+            return; 
+        }
         if (trendingItem) { handleRecipeSelection(trendingItem.dataset.recipeId); return; }
     });
 
@@ -1866,5 +1667,3 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
-
-
