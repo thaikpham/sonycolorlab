@@ -183,77 +183,60 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
     .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
     
-    /* --- NEW: Cải thiện CSS cho Photo Collage --- */
-    .photo-collage {
-        display: grid;
-        gap: 0.75rem;
+    /* === IMAGE COMPOSITION & LOADING IMPROVEMENTS === */
+    .photo-collage { display: grid; gap: 0.75rem; }
+    .collage-item { 
+        cursor: pointer; 
+        overflow: hidden; 
+        border-radius: 0.75rem; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        transition: box-shadow 0.3s ease, transform 0.3s ease; 
+        background-color: #f0f2f5; /* Add a background for loading state */
     }
-    .collage-item {
-        cursor: pointer;
-        overflow: hidden;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
-        min-height: 150px; /* Đảm bảo các item có chiều cao tối thiểu */
+    .collage-item:hover { 
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1); 
+        transform: translateY(-2px); 
     }
-    .collage-item:hover {
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
+    .collage-item img { 
+        width: 100%; 
+        height: 100%; 
+        /* 🎯 CẢI TIẾN 1: Giữ đúng tỷ lệ ảnh và lấp đầy khung chứa, tránh méo ảnh */
+        object-fit: cover; 
+        object-position: center center; /* Căn giữa ảnh, tốt cho ảnh chân dung */
+        /* 🎯 CẢI TIẾN 2: Chuyển động mượt mà hơn khi hover */
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-    .collage-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Đây là thuộc tính quan trọng nhất */
-        transition: transform 0.4s ease-in-out;
+    .collage-item:hover img { 
+        /* 🎯 CẢI TIẾN 3: Hiệu ứng zoom-in tinh tế hơn */
+        transform: scale(1.08); 
     }
-    .collage-item:hover img {
-        transform: scale(1.05);
-    }
+    /* === END IMAGE IMPROVEMENTS === */
 
-    /* Bố cục cho 1 ảnh */
     .photo-collage.images-1 { grid-template-columns: 1fr; }
-
-    /* Bố cục cho 2 ảnh */
     .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
-
-    /* Bố cục cho 3 ảnh - Tôn vinh ảnh đầu tiên (thường là ảnh dọc) */
-    .photo-collage.images-3 {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-    }
-    .photo-collage.images-3 > .collage-item:nth-child(1) {
-        grid-column: 1 / 3;
-        grid-row: 1 / 3; /* Ảnh đầu tiên chiếm 2 cột, 2 hàng */
-    }
-
-    /* Bố cục cho 4 ảnh - Lưới 2x2 cổ điển */
-    .photo-collage.images-4 {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-    }
-
-    /* Bố cục cho 5 ảnh - Ảnh chính lớn và 1 hàng ảnh nhỏ */
-    .photo-collage.images-5 {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-    }
-    .photo-collage.images-5 > .collage-item:nth-child(1) {
-        grid-column: 1 / 4;
-        grid-row: 1 / 3; /* Ảnh chính lớn */
-    }
-    .photo-collage.images-5 > .collage-item:nth-child(n+2) {
-        grid-row: 3 / 4;
-    }
-    
-    /* Bố cục cho 6 ảnh - Lưới 3x2 */
-    .photo-collage.images-6 {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-    }
+    .photo-collage.images-3 { grid-template-columns: repeat(2, 1fr); }
+    .photo-collage.images-3 > .collage-item:nth-child(1) { grid-column: span 2; }
+    .photo-collage.images-4 { grid-template-columns: repeat(3, 1fr); }
+    .photo-collage.images-4 > .collage-item:nth-child(1) { grid-column: span 3; }
+    .photo-collage.images-5 { grid-template-columns: repeat(3, 1fr); }
+    .photo-collage.images-5 > .collage-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .photo-collage.images-6 { grid-template-columns: repeat(3, 1fr); }
+    .photo-collage.images-6 > .collage-item:nth-child(1) { grid-column: span 2; }
+    .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
     
     #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     #lightbox.visible { opacity: 1; pointer-events: auto; }
-    #lightbox img { max-width: 85vw; max-height: 80vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 1; }
+    #lightbox img { 
+        max-width: 90vw; 
+        max-height: 85vh; 
+        border-radius: 0.5rem; 
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
+        transform: scale(0.95); 
+        transition: transform 0.3s ease, opacity 0.3s ease; 
+        opacity: 1; 
+        /* 🎯 CẢI TIẾN 4: Đảm bảo ảnh trong lightbox không bị méo */
+        object-fit: contain;
+    }
     #lightbox.visible img { transform: scale(1); }
     .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
     .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
@@ -450,7 +433,7 @@ const state = {
 const mainContentEl = document.getElementById('mainContent');
 
 // Cache-busting: Thêm version query để buộc tải lại file mới
-import recipesData from './recipes.js?v=2.1'; // Updated version
+import recipesData from './recipes.js?v=2.0';
 
 const quizQuestions = [
     {
@@ -573,41 +556,54 @@ function applyTranslations() {
     });
 }
 
-/**
- * --- NEW: UPDATED FUNCTION ---
- * This function now includes logic to resize Google User Content images for faster loading
- * and uses a more robust CSS grid system for better visual composition.
- */
 function createFullRecipeHTML(recipe) {
-    // NEW: Hàm tạo collage thông minh hơn
+    // 🎯 HÀM ĐÃ ĐƯỢC CẬP NHẬT HOÀN TOÀN
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
         const count = Math.min(images.length, 6);
 
-        // OPTIMIZATION: Tự động thay đổi kích thước ảnh từ Google để tải nhanh hơn
-        const getResizedImageUrl = (url, size) => {
-            if (url && (url.startsWith('https://lh3.googleusercontent.com/') || url.startsWith('http://googleusercontent.com/'))) {
-                // Xóa các tham số kích thước đã có
-                const baseUrl = url.split('=')[0];
-                return `${baseUrl}=w${size}-h${size}-c`; // Yêu cầu ảnh vuông, được cắt, với chiều rộng nhất định
+        const imageElements = images.slice(0, count).map((imgUrl, index) => {
+            let src = imgUrl;
+            let srcset = '';
+            
+            // Xử lý thông minh cho các loại URL khác nhau
+            if (imgUrl.includes('placehold.co')) {
+                // Có thể tạo srcset cho placeholder
+                try {
+                    const url = new URL(imgUrl);
+                    const pathParts = url.pathname.split('/');
+                    const bgColor = pathParts[2] || 'e2e8f0';
+                    const fgColor = pathParts[3] || '475569';
+                    const text = url.searchParams.get('text') || 'Image';
+                    
+                    const src400 = `${url.protocol}//${url.hostname}/400x300/${bgColor}/${fgColor}?text=${encodeURIComponent(text)}`;
+                    const src800 = `${url.protocol}//${url.hostname}/800x600/${bgColor}/${fgColor}?text=${encodeURIComponent(text)}`;
+                    const src1200 = `${url.protocol}//${url.hostname}/1200x900/${bgColor}/${fgColor}?text=${encodeURIComponent(text)}`;
+                    
+                    src = src800;
+                    srcset = `${src400} 400w, ${src800} 800w, ${src1200} 1200w`;
+                } catch (e) {
+                    // Nếu URL không hợp lệ, giữ nguyên
+                    srcset = `${imgUrl} 800w`;
+                }
+            } else {
+                // Đối với Google Photos hoặc các URL khác, không thể giả định các kích thước khác nhau
+                // Chỉ sử dụng lazy loading.
+                srcset = `${imgUrl} 800w`; // Cung cấp chiều rộng để trình duyệt biết
             }
-            return url;
-        };
 
-        const imageElements = images.slice(0, count).map((img, index) => {
-            // Gán kích thước khác nhau để tạo bố cục động
-            let size = 800; // Kích thước mặc định
-            if (count > 1 && index === 0) {
-                size = 1200; // Kích thước lớn hơn cho ảnh chính
-            } else if (count > 2) {
-                size = 600; // Kích thước nhỏ hơn cho các ảnh phụ
-            }
-
-            const imageUrl = getResizedImageUrl(img, size);
-
-            return `<div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
-                <img src="${imageUrl}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x600/e2e8f0/475569?text=Image+Not+Found';" alt="Recipe demo image ${index + 1}">
-            </div>`;
+            return `
+                <div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
+                    <img 
+                        src="${src}" 
+                        ${srcset ? `srcset="${srcset}"` : ''}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        loading="lazy" 
+                        decoding="async"
+                        alt="Ảnh demo ${index + 1} cho công thức màu ${recipe.name[state.currentLang]}"
+                        onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Không tải được ảnh</div>';"
+                    >
+                </div>`;
         }).join('');
 
         return `<div class="photo-collage images-${count}">${imageElements}</div>`;
@@ -1468,14 +1464,24 @@ function initializePhysicsBlobs() {
         .style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
     }
     
-    // Thêm một lực "gió" nhẹ và ngẫu nhiên liên tục
-    d3.timer(() => {
+    // 🎯 CẢI TIẾN HIỆU NĂNG: Thay thế d3.timer bằng setInterval
+    const windInterval = setInterval(() => {
+        // Nếu không còn ở trang chủ, dừng animation để tiết kiệm tài nguyên
+        if (state.currentView !== 'home') {
+            clearInterval(windInterval);
+            simulation.stop();
+            return;
+        }
+        
+        // Thêm một lực "gió" nhẹ và ngẫu nhiên
         nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.3;
-            node.vy += (Math.random() - 0.5) * 0.3;
+            node.vx += (Math.random() - 0.5) * 0.15;
+            node.vy += (Math.random() - 0.5) * 0.15;
         });
-        simulation.alpha(0.1).restart(); // "Hâm nóng" lại mô phỏng
-    });
+
+        // "Hâm nóng" lại mô phỏng một cách nhẹ nhàng
+        simulation.alpha(0.1).restart();
+    }, 3000); // Áp dụng lực gió mỗi 3 giây
 }
 
 
@@ -1860,4 +1866,5 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
+
 
