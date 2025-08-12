@@ -4,7 +4,6 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- CONFIGURATION & STATE ---
-// Các placeholder này sẽ được thay thế bởi build script
 const API_KEY = "%%GEMINI_API_KEY%%";
 const __firebase_config = "%%FIREBASE_CONFIG%%";
 const __app_id = "%%APP_ID%%";
@@ -49,11 +48,9 @@ const state = {
 };
 
 const mainContentEl = document.getElementById('mainContent');
-
-// Cache-busting: Thêm version query để buộc tải lại file mới khi có thay đổi
 import recipesData from './recipes.js?v=2.1';
 
-// Dữ liệu cho Quiz và các bản dịch không thay đổi, giữ nguyên ở đây
+// --- DATA ---
 const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
@@ -90,7 +87,6 @@ const quizQuestions = [
         ]
     }
 ];
-
 const translations = {
     headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
@@ -139,9 +135,10 @@ const translations = {
     captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
     copyBtn: {vi: "Sao chép", en: "Copy"},
     copiedBtn: {vi: "Đã sao chép!", en: "Copied!"},
-    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" }
+    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" },
+    shareRecipe: { vi: "Chia sẻ", en: "Share" },
+    savePDF: { vi: "Lưu PDF", en: "Save PDF" },
 };
-
 const parameterExplanations = {
     'Black level': { vi: "Điều chỉnh điểm đen. Giá trị âm (-) làm vùng tối sâu hơn, tăng tương phản. Giá trị dương (+) nâng vùng tối, tạo hiệu ứng 'mờ' hoài cổ.", en: "Adjusts the black point. Negative (-) values deepen shadows for more contrast. Positive (+) values lift shadows for a 'faded' look." },
     'Gamma': { vi: "Xác định đường cong tương phản tổng thể, là nền tảng cho 'look' của bạn. Cine & S-Cinetone cho cảm giác điện ảnh, trong khi S-Log tối đa hóa dải tần nhạy sáng để hậu kỳ.", en: "Defines the overall contrast curve, the foundation of your look. Cine & S-Cinetone provide a cinematic feel, while S-Log maximizes dynamic range for post-production." },
@@ -247,7 +244,15 @@ function createFullRecipeHTML(recipe) {
 
     return `
         ${createCollageHTML(recipe.demoImages)}
-        <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+        <div class="mt-8 pt-8 border-t border-gray-200 flex flex-wrap gap-3 justify-center">
+            <button class="btn btn-share bg-green-500 hover:bg-green-600 text-white py-3 px-6 shadow-lg shadow-green-500/30" data-recipe-id="${recipe.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" /></svg>
+                <span data-translate-key="shareRecipe"></span>
+            </button>
+            <button class="btn btn-save-pdf bg-red-500 hover:bg-red-600 text-white py-3 px-6 shadow-lg shadow-red-500/30" data-recipe-id="${recipe.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd" /></svg>
+                <span data-translate-key="savePDF"></span>
+            </button>
             <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                 <span data-translate-key="tweakWithAI"></span>
@@ -256,12 +261,6 @@ function createFullRecipeHTML(recipe) {
                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
                 <span data-translate-key="captionFromAI"></span>
             </button>
-            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16s2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804s2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z"></path>
-                </svg>
-                <span data-translate-key="sonyGuideBtn"></span>
-            </a>
         </div>
         ${createCTAHTML(recipe)}
         <div class="space-y-8 mt-8">
@@ -320,6 +319,93 @@ const viewTemplates = {
             </div>
         </div>`,
 };
+
+// --- PDF & SHARE ---
+function generatePdfHtml(recipe) {
+    const createSection = (title, settings) => {
+        if (!settings) return '';
+        const items = Object.entries(settings)
+            .map(([key, value]) => `<tr><td style="padding: 6px 10px; color: #555;">${key}</td><td style="padding: 6px 10px; font-weight: bold;">${value}</td></tr>`)
+            .join('');
+        return `
+            <h3 style="font-size: 16px; margin-top: 20px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px;">${title}</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;"><tbody>${items}</tbody></table>
+        `;
+    };
+
+    return `
+        <div style="font-family: 'Be Vietnam Pro', sans-serif; padding: 40px; color: #1d1d1f; width: 210mm;">
+            <header style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #007AFF; padding-bottom: 15px;">
+                <h1 style="font-size: 28px; margin: 0; color: #007AFF;">${recipe.name[state.currentLang]}</h1>
+                <span style="font-size: 12px; color: #666;">Sony Alpha Color Lab</span>
+            </header>
+            <p style="font-size: 15px; color: #6e6e73; margin-top: 15px; font-style: italic;">"${recipe.description[state.currentLang]}"</p>
+            
+            ${createSection(t('whiteBalanceTitle'), { 'Setting': recipe.whiteBalance })}
+            ${createSection(t('recipeSettingsTitle'), recipe.settings)}
+            ${recipe.colorDepth ? createSection(t('colorDepthTitle'), recipe.colorDepth) : ''}
+            ${recipe.detailSettings ? createSection(t('detailTitle'), recipe.detailSettings) : ''}
+
+            <footer style="margin-top: 30px; text-align: center; font-size: 10px; color: #aaa;">
+                Generated from sonycolorlab.app
+            </footer>
+        </div>
+    `;
+}
+
+async function handleSaveAsPdf(recipe) {
+    if (typeof html2canvas === 'undefined' || typeof jspdf === 'undefined') {
+        alert('PDF libraries are still loading. Please try again in a moment.');
+        return;
+    }
+
+    const pdfContentHtml = generatePdfHtml(recipe);
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.innerHTML = pdfContentHtml;
+    document.body.appendChild(container);
+
+    const { jsPDF } = window.jspdf;
+    const canvas = await html2canvas(container.firstElementChild, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    
+    const fileName = `${recipe.id}-${recipe.name.en.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
+    pdf.save(fileName);
+
+    document.body.removeChild(container);
+}
+
+async function handleShare(recipe) {
+    const shareData = {
+        title: `Sony Color Lab: ${recipe.name[state.currentLang]}`,
+        text: `Check out this Sony Alpha color recipe: "${recipe.description[state.currentLang]}"`,
+        url: window.location.href,
+    };
+
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+        } catch (err) {
+            console.error("Share failed:", err);
+        }
+    } else {
+        // Fallback for desktop browsers
+        navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
+        alert('Link copied to clipboard!');
+    }
+}
+
 
 // --- SLEEK COLOR MAP CHART ---
 function renderColorMapChart(containerSelector, data) {
@@ -721,7 +807,7 @@ function renderAIComparison(container) {
         const gridItems = allKeys.map(key => {
             const originalValue = originalSettings[key];
             const generatedValue = generatedSettings[key];
-            const isChanged = originalValue !== generatedValue;
+            const isChanged = String(originalValue) !== String(generatedValue);
             return `
                 <div class="flex flex-col p-3 rounded-lg ${isChanged ? 'bg-blue-100/50 border border-blue-200' : 'bg-gray-100/70'}">
                     <span class="text-sm text-gray-500 font-medium">${key}</span>
@@ -744,11 +830,22 @@ function renderAIComparison(container) {
              <div class="border-2 border-blue-500 rounded-xl p-4 bg-white shadow-lg">
                 <h4 class="text-xl font-bold text-center text-blue-600" data-translate-key="aiNewTitle"></h4>
                 <p class="text-center text-gray-500">${generated.name[state.currentLang]}</p>
+                <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                    <button class="btn btn-share bg-green-500 hover:bg-green-600 text-white py-2 px-4 shadow-lg shadow-green-500/30" data-recipe-type="ai">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" /></svg>
+                        <span data-translate-key="shareRecipe"></span>
+                    </button>
+                    <button class="btn btn-save-pdf bg-red-500 hover:bg-red-600 text-white py-2 px-4 shadow-lg shadow-red-500/30" data-recipe-type="ai">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd" /></svg>
+                        <span data-translate-key="savePDF"></span>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="mt-6 space-y-6">
             ${createComparisonGrid('recipeSettingsTitle', original.settings, generated.settings)}
             ${original.colorDepth ? createComparisonGrid('colorDepthTitle', original.colorDepth, generated.colorDepth) : ''}
+            ${original.detailSettings ? createComparisonGrid('detailTitle', original.detailSettings, generated.detailSettings) : ''}
         </div>
     `;
     applyTranslations();
@@ -1329,6 +1426,34 @@ async function init() {
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) {
             resetToChartView();
+            return;
+        }
+
+        if (target.closest('.btn-share')) {
+            const btn = target.closest('.btn-share');
+            const recipeId = btn.dataset.recipeId;
+            const recipeType = btn.dataset.recipeType;
+            let recipeToShare;
+            if (recipeType === 'ai') {
+                recipeToShare = state.ai.generatedRecipe;
+            } else {
+                recipeToShare = recipesData.find(r => r.id === recipeId);
+            }
+            if (recipeToShare) handleShare(recipeToShare);
+            return;
+        }
+
+        if (target.closest('.btn-save-pdf')) {
+            const btn = target.closest('.btn-save-pdf');
+            const recipeId = btn.dataset.recipeId;
+            const recipeType = btn.dataset.recipeType;
+            let recipeToSave;
+            if (recipeType === 'ai') {
+                recipeToSave = state.ai.generatedRecipe;
+            } else {
+                recipeToSave = recipesData.find(r => r.id === recipeId);
+            }
+            if (recipeToSave) handleSaveAsPdf(recipeToSave);
             return;
         }
 
