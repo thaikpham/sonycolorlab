@@ -3,10 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔧 Starting enhanced build script (with debugging)...');
-
-// --- DEBUG: In ra tất cả các biến môi trường có sẵn ---
-// console.log('All available environment variables:', process.env);
+console.log('🔧 Starting corrected build script...');
 
 // --- Lấy các biến môi trường ---
 const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -15,74 +12,66 @@ const appId = process.env.APP_ID || 'default-app-id';
 
 // --- DEBUG: Kiểm tra giá trị của GEMINI_API_KEY ---
 if (geminiApiKey) {
-    console.log(`✅ Found GEMINI_API_KEY. Length: ${geminiApiKey.length}. Starts with: "${geminiApiKey.substring(0, 4)}..."`);
+    console.log(`✅ Found GEMINI_API_KEY. Length: ${geminiApiKey.length}.`);
 } else {
     console.error('❌ CRITICAL: GEMINI_API_KEY environment variable NOT FOUND. AI features will be disabled.');
 }
 
 // --- Thiết lập đường dẫn ---
-const htmlPath = path.join(__dirname, 'index.html');
 const distDir = path.join(__dirname, 'dist');
-const outputPath = path.join(distDir, 'index.html');
+const appJsPath = path.join(__dirname, 'app.js');
+const outputAppJsPath = path.join(distDir, 'app.js');
 
 // Đảm bảo thư mục dist tồn tại
 if (!fs.existsSync(distDir)) {
     fs.mkdirSync(distDir, { recursive: true });
+    console.log('📁 Created dist directory.');
 }
 
 try {
-    // Đọc nội dung file HTML
-    let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-    console.log('📄 Successfully read index.html.');
+    // --- Xử lý tệp app.js ---
+    console.log('🔄 Processing app.js...');
+    let appJsContent = fs.readFileSync(appJsPath, 'utf8');
 
-    // --- Thực hiện thay thế placeholder ---
-
-    // 1. Thay thế GEMINI_API_KEY (Sử dụng phương pháp an toàn hơn)
-    const geminiPlaceholder = 'const API_KEY = "%%GEMINI_API_KEY%%";';
-    if (htmlContent.includes('%%GEMINI_API_KEY%%')) {
-        console.log('Found GEMINI placeholder. Attempting to replace...');
-        if (geminiApiKey) {
-            htmlContent = htmlContent.replace(geminiPlaceholder, `const API_KEY = "${geminiApiKey}";`);
-            console.log('✅ GEMINI_API_KEY replacement successful.');
-        } else {
-             console.warn('⚠️  GEMINI_API_KEY is missing, placeholder was NOT replaced.');
-        }
+    // 1. Thay thế GEMINI_API_KEY
+    if (geminiApiKey) {
+        appJsContent = appJsContent.replace(/"%%GEMINI_API_KEY%%"/g, `"${geminiApiKey}"`);
+        console.log('✅ GEMINI_API_KEY replaced.');
     } else {
-        console.warn('⚠️  Warning: Placeholder for GEMINI_API_KEY was not found in index.html.');
+        appJsContent = appJsContent.replace(/"%%GEMINI_API_KEY%%"/g, `""`);
+        console.warn('⚠️ GEMINI_API_KEY is missing, replaced with empty string.');
     }
 
     // 2. Thay thế Firebase Config
-    const firebasePlaceholder = 'const __firebase_config = "%%FIREBASE_CONFIG%%";';
-     if (htmlContent.includes('%%FIREBASE_CONFIG%%')) {
-        console.log('Found FIREBASE placeholder. Attempting to replace...');
-        if (firebaseConfig) {
-            htmlContent = htmlContent.replace(firebasePlaceholder, `const __firebase_config = ${JSON.stringify(firebaseConfig)};`);
-            console.log('✅ FIREBASE_CONFIG replacement successful.');
-        } else {
-            console.warn('⚠️  FIREBASE_CONFIG is missing, replacing with undefined.');
-            htmlContent = htmlContent.replace(firebasePlaceholder, 'const __firebase_config = undefined;');
-        }
+    if (firebaseConfig) {
+        // Sửa lỗi: Đảm bảo config được stringify đúng cách để không bị lỗi JSON.parse
+        const configString = typeof firebaseConfig === 'string' ? firebaseConfig : JSON.stringify(firebaseConfig);
+        appJsContent = appJsContent.replace(/"%%FIREBASE_CONFIG%%"/g, `${JSON.stringify(configString)}`);
+        console.log('✅ FIREBASE_CONFIG replaced.');
     } else {
-        console.warn('⚠️  Warning: Placeholder for FIREBASE_CONFIG was not found.');
+        appJsContent = appJsContent.replace(/"%%FIREBASE_CONFIG%%"/g, `'undefined'`);
+        console.warn('⚠️ FIREBASE_CONFIG is missing, replaced with undefined.');
     }
 
     // 3. Thay thế App ID
-    htmlContent = htmlContent.replace(/const __app_id = "%%APP_ID%%";/g, `const __app_id = "${appId}";`);
-    console.log('✅ APP_ID replacement successful.');
+    appJsContent = appJsContent.replace(/"%%APP_ID%%"/g, `"${appId}"`);
+    console.log('✅ APP_ID replaced.');
 
+    // Ghi lại file app.js đã xử lý
+    fs.writeFileSync(outputAppJsPath, appJsContent);
+    console.log(`📝 Wrote updated content to ${outputAppJsPath}`);
 
-    // Ghi lại file đã xử lý
-    fs.writeFileSync(outputPath, htmlContent);
-    console.log(`📝 Wrote updated content to ${outputPath}`);
-
-    // Sao chép các file tĩnh
-    const staticFiles = ['logo.png', 'logo_black.png', 'recipes.js'];
+    // --- Sao chép các file tĩnh khác ---
+    console.log('📦 Copying static assets...');
+    const staticFiles = ['index.html', 'logo.png', 'logo_black.png', 'recipes.js'];
     staticFiles.forEach(file => {
         const srcPath = path.join(__dirname, file);
         const destPath = path.join(distDir, file);
         if (fs.existsSync(srcPath)) {
             fs.copyFileSync(srcPath, destPath);
-            console.log(`↳ Copied ${file} to dist.`);
+            console.log(`  ↳ Copied ${file} to dist.`);
+        } else {
+            console.warn(`  ⚠️ Could not find static file: ${file}`);
         }
     });
 
