@@ -3,8 +3,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+// --- Language Module Import ---
+import { loadLanguage, t, getExplanation } from './lang/language.js?v=2.3';
+
 // --- CONFIGURATION & STATE ---
-// Các placeholder này sẽ được thay thế bởi build script
 const API_KEY = "%%GEMINI_API_KEY%%";
 const __firebase_config = "%%FIREBASE_CONFIG%%";
 const __app_id = "%%APP_ID%%";
@@ -50,10 +52,9 @@ const state = {
 
 const mainContentEl = document.getElementById('mainContent');
 
-// Cache-busting: Thêm version query để buộc tải lại file mới khi có thay đổi
 import recipesData from './recipes.js?v=2.1';
 
-// Dữ liệu cho Quiz và các bản dịch không thay đổi, giữ nguyên ở đây
+// Dữ liệu cho Quiz không thay đổi, giữ nguyên ở đây
 const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
@@ -91,88 +92,21 @@ const quizQuestions = [
     }
 ];
 
-const translations = {
-    headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
-    navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-    landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
-    startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
-    findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
-    quizTitle: {vi: "Trắc nghiệm Tìm màu", en: "Color Finder Quiz"},
-    quizResultTitle: {vi: "Gợi ý cho bạn!", en: "Our Suggestion For You!"},
-    quizResultDescription: {vi: "Dựa trên câu trả lời của bạn, chúng tôi nghĩ bạn sẽ thích công thức này:", en: "Based on your answers, we think you'll love this recipe:"},
-    viewRecipeBtn: {vi: "Xem chi tiết công thức", en: "View Recipe Details"},
-    retakeQuizBtn: {vi: "Làm lại trắc nghiệm", en: "Retake Quiz"},
-    searchInputPlaceholder: {vi: "Tìm công thức...", en: "Search recipes..."},
-    recipeDetailWelcomeTitle: {vi: "Bản đồ màu Tương tác", en: "Interactive Color Map"},
-    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan. Chọn một công thức trong danh sách hoặc trên biểu đồ để xem chi tiết.", en: "Explore color recipes visually. Select a recipe from the list or the chart to see details."},
-    whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
-    recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
-    colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
-    detailTitle: {vi: "Chi tiết", en: "Detail"},
-    sonyGuideBtn: {vi: "Xem tài liệu gốc từ Sony", en: "View Official Sony Guide"},
-    backToChartBtn: {vi: "← Quay lại Bản đồ màu", en: "← Back to Color Map"},
-    backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
-    ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
-    ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
-    ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
-    trendingTitle: {vi: "Thịnh hành nhất", en: "Trending Now"},
-    aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
-    aiLabDescription: {vi: "Mô tả phong cách bạn muốn, Gemini sẽ tinh chỉnh công thức màu <b>{recipeName}</b> cho bạn.", en: "Describe the style you want, and Gemini will tweak the <b>{recipeName}</b> recipe for you."},
-    aiPromptPlaceholder: {vi: "VD: tông màu trong trẻo, hơi ngả xanh như phim của Wes Anderson...", en: "E.g., a clean, slightly teal look like a Wes Anderson film..."},
-    aiGenerateBtn: {vi: "Tinh chỉnh với AI", en: "Tweak with AI"},
-    aiConfirmPromptTitle: {vi: "Xác nhận yêu cầu", en: "Confirm Request"},
-    aiConfirmPromptText: {vi: "OK! Tôi sẽ tạo một phiên bản mới của <b>{recipeName}</b> với phong cách <i>\"{userPrompt}\"</i>. Tiếp tục nhé?", en: "Got it! I will generate a new version of <b>{recipeName}</b> with a style inspired by <i>\"{userPrompt}\"</i>. Shall we proceed?"},
-    aiConfirmBtn: {vi: "Đồng ý", en: "Confirm & Generate"},
-    aiCancelBtn: {vi: "Hủy", en: "Cancel"},
-    aiComparisonTitle: {vi: "Kết quả từ Gemini AI", en: "Result from Gemini AI"},
-    aiComparisonDescription: {vi: "Đây là phiên bản mới được tạo dựa trên yêu cầu của bạn. Các thông số thay đổi đã được làm nổi bật.", en: "Here is the new version based on your request. Changed parameters are highlighted."},
-    aiOriginalTitle: {vi: "Công thức gốc", en: "Original Recipe"},
-    aiNewTitle: {vi: "Công thức mới (AI)", en: "New Recipe (AI)"},
-    aiErrorTitle: {vi: "Đã có lỗi xảy ra", en: "An Error Occurred"},
-    aiErrorText: {vi: "Rất tiếc, không thể tạo công thức lúc này. Vui lòng kiểm tra lại API Key hoặc thử lại sau.", en: "Sorry, the recipe could not be generated at this time. Please check your API Key or try again later."},
-    tweakWithAI: {vi: "Tinh chỉnh với Gemini AI", en: "Tweak with Gemini AI"},
-    aiKeyNotConfigured: { vi: "Chưa cấu hình Gemini API Key", en: "Gemini API Key not configured" },
-    captionLabTitle: {vi: "Trợ lý Caption Viral", en: "Viral Caption Assistant"},
-    captionLabDescription: {vi: "Nhập ý tưởng cho bài đăng của bạn. AI sẽ giúp bạn viết một caption thật 'chất' theo phong cách màu <b>{recipeName}</b>.", en: "Enter an idea for your post. AI will help you write a captivating caption in the <b>{recipeName}</b> color style."},
-    captionPromptPlaceholder: {vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt...", en: "E.g., a sunset afternoon in Dalat..."},
-    generateCaptionBtn: {vi: "Tạo Caption", en: "Generate Caption"},
-    captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
-    copyBtn: {vi: "Sao chép", en: "Copy"},
-    copiedBtn: {vi: "Đã sao chép!", en: "Copied!"},
-    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" }
-};
-
-const parameterExplanations = {
-    'Black level': { vi: "Điều chỉnh điểm đen. Giá trị âm (-) làm vùng tối sâu hơn, tăng tương phản. Giá trị dương (+) nâng vùng tối, tạo hiệu ứng 'mờ' hoài cổ.", en: "Adjusts the black point. Negative (-) values deepen shadows for more contrast. Positive (+) values lift shadows for a 'faded' look." },
-    'Gamma': { vi: "Xác định đường cong tương phản tổng thể, là nền tảng cho 'look' của bạn. Cine & S-Cinetone cho cảm giác điện ảnh, trong khi S-Log tối đa hóa dải tần nhạy sáng để hậu kỳ.", en: "Defines the overall contrast curve, the foundation of your look. Cine & S-Cinetone provide a cinematic feel, while S-Log maximizes dynamic range for post-production." },
-    'Black Gamma': { vi: "Tinh chỉnh độ tương phản riêng trong vùng tối. 'Range' xác định vùng ảnh hưởng (Hẹp/Vừa/Rộng). 'Level' tăng hoặc giảm độ sáng của vùng đó.", en: "Fine-tunes contrast specifically in the shadow areas. 'Range' sets the affected area (Narrow/Middle/Wide). 'Level' brightens or darkens that area." },
-    'Knee': { vi: "Kiểm soát cách các vùng sáng (highlight) được nén lại để tránh bị 'cháy sáng'. Chế độ Tự động hoạt động tốt, trong khi Thủ công cho phép kiểm soát chính xác hơn.", en: "Controls how highlights are compressed to prevent 'clipping' (overexposure). Auto mode works well; Manual mode offers precise control." },
-    'Color Mode': { vi: "Xác định không gian màu và cách màu sắc được tái tạo. Nên chọn chế độ phù hợp với Gamma đã chọn (ví dụ: S-Cinetone, S-Gamut3.Cine).", en: "Determines the color space and how colors are rendered. Should be matched with the chosen Gamma (e.g., S-Cinetone, S-Gamut3.Cine)." },
-    'Saturation': { vi: "Điều chỉnh cường độ tổng thể của tất cả các màu. Tăng để có màu rực rỡ, giảm để có màu dịu hơn hoặc đơn sắc.", en: "Adjusts the overall intensity of all colors. Increase for vibrant colors, decrease for a more muted or monochrome look." },
-    'Color Phase': { vi: "Dịch chuyển nhẹ toàn bộ quang phổ màu về phía đỏ hoặc xanh lá. Hữu ích để tinh chỉnh tông màu tổng thể hoặc cân bằng màu giữa các máy ảnh.", en: "Slightly shifts the entire color spectrum towards red or green. Useful for subtle global tone adjustments or matching cameras." },
-    'Color Depth': { vi: "Công cụ mạnh nhất. Tăng/giảm độ sáng của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Cyan, Magenta, Vàng) để tinh chỉnh màu sắc một cách chính xác.", en: "The most powerful tool. Brightens or darkens individual color channels (R, G, B, C, M, Y) for precise color tuning." },
-    'R': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Đỏ. Tăng (+) để màu đỏ tối và đậm hơn (son môi, da). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Red channel. Increase (+) for darker, richer reds (lipstick, skin). Decrease (-) for lighter, paler reds." },
-    'G': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lục. Tăng (+) để màu xanh lá cây tối và đậm hơn (cây cỏ). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Green channel. Increase (+) for darker, richer greens (foliage). Decrease (-) for lighter, paler greens." },
-    'B': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lam. Tăng (+) để màu xanh dương tối và đậm hơn (quần áo, đường phố). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Blue channel. Increase (+) for darker, richer blues (clothing, streets). Decrease (-) for lighter, paler blues." },
-    'C': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lục lam. Tăng (+) để màu da trời tối và đậm hơn. Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Cyan channel. Increase (+) for darker, richer cyan (sky). Decrease (-) for lighter, paler cyan." },
-    'M': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Cánh sen. Tăng (+) để màu hồng/tím tối và đậm hơn (da người, son môi). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Magenta channel. Increase (+) for darker, richer magenta (skin tones, lipstick). Decrease (-) for lighter, paler magenta." },
-    'Y': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Vàng. Tăng (+) để màu vàng tối và đậm hơn (da người Á Đông). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Yellow channel. Increase (+) for darker, richer yellows (Asian skin tones). Decrease (-) for lighter, paler yellows." },
-    'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
-    'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
-};
-
 // --- UI & LOGIC FUNCTIONS ---
-function t(key) { return translations[key]?.[state.currentLang] || key; }
 
 function applyTranslations() {
     document.querySelectorAll('[data-translate-key]').forEach(el => {
         const key = el.dataset.translateKey;
-        if (translations[key]?.[state.currentLang]) {
-            const element = el;
-            if (element.placeholder !== undefined) element.placeholder = t(key);
-            else element.innerHTML = t(key);
+        const element = el;
+        if (element.placeholder !== undefined) {
+            element.placeholder = t(key);
+        } else {
+            element.innerHTML = t(key);
         }
     });
+    if (state.currentView === 'recipeFormulas' && !state.selectedRecipeId) {
+        renderColorMapChart('#colorMapContainer', recipesData);
+    }
 }
 
 function createFullRecipeHTML(recipe) {
@@ -231,8 +165,8 @@ function createFullRecipeHTML(recipe) {
     const createSettingsGrid = (settings) => {
         if (!settings) return '';
         return Object.entries(settings).map(([key, value]) => {
-            const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase().trim());
-            return `<div class="flex flex-col p-4 bg-white/50 rounded-xl"><div class="flex items-center gap-1.5"><span class="parameter-title text-sm text-gray-500 font-medium" data-param-key="${explanationKey || ''}">${key}</span></div><span class="font-semibold text-xl text-gray-800 mt-1">${value}</span></div>`;
+            // FIX: Correctly pass the parameter key for the tooltip handler
+            return `<div class="flex flex-col p-4 bg-white/50 rounded-xl"><div class="flex items-center gap-1.5"><span class="parameter-title text-sm text-gray-500 font-medium" data-param-key="${key}">${key}</span></div><span class="font-semibold text-xl text-gray-800 mt-1">${value}</span></div>`;
         }).join('');
     };
 
@@ -246,26 +180,36 @@ function createFullRecipeHTML(recipe) {
     const aiDisabledAttr = !isAIEnabled ? `disabled title="${t('aiKeyNotConfigured')}"` : '';
 
     return `
-        ${createCollageHTML(recipe.demoImages)}
-        <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
-            <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                <span data-translate-key="tweakWithAI"></span>
-            </button>
-            <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 shadow-lg shadow-purple-500/30" id="captionAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
-                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
-                <span data-translate-key="captionFromAI"></span>
-            </button>
-            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16s2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804s2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z"></path>
-                </svg>
-                <span data-translate-key="sonyGuideBtn"></span>
-            </a>
-        </div>
-        ${createCTAHTML(recipe)}
-        <div class="space-y-8 mt-8">
-            ${sections.map(section => `<div><h4 class="text-xl font-bold mb-3 text-gray-700" data-translate-key="${section.titleKey}"></h4><div class="p-4 bg-gray-500/5 rounded-2xl">${section.content}</div></div>`).join('')}
+        <div id="pdf-content">
+            ${createCollageHTML(recipe.demoImages)}
+            <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+                <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    <span data-translate-key="tweakWithAI"></span>
+                </button>
+                <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 shadow-lg shadow-purple-500/30" id="captionAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
+                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
+                    <span data-translate-key="captionFromAI"></span>
+                </button>
+                <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16s2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804s2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z"></path></svg>
+                    <span data-translate-key="sonyGuideBtn"></span>
+                </a>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+                 <button class="btn bg-green-600 hover:bg-green-700 text-white py-3 px-6 shadow-lg shadow-green-500/30" id="downloadPdfBtn" data-recipe-id="${recipe.id}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    <span data-translate-key="downloadPdfBtn"></span>
+                </button>
+                <button class="btn bg-sky-500 hover:bg-sky-600 text-white py-3 px-6 shadow-lg shadow-sky-500/30" id="shareRecipeBtn" data-recipe-id="${recipe.id}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.195.025.39.05.588.08a2.25 2.25 0 011.933 2.338V18a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25v-2.532c0-.97.63-1.811 1.533-2.11a2.25 2.25 0 00-1.443-.086z" /></svg>
+                    <span data-translate-key="shareRecipeBtn"></span>
+                </button>
+            </div>
+            ${createCTAHTML(recipe)}
+            <div class="space-y-8 mt-8">
+                ${sections.map(section => `<div><h4 class="text-xl font-bold mb-3 text-gray-700" data-translate-key="${section.titleKey}"></h4><div class="p-4 bg-gray-500/5 rounded-2xl">${section.content}</div></div>`).join('')}
+            </div>
         </div>
     `;
 }
@@ -431,13 +375,15 @@ function renderColorMapChart(containerSelector, data) {
         .attr("dy", "0.35em")
         .text(d => d.name[state.currentLang]);
 
+    // FIX: Increased strength of positioning forces to ensure nodes spread out
     state.chart.simulation = d3.forceSimulation(nodesData)
-        .force("collide", d3.forceCollide().radius(d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 3).strength(0.8))
-        .force("x", d3.forceX(d => xScale(d.coords.x)).strength(0.1))
-        .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.1))
+        .force("collide", d3.forceCollide().radius(d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 4).strength(0.9))
+        .force("x", d3.forceX(d => xScale(d.coords.x)).strength(0.45))
+        .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.45))
         .stop();
 
-    for (let i = 0; i < 120; ++i) state.chart.simulation.tick();
+    // Run simulation for enough iterations to stabilize
+    for (let i = 0; i < 200; ++i) state.chart.simulation.tick();
 
     state.chart.nodes
         .transition()
@@ -1282,7 +1228,64 @@ async function initializeFirebase() {
     }
 }
 
+// --- NEW: PDF Download and Share Functions ---
+async function handleDownloadPdf(recipeId) {
+    const recipe = recipesData.find(r => r.id === recipeId);
+    if (!recipe) return;
+
+    const content = document.getElementById('pdf-content');
+    if (!content) return;
+
+    const { jsPDF } = window.jspdf;
+
+    try {
+        const canvas = await html2canvas(content, {
+            scale: 2, // Increase resolution
+            useCORS: true, // Handle cross-origin images
+            backgroundColor: '#f4f5f7'
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save(`${recipe.name.en.replace(/ /g, '_')}.pdf`);
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+    }
+}
+
+async function handleShare(recipeId) {
+    const recipe = recipesData.find(r => r.id === recipeId);
+    if (!recipe) return;
+
+    const shareData = {
+        title: t('headerTitle'),
+        text: t('shareMessage').replace('{recipeName}', recipe.name[state.currentLang]),
+        url: window.location.href,
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            // Fallback for desktop or unsupported browsers
+            await navigator.clipboard.writeText(shareData.url);
+            alert('Link copied to clipboard!');
+        }
+    } catch (err) {
+        console.error("Share failed:", err);
+        alert(t('shareError'));
+    }
+}
+
+
 async function init() {
+    await loadLanguage(state.currentLang);
     await initializeFirebase();
 
     const tooltipEl = document.getElementById('infoTooltip');
@@ -1291,7 +1294,7 @@ async function init() {
         const title = e.target.closest('.parameter-title');
         if (title) {
             const key = title.dataset.paramKey;
-            const explanation = parameterExplanations[key]?.[state.currentLang];
+            const explanation = getExplanation(key);
             if (explanation) {
                 tooltipEl.innerHTML = explanation;
                 const titleRect = title.getBoundingClientRect();
@@ -1302,6 +1305,7 @@ async function init() {
             }
         }
     });
+
     document.body.addEventListener('mouseout', (e) => {
         if (e.target.closest('.parameter-title')) {
             tooltipEl.classList.remove('visible');
@@ -1318,9 +1322,7 @@ async function init() {
         
         const collageItem = target.closest('.collage-item');
         if (collageItem) {
-            const recipeId = collageItem.dataset.recipeId;
-            const index = collageItem.dataset.index;
-            openLightbox(recipeId, index);
+            openLightbox(collageItem.dataset.recipeId, collageItem.dataset.index);
             return;
         }
 
@@ -1329,6 +1331,16 @@ async function init() {
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) {
             resetToChartView();
+            return;
+        }
+
+        // --- NEW: Event handlers for PDF and Share ---
+        if (target.closest('#downloadPdfBtn')) {
+            handleDownloadPdf(target.closest('#downloadPdfBtn').dataset.recipeId);
+            return;
+        }
+        if (target.closest('#shareRecipeBtn')) {
+            handleShare(target.closest('#shareRecipeBtn').dataset.recipeId);
             return;
         }
 
@@ -1392,16 +1404,17 @@ async function init() {
         }
 
         if (langBtn) {
-            state.currentLang = langBtn.id === 'langEN' ? 'en' : 'vi';
-            updateLangSlider();
-            applyTranslations();
-            if (state.currentView === 'recipeFormulas') {
-                renderLibraryList();
-                if (state.selectedRecipeId) {
-                    renderLibraryDetails();
-                } else {
-                    renderColorMapChart('#colorMapContainer', recipesData);
-                    fetchTrendingRecipes();
+            const newLang = langBtn.id === 'langEN' ? 'en' : 'vi';
+            if (newLang !== state.currentLang) {
+                state.currentLang = newLang;
+                await loadLanguage(state.currentLang);
+                updateLangSlider();
+                applyTranslations();
+                if (state.currentView === 'recipeFormulas') {
+                    renderLibraryList();
+                    if (state.selectedRecipeId) {
+                        renderLibraryDetails();
+                    }
                 }
             }
             return;
@@ -1435,5 +1448,4 @@ async function init() {
     renderView('home');
 }
 
-// Chạy hàm init sau khi DOM đã được tải hoàn toàn
 document.addEventListener("DOMContentLoaded", init);
