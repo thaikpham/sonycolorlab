@@ -47,7 +47,8 @@ const state = {
         currentIndex: 0,
     },
     animation: {
-        blobSimulation: null,
+        blobAnimationFrameId: null, // For background blobs
+        logoSimulation: null,      // For interactive logo
     }
 };
 
@@ -919,19 +920,26 @@ function renderView(viewName, selectedId = null) {
 
     if (viewName !== 'home') {
         document.body.style.overflowY = 'auto';
-        // Stop the blob animation if it's running
-        if (state.animation.blobSimulation) {
-            state.animation.blobSimulation.stop();
-            state.animation.blobSimulation = null;
+        // Stop animations if they are running
+        if (state.animation.blobAnimationFrameId) {
+            cancelAnimationFrame(state.animation.blobAnimationFrameId);
+            state.animation.blobAnimationFrameId = null;
+        }
+        if (state.animation.logoSimulation) {
+            state.animation.logoSimulation.stop();
+            state.animation.logoSimulation = null;
         }
         blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
         if (qrCodeContainer) qrCodeContainer.classList.remove('visible');
         setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
     } else {
         document.body.style.overflowY = 'hidden';
-        // Only start animation if it's not already running
-        if (!state.animation.blobSimulation) {
-            initializePhysicsBlobs();
+        // Only start animations if they are not already running
+        if (!state.animation.blobAnimationFrameId) {
+            initializeBackgroundBlobs();
+        }
+        if (!state.animation.logoSimulation) {
+            initializeInteractiveLogo();
         }
         if (qrCodeContainer) setTimeout(() => qrCodeContainer.classList.add('visible'), 800);
     }
@@ -1020,89 +1028,71 @@ function updateLangSlider() {
 }
 
 /**
- * CẬP NHẬT: Tái sử dụng D3.js để tạo hiệu ứng các khối màu va chạm vào nhau như bi-a.
+ * KHÔI PHỤC: Hoạt ảnh các khối màu nền mờ, di chuyển nhẹ nhàng.
+ * Đây là hoạt ảnh cho background, không phải các chấm màu đậm.
  */
-function initializePhysicsBlobs() {
-    // 1. Kiểm tra xem D3 đã được tải chưa
-    if (typeof d3 === 'undefined') {
-        console.warn("D3 is not loaded yet. Cannot initialize physics blobs.");
-        return;
-    }
-
+function initializeBackgroundBlobs() {
     const container = document.getElementById('blobContainer');
     if (!container) return;
-    container.innerHTML = ''; // Xóa các blob cũ
+    container.innerHTML = ''; // Clear previous blobs
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const isMobile = vw < 768;
 
-    // 2. Tạo dữ liệu cho các blob với vị trí và vận tốc ban đầu ngẫu nhiên
-    const nodes = [
-        { id: 1, color: '#ffae00', r: vw * (isMobile ? 0.18 : 0.12) }, 
-        { id: 2, color: '#3498db', r: vw * (isMobile ? 0.22 : 0.15) },
-        { id: 3, color: '#e74c3c', r: vw * (isMobile ? 0.16 : 0.11) }, 
-        { id: 4, color: '#2ecc71', r: vw * (isMobile ? 0.20 : 0.14) },
-        { id: 5, color: '#9b59b6', r: vw * (isMobile ? 0.15 : 0.10) }, 
-        { id: 6, color: '#1abc9c', r: vw * (isMobile ? 0.19 : 0.13) },
+    const blobs = [
+        { id: 1, color: '#ffae00', r: vw * 0.12 }, { id: 2, color: '#3498db', r: vw * 0.15 },
+        { id: 3, color: '#e74c3c', r: vw * 0.11 }, { id: 4, color: '#2ecc71', r: vw * 0.14 },
+        { id: 5, color: '#9b59b6', r: vw * 0.10 }, { id: 6, color: '#1abc9c', r: vw * 0.13 },
     ].map(d => ({
         ...d,
         x: Math.random() * (vw - d.r * 2) + d.r,
         y: Math.random() * (vh - d.r * 2) + d.r,
-        vx: (Math.random() - 0.5) * 1.5, // Vận tốc ban đầu
-        vy: (Math.random() - 0.5) * 1.5
+        vx: (Math.random() - 0.5) * 0.5, // Tốc độ chậm, không đổi
+        vy: (Math.random() - 0.5) * 0.5
     }));
 
-    // 3. Tạo các phần tử DOM cho blob bằng D3
-    const blobElements = d3.select(container).selectAll("div")
-        .data(nodes, d => d.id)
-        .join("div")
-        .attr("class", "bg-blob")
-        .style("width", d => `${d.r * 2}px`)
-        .style("height", d => `${d.r * 2}px`)
-        .style("background-color", d => d.color);
+    const blobElements = blobs.map(blobData => {
+        const el = document.createElement('div');
+        el.className = 'bg-blob';
+        el.style.width = `${blobData.r * 2}px`;
+        el.style.height = `${blobData.r * 2}px`;
+        el.style.backgroundColor = blobData.color;
+        container.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 100);
+        return { el, data: blobData };
+    });
 
-    // Hiển thị các blob một cách mượt mà
-    setTimeout(() => blobElements.classed("visible", true), 100);
-
-    // 4. Thiết lập mô phỏng vật lý
-    const simulation = d3.forceSimulation(nodes)
-        .velocityDecay(0) // Không có ma sát, các blob sẽ không tự chậm lại
-        .force("collide", d3.forceCollide().radius(d => d.r + 2).strength(1)) // Lực va chạm, `strength(1)` cho va chạm nảy hoàn hảo
-        .on("tick", ticked); // Hàm được gọi ở mỗi bước mô phỏng
-
-    // 5. Hàm cập nhật vị trí ở mỗi "tick"
-    function ticked() {
-        // Dừng hoạt ảnh nếu không ở trang chủ
+    function animate() {
         if (state.currentView !== 'home') {
-            simulation.stop();
+            state.animation.blobAnimationFrameId = null;
             return;
         }
 
-        blobElements
-            .each(d => {
-                // Logic nảy khi chạm tường
-                if ((d.x - d.r < 0 && d.vx < 0) || (d.x + d.r > vw && d.vx > 0)) {
-                    d.vx *= -1;
-                }
-                if ((d.y - d.r < 0 && d.vy < 0) || (d.y + d.r > vh && d.vy > 0)) {
-                    d.vy *= -1;
-                }
-                // Giữ các blob luôn trong màn hình
-                d.x = Math.max(d.r, Math.min(vw - d.r, d.x));
-                d.y = Math.max(d.r, Math.min(vh - d.r, d.y));
-            })
-            .style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
+        blobElements.forEach(item => {
+            const blob = item.data;
+            blob.x += blob.vx;
+            blob.y += blob.vy;
+
+            if (blob.x - blob.r < 0 || blob.x + blob.r > vw) {
+                blob.vx *= -1;
+                blob.x = Math.max(blob.r, Math.min(vw - blob.r, blob.x));
+            }
+            if (blob.y - blob.r < 0 || blob.y + blob.r > vh) {
+                blob.vy *= -1;
+                blob.y = Math.max(blob.r, Math.min(vh - blob.r, blob.y));
+            }
+
+            item.el.style.transform = `translate(${blob.x - blob.r}px, ${blob.y - blob.r}px)`;
+        });
+
+        state.animation.blobAnimationFrameId = requestAnimationFrame(animate);
     }
-    
-    // Lưu lại đối tượng mô phỏng để có thể dừng nó sau này
-    if(state.animation.blobSimulation) {
-        state.animation.blobSimulation.stop();
-    }
-    state.animation.blobSimulation = simulation;
+    animate();
 }
 
-
+/**
+ * CẬP NHẬT: Áp dụng hiệu ứng "bi-a" cho các chấm màu đậm trong logo.
+ */
 function initializeInteractiveLogo() {
     if (typeof d3 === 'undefined') {
         console.warn("D3 is not loaded yet. Cannot initialize interactive logo.");
@@ -1116,6 +1106,7 @@ function initializeInteractiveLogo() {
     const bounds = container.node().getBoundingClientRect();
     const width = bounds.width;
     const height = bounds.height;
+    const isMobile = width < 768;
 
     svg.attr("viewBox", `0 0 ${width} ${height}`);
 
@@ -1126,22 +1117,17 @@ function initializeInteractiveLogo() {
         { id: 'blue', color: '#3498db' }, { id: 'cyan', color: '#1abc9c' },
         { id: 'magenta', color: '#9b59b6' }, { id: 'yellow', color: '#f1c40f' },
         { id: 'grey', color: '#95a5a6' }, { id: 'orange', color: '#e67e22' },
-        { id: 'purple', color: '#8e44ad' }
     ].map(node => ({
         ...node,
-        r: randomInRange(40, 80),
+        r: randomInRange(isMobile ? 25 : 40, isMobile ? 50 : 80),
         x: randomInRange(0, width),
-        y: randomInRange(0, height)
+        y: randomInRange(0, height),
+        vx: (Math.random() - 0.5) * 2, // Vận tốc ban đầu
+        vy: (Math.random() - 0.5) * 2
     }));
 
-    const simulation = d3.forceSimulation(nodes)
-        .force("center", d3.forceCenter(width / 2, height / 2).strength(0.01))
-        .force("collide", d3.forceCollide().radius(d => d.r + 5).strength(0.7))
-        .force("charge", d3.forceManyBody().strength(20))
-        .on("tick", ticked);
-
     const circles = svg.selectAll("circle")
-        .data(nodes)
+        .data(nodes, d => d.id)
         .join("circle")
         .attr("class", d => `logo-circle ${d.id}`)
         .attr("r", d => d.r)
@@ -1150,17 +1136,36 @@ function initializeInteractiveLogo() {
         .style("filter", "blur(5px)")
         .attr("opacity", 0.8);
 
+    const simulation = d3.forceSimulation(nodes)
+        .velocityDecay(0) // Không có ma sát
+        .force("collide", d3.forceCollide().radius(d => d.r + 1).strength(1)) // Va chạm nảy hoàn hảo
+        .on("tick", ticked);
+
     function ticked() {
-        circles.attr("cx", d => d.x).attr("cy", d => d.y);
+        if (state.currentView !== 'home') {
+            simulation.stop();
+            return;
+        }
+        circles
+            .each(d => {
+                // Logic nảy khi chạm tường
+                if ((d.x - d.r < 0 && d.vx < 0) || (d.x + d.r > width && d.vx > 0)) {
+                    d.vx *= -1;
+                }
+                if ((d.y - d.r < 0 && d.vy < 0) || (d.y + d.r > height && d.vy > 0)) {
+                    d.vy *= -1;
+                }
+                d.x = Math.max(d.r, Math.min(width - d.r, d.x));
+                d.y = Math.max(d.r, Math.min(height - d.r, d.y));
+            })
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
     }
     
-    d3.timer(() => {
-        nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.05;
-            node.vy += (Math.random() - 0.5) * 0.05;
-        });
-        simulation.alpha(0.1);
-    });
+    if(state.animation.logoSimulation) {
+        state.animation.logoSimulation.stop();
+    }
+    state.animation.logoSimulation = simulation;
 }
 
 
@@ -1470,8 +1475,8 @@ async function init() {
     // 3. Defer heavy animations until after the main content is visible.
     setTimeout(() => {
         if (state.currentView === 'home') {
-            // The `renderView('home')` function now calls `initializePhysicsBlobs`
-            initializeInteractiveLogo();
+            // The `renderView('home')` function now calls `initializeBackgroundBlobs`
+            // and `initializeInteractiveLogo`
         }
     }, 800); // Delay matches the CSS animation duration of home content.
 
