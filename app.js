@@ -896,7 +896,7 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
     } catch (error) {
         if (error.name !== 'AbortError') {
             console.error("Caption AI call failed:", error);
-            renderAIError(document.getElementById('captionLabContent'));
+            renderAIError(document.getElementById('aiLabContent'));
         }
     } finally {
         state.captionAI.isGenerating = false;
