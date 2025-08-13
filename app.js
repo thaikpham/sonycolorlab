@@ -45,6 +45,9 @@ const state = {
     lightbox: {
         images: [],
         currentIndex: 0,
+    },
+    animation: {
+        blobAnimationFrameId: null,
     }
 };
 
@@ -914,10 +917,19 @@ function renderView(viewName, selectedId = null) {
     const blobContainer = document.getElementById('blobContainer');
     if (viewName !== 'home') {
         document.body.style.overflowY = 'auto';
+        // Stop the blob animation if it's running
+        if (state.animation.blobAnimationFrameId) {
+            cancelAnimationFrame(state.animation.blobAnimationFrameId);
+            state.animation.blobAnimationFrameId = null;
+        }
         blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
         setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
     } else {
         document.body.style.overflowY = 'hidden';
+        // Only start animation if it's not already running
+        if (!state.animation.blobAnimationFrameId) {
+            initializePhysicsBlobs();
+        }
     }
 
     const footerEl = document.querySelector('footer');
@@ -1003,69 +1015,77 @@ function updateLangSlider() {
     glider.style.transform = state.currentLang === 'vi' ? 'translateX(0%)' : 'translateX(100%)';
 }
 
+/**
+ * NEW: Initializes and animates the background blobs using a simple
+ * requestAnimationFrame loop for a continuous, screensaver-like effect.
+ */
 function initializePhysicsBlobs() {
-    if (typeof d3 === 'undefined') {
-        console.warn("D3 is not loaded yet. Cannot initialize physics blobs.");
-        return;
-    }
-
-    const container = d3.select("#blobContainer");
-    if (container.empty()) return;
-
-    container.html('');
+    const container = document.getElementById('blobContainer');
+    if (!container) return;
+    container.innerHTML = ''; // Clear previous blobs
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    const nodes = [
+    const blobs = [
         { id: 1, color: '#ffae00', r: vw * 0.12 }, { id: 2, color: '#3498db', r: vw * 0.15 },
         { id: 3, color: '#e74c3c', r: vw * 0.11 }, { id: 4, color: '#2ecc71', r: vw * 0.14 },
         { id: 5, color: '#9b59b6', r: vw * 0.10 }, { id: 6, color: '#1abc9c', r: vw * 0.13 },
         { id: 7, color: '#f1c40f', r: vw * 0.09 }, { id: 8, color: '#e67e22', r: vw * 0.12 },
-        { id: 9, color: '#34495e', r: vw * 0.10 }, { id: 10, color: '#d35400', r: vw * 0.11 },
     ].map(d => ({
-        ...d, x: Math.random() * vw, y: Math.random() * vh,
-        vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4,
+        ...d,
+        x: Math.random() * (vw - d.r * 2) + d.r,
+        y: Math.random() * (vh - d.r * 2) + d.r,
+        vx: (Math.random() - 0.5) * 0.5, // Slow, constant speed
+        vy: (Math.random() - 0.5) * 0.5
     }));
 
-    const blobElements = container.selectAll(".bg-blob")
-        .data(nodes, d => d.id)
-        .join("div")
-        .attr("class", "bg-blob")
-        .style("width", d => `${d.r * 2}px`)
-        .style("height", d => `${d.r * 2}px`)
-        .style("background-color", d => d.color);
+    const blobElements = blobs.map(blobData => {
+        const el = document.createElement('div');
+        el.className = 'bg-blob';
+        el.style.width = `${blobData.r * 2}px`;
+        el.style.height = `${blobData.r * 2}px`;
+        el.style.backgroundColor = blobData.color;
+        container.appendChild(el);
+        // Fade in via CSS transition
+        setTimeout(() => el.classList.add('visible'), 100);
+        return { el, data: blobData };
+    });
 
-    setTimeout(() => blobElements.classed("visible", true), 100);
-
-    const simulation = d3.forceSimulation(nodes)
-        .alphaTarget(0.3)
-        .velocityDecay(0.1)
-        .force("collide", d3.forceCollide().radius(d => d.r + 8).strength(0.8))
-        .force("charge", d3.forceManyBody().strength(-50))
-        .on("tick", ticked);
-
-    function ticked() {
-        blobElements.each(d => {
-            if (d.x < d.r) { d.x = d.r; d.vx *= -0.9; }
-            if (d.x > vw - d.r) { d.x = vw - d.r; d.vx *= -0.9; }
-            if (d.y < d.r) { d.y = d.r; d.vy *= -0.9; }
-            if (d.y > vh - d.r) { d.y = vh - d.r; d.vy *= -0.9; }
-        }).style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
-    }
-    
-    const windInterval = setInterval(() => {
+    function animate() {
+        // Stop animation if we navigate away from home
         if (state.currentView !== 'home') {
-            clearInterval(windInterval);
-            simulation.stop();
+            state.animation.blobAnimationFrameId = null;
             return;
         }
-        nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.15;
-            node.vy += (Math.random() - 0.5) * 0.15;
+
+        blobElements.forEach(item => {
+            const blob = item.data;
+            blob.x += blob.vx;
+            blob.y += blob.vy;
+
+            // Bounce off walls
+            if (blob.x - blob.r < 0 || blob.x + blob.r > vw) {
+                blob.vx *= -1;
+                // Clamp position to prevent getting stuck outside bounds
+                blob.x = Math.max(blob.r, Math.min(vw - blob.r, blob.x));
+            }
+            if (blob.y - blob.r < 0 || blob.y + blob.r > vh) {
+                blob.vy *= -1;
+                // Clamp position to prevent getting stuck outside bounds
+                blob.y = Math.max(blob.r, Math.min(vh - blob.r, blob.y));
+            }
+
+            // Apply the new position
+            item.el.style.transform = `translate(${blob.x - blob.r}px, ${blob.y - blob.r}px)`;
         });
-        simulation.alpha(0.1).restart();
-    }, 3000);
+
+        // Continue the loop
+        state.animation.blobAnimationFrameId = requestAnimationFrame(animate);
+    }
+
+    // Start the animation loop
+    animate();
 }
 
 
@@ -1436,7 +1456,7 @@ async function init() {
     // 3. Defer heavy animations until after the main content is visible.
     setTimeout(() => {
         if (state.currentView === 'home') {
-            initializePhysicsBlobs();
+            // The `renderView('home')` function now calls `initializePhysicsBlobs`
             initializeInteractiveLogo();
         }
     }, 800); // Delay matches the CSS animation duration of home content.
