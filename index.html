@@ -63,6 +63,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         position: relative;
     }
 
+    /* --- Preloader Styles --- */
+    #preloader {
+        position: fixed;
+        inset: 0;
+        background-color: #f4f5f7;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease-out;
+        opacity: 1;
+    }
+    #preloader.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .preloader-logo {
+        width: 100px;
+        height: 100px;
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.9; }
+    }
+    #appContainer {
+        opacity: 0;
+        transition: opacity 0.5s ease-in;
+    }
+    #appContainer.visible {
+        opacity: 1;
+    }
+
+
     /* --- Nâng cấp hiệu ứng blobs với vật lý --- */
     .bg-blob {
         position: fixed;
@@ -259,6 +293,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </style>
 </head>
 <body>
+<!-- Preloader: Shows immediately on page load -->
+<div id="preloader">
+    <img src="logo.png" alt="Loading..." class="preloader-logo">
+</div>
+
 <!-- Background Blobs will be injected here by the home view template -->
 <div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
 
@@ -267,6 +306,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
+<!-- Main App Container: Hidden until ready -->
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
@@ -301,8 +341,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
     
-    <footer class="text-center py-4 text-gray-500 text-sm flex-shrink-0">
-        Paint emotions with ColorLAB by Sony Alpha Vietnam
+    <footer class="text-center py-4 text-gray-400 text-sm flex-shrink-0">
+        Paint emotions with AI ColorLAB by Sony Alpha Vietnam
     </footer>
 </div>
 
