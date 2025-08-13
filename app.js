@@ -1131,10 +1131,6 @@ function initializeInteractiveLogo() {
 
 
 function attachViewEventListeners(viewName) {
-    if (viewName === 'home') {
-        initializePhysicsBlobs();
-        initializeInteractiveLogo();
-    }
     if (viewName === 'recipeFormulas') {
         renderLibraryList();
         renderLibraryDetails();
@@ -1283,13 +1279,11 @@ async function initializeFirebase() {
 }
 
 async function init() {
-    await initializeFirebase();
-
-    const tooltipEl = document.getElementById('infoTooltip');
-
+    // Attach global event listeners immediately
     document.body.addEventListener('mouseover', (e) => {
         const title = e.target.closest('.parameter-title');
-        if (title) {
+        const tooltipEl = document.getElementById('infoTooltip');
+        if (title && tooltipEl) {
             const key = title.dataset.paramKey;
             const explanation = parameterExplanations[key]?.[state.currentLang];
             if (explanation) {
@@ -1304,11 +1298,13 @@ async function init() {
     });
     document.body.addEventListener('mouseout', (e) => {
         if (e.target.closest('.parameter-title')) {
-            tooltipEl.classList.remove('visible');
-            setTimeout(() => tooltipEl.classList.add('hidden'), 200);
+            const tooltipEl = document.getElementById('infoTooltip');
+            if(tooltipEl) {
+                tooltipEl.classList.remove('visible');
+                setTimeout(() => tooltipEl.classList.add('hidden'), 200);
+            }
         }
     });
-
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         const navBtn = target.closest('[data-view]');
@@ -1318,19 +1314,14 @@ async function init() {
         
         const collageItem = target.closest('.collage-item');
         if (collageItem) {
-            const recipeId = collageItem.dataset.recipeId;
-            const index = collageItem.dataset.index;
-            openLightbox(recipeId, index);
+            openLightbox(collageItem.dataset.recipeId, collageItem.dataset.index);
             return;
         }
 
         if (target.closest('#homeBtn')) { await renderView('home'); return; }
         if (target.closest('#hamburgerBtn')) { document.getElementById('mobileNavMenu').classList.remove('translate-x-full'); return; }
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
-        if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) {
-            resetToChartView();
-            return;
-        }
+        if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
 
         if (target.closest('#quizModal')) {
             if (target.closest('#closeQuizBtn')) { closeQuiz(); return; }
@@ -1410,14 +1401,11 @@ async function init() {
         if (recipeItem) { handleRecipeSelection(recipeItem.dataset.recipeId); return; }
         if (trendingItem) { handleRecipeSelection(trendingItem.dataset.recipeId); return; }
     });
-
     document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
     document.getElementById('lightboxNext').addEventListener('click', showNextImage);
     document.getElementById('lightboxPrev').addEventListener('click', showPrevImage);
     document.getElementById('lightbox').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) {
-            closeLightbox();
-        }
+        if (e.target === e.currentTarget) closeLightbox();
     });
     document.addEventListener('keydown', (e) => {
         if (document.getElementById('lightbox').classList.contains('visible')) {
@@ -1426,14 +1414,41 @@ async function init() {
             if (e.key === 'Escape') closeLightbox();
         }
     });
-
-
     document.addEventListener('input', e => {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 
-    renderView('home');
+    // --- NEW, OPTIMIZED INITIALIZATION FLOW ---
+
+    // 1. Render the initial view HTML immediately.
+    await renderView('home');
+
+    // 2. Start non-critical tasks in the background.
+    initializeFirebase().then(() => {
+        console.log("Firebase is ready in the background.");
+        // If the user navigates to the formulas page while firebase is initializing,
+        // this ensures the trending recipes are fetched once ready.
+        if (state.currentView === 'recipeFormulas') {
+            fetchTrendingRecipes();
+        }
+    });
+
+    // 3. Defer heavy animations until after the main content is visible.
+    setTimeout(() => {
+        if (state.currentView === 'home') {
+            initializePhysicsBlobs();
+            initializeInteractiveLogo();
+        }
+    }, 800); // Delay matches the CSS animation duration of home content.
+
+    // 4. Hide preloader and show the app.
+    const preloader = document.getElementById('preloader');
+    const appContainer = document.getElementById('appContainer');
+    setTimeout(() => {
+        if (preloader) preloader.classList.add('hidden');
+        if (appContainer) appContainer.classList.add('visible');
+    }, 50); // Short delay to ensure initial paint is complete.
 }
 
-// Chạy hàm init sau khi DOM đã được tải hoàn toàn
+// Run init after the DOM is fully loaded.
 document.addEventListener("DOMContentLoaded", init);
