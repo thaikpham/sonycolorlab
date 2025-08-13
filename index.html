@@ -77,20 +77,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         opacity: 0.25;
     }
 
-    /* --- INTERACTIVE SVG Logo Styles --- */
+    /* --- NEW: CSS Animation for Logo Blobs --- */
     .animated-logo-container {
         position: relative;
         width: 100%;
         height: 100%;
     }
-    .animated-logo-svg {
-        width: 100%;
-        height: 100%;
-        overflow: visible;
+    .logo-blob {
+        position: absolute;
+        border-radius: 50%;
+        mix-blend-mode: multiply;
+        filter: blur(5px);
+        opacity: 0.8;
+        animation-name: move-blob;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
     }
-    .logo-circle {
-        will-change: transform;
+
+    @keyframes move-blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(var(--tx1), var(--ty1)) scale(var(--s1)); }
+        50% { transform: translate(var(--tx2), var(--ty2)) scale(1); }
+        75% { transform: translate(var(--tx3), var(--ty3)) scale(var(--s2)); }
     }
+    /* --- END NEW --- */
+
 
     /* --- Core Component Styling --- */
     .glass-panel {    
