@@ -256,6 +256,30 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
     #addToHomeScreenBtn.visible { display: inline-flex; animation: fadeInDown 0.5s ease-out; }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* NEW: QR Code Styles */
+    #qrCodeContainer {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        z-index: 10;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        pointer-events: none; /* Initially not interactive */
+    }
+    #qrCodeContainer.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto; /* Make it interactive when visible */
+    }
+    /* Hide QR code on mobile devices */
+    @media (max-width: 767px) {
+        #qrCodeContainer {
+            display: none;
+        }
+    }
+
 </style>
 </head>
 <body>
@@ -308,6 +332,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         Paint emotions with ColorLAB by Sony Alpha Vietnam
     </footer>
 </div>
+
+<!-- NEW: QR Code Container -->
+<div id="qrCodeContainer">
+    <img src="adobe-express-qr-code.png" alt="QR Code" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg">
+</div>
+
 
 <div id="infoTooltip" class="hidden"></div>
 
