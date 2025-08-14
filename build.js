@@ -63,7 +63,8 @@ try {
 
     // --- Sao chép các file tĩnh khác ---
     console.log('📦 Copying static assets...');
-    const staticFiles = ['index.html', 'logo.png', 'logo_black.png', 'recipes.js'];
+    // FIX: Thêm 'adobe-express-qr-code.svg' vào danh sách các file cần sao chép
+    const staticFiles = ['index.html', 'logo.png', 'logo_black.png', 'recipes.js', 'adobe-express-qr-code.svg'];
     staticFiles.forEach(file => {
         const srcPath = path.join(__dirname, file);
         const destPath = path.join(distDir, file);
