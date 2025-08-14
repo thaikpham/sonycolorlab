@@ -147,10 +147,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .comparison-grid .value-new { color: #1d4ed8; font-weight: 700; }
     .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .quiz-option { background-color: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(1); }
-    .quiz-option:hover { border-color: #93c5fd; background-color: #eff6ff; transform: scale(1.03); box-shadow: 0 4px 14px rgba(0, 118, 255, 0.1); }
-    .quiz-option.selected { border-color: var(--primary-accent); background-color: #dbeafe; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 118, 255, 0.2); }
-    .quiz-option:active { transform: scale(1.02); }
+    
+    /* --- UPDATED: iOS-inspired Quiz Option Styling --- */
+    .quiz-option { 
+        background-color: #f1f5f9; /* light grey */
+        border: none;
+        color: var(--text-primary);
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out, transform 0.15s ease-in-out; 
+        transform: scale(1); 
+    }
+    .quiz-option .lucide {
+        color: #475569; /* slate-600 */
+        transition: color 0.15s ease-in-out;
+    }
+    .quiz-option:hover { 
+        background-color: #e2e8f0; /* slightly darker grey */
+    }
+    .quiz-option.selected { 
+        background-color: var(--primary-accent); 
+        color: white;
+    }
+    .quiz-option.selected .lucide {
+        color: white;
+    }
+    .quiz-option:active { 
+        transform: scale(0.97); 
+        transition-duration: 0.1s;
+    }
     .quiz-options-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
     .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
     .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
