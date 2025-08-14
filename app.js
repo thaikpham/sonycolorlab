@@ -130,7 +130,7 @@ const translations = {
     ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
     ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
     ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
-    trendingTitle: {vi: "Thịnh hành nhất", en: "Trending Now"},
+    trendingTitle: {vi: "Công thức thịnh hành", en: "Trending Recipes"},
     aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
     aiLabDescription: {vi: "Mô tả phong cách bạn muốn, Gemini sẽ tinh chỉnh công thức màu <b>{recipeName}</b> cho bạn.", en: "Describe the style you want, and Gemini will tweak the <b>{recipeName}</b> recipe for you."},
     aiPromptPlaceholder: {vi: "VD: tông màu trong trẻo, hơi ngả xanh như phim của Wes Anderson...", en: "E.g., a clean, slightly teal look like a Wes Anderson film..."},
@@ -634,9 +634,10 @@ function displayTrendingRecipes(trendingIDs) {
         return;
     }
 
+    // UPDATE: Changed to a more flexible grid layout to accommodate 5 items
     container.innerHTML = `
         <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             ${trendingRecipes.map(recipe => `
                 <div class="trending-item rounded-xl p-3 cursor-pointer"
                      data-recipe-id="${recipe.id}"
@@ -657,7 +658,7 @@ async function fetchTrendingRecipes() {
     console.log("Attempting to fetch trending recipes...");
     if (!state.firebase.db) {
         console.warn("Firebase not available, using mock trending data.");
-        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
+        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027", "scl-015"];
         displayTrendingRecipes(mockTrendingIDs);
         return;
     }
@@ -681,7 +682,7 @@ async function fetchTrendingRecipes() {
         }
     } catch (error) {
         console.error("Error fetching real trending data, falling back to mock data:", error);
-        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
+        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027", "scl-015"];
         displayTrendingRecipes(mockTrendingIDs);
     }
 }
@@ -1231,6 +1232,7 @@ function handleRecipeSelection(id) {
     if (state.selectedRecipeId) {
         const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
         if (recipe) {
+            // This is the correct way to push events to GTM
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 event: 'view_recipe',
