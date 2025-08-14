@@ -424,6 +424,11 @@ function createFullRecipeHTML(recipe) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-5 w-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 <span data-translate-key="downloadPDFBtn"></span>
             </button>
+            <!-- SONY GUIDE BUTTON RESTORED -->
+            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-5 w-5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <span data-translate-key="sonyGuideBtn"></span>
+            </a>
         </div>
         <div class="space-y-8 mt-8">
             ${sections.map(section => `<div><h4 class="text-xl font-bold mb-3 text-gray-700" data-translate-key="${section.titleKey}"></h4><div class="p-4 bg-gray-500/5 rounded-2xl">${section.content}</div></div>`).join('')}
