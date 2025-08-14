@@ -43,7 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     
 <style>
-    /* --- REFINED STYLES & ANIMATION OVERHAUL --- */
+    /* --- REFINED STYLES WITH BLOB ANIMATION --- */
     html { scroll-behavior: smooth; }
     :root {
         --primary-accent: #007AFF;
@@ -53,17 +53,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
-        --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
     }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #f4f5f7;
+        background-color: #ffffff; /* Changed to white */
         color: var(--text-primary);
-        overflow: hidden; /* Ngăn scroll khi landing page hiển thị */
         position: relative;
     }
 
-    /* --- Nâng cấp hiệu ứng blobs với vật lý --- */
+    /* --- Background Blobs (Blurred) --- */
     .bg-blob {
         position: fixed;
         border-radius: 50%;
@@ -74,22 +72,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         will-change: transform;
     }
     .bg-blob.visible { 
-        opacity: 0.25;
-    }
-
-    /* --- INTERACTIVE SVG Logo Styles --- */
-    .animated-logo-container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-    }
-    .animated-logo-svg {
-        width: 100%;
-        height: 100%;
-        overflow: visible;
-    }
-    .logo-circle {
-        will-change: transform;
+        opacity: 0.2; /* Slightly reduced opacity for white background */
     }
 
     /* --- Core Component Styling --- */
@@ -144,14 +127,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
     }
     @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
-    
-    /* --- Homepage Content Animations --- */
-    .home-content-anim {
-        opacity: 0;
-        transform: translateY(25px);
-        animation: homeContentFadeIn 0.8s var(--ease-out-cubic) forwards;
-    }
-    @keyframes homeContentFadeIn { to { opacity: 1; transform: translateY(0); } }
 
     /* --- Sleek Scrollbar with iOS Momentum Scrolling --- */
     .sleek-scrollbar { -webkit-overflow-scrolling: touch; }
@@ -172,10 +147,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .comparison-grid .value-new { color: #1d4ed8; font-weight: 700; }
     .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .quiz-option { background-color: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(1); }
-    .quiz-option:hover { border-color: #93c5fd; background-color: #eff6ff; transform: scale(1.03); box-shadow: 0 4px 14px rgba(0, 118, 255, 0.1); }
-    .quiz-option.selected { border-color: var(--primary-accent); background-color: #dbeafe; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 118, 255, 0.2); }
-    .quiz-option:active { transform: scale(1.02); }
+    
+    /* --- UPDATED: iOS-inspired Quiz Option Styling --- */
+    .quiz-option { 
+        background-color: #f1f5f9; /* light grey */
+        border: none;
+        color: var(--text-primary);
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out, transform 0.15s ease-in-out; 
+        transform: scale(1); 
+    }
+    .quiz-option .lucide {
+        color: #475569; /* slate-600 */
+        transition: color 0.15s ease-in-out;
+    }
+    .quiz-option:hover { 
+        background-color: #e2e8f0; /* slightly darker grey */
+    }
+    .quiz-option.selected { 
+        background-color: var(--primary-accent); 
+        color: white;
+    }
+    .quiz-option.selected .lucide {
+        color: white;
+    }
+    .quiz-option:active { 
+        transform: scale(0.97); 
+        transition-duration: 0.1s;
+    }
     .quiz-options-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
     .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
     .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
@@ -256,12 +254,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
     #addToHomeScreenBtn.visible { display: inline-flex; animation: fadeInDown 0.5s ease-out; }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* NEW: QR Code Styles */
+    #qrCodeContainer {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        z-index: 10;
+    }
+    #qrCodeContainer.hidden {
+        display: none;
+    }
+    /* Hide QR code on mobile devices */
+    @media (max-width: 767px) {
+        #qrCodeContainer {
+            display: none;
+        }
+    }
+
 </style>
 </head>
 <body>
-<!-- Preloader has been removed for direct content access -->
-
-<!-- Background Blobs will be injected here by the home view template -->
+<!-- Background Blobs will be injected here by JS -->
 <div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
 
 <!-- Google Tag Manager (noscript) -->
@@ -269,7 +283,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<!-- Main App Container: Now visible by default -->
+<!-- Main App Container -->
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
@@ -304,10 +318,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
     
-    <footer class="text-center py-4 text-gray-500 text-sm flex-shrink-0">
+    <footer class="text-center pt-4 pb-16 sm:py-4 text-gray-500 text-sm flex-shrink-0">
         Paint emotions with ColorLAB by Sony Alpha Vietnam
     </footer>
 </div>
+
+<!-- QR Code Container -->
+<div id="qrCodeContainer">
+    <img src="adobe-express-qr-code.png" alt="QR Code" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg">
+</div>
+
 
 <div id="infoTooltip" class="hidden"></div>
 
@@ -378,11 +398,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<!-- 
-    Tối ưu: Tách toàn bộ Javascript ra file app.js.
-    Sử dụng type="module" để có thể dùng import/export.
-    Sử dụng defer để script không chặn việc hiển thị của trang.
--->
+
 <script type="module" src="app.js" defer></script>
 
 </body>

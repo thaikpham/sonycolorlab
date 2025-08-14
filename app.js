@@ -3,6 +3,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+// --- PDF & Canvas Library Imports ---
+// We will load these dynamically when needed to keep initial load fast
+const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+
+
 // --- CONFIGURATION & STATE ---
 // Các placeholder này sẽ được thay thế bởi build script
 const API_KEY = "%%GEMINI_API_KEY%%";
@@ -45,6 +51,14 @@ const state = {
     lightbox: {
         images: [],
         currentIndex: 0,
+    },
+    animation: {
+        blobAnimationFrameId: null,
+    },
+    // NEW: Track dynamically loaded scripts to prevent re-loading
+    scripts: {
+        jspdf: false,
+        html2canvas: false,
     }
 };
 
@@ -53,40 +67,40 @@ const mainContentEl = document.getElementById('mainContent');
 // Cache-busting: Thêm version query để buộc tải lại file mới khi có thay đổi
 import recipesData from './recipes.js?v=2.1';
 
-// Dữ liệu cho Quiz và các bản dịch không thay đổi, giữ nguyên ở đây
+// --- UPDATED: Quiz questions with new Lucide icons ---
 const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
         options: [
-            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z' },
-            { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: { vi: 'Phong cảnh', en: 'Landscape' }, icon: 'M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z' },
-            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: 'M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21M3 3h18v18H3V3z' },
-            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: 'M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z' }
+            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>' },
+            { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: { vi: 'Phong cảnh', en: 'Landscape' }, icon: '<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>' },
+            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>' },
+            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: '<path d="M17 8h-7a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4h7a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4Z"/><path d="M17 18v2a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2"/><path d="M20 8v8"/>' }
         ]
     },
     {
         question: { vi: "Tone màu chủ đạo bạn muốn?", en: "What's your preferred color tone?" },
         options: [
-            { tags: ['warm', 'golden-hour', 'amber-tint'], text: { vi: 'Ấm', en: 'Warm' }, icon: 'M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z' },
-            { tags: ['neutral', 'clean', 'balanced'], text: { vi: 'Trung tính', en: 'Neutral' }, icon: 'M10.5 6h9.75M10.5 6a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zM3.75 6H7.5m3 12h9.75m-9.75 0a2.25 2.25 0 10-4.5 0 2.25 2.25 0 004.5 0zM3.75 18H7.5m1.5-6h9.75m-9.75 0a2.25 2.25 0 10-4.5 0 2.25 2.25 0 004.5 0zM3.75 12H7.5' },
-            { tags: ['cool-tone', 'deep-blues', 'cyan-teal'], text: { vi: 'Lạnh', en: 'Cool' }, icon: 'M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z' }
+            { tags: ['warm', 'golden-hour', 'amber-tint'], text: { vi: 'Ấm', en: 'Warm' }, icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>' },
+            { tags: ['neutral', 'clean', 'balanced'], text: { vi: 'Trung tính', en: 'Neutral' }, icon: '<line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/>' },
+            { tags: ['cool-tone', 'deep-blues', 'cyan-teal'], text: { vi: 'Lạnh', en: 'Cool' }, icon: '<line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/>' }
         ]
     },
     {
         question: { vi: "Kiểu tương phản bạn thích?", en: "How do you like your contrast?" },
         options: [
-            { tags: ['high-contrast', 'dramatic', 'powerful'], text: { vi: 'Gắt', en: 'Punchy' }, icon: 'M12 21a9 9 0 100-18 9 9 0 000 18z' },
-            { tags: ['normal', 'balanced', 'versatile'], text: { vi: 'Trung tính', en: 'Natural' }, icon: 'M12 3v18m9-9a9 9 0 00-18 0h18z' },
-            { tags: ['soft-contrast', 'faded', 'lifted-blacks'], text: { vi: 'Nhẹ & Mờ', en: 'Soft & Faded' }, icon: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+            { tags: ['high-contrast', 'dramatic', 'powerful'], text: { vi: 'Gắt', en: 'Punchy' }, icon: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>' },
+            { tags: ['normal', 'balanced', 'versatile'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<path d="M5 12h14"/><path d="M12 5v14"/>' },
+            { tags: ['soft-contrast', 'faded', 'lifted-blacks'], text: { vi: 'Nhẹ & Mờ', en: 'Soft & Faded' }, icon: '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" x2="2" y1="8" y2="22"/><line x1="17.5" x2="9" y1="15" y2="15"/>' },
         ]
     },
     {
         question: { vi: "Độ bão hòa màu sắc?", en: "And saturation?" },
         options: [
-            { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: { vi: 'Đậm', en: 'Rich' }, icon: 'M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25z' },
-            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Trung tính', en: 'Natural' }, icon: 'M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25z' },
-            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Nhạt', en: 'Muted' }, icon: 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636' },
-            { tags: ['bw'], text: { vi: 'Trắng & Đen', en: 'Black & White' }, icon: 'M12 3v18m9-9a9 9 0 00-18 0h18z' }
+            { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: { vi: 'Đậm', en: 'Rich' }, icon: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.7-3.29C8.2 7.95 7 6.46 7 5.06V3"/><path d="M14 3v2.06c0 1.4-.93 2.89-2.3 3.9-1.13 1.03-1.7 2.13-1.7 3.29 0 2.22 1.8 4.05 4 4.05Z"/>' },
+            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="currentColor"/>' },
+            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Nhạt', en: 'Muted' }, icon: '<circle cx="12" cy="12" r="10"/><path d="M22 2 2 22"/>' },
+            { tags: ['bw'], text: { vi: 'Trắng & Đen', en: 'Black & White' }, icon: '<circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0-10 10h20a10 10 0 0 0-10-10z"/>' }
         ]
     }
 ];
@@ -95,6 +109,7 @@ const translations = {
     headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
     landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
+    landingSubtitle: {vi: "Khám phá và tạo ra công thức màu độc đáo cho máy ảnh Sony Alpha của bạn, với sự hỗ trợ từ AI.", en: "Discover and create unique color recipes for your Sony Alpha camera, powered by AI."},
     startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
     findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
     quizTitle: {vi: "Trắc nghiệm Tìm màu", en: "Color Finder Quiz"},
@@ -139,7 +154,9 @@ const translations = {
     captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
     copyBtn: {vi: "Sao chép", en: "Copy"},
     copiedBtn: {vi: "Đã sao chép!", en: "Copied!"},
-    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" }
+    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" },
+    shareRecipeBtn: {vi: "Chia sẻ Công thức", en: "Share Recipe"},
+    downloadPDFBtn: {vi: "Tải PDF", en: "Download PDF"}
 };
 
 const parameterExplanations = {
@@ -160,6 +177,70 @@ const parameterExplanations = {
     'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
     'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
 };
+
+// --- NEW UTILITY FUNCTIONS ---
+
+/**
+ * Dynamically loads a script and returns a promise.
+ * Prevents re-loading if the script is already in the state.
+ * @param {string} url - The URL of the script to load.
+ * @param {string} stateKey - The key in state.scripts to track the script's status.
+ * @returns {Promise<void>}
+ */
+function loadScript(url, stateKey) {
+    return new Promise((resolve, reject) => {
+        if (state.scripts[stateKey]) {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = () => {
+            state.scripts[stateKey] = true;
+            resolve();
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
+/**
+ * Displays a temporary toast message at the bottom of the screen.
+ * @param {string} message - The message to display.
+ * @param {boolean} [isError=false] - If true, displays the toast with an error color.
+ */
+function showToast(message, isError = false) {
+    let toast = document.getElementById('app-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-toast';
+        Object.assign(toast.style, {
+            position: 'fixed',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '12px 24px',
+            borderRadius: '99px',
+            color: 'white',
+            zIndex: '9999',
+            opacity: '0',
+            transition: 'opacity 0.3s ease, bottom 0.3s ease',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+        });
+        document.body.appendChild(toast);
+    }
+    
+    toast.textContent = message;
+    toast.style.backgroundColor = isError ? '#e53935' : '#2ecc71';
+    toast.style.bottom = '20px';
+    toast.style.opacity = '1';
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.bottom = '0px';
+    }, 3000);
+}
+
 
 // --- UI & LOGIC FUNCTIONS ---
 function t(key) { return translations[key]?.[state.currentLang] || key; }
@@ -225,7 +306,20 @@ function createFullRecipeHTML(recipe) {
     const createCTAHTML = (recipe) => {
         const recipeHashtag = `#${recipe.id.replace(/-/g, '')}`;
         const ctaText = t('ctaText').replace('{recipeHashtag}', `<b class="font-semibold text-blue-900">${recipeHashtag}</b>`);
-        return `<div class="mt-8 p-5 md:p-6 bg-blue-50 border border-blue-200/50 rounded-2xl text-center"><h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4><p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p><a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-5 py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M12.225 10.162c.37.312.525.812.375 1.312l-.75 2.5a1 1 0 01-1.85.375l-1.375-3.562a1 1 0 01.375-1.125l2.5-2.062a1 1 0 011.375 1.562l-1.5 1.25 2.375 1.125zM10 18a8 8 0 100-16 8 8 0 000 16z"/></svg><span data-translate-key="ctaButton"></span></a></div>`;
+        return `<div class="mt-8 p-5 md:p-6 bg-blue-50 border border-blue-200/50 rounded-2xl text-center">
+            <h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4>
+            <p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p>
+            <div class="mt-5 flex flex-wrap justify-center gap-4">
+                 <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span data-translate-key="ctaButton"></span>
+                </a>
+                <button id="shareRecipeBtn" data-recipe-id="${recipe.id}" class="btn bg-green-500 hover:bg-green-600 text-white py-2.5 px-6 shadow-lg shadow-green-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2 h-5 w-5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+                    <span data-translate-key="shareRecipeBtn"></span>
+                </button>
+            </div>
+        </div>`;
     };
 
     const createSettingsGrid = (settings) => {
@@ -249,19 +343,17 @@ function createFullRecipeHTML(recipe) {
         ${createCollageHTML(recipe.demoImages)}
         <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
             <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
                 <span data-translate-key="tweakWithAI"></span>
             </button>
             <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 shadow-lg shadow-purple-500/30" id="captionAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
-                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 3h9.75m-9.75 3h9.75M3 3h18M3 21h18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0021 3H3a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 003 21z" /></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text w-5 h-5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
                 <span data-translate-key="captionFromAI"></span>
             </button>
-            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.392C2.057 15.71 3.245 16 4.5 16s2.443-.29 3.5-.804V4.804zM14.5 4c-1.255 0-2.443.29-3.5.804v10.392c1.057.514 2.245.804 3.5.804s2.443-.29 3.5-.804V4.804C16.943 4.29 15.755 4 14.5 4z"></path>
-                </svg>
-                <span data-translate-key="sonyGuideBtn"></span>
-            </a>
+            <button class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30" id="downloadPdfBtn" data-recipe-id="${recipe.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-5 w-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                <span data-translate-key="downloadPDFBtn"></span>
+            </button>
         </div>
         ${createCTAHTML(recipe)}
         <div class="space-y-8 mt-8">
@@ -273,23 +365,15 @@ function createFullRecipeHTML(recipe) {
 const viewTemplates = {
     home: () => `
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 w-full max-w-6xl mx-auto items-center">
-                <div class="md:col-span-2 text-center md:text-left">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4 home-content-anim max-w-md mx-auto md:mx-0" style="animation-delay: 0.2s;" data-translate-key="landingTitle"></h1>
-                    <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center md:justify-start home-content-anim" style="animation-delay: 0.4s;">
-                        <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                            <span data-translate-key="findMyColorBtn"></span>
-                        </button>
-                        <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg whitespace-nowrap" data-translate-key="startExploringBtn"></button>
-                    </div>
-                </div>
-                <div class="md:col-span-3 hidden md:flex justify-center items-center h-full">
-                    <div class="relative w-full h-full min-h-[400px] lg:min-h-[500px] home-content-anim" style="animation-delay: 0.6s;">
-                        <div class="animated-logo-container">
-                            <svg class="animated-logo-svg"></svg>
-                        </div>
-                    </div>
+            <div class="w-full max-w-2xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" data-translate-key="landingTitle"></h1>
+                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" data-translate-key="landingSubtitle"></p>
+                <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center">
+                    <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
+                        <span data-translate-key="findMyColorBtn"></span>
+                    </button>
+                    <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg whitespace-nowrap" data-translate-key="startExploringBtn"></button>
                 </div>
             </div>
         </div>`,
@@ -299,7 +383,7 @@ const viewTemplates = {
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                     <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
                     </button>
                 </div>
                 <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar pr-2 -mr-2"></div>
@@ -494,6 +578,7 @@ function displayTrendingRecipes(trendingIDs) {
 }
 
 async function fetchTrendingRecipes() {
+    console.log("Attempting to fetch trending recipes...");
     if (!state.firebase.db) {
         console.warn("Firebase not available, using mock trending data.");
         const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
@@ -502,18 +587,21 @@ async function fetchTrendingRecipes() {
     }
 
     try {
+        console.log(`Fetching from Firestore path: artifacts/${__app_id}/public/data/trending/latest`);
         const docRef = doc(state.firebase.db, `artifacts/${__app_id}/public/data/trending/latest`);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
             const trendingData = docSnap.data();
+            console.log("Successfully fetched trending data:", trendingData);
             if (trendingData.ids && trendingData.ids.length > 0) {
                 displayTrendingRecipes(trendingData.ids);
             } else {
-                 throw new Error("Trending IDs array is empty or missing.");
+                 console.warn("Trending data exists but 'ids' array is empty or missing.");
+                 displayTrendingRecipes([]); // Hide the section
             }
         } else {
-            throw new Error("Trending document does not exist.");
+            throw new Error("Trending document does not exist in Firestore.");
         }
     } catch (error) {
         console.error("Error fetching real trending data, falling back to mock data:", error);
@@ -552,12 +640,10 @@ function renderQuizQuestion() {
                 <div class="${gridClass}">
                     ${questionData.options.map(opt => `
                         <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4" data-tags="${opt.tags.join(',')}">
-                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 border">
-                                <svg class="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="${opt.icon}" />
-                                </svg>
-                            </div>
-                            <span class="font-semibold text-lg text-gray-800">${opt.text[state.currentLang]}</span>
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
+                                ${opt.icon}
+                            </svg>
+                            <span class="font-semibold text-lg">${opt.text[state.currentLang]}</span>
                         </button>
                     `).join('')}
                 </div>
@@ -581,7 +667,11 @@ function handleQuizAnswer(e) {
     selectedOption.classList.add('selected');
     const tags = selectedOption.dataset.tags.split(',');
     state.quiz.answers.push(...tags);
-    setTimeout(() => { state.quiz.currentQuestionIndex++; renderQuizQuestion(); }, 300);
+    // Reduced delay for a "snappier" feel
+    setTimeout(() => { 
+        state.quiz.currentQuestionIndex++; 
+        renderQuizQuestion(); 
+    }, 150);
 }
 
 function calculateAndShowQuizResult() {
@@ -750,6 +840,12 @@ function renderAIComparison(container) {
             ${createComparisonGrid('recipeSettingsTitle', original.settings, generated.settings)}
             ${original.colorDepth ? createComparisonGrid('colorDepthTitle', original.colorDepth, generated.colorDepth) : ''}
         </div>
+        <div class="mt-8 text-center">
+             <button id="downloadAIPdfBtn" data-recipe-id="${original.id}" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-5 w-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                <span data-translate-key="downloadPDFBtn"></span>
+            </button>
+        </div>
     `;
     applyTranslations();
 }
@@ -894,7 +990,7 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
     } catch (error) {
         if (error.name !== 'AbortError') {
             console.error("Caption AI call failed:", error);
-            renderAIError(document.getElementById('captionLabContent'));
+            renderAIError(document.getElementById('aiLabContent'));
         }
     } finally {
         state.captionAI.isGenerating = false;
@@ -907,17 +1003,96 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
 
 
 // --- CORE APP LOGIC ---
+
+/**
+ * ADDED BACK: This function creates the soft, blurred blobs in the background.
+ * They move gently and do NOT interact with each other.
+ */
+function initializeBackgroundBlobs() {
+    const container = document.getElementById('blobContainer');
+    if (!container) return;
+    container.innerHTML = ''; // Clear previous blobs
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const blobs = [
+        { id: 'red', color: '#e74c3c', r: vw * 0.12 }, 
+        { id: 'green', color: '#2ecc71', r: vw * 0.15 },
+        { id: 'blue', color: '#3498db', r: vw * 0.11 }, 
+        { id: 'cyan', color: '#1abc9c', r: vw * 0.14 },
+        { id: 'magenta', color: '#9b59b6', r: vw * 0.10 }, 
+        { id: 'yellow', color: '#f1c40f', r: vw * 0.13 },
+    ].map(d => ({
+        ...d,
+        x: Math.random() * (vw - d.r * 2) + d.r,
+        y: Math.random() * (vh - d.r * 2) + d.r,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5
+    }));
+
+    const blobElements = blobs.map(blobData => {
+        const el = document.createElement('div');
+        el.className = 'bg-blob';
+        el.style.width = `${blobData.r * 2}px`;
+        el.style.height = `${blobData.r * 2}px`;
+        el.style.backgroundColor = blobData.color;
+        container.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 100);
+        return { el, data: blobData };
+    });
+
+    function animate() {
+        if (state.currentView !== 'home') {
+            state.animation.blobAnimationFrameId = null;
+            return;
+        }
+
+        blobElements.forEach(item => {
+            const blob = item.data;
+            blob.x += blob.vx;
+            blob.y += blob.vy;
+
+            if (blob.x - blob.r < 0 || blob.x + blob.r > vw) {
+                blob.vx *= -1;
+                blob.x = Math.max(blob.r, Math.min(vw - blob.r, blob.x));
+            }
+            if (blob.y - blob.r < 0 || blob.y + blob.r > vh) {
+                blob.vy *= -1;
+                blob.y = Math.max(blob.r, Math.min(vh - blob.r, blob.y));
+            }
+
+            item.el.style.transform = `translate(${blob.x - blob.r}px, ${blob.y - blob.r}px)`;
+        });
+
+        state.animation.blobAnimationFrameId = requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+
 function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
 
     const blobContainer = document.getElementById('blobContainer');
+
     if (viewName !== 'home') {
         document.body.style.overflowY = 'auto';
-        blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
-        setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
+        // Stop blob animation if it is running
+        if (state.animation.blobAnimationFrameId) {
+            cancelAnimationFrame(state.animation.blobAnimationFrameId);
+            state.animation.blobAnimationFrameId = null;
+        }
+        if(blobContainer) {
+            blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
+        }
     } else {
         document.body.style.overflowY = 'hidden';
+        // Only start animations if they are not already running
+        if (!state.animation.blobAnimationFrameId) {
+            initializeBackgroundBlobs();
+        }
     }
 
     const footerEl = document.querySelector('footer');
@@ -1002,133 +1177,6 @@ function updateLangSlider() {
     langEN.classList.toggle('text-gray-500', state.currentLang !== 'en');
     glider.style.transform = state.currentLang === 'vi' ? 'translateX(0%)' : 'translateX(100%)';
 }
-
-function initializePhysicsBlobs() {
-    if (typeof d3 === 'undefined') {
-        console.warn("D3 is not loaded yet. Cannot initialize physics blobs.");
-        return;
-    }
-
-    const container = d3.select("#blobContainer");
-    if (container.empty()) return;
-
-    container.html('');
-
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    const nodes = [
-        { id: 1, color: '#ffae00', r: vw * 0.12 }, { id: 2, color: '#3498db', r: vw * 0.15 },
-        { id: 3, color: '#e74c3c', r: vw * 0.11 }, { id: 4, color: '#2ecc71', r: vw * 0.14 },
-        { id: 5, color: '#9b59b6', r: vw * 0.10 }, { id: 6, color: '#1abc9c', r: vw * 0.13 },
-        { id: 7, color: '#f1c40f', r: vw * 0.09 }, { id: 8, color: '#e67e22', r: vw * 0.12 },
-        { id: 9, color: '#34495e', r: vw * 0.10 }, { id: 10, color: '#d35400', r: vw * 0.11 },
-    ].map(d => ({
-        ...d, x: Math.random() * vw, y: Math.random() * vh,
-        vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4,
-    }));
-
-    const blobElements = container.selectAll(".bg-blob")
-        .data(nodes, d => d.id)
-        .join("div")
-        .attr("class", "bg-blob")
-        .style("width", d => `${d.r * 2}px`)
-        .style("height", d => `${d.r * 2}px`)
-        .style("background-color", d => d.color);
-
-    setTimeout(() => blobElements.classed("visible", true), 100);
-
-    const simulation = d3.forceSimulation(nodes)
-        .alphaTarget(0.3)
-        .velocityDecay(0.1)
-        .force("collide", d3.forceCollide().radius(d => d.r + 8).strength(0.8))
-        .force("charge", d3.forceManyBody().strength(-50))
-        .on("tick", ticked);
-
-    function ticked() {
-        blobElements.each(d => {
-            if (d.x < d.r) { d.x = d.r; d.vx *= -0.9; }
-            if (d.x > vw - d.r) { d.x = vw - d.r; d.vx *= -0.9; }
-            if (d.y < d.r) { d.y = d.r; d.vy *= -0.9; }
-            if (d.y > vh - d.r) { d.y = vh - d.r; d.vy *= -0.9; }
-        }).style("transform", d => `translate(${d.x - d.r}px, ${d.y - d.r}px)`);
-    }
-    
-    const windInterval = setInterval(() => {
-        if (state.currentView !== 'home') {
-            clearInterval(windInterval);
-            simulation.stop();
-            return;
-        }
-        nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.15;
-            node.vy += (Math.random() - 0.5) * 0.15;
-        });
-        simulation.alpha(0.1).restart();
-    }, 3000);
-}
-
-
-function initializeInteractiveLogo() {
-    if (typeof d3 === 'undefined') {
-        console.warn("D3 is not loaded yet. Cannot initialize interactive logo.");
-        return;
-    }
-
-    const svg = d3.select(".animated-logo-svg");
-    if (svg.empty()) return;
-
-    const container = d3.select(".animated-logo-container");
-    const bounds = container.node().getBoundingClientRect();
-    const width = bounds.width;
-    const height = bounds.height;
-
-    svg.attr("viewBox", `0 0 ${width} ${height}`);
-
-    const randomInRange = (min, max) => Math.random() * (max - min) + min;
-
-    const nodes = [
-        { id: 'red', color: '#e74c3c' }, { id: 'green', color: '#2ecc71' },
-        { id: 'blue', color: '#3498db' }, { id: 'cyan', color: '#1abc9c' },
-        { id: 'magenta', color: '#9b59b6' }, { id: 'yellow', color: '#f1c40f' },
-        { id: 'grey', color: '#95a5a6' }, { id: 'orange', color: '#e67e22' },
-        { id: 'purple', color: '#8e44ad' }
-    ].map(node => ({
-        ...node,
-        r: randomInRange(40, 80),
-        x: randomInRange(0, width),
-        y: randomInRange(0, height)
-    }));
-
-    const simulation = d3.forceSimulation(nodes)
-        .force("center", d3.forceCenter(width / 2, height / 2).strength(0.01))
-        .force("collide", d3.forceCollide().radius(d => d.r + 5).strength(0.7))
-        .force("charge", d3.forceManyBody().strength(20))
-        .on("tick", ticked);
-
-    const circles = svg.selectAll("circle")
-        .data(nodes)
-        .join("circle")
-        .attr("class", d => `logo-circle ${d.id}`)
-        .attr("r", d => d.r)
-        .attr("fill", d => d.color)
-        .style("mix-blend-mode", "multiply")
-        .style("filter", "blur(5px)")
-        .attr("opacity", 0.8);
-
-    function ticked() {
-        circles.attr("cx", d => d.x).attr("cy", d => d.y);
-    }
-    
-    d3.timer(() => {
-        nodes.forEach(node => {
-            node.vx += (Math.random() - 0.5) * 0.05;
-            node.vy += (Math.random() - 0.5) * 0.05;
-        });
-        simulation.alpha(0.1);
-    });
-}
-
 
 function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
@@ -1278,6 +1326,155 @@ async function initializeFirebase() {
     }
 }
 
+// --- NEW PDF & SHARE FUNCTIONS ---
+
+/**
+ * Generates and downloads a PDF for a given recipe.
+ * Can also generate a comparison PDF if AI-generated data is provided.
+ * @param {string} recipeId - The ID of the original recipe.
+ * @param {object|null} [generatedRecipeData=null] - The AI-generated recipe object.
+ */
+async function generateRecipePdf(recipeId, generatedRecipeData = null) {
+    const originalRecipe = recipesData.find(r => r.id === recipeId);
+    if (!originalRecipe) return;
+
+    const btn = document.activeElement;
+    const originalBtnContent = btn.innerHTML;
+    btn.innerHTML = `<div class="loader"></div> Generating...`;
+    btn.disabled = true;
+
+    try {
+        await Promise.all([
+            loadScript(JSPDF_URL, 'jspdf'),
+            loadScript(HTML2CANVAS_URL, 'html2canvas')
+        ]);
+
+        const { jsPDF } = window.jspdf;
+        const html2canvas = window.html2canvas;
+
+        const pdfContentEl = document.createElement('div');
+        pdfContentEl.id = 'pdf-content-wrapper';
+        Object.assign(pdfContentEl.style, {
+            position: 'absolute',
+            left: '-9999px',
+            top: '0',
+            width: '210mm',
+            padding: '20mm',
+            backgroundColor: 'white',
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            color: '#1d1d1f',
+            boxSizing: 'border-box'
+        });
+
+        const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
+            <div style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; text-align: center;">
+                <div style="font-size: 12px; color: #6e6e73; margin-bottom: 4px;">${key}</div>
+                <div style="font-size: 18px; font-weight: 600;">${value}</div>
+            </div>`).join('');
+        
+        const createComparisonSettingsHTML = (originalSettings, generatedSettings) => {
+             const allKeys = Object.keys(originalSettings || {});
+             return allKeys.map(key => {
+                const originalValue = originalSettings[key];
+                const generatedValue = generatedSettings[key];
+                const isChanged = originalValue !== generatedValue;
+                return `
+                <div style="background-color: ${isChanged ? '#e6f2ff' : '#f8f9fa'}; border-radius: 8px; padding: 12px; text-align: center;">
+                    <div style="font-size: 12px; color: #6e6e73; margin-bottom: 4px;">${key}</div>
+                    <div style="font-size: 18px; font-weight: 600; color: ${isChanged ? '#0056B3' : 'inherit'};">${generatedValue}</div>
+                    ${isChanged ? `<div style="font-size: 11px; text-decoration: line-through; color: #6e6e73;">${originalValue}</div>` : ''}
+                </div>`;
+             }).join('');
+        };
+
+        let contentHTML = `
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
+                <h1 style="font-size: 24px; font-weight: 800; margin: 0;">Alpha AI Color Lab</h1>
+            </div>
+            <h2 style="font-size: 32px; font-weight: 700; margin: 24px 0 8px 0;">${generatedRecipeData ? generatedRecipeData.name[state.currentLang] : originalRecipe.name[state.currentLang]}</h2>
+            <p style="font-size: 14px; color: #6e6e73; margin: 0 0 24px 0; font-style: italic;">"${generatedRecipeData ? generatedRecipeData.description[state.currentLang] : originalRecipe.description[state.currentLang]}"</p>
+        `;
+
+        if (generatedRecipeData) {
+            contentHTML += `
+                <div style="border: 2px solid #007AFF; border-radius: 12px; padding: 24px; background-color: #f0f7ff;">
+                    <h3 style="font-size: 20px; font-weight: 700; margin-top: 0;">AI Generated Recipe</h3>
+                    <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        ${createComparisonSettingsHTML(originalRecipe.settings, generatedRecipeData.settings)}
+                    </div>
+                    ${originalRecipe.colorDepth ? `<h4 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Color Depth</h4><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;">${createComparisonSettingsHTML(originalRecipe.colorDepth, generatedRecipeData.colorDepth)}</div>` : ''}
+                </div>
+                 <p style="font-size: 12px; color: #6e6e73; text-align: center; margin-top: 16px;">Based on original recipe: ${originalRecipe.name[state.currentLang]}</p>
+            `;
+        } else {
+             contentHTML += `
+                <h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">White Balance</h3>
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 600;">${originalRecipe.whiteBalance}</div>
+                <h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Main Settings</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">${createSettingsHTML(originalRecipe.settings)}</div>
+                ${originalRecipe.colorDepth ? `<h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Color Depth</h3><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;">${createSettingsHTML(originalRecipe.colorDepth)}</div>` : ''}
+                ${originalRecipe.detailSettings ? `<h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Detail</h3><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">${createSettingsHTML(originalRecipe.detailSettings)}</div>` : ''}
+             `;
+        }
+        
+        contentHTML += `<p style="text-align: center; margin-top: 40px; font-size: 12px; color: #9ca3af;">Generated from sonycolorlab.app</p>`;
+
+        pdfContentEl.innerHTML = contentHTML;
+        document.body.appendChild(pdfContentEl);
+
+        const canvas = await html2canvas(pdfContentEl, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        document.body.removeChild(pdfContentEl);
+
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        const fileName = `SonyColorLab-${generatedRecipeData ? generatedRecipeData.name.en : originalRecipe.name.en}.pdf`;
+        pdf.save(fileName.replace(/[^a-z0-9]/gi, '-').toLowerCase());
+
+    } catch (error) {
+        console.error("Failed to generate PDF:", error);
+        showToast("Sorry, there was an error creating the PDF.", true);
+    } finally {
+        btn.innerHTML = originalBtnContent;
+        btn.disabled = false;
+    }
+}
+
+/**
+ * Shares a recipe using the Web Share API or copies the link as a fallback.
+ * @param {string} recipeId - The ID of the recipe to share.
+ */
+async function shareRecipe(recipeId) {
+    const recipe = recipesData.find(r => r.id === recipeId);
+    if (!recipe) return;
+
+    const shareData = {
+        title: `Sony Color Lab: ${recipe.name[state.currentLang]}`,
+        text: `Check out this Sony Alpha color recipe: "${recipe.name[state.currentLang]}".\n${recipe.description[state.currentLang]}`,
+        url: window.location.href
+    };
+    
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            await navigator.clipboard.writeText(shareData.url);
+            showToast('Recipe link copied to clipboard!');
+        }
+    } catch (error) {
+        console.error('Error sharing:', error);
+        if (error.name !== 'AbortError') {
+             await navigator.clipboard.writeText(shareData.url);
+             showToast('Sharing failed. Link copied instead!', true);
+        }
+    }
+}
+
+
 async function init() {
     // Attach global event listeners immediately
     document.body.addEventListener('mouseover', (e) => {
@@ -1323,6 +1520,16 @@ async function init() {
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
 
+        // --- NEW: Handle PDF and Share buttons ---
+        if (target.closest('#downloadPdfBtn')) {
+            generateRecipePdf(target.closest('#downloadPdfBtn').dataset.recipeId);
+            return;
+        }
+        if (target.closest('#shareRecipeBtn')) {
+            shareRecipe(target.closest('#shareRecipeBtn').dataset.recipeId);
+            return;
+        }
+
         if (target.closest('#quizModal')) {
             if (target.closest('#closeQuizBtn')) { closeQuiz(); return; }
             if (target.closest('#retakeQuizBtn')) { state.quiz.currentQuestionIndex = 0; state.quiz.answers = []; renderQuizQuestion(); return; }
@@ -1344,6 +1551,11 @@ async function init() {
             }
             if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
+            // --- NEW: Handle AI PDF button ---
+            if (target.closest('#downloadAIPdfBtn')) {
+                generateRecipePdf(target.closest('#downloadAIPdfBtn').dataset.recipeId, state.ai.generatedRecipe);
+                return;
+            }
         }
 
         if (target.closest('#captionLabModal')) {
@@ -1418,7 +1630,7 @@ async function init() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 
-    // --- NEW, OPTIMIZED INITIALIZATION FLOW ---
+    // --- SIMPLIFIED INITIALIZATION FLOW ---
 
     // 1. Render the initial view HTML immediately.
     await renderView('home');
@@ -1432,22 +1644,6 @@ async function init() {
             fetchTrendingRecipes();
         }
     });
-
-    // 3. Defer heavy animations until after the main content is visible.
-    setTimeout(() => {
-        if (state.currentView === 'home') {
-            initializePhysicsBlobs();
-            initializeInteractiveLogo();
-        }
-    }, 800); // Delay matches the CSS animation duration of home content.
-
-    // 4. Hide preloader and show the app.
-    const preloader = document.getElementById('preloader');
-    const appContainer = document.getElementById('appContainer');
-    setTimeout(() => {
-        if (preloader) preloader.classList.add('hidden');
-        if (appContainer) appContainer.classList.add('visible');
-    }, 50); // Short delay to ensure initial paint is complete.
 }
 
 // Run init after the DOM is fully loaded.
