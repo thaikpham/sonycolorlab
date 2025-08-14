@@ -45,11 +45,8 @@ const state = {
     lightbox: {
         images: [],
         currentIndex: 0,
-    },
-    animation: {
-        blobAnimationFrameId: null, // For background blobs
-        logoSimulation: null,      // For interactive logo
     }
+    // REMOVED: state.animation object
 };
 
 const mainContentEl = document.getElementById('mainContent');
@@ -273,25 +270,18 @@ function createFullRecipeHTML(recipe) {
 }
 
 const viewTemplates = {
+    // UPDATED: home template without animations and logo
     home: () => `
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 w-full max-w-6xl mx-auto items-center">
-                <div class="md:col-span-2 text-center md:text-left">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4 home-content-anim max-w-md mx-auto md:mx-0" style="animation-delay: 0.2s;" data-translate-key="landingTitle"></h1>
-                    <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center md:justify-start home-content-anim" style="animation-delay: 0.4s;">
-                        <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
-                            <span data-translate-key="findMyColorBtn"></span>
-                        </button>
-                        <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg whitespace-nowrap" data-translate-key="startExploringBtn"></button>
-                    </div>
-                </div>
-                <div class="md:col-span-3 hidden md:flex justify-center items-center h-full">
-                    <div class="relative w-full h-full min-h-[400px] lg:min-h-[500px] home-content-anim" style="animation-delay: 0.6s;">
-                        <div class="animated-logo-container">
-                            <svg class="animated-logo-svg"></svg>
-                        </div>
-                    </div>
+            <div class="w-full max-w-2xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" data-translate-key="landingTitle"></h1>
+                <p class="text-lg md:text-xl text-slate-600 max-w-xl mx-auto mt-4">Khám phá và tạo ra các công thức màu độc đáo cho máy ảnh Sony Alpha của bạn, được hỗ trợ bởi AI.</p>
+                <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center">
+                    <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
+                        <span data-translate-key="findMyColorBtn"></span>
+                    </button>
+                    <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg whitespace-nowrap" data-translate-key="startExploringBtn"></button>
                 </div>
             </div>
         </div>`,
@@ -909,37 +899,15 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
 
 
 // --- CORE APP LOGIC ---
+// REMOVED: initializeBackgroundBlobs and initializeInteractiveLogo functions
+
 function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
 
-    const blobContainer = document.getElementById('blobContainer');
     const qrCodeContainer = document.getElementById('qrCodeContainer');
-
-    if (viewName !== 'home') {
-        document.body.style.overflowY = 'auto';
-        // Stop animations if they are running
-        if (state.animation.blobAnimationFrameId) {
-            cancelAnimationFrame(state.animation.blobAnimationFrameId);
-            state.animation.blobAnimationFrameId = null;
-        }
-        if (state.animation.logoSimulation) {
-            state.animation.logoSimulation.stop();
-            state.animation.logoSimulation = null;
-        }
-        blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
-        if (qrCodeContainer) qrCodeContainer.classList.remove('visible');
-        setTimeout(() => { blobContainer.innerHTML = ''; }, 1500);
-    } else {
-        document.body.style.overflowY = 'hidden';
-        // Only start animations if they are not already running
-        if (!state.animation.blobAnimationFrameId) {
-            initializeBackgroundBlobs();
-        }
-        if (!state.animation.logoSimulation) {
-            initializeInteractiveLogo();
-        }
-        if (qrCodeContainer) setTimeout(() => qrCodeContainer.classList.add('visible'), 800);
+    if (qrCodeContainer) {
+        qrCodeContainer.classList.toggle('hidden', viewName !== 'home');
     }
 
     const footerEl = document.querySelector('footer');
@@ -1024,148 +992,6 @@ function updateLangSlider() {
     langEN.classList.toggle('text-gray-500', state.currentLang !== 'en');
     glider.style.transform = state.currentLang === 'vi' ? 'translateX(0%)' : 'translateX(100%)';
 }
-
-/**
- * FIXED: Renamed function to clarify its purpose (background only).
- * This function creates the soft, blurred blobs in the background.
- * They move gently and do NOT interact with each other.
- */
-function initializeBackgroundBlobs() {
-    const container = document.getElementById('blobContainer');
-    if (!container) return;
-    container.innerHTML = ''; // Clear previous blobs
-
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    const blobs = [
-        { id: 1, color: '#ffae00', r: vw * 0.12 }, { id: 2, color: '#3498db', r: vw * 0.15 },
-        { id: 3, color: '#e74c3c', r: vw * 0.11 }, { id: 4, color: '#2ecc71', r: vw * 0.14 },
-        { id: 5, color: '#9b59b6', r: vw * 0.10 }, { id: 6, color: '#1abc9c', r: vw * 0.13 },
-    ].map(d => ({
-        ...d,
-        x: Math.random() * (vw - d.r * 2) + d.r,
-        y: Math.random() * (vh - d.r * 2) + d.r,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5
-    }));
-
-    const blobElements = blobs.map(blobData => {
-        const el = document.createElement('div');
-        el.className = 'bg-blob';
-        el.style.width = `${blobData.r * 2}px`;
-        el.style.height = `${blobData.r * 2}px`;
-        el.style.backgroundColor = blobData.color;
-        container.appendChild(el);
-        setTimeout(() => el.classList.add('visible'), 100);
-        return { el, data: blobData };
-    });
-
-    function animate() {
-        if (state.currentView !== 'home') {
-            state.animation.blobAnimationFrameId = null;
-            return;
-        }
-
-        blobElements.forEach(item => {
-            const blob = item.data;
-            blob.x += blob.vx;
-            blob.y += blob.vy;
-
-            if (blob.x - blob.r < 0 || blob.x + blob.r > vw) {
-                blob.vx *= -1;
-                blob.x = Math.max(blob.r, Math.min(vw - blob.r, blob.x));
-            }
-            if (blob.y - blob.r < 0 || blob.y + blob.r > vh) {
-                blob.vy *= -1;
-                blob.y = Math.max(blob.r, Math.min(vh - blob.r, blob.y));
-            }
-
-            item.el.style.transform = `translate(${blob.x - blob.r}px, ${blob.y - blob.r}px)`;
-        });
-
-        state.animation.blobAnimationFrameId = requestAnimationFrame(animate);
-    }
-    animate();
-}
-
-/**
- * FIXED: This function now correctly applies the billiard physics to the solid logo dots.
- */
-function initializeInteractiveLogo() {
-    if (typeof d3 === 'undefined') {
-        console.warn("D3 is not loaded yet. Cannot initialize interactive logo.");
-        return;
-    }
-
-    const svg = d3.select(".animated-logo-svg");
-    if (svg.empty()) return;
-
-    const container = d3.select(".animated-logo-container");
-    const bounds = container.node().getBoundingClientRect();
-    const width = bounds.width;
-    const height = bounds.height;
-    const isMobile = width < 768;
-
-    svg.attr("viewBox", `0 0 ${width} ${height}`);
-
-    const randomInRange = (min, max) => Math.random() * (max - min) + min;
-
-    const nodes = [
-        { id: 'red', color: '#e74c3c' }, { id: 'green', color: '#2ecc71' },
-        { id: 'blue', color: '#3498db' }, { id: 'cyan', color: '#1abc9c' },
-        { id: 'magenta', color: '#9b59b6' }, { id: 'yellow', color: '#f1c40f' },
-        { id: 'grey', color: '#95a5a6' }, { id: 'orange', color: '#e67e22' },
-    ].map(node => ({
-        ...node,
-        r: randomInRange(isMobile ? 25 : 40, isMobile ? 50 : 80),
-        x: randomInRange(0, width),
-        y: randomInRange(0, height),
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2
-    }));
-
-    const circles = svg.selectAll("circle")
-        .data(nodes, d => d.id)
-        .join("circle")
-        .attr("class", d => `logo-circle ${d.id}`)
-        .attr("r", d => d.r)
-        .attr("fill", d => d.color)
-        .style("mix-blend-mode", "multiply")
-        .style("filter", "blur(5px)")
-        .attr("opacity", 0.8);
-
-    const simulation = d3.forceSimulation(nodes)
-        .velocityDecay(0)
-        .force("collide", d3.forceCollide().radius(d => d.r + 1).strength(1))
-        .on("tick", ticked);
-
-    function ticked() {
-        if (state.currentView !== 'home') {
-            simulation.stop();
-            return;
-        }
-        circles
-            .each(d => {
-                if ((d.x - d.r < 0 && d.vx < 0) || (d.x + d.r > width && d.vx > 0)) {
-                    d.vx *= -1;
-                }
-                if ((d.y - d.r < 0 && d.vy < 0) || (d.y + d.r > height && d.vy > 0)) {
-                    d.vy *= -1;
-                }
-                d.x = Math.max(d.r, Math.min(width - d.r, d.x));
-                d.y = Math.max(d.r, Math.min(height - d.r, d.y));
-            })
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y);
-    }
-    
-    if(state.animation.logoSimulation) {
-        state.animation.logoSimulation.stop();
-    }
-    state.animation.logoSimulation = simulation;
-}
-
 
 function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
@@ -1455,7 +1281,7 @@ async function init() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 
-    // --- NEW, OPTIMIZED INITIALIZATION FLOW ---
+    // --- SIMPLIFIED INITIALIZATION FLOW ---
 
     // 1. Render the initial view HTML immediately.
     await renderView('home');
@@ -1469,23 +1295,6 @@ async function init() {
             fetchTrendingRecipes();
         }
     });
-
-    // 3. Defer heavy animations until after the main content is visible.
-    // FIXED: Removed animation calls from here. They are now handled by renderView.
-    setTimeout(() => {
-        if (state.currentView === 'home') {
-            // The `renderView('home')` function now correctly calls 
-            // `initializeBackgroundBlobs` and `initializeInteractiveLogo`
-        }
-    }, 800);
-
-    // 4. Hide preloader and show the app.
-    const preloader = document.getElementById('preloader');
-    const appContainer = document.getElementById('appContainer');
-    setTimeout(() => {
-        if (preloader) preloader.classList.add('hidden');
-        if (appContainer) appContainer.classList.add('visible');
-    }, 50); // Short delay to ensure initial paint is complete.
 }
 
 // Run init after the DOM is fully loaded.
