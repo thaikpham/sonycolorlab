@@ -265,7 +265,7 @@ function applyTranslations() {
 function createSaveGuideHTML() {
     const guideContent = {
         vi: `
-            <p class="mb-4">Trên các máy ảnh Sony Alpha thế hệ mới (như a7 IV, a7R V, a1, ZV-E1), bạn có thể lưu được <strong>3 preset trên thân máy</strong> (vị trí 1, 2, 3 trên vòng xoay) và <strong>4 preset trên thẻ nhớ</strong> (M1, M2, M3, M4).</p>
+            <p class="mb-4">Trên các máy ảnh Sony Alpha thế hệ mới (như α7 IV, α7R V, α1, ZV-E1), bạn có thể lưu được <strong>3 preset trên thân máy</strong> (vị trí 1, 2, 3 trên vòng xoay) và <strong>4 preset trên thẻ nhớ</strong> (M1, M2, M3, M4).</p>
             <ol class="space-y-4 list-decimal list-inside">
                 <li>
                     <strong>Bước 1: Thiết lập máy ảnh theo công thức</strong>
@@ -286,7 +286,7 @@ function createSaveGuideHTML() {
             </ol>
         `,
         en: `
-            <p class="mb-4">On new generation Sony Alpha cameras (like a7 IV, a7R V, a1, ZV-E1), you can save <strong>3 presets on the camera body</strong> (positions 1, 2, 3 on the mode dial) and <strong>4 presets on the memory card</strong> (M1, M2, M3, M4).</p>
+            <p class="mb-4">On new generation Sony Alpha cameras (like α7 IV, α7R V, α1, ZV-E1), you can save <strong>3 presets on the camera body</strong> (positions 1, 2, 3 on the mode dial) and <strong>4 presets on the memory card</strong> (M1, M2, M3, M4).</p>
             <ol class="space-y-4 list-decimal list-inside">
                 <li>
                     <strong>Step 1: Set Up Your Camera with the Recipe</strong>
