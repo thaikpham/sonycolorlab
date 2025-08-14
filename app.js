@@ -7,6 +7,8 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11
 // We will load these dynamically when needed to keep initial load fast
 const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+const QRCODE_URL = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
+
 
 // --- CONFIGURATION & STATE ---
 // Các placeholder này sẽ được thay thế bởi build script
