@@ -131,6 +131,7 @@ const translations = {
     ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
     ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
     trendingTitle: {vi: "Công thức thịnh hành", en: "Trending Recipes"},
+    trendingLoading: {vi: "Đang tải công thức thịnh hành...", en: "Loading trending recipes..."},
     aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
     aiLabDescription: {vi: "Mô tả phong cách bạn muốn, Gemini sẽ tinh chỉnh công thức màu <b>{recipeName}</b> cho bạn.", en: "Describe the style you want, and Gemini will tweak the <b>{recipeName}</b> recipe for you."},
     aiPromptPlaceholder: {vi: "VD: tông màu trong trẻo, hơi ngả xanh như phim của Wes Anderson...", en: "E.g., a clean, slightly teal look like a Wes Anderson film..."},
@@ -157,7 +158,6 @@ const translations = {
     captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" },
     shareRecipeBtn: {vi: "Chia sẻ Công thức", en: "Share Recipe"},
     downloadPDFBtn: {vi: "Tải PDF", en: "Download PDF"},
-    // NEW: Translations for the save guide section
     saveGuideTitle: { vi: "Lưu công thức vào máy ảnh", en: "Save Recipe to Camera" },
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
@@ -634,7 +634,6 @@ function displayTrendingRecipes(trendingIDs) {
         return;
     }
 
-    // UPDATE: Changed to a more flexible grid layout to accommodate 5 items
     container.innerHTML = `
         <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -655,37 +654,47 @@ function displayTrendingRecipes(trendingIDs) {
 }
 
 async function fetchTrendingRecipes() {
-    console.log("Attempting to fetch trending recipes...");
+    const container = document.getElementById('trendingContainer');
+    if (!container) return;
+
+    // Show a loading state initially
+    container.innerHTML = `<p class="text-center text-gray-500 text-sm italic" data-translate-key="trendingLoading"></p>`;
+    container.style.display = 'block';
+    applyTranslations(); // Apply translation for the loading text
+
+    const fallbackToDummyData = () => {
+        console.log("Falling back to dummy trending data.");
+        // A hand-picked list of popular/interesting recipes as placeholders
+        const dummyTrendingIDs = ["scl-001", "scl-007", "scl-008", "scl-015", "scl-027"];
+        displayTrendingRecipes(dummyTrendingIDs);
+    };
+
     if (!state.firebase.db) {
-        console.warn("Firebase not available, using mock trending data.");
-        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027", "scl-015"];
-        displayTrendingRecipes(mockTrendingIDs);
+        console.warn("Firebase not available, using dummy trending data.");
+        fallbackToDummyData();
         return;
     }
 
     try {
-        console.log(`Fetching from Firestore path: artifacts/${__app_id}/public/data/trending/latest`);
         const docRef = doc(state.firebase.db, `artifacts/${__app_id}/public/data/trending/latest`);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
+        if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
             const trendingData = docSnap.data();
-            console.log("Successfully fetched trending data:", trendingData);
-            if (trendingData.ids && trendingData.ids.length > 0) {
-                displayTrendingRecipes(trendingData.ids);
-            } else {
-                 console.warn("Trending data exists but 'ids' array is empty or missing.");
-                 displayTrendingRecipes([]); // Hide the section
-            }
+            console.log("Successfully fetched real trending data:", trendingData);
+            displayTrendingRecipes(trendingData.ids);
         } else {
-            throw new Error("Trending document does not exist in Firestore.");
+            // If doc doesn't exist or has no IDs, use dummy data as a placeholder
+            console.warn("Real trending data not found or empty in Firestore. Using dummy data as placeholder.");
+            fallbackToDummyData();
         }
     } catch (error) {
-        console.error("Error fetching real trending data, falling back to mock data:", error);
-        const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027", "scl-015"];
-        displayTrendingRecipes(mockTrendingIDs);
+        // If any other error occurs during fetch, also use dummy data
+        console.error("Error fetching real trending data from Firestore, using dummy data:", error);
+        fallbackToDummyData();
     }
 }
+
 
 // --- QUIZ LOGIC ---
 function startQuiz() {
