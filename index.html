@@ -43,7 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     
 <style>
-    /* --- REFINED STYLES & ANIMATION OVERHAUL --- */
+    /* --- REFINED STYLES (NO ANIMATION) --- */
     html { scroll-behavior: smooth; }
     :root {
         --primary-accent: #007AFF;
@@ -59,53 +59,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         font-family: 'Be Vietnam Pro', sans-serif;
         background-color: #f4f5f7;
         color: var(--text-primary);
-        overflow: hidden; /* Ngăn scroll khi landing page hiển thị */
         position: relative;
     }
-
-    /* --- Background Blobs (Blurred) --- */
-    .bg-blob {
-        position: fixed;
-        border-radius: 50%;
-        filter: blur(120px); 
-        opacity: 0;
-        z-index: -1;
-        transition: opacity 1.5s var(--ease-out-cubic);
-        will-change: transform;
-    }
-    .bg-blob.visible { 
-        opacity: 0.25;
-    }
-
-    /* --- NEW: CSS Animation for Logo Blobs --- */
-    .animated-logo-container {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .logo-blob {
-        position: absolute;
-        border-radius: 50%;
-        mix-blend-mode: multiply;
-        filter: blur(5px);
-        opacity: 0.8;
-        animation-name: move-blob;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
-        transform-origin: center center;
-    }
-
-    @keyframes move-blob {
-        0% { transform: rotate(0deg) translateX(var(--radius)) rotate(0deg); }
-        100% { transform: rotate(360deg) translateX(var(--radius)) rotate(-360deg); }
-    }
-    /* --- END NEW --- */
-
 
     /* --- Core Component Styling --- */
     .glass-panel {    
@@ -159,14 +114,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
     }
     @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
-    
-    /* --- Homepage Content Animations --- */
-    .home-content-anim {
-        opacity: 0;
-        transform: translateY(25px);
-        animation: homeContentFadeIn 0.8s var(--ease-out-cubic) forwards;
-    }
-    @keyframes homeContentFadeIn { to { opacity: 1; transform: translateY(0); } }
 
     /* --- Sleek Scrollbar with iOS Momentum Scrolling --- */
     .sleek-scrollbar { -webkit-overflow-scrolling: touch; }
@@ -278,15 +225,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         bottom: 1.5rem;
         right: 1.5rem;
         z-index: 10;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.5s ease, transform 0.5s ease;
-        pointer-events: none; /* Initially not interactive */
     }
-    #qrCodeContainer.visible {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto; /* Make it interactive when visible */
+    #qrCodeContainer.hidden {
+        display: none;
     }
     /* Hide QR code on mobile devices */
     @media (max-width: 767px) {
@@ -298,17 +239,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </style>
 </head>
 <body>
-<!-- Preloader has been removed for direct content access -->
-
-<!-- Background Blobs will be injected here by the home view template -->
-<div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
-
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<!-- Main App Container: Now visible by default -->
+<!-- Main App Container -->
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
@@ -348,7 +284,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </footer>
 </div>
 
-<!-- NEW: QR Code Container -->
+<!-- QR Code Container -->
 <div id="qrCodeContainer">
     <img src="adobe-express-qr-code.png" alt="QR Code" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg">
 </div>
