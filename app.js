@@ -99,6 +99,7 @@ const translations = {
     headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
     landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
+    landingSubtitle: {vi: "Khám phá và tạo ra công thức màu độc đáo cho máy ảnh Sony Alpha của bạn, với sự hỗ trợ từ AI.", en: "Discover and create unique color recipes for your Sony Alpha camera, powered by AI."},
     startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
     findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
     quizTitle: {vi: "Trắc nghiệm Tìm màu", en: "Color Finder Quiz"},
@@ -277,7 +278,7 @@ const viewTemplates = {
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
             <div class="w-full max-w-2xl mx-auto text-center">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" data-translate-key="landingTitle"></h1>
-                <p class="text-lg md:text-xl text-slate-600 max-w-xl mx-auto mt-4">Khám phá và tạo ra các công thức màu độc đáo cho máy ảnh Sony Alpha của bạn, được hỗ trợ bởi AI.</p>
+                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" data-translate-key="landingSubtitle"></p>
                 <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center">
                     <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
