@@ -45,8 +45,11 @@ const state = {
     lightbox: {
         images: [],
         currentIndex: 0,
+    },
+    // ADDED BACK: state.animation object
+    animation: {
+        blobAnimationFrameId: null,
     }
-    // REMOVED: state.animation object
 };
 
 const mainContentEl = document.getElementById('mainContent');
@@ -270,7 +273,6 @@ function createFullRecipeHTML(recipe) {
 }
 
 const viewTemplates = {
-    // UPDATED: home template without animations and logo
     home: () => `
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
             <div class="w-full max-w-2xl mx-auto text-center">
@@ -899,15 +901,99 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
 
 
 // --- CORE APP LOGIC ---
-// REMOVED: initializeBackgroundBlobs and initializeInteractiveLogo functions
+
+/**
+ * ADDED BACK: This function creates the soft, blurred blobs in the background.
+ * They move gently and do NOT interact with each other.
+ */
+function initializeBackgroundBlobs() {
+    const container = document.getElementById('blobContainer');
+    if (!container) return;
+    container.innerHTML = ''; // Clear previous blobs
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const blobs = [
+        { id: 'red', color: '#e74c3c', r: vw * 0.12 }, 
+        { id: 'green', color: '#2ecc71', r: vw * 0.15 },
+        { id: 'blue', color: '#3498db', r: vw * 0.11 }, 
+        { id: 'cyan', color: '#1abc9c', r: vw * 0.14 },
+        { id: 'magenta', color: '#9b59b6', r: vw * 0.10 }, 
+        { id: 'yellow', color: '#f1c40f', r: vw * 0.13 },
+    ].map(d => ({
+        ...d,
+        x: Math.random() * (vw - d.r * 2) + d.r,
+        y: Math.random() * (vh - d.r * 2) + d.r,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5
+    }));
+
+    const blobElements = blobs.map(blobData => {
+        const el = document.createElement('div');
+        el.className = 'bg-blob';
+        el.style.width = `${blobData.r * 2}px`;
+        el.style.height = `${blobData.r * 2}px`;
+        el.style.backgroundColor = blobData.color;
+        container.appendChild(el);
+        setTimeout(() => el.classList.add('visible'), 100);
+        return { el, data: blobData };
+    });
+
+    function animate() {
+        if (state.currentView !== 'home') {
+            state.animation.blobAnimationFrameId = null;
+            return;
+        }
+
+        blobElements.forEach(item => {
+            const blob = item.data;
+            blob.x += blob.vx;
+            blob.y += blob.vy;
+
+            if (blob.x - blob.r < 0 || blob.x + blob.r > vw) {
+                blob.vx *= -1;
+                blob.x = Math.max(blob.r, Math.min(vw - blob.r, blob.x));
+            }
+            if (blob.y - blob.r < 0 || blob.y + blob.r > vh) {
+                blob.vy *= -1;
+                blob.y = Math.max(blob.r, Math.min(vh - blob.r, blob.y));
+            }
+
+            item.el.style.transform = `translate(${blob.x - blob.r}px, ${blob.y - blob.r}px)`;
+        });
+
+        state.animation.blobAnimationFrameId = requestAnimationFrame(animate);
+    }
+    animate();
+}
+
 
 function renderView(viewName, selectedId = null) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
 
+    const blobContainer = document.getElementById('blobContainer');
     const qrCodeContainer = document.getElementById('qrCodeContainer');
-    if (qrCodeContainer) {
-        qrCodeContainer.classList.toggle('hidden', viewName !== 'home');
+
+    if (viewName !== 'home') {
+        document.body.style.overflowY = 'auto';
+        // Stop blob animation if it is running
+        if (state.animation.blobAnimationFrameId) {
+            cancelAnimationFrame(state.animation.blobAnimationFrameId);
+            state.animation.blobAnimationFrameId = null;
+        }
+        if(blobContainer) {
+            blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
+        }
+        if (qrCodeContainer) qrCodeContainer.classList.add('hidden');
+    } else {
+        document.body.style.overflowY = 'hidden';
+        // Only start animations if they are not already running
+        if (!state.animation.blobAnimationFrameId) {
+            initializeBackgroundBlobs();
+        }
+        if (qrCodeContainer) qrCodeContainer.classList.remove('hidden');
     }
 
     const footerEl = document.querySelector('footer');
