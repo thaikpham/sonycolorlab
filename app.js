@@ -3,6 +3,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+// --- PDF & Canvas Library Imports ---
+// We will load these dynamically when needed to keep initial load fast
+const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+
 // --- CONFIGURATION & STATE ---
 // Các placeholder này sẽ được thay thế bởi build script
 const API_KEY = "%%GEMINI_API_KEY%%";
@@ -46,7 +51,6 @@ const state = {
         images: [],
         currentIndex: 0,
     },
-    // ADDED BACK: state.animation object
     animation: {
         blobAnimationFrameId: null,
     }
@@ -144,7 +148,9 @@ const translations = {
     captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
     copyBtn: {vi: "Sao chép", en: "Copy"},
     copiedBtn: {vi: "Đã sao chép!", en: "Copied!"},
-    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" }
+    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" },
+    shareRecipeBtn: {vi: "Chia sẻ Công thức", en: "Share Recipe"},
+    downloadPDFBtn: {vi: "Tải PDF", en: "Download PDF"}
 };
 
 const parameterExplanations = {
@@ -230,7 +236,20 @@ function createFullRecipeHTML(recipe) {
     const createCTAHTML = (recipe) => {
         const recipeHashtag = `#${recipe.id.replace(/-/g, '')}`;
         const ctaText = t('ctaText').replace('{recipeHashtag}', `<b class="font-semibold text-blue-900">${recipeHashtag}</b>`);
-        return `<div class="mt-8 p-5 md:p-6 bg-blue-50 border border-blue-200/50 rounded-2xl text-center"><h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4><p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p><a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-5 py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-translate-key="ctaButton"></span></a></div>`;
+        return `<div class="mt-8 p-5 md:p-6 bg-blue-50 border border-blue-200/50 rounded-2xl text-center">
+            <h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4>
+            <p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p>
+            <div class="mt-5 flex flex-wrap justify-center gap-4">
+                 <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span data-translate-key="ctaButton"></span>
+                </a>
+                <button id="shareRecipeBtn" data-recipe-id="${recipe.id}" class="btn bg-green-500 hover:bg-green-600 text-white py-2.5 px-6 shadow-lg shadow-green-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2 h-5 w-5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+                    <span data-translate-key="shareRecipeBtn"></span>
+                </button>
+            </div>
+        </div>`;
     };
 
     const createSettingsGrid = (settings) => {
@@ -261,10 +280,10 @@ function createFullRecipeHTML(recipe) {
                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text w-5 h-5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
                 <span data-translate-key="captionFromAI"></span>
             </button>
-            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-5 h-5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                <span data-translate-key="sonyGuideBtn"></span>
-            </a>
+            <button class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30" id="downloadPdfBtn" data-recipe-id="${recipe.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-5 w-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                <span data-translate-key="downloadPDFBtn"></span>
+            </button>
         </div>
         ${createCTAHTML(recipe)}
         <div class="space-y-8 mt-8">
@@ -489,6 +508,7 @@ function displayTrendingRecipes(trendingIDs) {
 }
 
 async function fetchTrendingRecipes() {
+    console.log("Attempting to fetch trending recipes...");
     if (!state.firebase.db) {
         console.warn("Firebase not available, using mock trending data.");
         const mockTrendingIDs = ["scl-001", "scl-003", "scl-008", "scl-027"];
@@ -497,18 +517,21 @@ async function fetchTrendingRecipes() {
     }
 
     try {
+        console.log(`Fetching from Firestore path: artifacts/${__app_id}/public/data/trending/latest`);
         const docRef = doc(state.firebase.db, `artifacts/${__app_id}/public/data/trending/latest`);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
             const trendingData = docSnap.data();
+            console.log("Successfully fetched trending data:", trendingData);
             if (trendingData.ids && trendingData.ids.length > 0) {
                 displayTrendingRecipes(trendingData.ids);
             } else {
-                 throw new Error("Trending IDs array is empty or missing.");
+                 console.warn("Trending data exists but 'ids' array is empty or missing.");
+                 displayTrendingRecipes([]); // Hide the section
             }
         } else {
-            throw new Error("Trending document does not exist.");
+            throw new Error("Trending document does not exist in Firestore.");
         }
     } catch (error) {
         console.error("Error fetching real trending data, falling back to mock data:", error);
