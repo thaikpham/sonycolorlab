@@ -43,7 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     
 <style>
-    /* --- REFINED STYLES (NO ANIMATION) --- */
+    /* --- REFINED STYLES WITH BLOB ANIMATION --- */
     html { scroll-behavior: smooth; }
     :root {
         --primary-accent: #007AFF;
@@ -53,13 +53,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
-        --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
     }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #f4f5f7;
+        background-color: #ffffff; /* Changed to white */
         color: var(--text-primary);
         position: relative;
+    }
+
+    /* --- Background Blobs (Blurred) --- */
+    .bg-blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px); 
+        opacity: 0;
+        z-index: -1;
+        transition: opacity 1.5s var(--ease-out-cubic);
+        will-change: transform;
+    }
+    .bg-blob.visible { 
+        opacity: 0.2; /* Slightly reduced opacity for white background */
     }
 
     /* --- Core Component Styling --- */
@@ -239,6 +252,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </style>
 </head>
 <body>
+<!-- Background Blobs will be injected here by JS -->
+<div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
+
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
