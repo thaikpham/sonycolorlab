@@ -42,9 +42,10 @@ const recipesData = [
         "personalityColor": "#66CDAA",
         "coords": { "x": -4, "y": 3 },
         "demoImages": [
-            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+1",
-            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+2",
-            "https://placehold.co/800x600/66CDAA/ffffff?text=Kyoto+Jade+3"
+            "https://lh3.googleusercontent.com/pw/AP1GczOxpa5cb1MQL79E_8e6z6hRtWdh8gAVfbThLtSl1DTjZIWjnLKRSDIt0NPfnOPujjvnpAgd8PS15D-yiX3yECWkkWgHexTe6lzdAdqR41bFZpNlBxbRT0Zir46-N6duJLPgh46ngita84YDEvu1tWbvYw=w1398-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczMjFiQE-XO4btZr1TMjdQFP0xShl7nWo4pCHcZdzmL3e8lHo_yAIK2MoFOtTnWpc11hOsEG94RKGIhJiEnDzfHGLo-QGSKSP1VhzcQI_JC2v-KIhkwmXqQ4LN6O_SKkbD1UTueUME89pSBO0gCfFmE0sQ=w1396-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczOESZiKNucBWuMM3CWgxQ8_TKYDhGgDjRX-0XFG-cPf9npWj0BNhp5uN2R0hWVQStdlJs-TcRCl0YROZkoaBNj6NTkMBmvub5_jhPYObQU1RX8bj7HjAPmXmUPgK0Xw-HTSwWuY-oT86_DFS3LKWaWkLg=w786-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczNFTcQZmr9y__SzimI35R5akGnUbiRMCHpKyI5rKhVbHUke9mMbKH29Xq1pmb2_2t1m59OW4ZvifveAQum6-yjjs0PBLMayHMaHSSRVt--yWZ9Rvk8wGMtjaO2SNfMGMc1d7QDZdLM9k1S4zreLvAg4Ow=w785-h1048-s-no?authuser=0"
         ]
     },
     {
