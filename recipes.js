@@ -53,8 +53,8 @@ const recipesData = [
         "name": { "vi": "SCL-003: Caspian Blue", "en": "SCL-003: Caspian Blue" },
         "formattedName": "SCL-003-Caspian Blue",
         "description": {
-            "en": "A cool-toned, cinematic profile with distinctive deep blues and rich, crushed blacks.\nIt lends a moody, atmospheric quality to images, perfect for urban nightscapes, dramatic portraits, and storytelling.",
-            "vi": "Một cấu hình điện ảnh, tông lạnh với sắc xanh dương đặc trưng và vùng tối sâu, đậm. Nó mang lại chất lượng tâm trạng, đầy không khí cho hình ảnh, hoàn hảo cho cảnh đêm đô thị, chân dung kịch tính và kể chuyện."
+            "en": "A warm tone, cinematic profile with distinctive deep blues and rich, crushed blacks.\nIt lends a moody, atmospheric quality to images, perfect for urban nightscapes, dramatic portraits, and storytelling.",
+            "vi": "Một cấu hình điện ảnh, tông ấm với sắc xanh dương đặc trưng và vùng tối sâu, đậm. Nó mang lại chất lượng tâm trạng, đầy không khí cho hình ảnh, hoàn hảo cho cảnh đêm đô thị, chân dung kịch tính và kể chuyện."
         },
         "type": "color",
         "contrast": "high",
