@@ -2,7 +2,7 @@ const recipesData = [
     {
         "id": "scl-001",
         "name": { "vi": "SCL-001: Mojave Sun", "en": "SCL-001: Mojave Sun" },
-        "formattedName": "SCL-001-Mojave Sun",
+        "formattedName": "SCL-001-Mojave Sun***",
         "description": {
             "en": "A nostalgic, sun-drenched style that bathes scenes in the warm glow of golden hour.\nPerfect for travel and lifestyle, it recreates rich yellows and deep blues, evoking the feeling of an endless summer road trip.",
             "vi": "Một phong cách hoài niệm, ngập tràn ánh nắng, bao phủ các khung cảnh trong ánh sáng ấm áp của giờ vàng. Hoàn hảo cho du lịch và đời sống, nó tái tạo màu vàng đậm và xanh dương sâu, gợi lên cảm giác về một chuyến đi mùa hè bất tận."
