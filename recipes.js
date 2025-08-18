@@ -213,8 +213,8 @@ const recipesData = [
         "personalityColor": "#008080",
         "coords": { "x": -5, "y": -3 },
         "demoImages": [
-            "https://placehold.co/800x600/008080/ffffff?text=Urban+Teal+1",
-            "https://placehold.co/800x600/008080/ffffff?text=Urban+Teal+2",
+            "https://lh3.googleusercontent.com/pw/AP1GczMGoUhcLmIXQbNn7PeBBgEvqPEx8PFXMnms2qJYqeiNBxnGmbXjZQBFaY-M58rIKX-Vq9KSlta7ol9RG5hD73b139Rt7zpNP8T6uqviIsMB4pW5mTYQUYCNiqc4VOp_1XM1fW-hDuBFamIn9J-z98L39w=w1571-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczMJY5QCZ92Y01uO5ra30hoNlSVg-jXPr5gUkHaZQe45CyneNwOIrhvnkziPFHlCLzscxk8An-3kJWU_5VFuWaMf6KQY_GvCge4Od7qAyiAdU0OZHWh058E0H872y6fhgz5WHOVFlElssVS0cXTl8dGaUQ=w699-h1048-s-no?authuser=0",
             "https://placehold.co/800x600/008080/ffffff?text=Urban+Teal+3"
         ]
     },
