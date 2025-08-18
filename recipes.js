@@ -599,12 +599,12 @@ const recipesData = [
         "personalityColor": "#8B0000",
         "coords": { "x": 7, "y": 5 },
         "demoImages": [
-            "https://photos.fife.usercontent.google.com/pw/AP1GczPEW-hBVaIN-8gJi31_TpJRR9Gv63PNsF5hHElb48JB1U3scKUVCZQj7w=w699-h1048-s-no?authuser=0",
-            "https://photos.fife.usercontent.google.com/pw/AP1GczMYJ694vLxvXdjFHtonkb_bvU1PwC0CScqbpVmhn14g4s-pJ74EycOMmg=w699-h1048-s-no?authuser=0",
-            "https://photos.fife.usercontent.google.com/pw/AP1GczO5jEOnOkHJWhCjWbE0r9OUDF72ItebF4h6qd2EtQ28KDFAaxCtd3ah-A=w699-h1048-s-no?authuser=0",
-            "https://photos.fife.usercontent.google.com/pw/AP1GczN-qAwxZiZ3f1lz4imJff8YctaoVRz2ElObaZqZ0M4ZSlCiQAYWWT9oHg=w699-h1048-s-no?authuser=0",
-            "https://photos.fife.usercontent.google.com/pw/AP1GczP097wtk-WyKn9w_x_Jdk4c-9I3ZHSNBmsgOkFK-K5PpBGxzdik9PKLcg=w1573-h1048-s-no?authuser=0",
-            "https://photos.fife.usercontent.google.com/pw/AP1GczMXQiDCY0cSKQjaTp82l6ud9lavkqTC44Pb6iZHV5ZNMCpCw47dhHj-Rg=w698-h1048-s-no?authuser=0"
+            "https://lh3.googleusercontent.com/pw/AP1GczMP2AEjGlQrwqDJ-VyuT0P9ShdSS1Tm19qow343gNOuct0e3ZkefE4AckBfJ2YN7nrt0TKlOPBsZbCOKMiUPTLG1N0vYxUyjELnj6B546cuM6i3TaOdZV_TC2st7n6deBT2tbdX5yCaopzKw8iQ6XAV4A=w638-h957-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczNEHTJZj671xPsGQeRPOW6tlN2Tj6He0s3wXoI9nhMhi-Ko02KwcBfAtm3_58ZB8EQn_0eDn7G4xxTIiZDub6srAsYFnY0mGbEU706x2JuIkN0-Xkfx0LULgkar-yAeCnDiEOiIIxzFvmNvANH1azFCXw=w638-h957-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczNX1wq7sByA605G4rBM9qnPexoiYU7D6w25SttegSY7CIiLkJHl-sFnp3JliJFhKzp9V3ttWbBNMN9Exlfo-UnUQgTjSCFJzDpXIJTP9IKFX2QsBQNFo3FgpIQCOC3jqnlM6n6b1xL_WNXGDDkFXbnWzA=w638-h957-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczOU2CYTi1ixMYBTDx8_YoUGDNo3eoYfX9trmiSk6UXuPN1t7gjAlV3f7452584ECcV4xW_WNbCgntS24bp0LJGJlBQYm27sEiS9rTveQ0cARsNJGGfEdeMI-sbSCt3E2S2dewMzuMTqWNVla5XvkV2wGA=w638-h957-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczOfOlE-MLMd2bae-ld7MKPnKwFrY5OknvbvnOBX9FrVvT09H2W_7tI5j8zsbfQiZvTshSfzLq7-24_p_7yxM8gFFJikJTF-_aNpRNkmN6uNHZ6WpbHxiv56HIb8haPcMhMyQFcKJmjQGZPOnwjktjmlUQ=w1436-h957-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczMtAEFr7mikWQ7imz5N1Bwew2x57Hxhia6aKMOFDtEsx8mm0afzG62srHH9D6VQIH9iOWpaMXTOBIEOQs0jiIfAKWdz69VqZkMt3Zf_DrcXAteGTNbiHqwiaxF8bu9a6pnGkfX16t6SHopTuYvS5Kjdqw=w638-h957-s-no?authuser=0"
         ]
     },
     {
