@@ -1010,9 +1010,11 @@ const recipesData = [
         "personalityColor": "#CDDC39",
         "coords": { "x": 8, "y": 7 },
         "demoImages": [
-            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+1",
-            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+2",
-            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+3"
+            "https://lh3.googleusercontent.com/pw/AP1GczMuIrMcPNoiJOw1LEmaBRsrq_2P9F6R_hWvmL8G9zfHJLXFNa6G1PQ32tIAtP7hRq0PO6RZw0XVXn7jkItO43KGJt9XElSfAGx7x0j47XyYhINeykyzx0QTlneEjUuyn0PrU7F2sgC_-uOeK-ipcyXj3A=w1571-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczMjSFgmGv95gnxvRpyIYv7r4RMWFeEz0XoVhZqbnq_9bowtqQLXSm5ZM1foweENdQmzOQjj94_NwXYiSrYsoDS7_0sVvJuZCKH1oGbqfkZjSz5d_hh-2D2ZPzUHTKaqeDtAMLpCSLcealhYGu-HT0V0SA=w1571-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczNh_0GbjAJcS9ku8jc6JCnu-rVFhRyR24JyZJ0jLBHpaO4fjrPOXzeA1FyOTxlgxZStTP6JE6g6COk9-3WEQuVuWMna2rV_1PW8nKLNZfwKoHElZFPRimTGpWL8uVvR_U8mXKxwyZQSv5xSSwPGX3wN6w=w1571-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczPYNhuf8JhXK_59Ft8JP8xvM_860GEtE-XYgoWRS76TZBzgtkXTqkuGiUAff-4DXvnnI9jlsYU7k_VzS3Sbp0jwSHkeZwOha9c9EJfeb3bdW7nONFTlNYcHEs_W8nfsOIyV7ui9dvweleL_E6jdKCVJhg=w1571-h1048-s-no?authuser=0",
+            "https://lh3.googleusercontent.com/pw/AP1GczOWhh97lEdBo31q9wITtjA8_semXxcoxG_JFDiLqTRQwrofviEe928cRUX01zoWqELi8ACvZ1Qfk3sUIrfyP9cJs1rSeSRPg9LMPTvfKnZihHtZNBedcROI4P4e0quaPZFGDnogY3EBWnCEPnoY-O-qcQ=w1571-h1048-s-no?authuser=0"
         ]
     },
     {
