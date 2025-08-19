@@ -993,7 +993,7 @@ const recipesData = [
     },
         {
         "id": "scl-042",
-        "name": { "vi": "SCL-041: Kando 25 Phuket", "en": "Kando 25 Phuket" },
+        "name": { "vi": "SCL-042: Kando 25 Phuket", "en": "Kando 25 Phuket" },
         "formattedName": "Kando 25 Phuket",
         "description": {
             "en": "Capture Phuket's cinematic soul. This S-Cinetone formula delivers a filmic look with lush greens, vibrant turquoise waters, and warm golden light, perfect for Thailand's tropical paradise.",
