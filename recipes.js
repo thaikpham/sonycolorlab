@@ -1008,7 +1008,7 @@ const recipesData = [
         "colorDepth": { "R": "-2", "G": "+4", "B": "+4", "C": "+5", "M": "-2", "Y": "-3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#CDDC39",
-        "coords": { "x": 8, "y": 7 },
+        "coords": { "x": 0, "y": -2 },
         "demoImages": [
             "https://lh3.googleusercontent.com/pw/AP1GczMuIrMcPNoiJOw1LEmaBRsrq_2P9F6R_hWvmL8G9zfHJLXFNa6G1PQ32tIAtP7hRq0PO6RZw0XVXn7jkItO43KGJt9XElSfAGx7x0j47XyYhINeykyzx0QTlneEjUuyn0PrU7F2sgC_-uOeK-ipcyXj3A=w1571-h1048-s-no?authuser=0",
             "https://lh3.googleusercontent.com/pw/AP1GczMjSFgmGv95gnxvRpyIYv7r4RMWFeEz0XoVhZqbnq_9bowtqQLXSm5ZM1foweENdQmzOQjj94_NwXYiSrYsoDS7_0sVvJuZCKH1oGbqfkZjSz5d_hh-2D2ZPzUHTKaqeDtAMLpCSLcealhYGu-HT0V0SA=w1571-h1048-s-no?authuser=0",
