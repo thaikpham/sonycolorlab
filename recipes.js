@@ -991,6 +991,30 @@ const recipesData = [
             "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+3"
         ]
     },
+        {
+        "id": "scl-042",
+        "name": { "vi": "SCL-041: Kando 25 Phuket", "en": "Kando 25 Phuket" },
+        "formattedName": "Kando 25 Phuket",
+        "description": {
+            "en": "Capture Phuket's cinematic soul. This S-Cinetone formula delivers a filmic look with lush greens, vibrant turquoise waters, and warm golden light, perfect for Thailand's tropical paradise.",
+            "vi": "Nắm bắt linh hồn điện ảnh của Phuket. Công thức S-Cinetone này mang đến sắc màu đậm chất phim với tông xanh mướt, sắc lam ngọc sống động và ánh vàng ấm áp, hoàn hảo cho thiên đường nhiệt đới Thái Lan."
+        },
+        "type": "color",
+        "contrast": "high",
+        "saturation": "high",
+        "tags": ["stylized", "atmospheric", "yellow-green-cast", "surreal", "vintage", "dystopian", "artistic"],
+        "whiteBalance": "8000K, A7-G0.5",
+        "settings": { "Black level": "-11", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+12", "Color Phase": "-1" },
+        "colorDepth": { "R": "-2", "G": "+4", "B": "+4", "C": "+5", "M": "-2", "Y": "-3" },
+        "detailSettings": { "Level": "0" },
+        "personalityColor": "#CDDC39",
+        "coords": { "x": 8, "y": 7 },
+        "demoImages": [
+            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+1",
+            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+2",
+            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+3"
+        ]
+    },
     {
         "id": "PROCOLOR-001",
         "name": { "vi": "PROCOLOR-001: ClearCast Pro", "en": "PRO-SCL-001: ClearCast Pro" },
