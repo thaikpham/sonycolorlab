@@ -19,7 +19,7 @@ const isAIEnabled = API_KEY && API_KEY !== '%%GEMINI_API_KEY%%';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
 
 const state = {
-    currentLang: 'vi',
+    currentLang: 'en', // English is now the default language
     currentView: 'home',
     selectedRecipeId: null,
     isMobileDetailActive: false,
