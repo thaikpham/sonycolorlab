@@ -130,6 +130,7 @@ const translations = {
     ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
     ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
     ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
+    contributeRecipeBtn: { vi: "Đóng góp công thức mới", en: "Contribute New Recipe" },
     trendingTitle: {vi: "Công thức thịnh hành", en: "Trending Recipes"},
     trendingLoading: {vi: "Đang tải công thức thịnh hành...", en: "Loading trending recipes..."},
     aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
@@ -380,10 +381,6 @@ function createFullRecipeHTML(recipe) {
             <h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4>
             <p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p>
             <div class="mt-5 flex flex-wrap justify-center gap-4">
-                 <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span data-translate-key="ctaButton"></span>
-                </a>
                 <button id="shareRecipeBtn" data-recipe-id="${recipe.id}" class="btn bg-green-500 hover:bg-green-600 text-white py-2.5 px-6 shadow-lg shadow-green-500/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2 h-5 w-5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
                     <span data-translate-key="shareRecipeBtn"></span>
@@ -467,7 +464,20 @@ const viewTemplates = {
             <main id="recipeMainPanel" class="w-full md:w-3/5 lg:w-2/3 flex flex-col min-h-0 hidden md:flex">
                 <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
-                        <div id="welcomeText" class="text-center"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
+                        <div id="welcomeText" class="text-center">
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
+                            <p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+                            <a href="https://forms.gle/your-form-id" target="_blank" rel="noopener noreferrer" class="btn bg-green-500 hover:bg-green-600 text-white py-3 px-6 shadow-lg shadow-green-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle h-5 w-5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+                                <span data-translate-key="contributeRecipeBtn"></span>
+                            </a>
+                            <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary py-3 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                <span data-translate-key="ctaButton"></span>
+                            </a>
+                        </div>
                         <div id="colorMapContainer" class="flex-grow w-full"></div>
                         <div id="trendingContainer" class="w-full mt-4"></div>
                     </div>
