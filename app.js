@@ -7,8 +7,8 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11
 import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
 import { Quiz } from './quiz.js'; // Import the new Quiz module
 import { parameterExplanations } from './translations.js';
-import recipesData from './recipes-core.js?v=2.2';
-import recipeImages from './recipes-images.js?v=2.2';
+import recipesData from './recipes-core.js';
+import recipeImages from './recipes-images.js';
 
 // --- PDF & Canvas Library Imports ---
 const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
