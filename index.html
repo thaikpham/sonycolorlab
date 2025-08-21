@@ -6,24 +6,13 @@
 <title>Alpha AI Color Lab</title>
 
 <!-- PWA and Add to Home Screen Configuration -->
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" type="image/png" href="logo_black.png">
+<link rel="apple-touch-icon" href="logo_black.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="white">
 <meta name="apple-mobile-web-app-title" content="ColorLAB">
 <meta name="theme-color" content="#ffffff">
-<link rel="manifest" href="data:application/manifest+json,{
-    &quot;name&quot;: &quot;Alpha AI Color Lab&quot;,
-    &quot;short_name&quot;: &quot;ColorLAB&quot;,
-    &quot;start_url&quot;: &quot;https://www.sonycolorlab.app&quot;,
-    &quot;display&quot;: &quot;standalone&quot;,
-    &quot;background_color&quot;: &quot;#ffffff&quot;,
-    &quot;theme_color&quot;: &quot;#ffffff&quot;,
-    &quot;icons&quot;: [
-        { &quot;src&quot;: &quot;logo.png&quot;, &quot;sizes&quot;: &quot;192x192&quot;, &quot;type&quot;: &quot;image/png&quot; },
-        { &quot;src&quot;: &quot;logo.png&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/png&quot; }
-    ]
-}">
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,{%22name%22:%22Alpha%20AI%20Color%20Lab%22,%22short_name%22:%22ColorLAB%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23ffffff%22,%22icons%22:[{%22src%22:%22logo_black.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22logo_black.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://d3js.org/d3.v7.min.js" defer></script>
@@ -278,13 +267,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </button>
         </div>
     </header>
-    <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
+    <main id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></main>
     <footer class="text-center pt-4 pb-16 sm:py-4 text-gray-500 text-sm flex-shrink-0">
         Paint emotions with ColorLAB by Sony Alpha Vietnam
     </footer>
 </div>
 <div id="qrCodeContainer">
-    <img src="adobe-express-qr-code.svg" alt="QR Code" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg">
+    <img src="adobe-express-qr-code.svg" alt="QR Code cho sonycolorlab.app" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg">
 </div>
 <div id="infoTooltip" class="hidden"></div>
 <div id="lightbox" class="hidden">
@@ -294,7 +283,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="lightboxNext" class="lightbox-arrow">&#x203A;</div>
     <div id="lightboxCounter"></div>
 </div>
-<div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
+<div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden transition-transform duration-300 ease-in-out">
     <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
         <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
         <nav class="mt-16 flex flex-col gap-6 text-center">
