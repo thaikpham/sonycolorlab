@@ -47,12 +47,7 @@ export const translations = {
     saveGuideTitle: { vi: "Lưu công thức vào máy ảnh", en: "Save Recipe to Camera" },
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
-    hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" },
-    // NEW TRANSLATIONS FOR AI QUIZ
-    aiAnalyzing: { vi: "Gemini đang phân tích...", en: "Gemini is analyzing..." },
-    aiSuggestionTitle: { vi: "Gợi ý từ AI!", en: "Suggestion from AI!" },
-    uploadPhotoBtn: { vi: "Tải ảnh lên", en: "Upload Photo" },
-    takePhotoBtn: { vi: "Chụp ảnh", en: "Take Photo" }
+    hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" }
 };
 
 export const parameterExplanations = {
