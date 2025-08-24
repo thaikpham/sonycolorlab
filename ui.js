@@ -3,11 +3,11 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * NÂNG CẤP GIAO DIỆN DI ĐỘNG - CẬP NHẬT NGÀY 25/08/2025
+ * NÂNG CẤP GIAO DIỆN DI ĐỘNG & TÊN CÔNG THỨC - CẬP NHẬT NGÀY 25/08/2025
  * ==============================================
- * - Cập nhật `renderLibraryList` để render danh sách dạng 1 cột, thay vì dạng lưới 2 cột.
- * - Cập nhật `viewTemplates.recipeFormulas` để loại bỏ các class grid không cần thiết.
- * - Giao diện giờ đây tuân thủ thiết kế "mobile-first" một cột, tối ưu cho việc cuộn và xem.
+ * - Thêm hàm `formatRecipeName` để loại bỏ số 0 không cần thiết trong tên công thức (VD: SCL-001 -> SCL-1).
+ * - Cập nhật `viewTemplates.recipeFormulas` để loại bỏ "glass-panel" ở màn hình chi tiết trên di động.
+ * - Giao diện chi tiết công thức giờ đây sẽ tràn viền, không còn bị đóng khung.
  */
 
 // --- Local Module Imports ---
@@ -23,6 +23,17 @@ import { fetchTrendingRecipeIds } from './api.js';
 const mainContentEl = document.getElementById('mainContent');
 
 // --- HELPER FUNCTIONS ---
+
+/**
+ * Formats the recipe name to remove leading zeros from the ID number.
+ * e.g., "SCL-001: Name" becomes "SCL-1: Name"
+ * @param {string} name - The original recipe name.
+ * @returns {string} The formatted recipe name.
+ */
+function formatRecipeName(name) {
+    if (!name) return '';
+    return name.replace(/(SCL|PROCOLOR)-0+/, '$1-');
+}
 
 export function showToast(message, isError = false) {
     let toast = document.getElementById('app-toast');
@@ -149,7 +160,7 @@ function createFullRecipeHTML(recipe) {
                     src="${imgUrl}" 
                     loading="lazy" 
                     decoding="async"
-                    alt="Demo image ${index + 1} for ${recipe.name[getCurrentLanguage()]}"
+                    alt="Demo image ${index + 1} for ${formatRecipeName(recipe.name[getCurrentLanguage()])}"
                     onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Image failed to load</div>';"
                 >
             </div>`).join('');
@@ -261,9 +272,11 @@ const viewTemplates = {
                     <div id="recipeContent" class="hidden"></div>
                 </div>
             </main>
-            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
-                <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
-                <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
+            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] overflow-y-auto hidden sleek-scrollbar">
+                <div class="p-4">
+                    <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
+                    <div id="recipeContentMobile"></div>
+                </div>
             </div>
         </div>`,
 };
@@ -434,7 +447,7 @@ export async function renderLibraryList() {
                      data-recipe-id="${recipe.id}" 
                      style="${glowStyle} ${animationStyle}">
             <div class="flex justify-between items-start">
-                <span class="font-semibold text-primary pr-2">${recipe.name[getCurrentLanguage()]}</span>
+                <span class="font-semibold text-primary pr-2">${formatRecipeName(recipe.name[getCurrentLanguage()])}</span>
                 <div class="flex items-center gap-2 pt-1">
                     ${imageIconHTML}
                     ${trendingIconHTML}
@@ -494,7 +507,7 @@ export function renderLibraryDetails() {
             <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
         </div>
         <div>
-            <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[getCurrentLanguage()]}</h3>
+            <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name[getCurrentLanguage()])}</h3>
             <p class="text-lg text-neutral-600 mt-1">"${recipe.description[getCurrentLanguage()]}"</p>
         </div>
         <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
