@@ -80,32 +80,23 @@ function attachViewEventListeners(viewName) {
         // Stage Manager Effect Logic for Desktop
         const view = document.getElementById('recipeFormulasView');
         const listPanel = document.getElementById('recipeListPanel');
-        let timeoutId = null;
 
         const setInactive = () => {
-            if (!state.isMobileDetailActive && window.innerWidth >= 768) {
+            if (window.innerWidth >= 768) {
                 view?.classList.add('stage-inactive');
             }
         };
 
         const setActive = () => {
-            clearTimeout(timeoutId);
             view?.classList.remove('stage-inactive');
         };
 
         if (view && listPanel) {
-            timeoutId = setTimeout(setInactive, 1500); // Initially set to inactive after a delay
+            // Set inactive by default
+            setTimeout(setInactive, 100); 
+            
             listPanel.addEventListener('mouseenter', setActive);
-            listPanel.addEventListener('mouseleave', () => {
-                timeoutId = setTimeout(setInactive, 500); // Set inactive after a short delay
-            });
-            listPanel.addEventListener('click', (e) => {
-                if (e.target.closest('.recipe-item')) {
-                    setActive();
-                    clearTimeout(timeoutId);
-                    timeoutId = setTimeout(setInactive, 2000); // Keep active longer after a click
-                }
-            });
+            listPanel.addEventListener('mouseleave', setInactive);
         }
 
         const chartContainer = document.getElementById('colorMapContainer');
@@ -149,6 +140,16 @@ async function init() {
         const recipeItem = target.closest('.recipe-item');
         const trendingItem = target.closest('.trending-item');
         const collageItem = target.closest('.collage-item');
+        const d3Node = target.closest('.color-map-node-group');
+
+        // D3 Chart Node Selection
+        if (d3Node) {
+            const recipeData = d3.select(d3Node).datum();
+            if (recipeData && recipeData.id) {
+                handleRecipeSelection(recipeData.id);
+            }
+            return;
+        }
 
         // Navigation
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
