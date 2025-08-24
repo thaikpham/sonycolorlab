@@ -2,16 +2,14 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+ * NÂNG CẤP TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
  * ==============================================
- * - SỬA LỖI: Thêm import cho `parameterExplanations` để khắc phục lỗi script.
- * - Import các hàm `openModal`, `closeModal` từ `ui.js`.
- * - Cập nhật các trình xử lý sự kiện (event listeners) để gọi các hàm modal mới,
- * thay vì trực tiếp thay đổi class 'hidden', giúp kích hoạt animation.
+ * - Thêm event listeners cho các input file ẩn (`imageUploadInput`, `imageCaptureInput`).
+ * - Gán sự kiện `change` của các input này vào hàm `handleImageUpload` của Quiz.
+ * - Thêm logic để kích hoạt các input file này khi người dùng nhấn nút trong Quiz.
  */
 
 // --- Local Module Imports ---
-// SỬA LỖI: Thêm `parameterExplanations` vào danh sách import
 import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
 import { parameterExplanations } from './translations.js';
 import { Quiz } from './quiz.js';
@@ -19,7 +17,6 @@ import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
 import { initializeFirebase } from './api.js';
-// UPDATED: Import modal functions
 import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal } from './ui.js';
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
@@ -32,10 +29,6 @@ import {
 
 // --- CORE APP LOGIC ---
 
-/**
- * Handles the selection of a recipe from the list or chart.
- * @param {string} id - The ID of the selected recipe.
- */
 function handleRecipeSelection(id) {
     state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
     state.isMobileDetailActive = !!state.selectedRecipeId;
@@ -58,9 +51,6 @@ function handleRecipeSelection(id) {
     }
 }
 
-/**
- * Resets the recipe formula view back to the main chart/welcome screen.
- */
 function resetToChartView() {
     state.selectedRecipeId = null;
     state.isMobileDetailActive = false;
@@ -69,10 +59,6 @@ function resetToChartView() {
     updateChartSelection();
 }
 
-/**
- * Attaches event listeners specific to a newly rendered view.
- * @param {string} viewName - The name of the view being attached ('home', 'recipeFormulas').
- */
 function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
         initializeBackgroundBlobs();
@@ -109,9 +95,6 @@ function attachViewEventListeners(viewName) {
     }
 }
 
-/**
- * Initializes the entire application.
- */
 async function init() {
     initLanguage();
 
@@ -196,7 +179,6 @@ async function init() {
             return;
         }
 
-        // UPDATED: Quiz Modal Interactions with animations
         if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) {
             openModal('quizModal');
             state.quiz.instance.start();
@@ -215,9 +197,16 @@ async function init() {
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
                 closeModal('quizModal');
-                // The close method in quiz.js is now just for state management
-                // state.quiz.instance.close(); 
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
+                return;
+            }
+            // AI Quiz image buttons
+            if (target.closest('#uploadImageBtn')) {
+                document.getElementById('imageUploadInput').click();
+                return;
+            }
+            if (target.closest('#captureImageBtn')) {
+                document.getElementById('imageCaptureInput').click();
                 return;
             }
             if (target.closest('.quiz-option')) {
@@ -226,7 +215,6 @@ async function init() {
             }
         }
 
-        // AI Lab Modal Interactions (no change needed here as open/close are handled in features.js)
         if (target.closest('#aiLabModal')) {
             if (target.closest('#closeAILabBtn')) { closeAILab(); return; }
             if (target.closest('#cancelAIBtn')) { state.ai.userPrompt = ''; state.ai.generatedRecipe = null; renderAILab(); return; }
@@ -235,6 +223,11 @@ async function init() {
             if (target.closest('#downloadAIPdfBtn')) { generateRecipePdf(target.closest('#downloadAIPdfBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
         }
     });
+
+    // Listen for file selection from hidden inputs
+    document.getElementById('imageUploadInput').addEventListener('change', (e) => state.quiz.instance.handleImageUpload(e));
+    document.getElementById('imageCaptureInput').addEventListener('change', (e) => state.quiz.instance.handleImageUpload(e));
+
 
     document.body.addEventListener('mouseover', (e) => {
         const title = e.target.closest('.parameter-title');
