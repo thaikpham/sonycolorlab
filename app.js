@@ -2,11 +2,9 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * NÂNG CẤP TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
+ * GỠ BỎ TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
  * ==============================================
- * - Thêm event listeners cho các input file ẩn (`imageUploadInput`, `imageCaptureInput`).
- * - Gán sự kiện `change` của các input này vào hàm `handleImageUpload` của Quiz.
- * - Thêm logic để kích hoạt các input file này khi người dùng nhấn nút trong Quiz.
+ * - Đã gỡ bỏ các event listener cho input file không còn tồn tại.
  */
 
 // --- Local Module Imports ---
@@ -200,15 +198,6 @@ async function init() {
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
                 return;
             }
-            // AI Quiz image buttons
-            if (target.closest('#uploadImageBtn')) {
-                document.getElementById('imageUploadInput').click();
-                return;
-            }
-            if (target.closest('#captureImageBtn')) {
-                document.getElementById('imageCaptureInput').click();
-                return;
-            }
             if (target.closest('.quiz-option')) {
                 state.quiz.instance.handleAnswer(e);
                 return;
@@ -223,11 +212,6 @@ async function init() {
             if (target.closest('#downloadAIPdfBtn')) { generateRecipePdf(target.closest('#downloadAIPdfBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
         }
     });
-
-    // Listen for file selection from hidden inputs
-    document.getElementById('imageUploadInput').addEventListener('change', (e) => state.quiz.instance.handleImageUpload(e));
-    document.getElementById('imageCaptureInput').addEventListener('change', (e) => state.quiz.instance.handleImageUpload(e));
-
 
     document.body.addEventListener('mouseover', (e) => {
         const title = e.target.closest('.parameter-title');
