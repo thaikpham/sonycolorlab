@@ -1,272 +1,175 @@
 /**
- * app.js (Main Controller)
- * This is the entry point and central controller of the application.
+ * quiz.js
+ * This module encapsulates all logic and data related to the "Find My Color" quiz.
  * * ==============================================
  * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
  * ==============================================
- * - Import các hàm `openModal`, `closeModal` từ `ui.js`.
- * - Cập nhật các trình xử lý sự kiện (event listeners) để gọi các hàm modal mới,
- * thay vì trực tiếp thay đổi class 'hidden', giúp kích hoạt animation.
+ * - Xóa bỏ việc điều khiển trực tiếp DOM (thêm/xóa class 'hidden') khỏi module này.
+ * - Việc hiển thị/ẩn modal giờ đây sẽ do `app.js` (nơi gọi các hàm này) chịu trách nhiệm,
+ * sử dụng các hàm `openModal`/`closeModal` mới để đảm bảo có animation.
  */
 
-// --- Local Module Imports ---
-import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
-import { Quiz } from './quiz.js';
-import recipesData from './recipes-core.js';
-import recipeImages from './recipes-images.js';
-import { state } from './state.js';
-import { initializeFirebase } from './api.js';
-// UPDATED: Import modal functions
-import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal } from './ui.js';
-import {
-    openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
-    openLightbox,
-    generateRecipePdf,
-    shareRecipe,
-    renderColorMapChart,
-    updateChartSelection
-} from './features.js';
-
-// --- CORE APP LOGIC ---
-
-/**
- * Handles the selection of a recipe from the list or chart.
- * @param {string} id - The ID of the selected recipe.
- */
-function handleRecipeSelection(id) {
-    state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
-    state.isMobileDetailActive = !!state.selectedRecipeId;
-
-    updateListSelectionAndScroll(state.selectedRecipeId);
-    renderLibraryDetails();
-    updateChartSelection();
-
-    if (state.selectedRecipeId) {
-        const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
-        if (recipe) {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'view_recipe',
-                recipe_id: recipe.id,
-                recipe_name: recipe.name.en,
-                recipe_name_vi: recipe.name.vi
-            });
-        }
+// --- QUIZ DATA ---
+const quizQuestions = [
+    {
+        question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
+        options: [
+            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>' },
+            { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: { vi: 'Phong cảnh', en: 'Landscape' }, icon: '<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>' },
+            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>' },
+            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: '<path d="M17 8h-7a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4h7a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4Z"/><path d="M17 18v2a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2"/><path d="M20 8v8"/>' }
+        ]
+    },
+    {
+        question: { vi: "Tone màu chủ đạo bạn muốn?", en: "What's your preferred color tone?" },
+        options: [
+            { tags: ['warm', 'golden-hour', 'amber-tint'], text: { vi: 'Ấm', en: 'Warm' }, icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>' },
+            { tags: ['neutral', 'clean', 'balanced'], text: { vi: 'Trung tính', en: 'Neutral' }, icon: '<line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/>' },
+            { tags: ['cool-tone', 'deep-blues', 'cyan-teal'], text: { vi: 'Lạnh', en: 'Cool' }, icon: '<line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/>' }
+        ]
+    },
+    {
+        question: { vi: "Kiểu tương phản bạn thích?", en: "How do you like your contrast?" },
+        options: [
+            { tags: ['high-contrast', 'dramatic', 'powerful'], text: { vi: 'Gắt', en: 'Punchy' }, icon: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>' },
+            { tags: ['normal', 'balanced', 'versatile'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<path d="M5 12h14"/><path d="M12 5v14"/>' },
+            { tags: ['soft-contrast', 'faded', 'lifted-blacks'], text: { vi: 'Nhẹ & Mờ', en: 'Soft & Faded' }, icon: '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" x2="2" y1="8" y2="22"/><line x1="17.5" x2="9" y1="15" y2="15"/>' },
+        ]
+    },
+    {
+        question: { vi: "Độ bão hòa màu sắc?", en: "And saturation?" },
+        options: [
+            { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: { vi: 'Đậm', en: 'Rich' }, icon: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.7-3.29C8.2 7.95 7 6.46 7 5.06V3"/><path d="M14 3v2.06c0 1.4-.93 2.89-2.3 3.9-1.13 1.03-1.7 2.13-1.7 3.29 0 2.22 1.8 4.05 4 4.05Z"/>' },
+            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="currentColor"/>' },
+            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Nhạt', en: 'Muted' }, icon: '<circle cx="12" cy="12" r="10"/><path d="M22 2 2 22"/>' },
+            { tags: ['bw'], text: { vi: 'Trắng & Đen', en: 'Black & White' }, icon: '<circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0-10 10h20a10 10 0 0 0-10-10z"/>' }
+        ]
     }
-}
+];
 
-/**
- * Resets the recipe formula view back to the main chart/welcome screen.
- */
-function resetToChartView() {
-    state.selectedRecipeId = null;
-    state.isMobileDetailActive = false;
-    updateListSelectionAndScroll(null);
-    renderLibraryDetails();
-    updateChartSelection();
-}
-
-/**
- * Attaches event listeners specific to a newly rendered view.
- * @param {string} viewName - The name of the view being attached ('home', 'recipeFormulas').
- */
-function attachViewEventListeners(viewName) {
-    if (viewName === 'home') {
-        initializeBackgroundBlobs();
+export class Quiz {
+    constructor(dependencies) {
+        this.state = dependencies.state;
+        this.getCurrentLanguage = dependencies.getCurrentLanguage;
+        this.recipesData = dependencies.recipesData;
+        this.recipeImages = dependencies.recipeImages;
+        this.applyTranslations = dependencies.applyTranslations;
+        this.renderView = dependencies.renderView;
     }
-    if (viewName === 'recipeFormulas') {
-        renderLibraryList();
-        renderLibraryDetails();
 
-        const view = document.getElementById('recipeFormulasView');
-        const listPanel = document.getElementById('recipeListPanel');
-        const mainPanel = document.getElementById('recipeMainPanel');
+    start() {
+        this.state.quiz.currentQuestionIndex = 0;
+        this.state.quiz.answers = [];
+        // REMOVED: document.getElementById('quizModal').classList.remove('hidden');
+        this.renderQuestion();
+    }
 
-        if (view && listPanel && mainPanel && window.innerWidth >= 1024) {
-            const setStageActive = () => view.classList.remove('stage-inactive');
-            const setStageInactive = () => view.classList.add('stage-inactive');
+    close() {
+        // REMOVED: document.getElementById('quizModal').classList.add('hidden');
+        // This method is now primarily for state reset if needed in the future.
+        // The visibility is handled by the caller in app.js.
+    }
 
-            setTimeout(setStageInactive, 500);
+    handleAnswer(e) {
+        const selectedOption = e.target.closest('.quiz-option');
+        if (!selectedOption) return;
 
-            listPanel.addEventListener('mouseenter', setStageActive);
-            mainPanel.addEventListener('mouseenter', setStageInactive);
-        }
+        document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
+        selectedOption.classList.add('selected');
 
-        const chartContainer = document.getElementById('colorMapContainer');
-        if (chartContainer) {
-            const resizeObserver = new ResizeObserver(entries => {
-                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#colorMapContainer', recipesData);
-                     resizeObserver.unobserve(chartContainer);
+        const tags = selectedOption.dataset.tags.split(',');
+        this.state.quiz.answers.push(...tags);
+        setTimeout(() => {
+            this.state.quiz.currentQuestionIndex++;
+            this.renderQuestion();
+        }, 150);
+    }
+
+    renderQuestion() {
+        const quizContent = document.getElementById('quizContent');
+        const progressBar = document.getElementById('quizProgressBar');
+        const qIndex = this.state.quiz.currentQuestionIndex;
+
+        const render = () => {
+            if (qIndex >= quizQuestions.length) {
+                this.calculateAndShowResult();
+                return;
+            }
+
+            const questionData = quizQuestions[qIndex];
+            const hasThreeOptions = questionData.options.length === 3;
+            const gridClass = `grid gap-4 ${hasThreeOptions ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
+
+            quizContent.innerHTML = `
+                <div class="quiz-question-container">
+                    <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[this.getCurrentLanguage()]}</h3>
+                    <div class="${gridClass}">
+                        ${questionData.options.map(opt => `
+                            <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-transparent bg-gray-100 hover:bg-gray-200 transition-all duration-200" data-tags="${opt.tags.join(',')}">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0 text-gray-500">
+                                    ${opt.icon}
+                                </svg>
+                                <span class="font-semibold text-lg">${opt.text[this.getCurrentLanguage()]}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>`;
+            
+            progressBar.style.width = `${((qIndex) / quizQuestions.length) * 100}%`;
+        };
+
+        const container = quizContent.querySelector('.quiz-question-container');
+        if (container) {
+            container.style.opacity = 0;
+            setTimeout(() => { 
+                render(); 
+                const newContainer = quizContent.querySelector('.quiz-question-container');
+                if (newContainer) {
+                    newContainer.style.opacity = 0;
+                    setTimeout(() => newContainer.style.opacity = 1, 10);
                 }
-            });
-            resizeObserver.observe(chartContainer);
+            }, 150);
+        } else {
+            render();
         }
-        updateLangSlider();
+    }
+
+    calculateAndShowResult() {
+        const scores = this.recipesData.map(recipe => {
+            let score = recipe.tags.reduce((acc, tag) => acc + (this.state.quiz.answers.includes(tag) ? 1 : 0), 0);
+            if (this.state.quiz.answers.includes('bw') && recipe.type === 'bw') { 
+                score += 2; 
+            }
+            return { id: recipe.id, score: score };
+        });
+
+        scores.sort((a, b) => b.score - a.score);
+        const bestMatch = this.recipesData.find(r => r.id === scores[0].id);
+
+        const quizContent = document.getElementById('quizContent');
+        document.getElementById('quizProgressBar').style.width = '100%';
+
+        quizContent.innerHTML = `
+            <div class="text-center view-transition">
+                <h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3>
+                <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
+                <div class="my-8 p-6 bg-gray-100 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
+                    <img src="${this.recipeImages[bestMatch.id][0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview">
+                    <div class="text-left">
+                        <h4 class="text-xl font-bold">${bestMatch.name[this.getCurrentLanguage()]}</h4>
+                        <p class="text-gray-600 mt-1">${bestMatch.description[this.getCurrentLanguage()]}</p>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base">
+                        <span data-translate-key="viewRecipeBtn"></span>
+                    </button>
+                    <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
+                        <span data-translate-key="retakeQuizBtn"></span>
+                    </button>
+                </div>
+            </div>`;
+            
+        this.applyTranslations();
     }
 }
-
-/**
- * Initializes the entire application.
- */
-async function init() {
-    initLanguage();
-
-    state.quiz.instance = new Quiz({
-        state,
-        getCurrentLanguage,
-        recipesData,
-        recipeImages,
-        applyTranslations,
-        renderView: (view, id) => renderView(view, id, attachViewEventListeners)
-    });
-
-    // --- GLOBAL EVENT LISTENERS (EVENT DELEGATION) ---
-    document.body.addEventListener('click', async (e) => {
-        const target = e.target;
-        const navBtn = target.closest('[data-view]');
-        const langBtn = target.closest('.lang-btn-slider');
-        const recipeItem = target.closest('.recipe-item');
-        const collageItem = target.closest('.collage-item');
-        const d3Node = target.closest('.color-map-node-group');
-
-        if (d3Node) {
-            const recipeData = d3.select(d3Node).datum();
-            if (recipeData && recipeData.id) {
-                handleRecipeSelection(recipeData.id);
-            }
-            return;
-        }
-
-        if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
-        if (target.closest('#hamburgerBtn')) { document.getElementById('mobileNavMenu').classList.remove('translate-x-full'); return; }
-        if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
-        if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
-
-        if (navBtn) {
-            if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
-                resetToChartView();
-            } else {
-                await renderView(navBtn.dataset.view, null, attachViewEventListeners);
-            }
-            if(target.closest('.nav-btn-mobile')) {
-                 document.getElementById('mobileNavMenu').classList.add('translate-x-full');
-            }
-            return;
-        }
-
-        if (langBtn) {
-            const newLang = langBtn.id === 'langEN' ? 'en' : 'vi';
-            setLanguage(newLang);
-            updateLangSlider();
-            applyTranslations();
-            if (state.currentView === 'recipeFormulas') {
-                renderLibraryList();
-                renderLibraryDetails();
-                renderColorMapChart('#colorMapContainer', recipesData);
-            }
-            return;
-        }
-
-        if (recipeItem) { handleRecipeSelection(recipeItem.dataset.recipeId); return; }
-        if (collageItem) { openLightbox(collageItem.dataset.recipeId, collageItem.dataset.index); return; }
-
-        if (target.closest('#downloadPdfBtn')) { generateRecipePdf(target.closest('#downloadPdfBtn').dataset.recipeId); return; }
-        if (target.closest('#shareRecipeBtn')) { shareRecipe(target.closest('#shareRecipeBtn').dataset.recipeId); return; }
-        if (target.closest('#tweakWithAIBtn')) { openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId); return; }
-
-        if (target.closest('#toggleSaveGuideBtn')) {
-            const btn = target.closest('#toggleSaveGuideBtn');
-            const content = btn.parentElement.querySelector('#saveGuideContent');
-            const btnSpan = btn.querySelector('span');
-            const isHidden = content.classList.contains('max-h-0');
-            if (isHidden) {
-                content.classList.remove('max-h-0');
-                content.classList.add('max-h-[1000px]');
-                btnSpan.dataset.translateKey = 'hideGuideBtn';
-            } else {
-                content.classList.add('max-h-0');
-                content.classList.remove('max-h-[1000px]');
-                btnSpan.dataset.translateKey = 'showGuideBtn';
-            }
-            applyTranslations();
-            return;
-        }
-
-        // UPDATED: Quiz Modal Interactions with animations
-        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) {
-            openModal('quizModal');
-            state.quiz.instance.start();
-            return;
-        }
-        if (target.closest('#quizModal')) {
-            if (target.closest('#closeQuizBtn')) {
-                closeModal('quizModal');
-                state.quiz.instance.close();
-                return;
-            }
-            if (target.closest('#retakeQuizBtn')) {
-                state.quiz.instance.start();
-                return;
-            }
-            if (target.closest('#viewResultBtn')) {
-                const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
-                closeModal('quizModal');
-                // The close method in quiz.js is now just for state management
-                // state.quiz.instance.close(); 
-                await renderView('recipeFormulas', recipeId, attachViewEventListeners);
-                return;
-            }
-            if (target.closest('.quiz-option')) {
-                state.quiz.instance.handleAnswer(e);
-                return;
-            }
-        }
-
-        // AI Lab Modal Interactions (no change needed here as open/close are handled in features.js)
-        if (target.closest('#aiLabModal')) {
-            if (target.closest('#closeAILabBtn')) { closeAILab(); return; }
-            if (target.closest('#cancelAIBtn')) { state.ai.userPrompt = ''; state.ai.generatedRecipe = null; renderAILab(); return; }
-            if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
-            if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
-            if (target.closest('#downloadAIPdfBtn')) { generateRecipePdf(target.closest('#downloadAIPdfBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
-        }
-    });
-
-    document.body.addEventListener('mouseover', (e) => {
-        const title = e.target.closest('.parameter-title');
-        const tooltipEl = document.getElementById('infoTooltip');
-        if (title && tooltipEl) {
-            const key = title.dataset.paramKey;
-            const explanation = parameterExplanations[key]?.[getCurrentLanguage()];
-            if (explanation) {
-                tooltipEl.innerHTML = explanation;
-                const titleRect = title.getBoundingClientRect();
-                tooltipEl.style.left = `${titleRect.left + window.scrollX}px`;
-                tooltipEl.style.top = `${titleRect.bottom + window.scrollY + 8}px`;
-                tooltipEl.classList.remove('hidden');
-                setTimeout(() => tooltipEl.classList.add('visible'), 10);
-            }
-        }
-    });
-    document.body.addEventListener('mouseout', (e) => {
-        if (e.target.closest('.parameter-title')) {
-            const tooltipEl = document.getElementById('infoTooltip');
-            if(tooltipEl) {
-                tooltipEl.classList.remove('visible');
-                setTimeout(() => tooltipEl.classList.add('hidden'), 200);
-            }
-        }
-    });
-
-    document.addEventListener('input', e => {
-        if(e.target.id === 'searchInput') renderLibraryList();
-    });
-
-    await renderView('home', null, attachViewEventListeners);
-    updateLangSlider();
-
-    initializeFirebase();
-}
-
-document.addEventListener("DOMContentLoaded", init);
