@@ -114,11 +114,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .loader-dark { width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.2); border-top: 3px solid #333; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     
-    /* --- UPDATED: Photo Collage Grid --- */
     .photo-collage {
         display: grid;
         gap: 0.75rem;
-        grid-template-columns: repeat(4, 1fr); /* Always 4 columns */
+        grid-template-columns: repeat(4, 1fr);
     }
     .collage-item {
         cursor: pointer;
@@ -127,7 +126,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         transition: box-shadow 0.3s ease, transform 0.3s ease;
         background-color: #f0f2f5;
-        aspect-ratio: 1 / 1; /* Make items square */
+        aspect-ratio: 1 / 1;
     }
     .collage-item:hover {
         box-shadow: 0 10px 15px rgba(0,0,0,0.1);
@@ -172,7 +171,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     /* --- UPDATED: Stage Manager Effect & Column Layout --- */
     @media (min-width: 1024px) {
         #recipeFormulasView {
-            gap: 0.5rem; /* Reduced gap between panels */
+            gap: 0.25rem; /* Further reduced gap */
         }
         #recipeListPanel, #recipeMainPanel {
             transition: flex-basis 0.5s var(--stage-manager-ease), 
@@ -181,19 +180,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             will-change: flex-basis, transform, opacity;
         }
         #recipeListPanel {
-            flex-basis: 30%; /* Adjusted width for left panel */
+            flex-basis: 25%; /* Adjusted width for left panel */
             transform: translateX(0%);
         }
         #recipeMainPanel {
-            flex-basis: 70%; /* Adjusted width for right panel */
+            flex-basis: 75%; /* Adjusted width for right panel */
         }
         #recipeFormulasView.stage-inactive #recipeListPanel {
-            flex-basis: 15%; /* Further shrink inactive panel */
+            flex-basis: 12%; /* Further shrink inactive panel */
             transform: translateX(-50%);
             opacity: 0.6;
         }
         #recipeFormulasView.stage-inactive #recipeMainPanel {
-            flex-basis: 85%; /* Expand active panel more */
+            flex-basis: 88%; /* Expand active panel more */
         }
     }
 
@@ -285,3 +284,4 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 </body>
 </html>
+
