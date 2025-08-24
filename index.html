@@ -31,12 +31,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
 <style>
     /* ==============================================
-    NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+    NÂNG CẤP ANIMATION V2 - CẬP NHẬT NGÀY 25/08/2025
     ==============================================
-    - Thêm biến --ease-apple cho cảm giác mượt mà, tinh tế hơn.
-    - Cập nhật các transition hiện có để sử dụng easing mới và tối ưu hóa thuộc tính.
-    - Thêm animation cho Modal và Panel trên di động để chúng xuất hiện mượt mà thay vì đột ngột.
-    - Tinh chỉnh hiệu ứng hover và keyframes để tăng tính tương tác và cảm giác "satisfying".
+    - Thêm `will-change` để gợi ý trình duyệt sử dụng tăng tốc phần cứng (GPU).
+    - Thêm keyframes và class cho animation của Quiz để chuyển hoàn toàn sang CSS.
     */
     html { scroll-behavior: smooth; }
     :root {
@@ -47,11 +45,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --glass-border: rgba(0, 0, 0, 0.07);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
-        
-        /* EASING FUNCTIONS - YẾU TỐ QUYẾT ĐỊNH CẢM GIÁC "APPLE" */
-        --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1); /* Original - Good for exits */
-        --ease-apple: cubic-bezier(0.4, 0, 0.2, 1); /* NEW - Smoother, more responsive for UI elements */
-        --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1); /* Specific for panel sliding */
+        --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
+        --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
+        --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1);
     }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
@@ -79,14 +75,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         border: 1px solid var(--glass-border);    
         box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
         border-radius: 24px;
-        transition: all 0.4s var(--ease-apple); /* UPDATED */
+        transition: all 0.4s var(--ease-apple);
     }
     @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
     
     .recipe-item {
         border-left: 4px solid transparent;
-        transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple), box-shadow 0.4s var(--ease-apple); /* UPDATED */
+        transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple), box-shadow 0.4s var(--ease-apple);
         position: relative;
+        will-change: transform, box-shadow; /* UPDATED: Hardware acceleration hint */
     }
     .recipe-item.selected {    
         background-color: white;
@@ -102,23 +99,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .btn { 
         border-radius: 9999px; 
         font-weight: 600; 
-        transition: transform 0.25s var(--ease-apple), background-color 0.25s var(--ease-apple), box-shadow 0.3s var(--ease-apple); /* UPDATED */
+        transition: transform 0.25s var(--ease-apple), background-color 0.25s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
         display: inline-flex; 
         align-items: center; 
         justify-content: center; 
         gap: 0.6rem; 
         transform: scale(1); 
+        will-change: transform, box-shadow; /* UPDATED: Hardware acceleration hint */
     }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
     .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.3); }
     .btn-primary:hover:not(:disabled) { 
         background-color: var(--primary-accent-darker); 
         transform: translateY(-3px) scale(1.03); 
-        box-shadow: 0 8px 25px rgba(0, 118, 255, 0.4); /* UPDATED */
+        box-shadow: 0 8px 25px rgba(0, 118, 255, 0.4);
     }
     .btn:active:not(:disabled) { transform: translateY(0px) scale(0.97); }
 
-    /* VIEW TRANSITIONS - UPDATED for a smoother feel */
+    .view-transition, .view-transition-out {
+        will-change: transform, opacity; /* UPDATED: Hardware acceleration hint */
+    }
     .view-transition { animation: fadeInScale 0.6s var(--ease-apple) forwards; }
     .view-transition-out { animation: fadeOutScale 0.4s var(--ease-apple) forwards; position: absolute; }
     @keyframes fadeInScale { 
@@ -139,7 +139,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .sleek-scrollbar { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .sleek-scrollbar::-webkit-scrollbar { display: none; }
 
-    /* MODAL ANIMATIONS - NEW */
     .modal.hidden { display: none; }
     .modal {
         opacity: 0;
@@ -155,23 +154,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         transform: scale(0.95) translateY(15px);
         opacity: 0;
         transition: transform 0.35s var(--ease-apple), opacity 0.35s var(--ease-apple);
+        will-change: transform, opacity; /* UPDATED: Hardware acceleration hint */
     }
     .modal.visible .modal-panel {
         transform: scale(1) translateY(0);
         opacity: 1;
     }
     
-    /* MOBILE PANEL ANIMATION - NEW */
     #recipeDetailPanelMobile {
         opacity: 0;
         transform: translateX(100%);
         transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple);
         pointer-events: none;
+        will-change: transform, opacity; /* UPDATED: Hardware acceleration hint */
     }
     #recipeDetailPanelMobile.visible {
         opacity: 1;
         transform: translateX(0);
         pointer-events: auto;
+    }
+
+    /* NEW: Quiz Question Animations */
+    .quiz-question-container {
+        animation: quizFadeIn 0.4s var(--ease-apple) forwards;
+    }
+    .quiz-question-container.exiting {
+        animation: quizFadeOut 0.3s var(--ease-apple) forwards;
+    }
+    @keyframes quizFadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes quizFadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-15px); }
     }
 
     .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
