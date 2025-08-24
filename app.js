@@ -79,38 +79,18 @@ function attachViewEventListeners(viewName) {
 
         // --- Stage Manager Effect Logic for Desktop ---
         const view = document.getElementById('recipeFormulasView');
-        if (view && window.innerWidth >= 768) {
-            let stageTimeout;
+        const listPanel = document.getElementById('recipeListPanel');
+        const mainPanel = document.getElementById('recipeMainPanel');
 
-            const setStageActive = () => {
-                view.classList.remove('stage-inactive');
-                clearTimeout(stageTimeout);
-            };
-            
-            const setStageInactive = (delay = 300) => {
-                clearTimeout(stageTimeout);
-                stageTimeout = setTimeout(() => {
-                    view.classList.add('stage-inactive');
-                }, delay);
-            };
+        if (view && listPanel && mainPanel && window.innerWidth >= 1024) {
+            const setStageActive = () => view.classList.remove('stage-inactive');
+            const setStageInactive = () => view.classList.add('stage-inactive');
 
-            // Set inactive initially after a delay for the animation in
-            setStageInactive(1500);
+            // Set inactive by default when the view loads
+            setTimeout(setStageInactive, 500);
 
-            // Use a trigger area on the left to activate the panel
-            const triggerArea = document.createElement('div');
-            Object.assign(triggerArea.style, {
-                position: 'absolute',
-                left: '0',
-                top: '0',
-                bottom: '0',
-                width: '40px', // 40px trigger zone
-                zIndex: '10'
-            });
-            view.appendChild(triggerArea);
-            
-            triggerArea.addEventListener('mouseenter', setStageActive);
-            view.addEventListener('mouseleave', setStageInactive);
+            listPanel.addEventListener('mouseenter', setStageActive);
+            mainPanel.addEventListener('mouseenter', setStageInactive);
         }
         // --- End Stage Manager ---
 
