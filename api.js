@@ -1,8 +1,11 @@
 /**
  * api.js
- * This module handles all interactions with external services:
- * 1. Google Firebase/Firestore for fetching trending data.
- * 2. Google Gemini API for generative AI features.
+ * This module handles all interactions with external services.
+ * * ==============================================
+ * NÂNG CẤP TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
+ * ==============================================
+ * - Cập nhật `callGeminiAPI` để chấp nhận dữ liệu hình ảnh (base64).
+ * - Tự động chuyển đổi sang model Vision (`gemini-pro-vision`) khi có hình ảnh.
  */
 
 // --- Firebase SDK Imports ---
@@ -11,80 +14,81 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Local Module Imports ---
-import { state, __firebase_config, __app_id, isAIEnabled, API_URL } from './state.js';
+import { state, __firebase_config, __app_id, isAIEnabled, API_KEY } from './state.js';
 
 /**
  * Initializes the Firebase application, signs in the user anonymously,
  * and sets the Firestore database instance in the global state.
- * This is called once when the application starts.
  */
 export async function initializeFirebase() {
-    // Check if the Firebase config has been injected by the build script.
     if (typeof __firebase_config === 'undefined' || __firebase_config.startsWith("%%")) {
-        console.warn("Firebase config not found or not replaced by build script. Trending feature will be disabled.");
+        console.warn("Firebase config not found. Trending feature will be disabled.");
         return;
     }
     try {
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
-        state.firebase.db = getFirestore(app); // Store the db instance in the central state
+        state.firebase.db = getFirestore(app);
         const auth = getAuth(app);
         await signInAnonymously(auth);
         console.log("Firebase initialized and user signed in anonymously.");
     } catch (error) {
         console.error("Firebase initialization failed:", error);
-        state.firebase.db = null; // Ensure db is null on failure
+        state.firebase.db = null;
     }
 }
 
 /**
  * Fetches the latest trending recipe IDs from Firestore.
- * If Firestore is unavailable or the data is missing, it returns a hardcoded fallback list.
- * @returns {Promise<string[]>} A promise that resolves to an array of recipe IDs.
  */
 export async function fetchTrendingRecipeIds() {
-    // A fallback list to ensure the feature always works, even if Firebase fails.
     const fallbackIDs = ["scl-001", "scl-007", "scl-008", "scl-015", "scl-027"];
-
     if (!state.firebase.db) {
-        console.warn("Firebase not available, using dummy trending data.");
         return fallbackIDs;
     }
-
     try {
         const docRef = doc(state.firebase.db, `artifacts/${__app_id}/public/data/trending/latest`);
         const docSnap = await getDoc(docRef);
-
         if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
-            console.log("Fetched trending data from Firestore:", docSnap.data().ids);
             return docSnap.data().ids;
         } else {
-            console.warn("Trending data document not found or is empty in Firestore. Using fallback data.");
             return fallbackIDs;
         }
     } catch (error) {
-        console.error("Error fetching trending data from Firestore, using fallback data:", error);
+        console.error("Error fetching trending data:", error);
         return fallbackIDs;
     }
 }
 
 /**
- * Makes a POST request to the Gemini API to generate content.
+ * Makes a POST request to the Gemini API to generate content, supporting both text and vision models.
  * @param {string} prompt - The complete prompt to send to the API.
  * @param {AbortSignal} signal - An AbortSignal to allow for request cancellation.
+ * @param {string|null} [base64ImageData=null] - Optional base64 encoded image data.
  * @returns {Promise<object>} A promise that resolves to the parsed JSON response from the API.
- * @throws {Error} Throws an error if the API key is not configured, the network request fails, or the response is invalid.
  */
-export async function callGeminiAPI(prompt, signal) {
+export async function callGeminiAPI(prompt, signal, base64ImageData = null) {
     if (!isAIEnabled) {
-        console.error("Gemini API key not configured.");
         throw new Error("API key not configured.");
     }
 
+    const model = base64ImageData ? 'gemini-pro-vision' : 'gemini-2.5-flash-preview-05-20';
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
+
+    const parts = [{ text: prompt }];
+    if (base64ImageData) {
+        parts.push({
+            inline_data: {
+                mime_type: 'image/jpeg',
+                data: base64ImageData
+            }
+        });
+    }
+
     const payload = {
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ parts: parts }],
         generationConfig: {
-            responseMimeType: "application/json", // Request a JSON response
+            responseMimeType: "application/json",
         }
     };
 
@@ -92,23 +96,20 @@ export async function callGeminiAPI(prompt, signal) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        signal: signal // Pass the signal to the fetch request
+        signal: signal
     });
 
     if (!response.ok) {
         const errorText = await response.text();
-        console.error("Gemini API Error:", response.status, errorText);
         throw new Error(`API Error: ${response.status} ${errorText}`);
     }
 
     const result = await response.json();
 
-    // Validate the structure of the API response before parsing
     if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
         console.error("Invalid API response structure:", result);
         throw new Error("Invalid API response structure.");
     }
     
-    // The model's response is a stringified JSON, so we need to parse it.
     return JSON.parse(result.candidates[0].content.parts[0].text);
 }
