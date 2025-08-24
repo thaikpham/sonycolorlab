@@ -1,11 +1,15 @@
 /**
  * quiz.js
- * * This module encapsulates all logic and data related to the "Find My Color" quiz.
- * It's designed to be self-contained and is initialized by the main app.js script.
+ * This module encapsulates all logic and data related to the "Find My Color" quiz.
+ * * ==============================================
+ * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+ * ==============================================
+ * - Xóa bỏ việc điều khiển trực tiếp DOM (thêm/xóa class 'hidden') khỏi module này.
+ * - Việc hiển thị/ẩn modal giờ đây sẽ do `app.js` (nơi gọi các hàm này) chịu trách nhiệm,
+ * sử dụng các hàm `openModal`/`closeModal` mới để đảm bảo có animation.
  */
 
 // --- QUIZ DATA ---
-// An array of question objects, each with question text and answer options.
 const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
@@ -43,19 +47,7 @@ const quizQuestions = [
     }
 ];
 
-/**
- * The Quiz class manages the state and behavior of the color finder quiz.
- */
 export class Quiz {
-    /**
-     * @param {object} dependencies - Dependencies from the main app.
-     * @param {object} dependencies.state - The main application state object.
-     * @param {function} dependencies.getCurrentLanguage - Function to get the current language.
-     * @param {Array} dependencies.recipesData - The core recipe data.
-     * @param {object} dependencies.recipeImages - The recipe image data.
-     * @param {function} dependencies.applyTranslations - Function to apply translations to the DOM.
-     * @param {function} dependencies.renderView - Function to render different views of the app.
-     */
     constructor(dependencies) {
         this.state = dependencies.state;
         this.getCurrentLanguage = dependencies.getCurrentLanguage;
@@ -65,54 +57,40 @@ export class Quiz {
         this.renderView = dependencies.renderView;
     }
 
-    /**
-     * Starts the quiz, resetting state and showing the modal.
-     */
     start() {
         this.state.quiz.currentQuestionIndex = 0;
         this.state.quiz.answers = [];
-        document.getElementById('quizModal').classList.remove('hidden');
+        // REMOVED: document.getElementById('quizModal').classList.remove('hidden');
         this.renderQuestion();
     }
 
-    /**
-     * Closes the quiz modal.
-     */
     close() {
-        document.getElementById('quizModal').classList.add('hidden');
+        // REMOVED: document.getElementById('quizModal').classList.add('hidden');
+        // This method is now primarily for state reset if needed in the future.
+        // The visibility is handled by the caller in app.js.
     }
 
-    /**
-     * Handles a user's answer selection.
-     * @param {Event} e - The click event from the answer button.
-     */
     handleAnswer(e) {
         const selectedOption = e.target.closest('.quiz-option');
         if (!selectedOption) return;
 
-        // Visually mark the selected option
         document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
         selectedOption.classList.add('selected');
 
-        // Store the answer tags and advance to the next question
         const tags = selectedOption.dataset.tags.split(',');
         this.state.quiz.answers.push(...tags);
         setTimeout(() => {
             this.state.quiz.currentQuestionIndex++;
             this.renderQuestion();
-        }, 150); // A short delay for visual feedback
+        }, 150);
     }
 
-    /**
-     * Renders the current quiz question or the result screen.
-     */
     renderQuestion() {
         const quizContent = document.getElementById('quizContent');
         const progressBar = document.getElementById('quizProgressBar');
         const qIndex = this.state.quiz.currentQuestionIndex;
 
         const render = () => {
-            // If all questions are answered, show the result
             if (qIndex >= quizQuestions.length) {
                 this.calculateAndShowResult();
                 return;
@@ -120,16 +98,15 @@ export class Quiz {
 
             const questionData = quizQuestions[qIndex];
             const hasThreeOptions = questionData.options.length === 3;
-            const gridClass = `quiz-options-grid ${hasThreeOptions ? 'has-three-options' : ''}`;
+            const gridClass = `grid gap-4 ${hasThreeOptions ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
 
-            // Build the HTML for the current question
             quizContent.innerHTML = `
                 <div class="quiz-question-container">
                     <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[this.getCurrentLanguage()]}</h3>
                     <div class="${gridClass}">
                         ${questionData.options.map(opt => `
-                            <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4" data-tags="${opt.tags.join(',')}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
+                            <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-transparent bg-gray-100 hover:bg-gray-200 transition-all duration-200" data-tags="${opt.tags.join(',')}">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0 text-gray-500">
                                     ${opt.icon}
                                 </svg>
                                 <span class="font-semibold text-lg">${opt.text[this.getCurrentLanguage()]}</span>
@@ -138,42 +115,40 @@ export class Quiz {
                     </div>
                 </div>`;
             
-            // Update the progress bar
             progressBar.style.width = `${((qIndex) / quizQuestions.length) * 100}%`;
         };
 
-        // Animate the transition between questions
         const container = quizContent.querySelector('.quiz-question-container');
         if (container) {
-            container.classList.add('exiting');
-            setTimeout(() => { render(); }, 150);
+            container.style.opacity = 0;
+            setTimeout(() => { 
+                render(); 
+                const newContainer = quizContent.querySelector('.quiz-question-container');
+                if (newContainer) {
+                    newContainer.style.opacity = 0;
+                    setTimeout(() => newContainer.style.opacity = 1, 10);
+                }
+            }, 150);
         } else {
             render();
         }
     }
 
-    /**
-     * Calculates the best recipe match and displays the result.
-     */
     calculateAndShowResult() {
-        // Score each recipe based on matching tags from user answers
         const scores = this.recipesData.map(recipe => {
             let score = recipe.tags.reduce((acc, tag) => acc + (this.state.quiz.answers.includes(tag) ? 1 : 0), 0);
-            // Give a bonus for B&W selection
             if (this.state.quiz.answers.includes('bw') && recipe.type === 'bw') { 
                 score += 2; 
             }
             return { id: recipe.id, score: score };
         });
 
-        // Find the recipe with the highest score
         scores.sort((a, b) => b.score - a.score);
         const bestMatch = this.recipesData.find(r => r.id === scores[0].id);
 
         const quizContent = document.getElementById('quizContent');
         document.getElementById('quizProgressBar').style.width = '100%';
 
-        // Build the HTML for the result screen
         quizContent.innerHTML = `
             <div class="text-center view-transition">
                 <h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3>
