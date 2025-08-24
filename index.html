@@ -40,6 +40,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
+        --stage-manager-ease: cubic-bezier(0.4, 0, 0.2, 1);
     }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
@@ -164,6 +165,37 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     #trendingContainer { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards; }
     .trending-item { background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.05); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
+
+    /* --- Stage Manager Effect --- */
+    @media (min-width: 768px) {
+        #recipeFormulasView {
+            perspective: 2000px;
+            overflow: hidden;
+        }
+        #recipeListPanel {
+            transition: transform 0.6s var(--stage-manager-ease), 
+                        opacity 0.6s var(--stage-manager-ease), 
+                        flex-basis 0.6s var(--stage-manager-ease);
+            transform-origin: left center;
+            flex-basis: 33.333333%; /* md:w-1/3 */
+            will-change: transform, opacity, flex-basis;
+        }
+        #recipeMainPanel {
+            transition: flex-basis 0.6s var(--stage-manager-ease);
+            flex-basis: 66.666667%; /* md:w-2/3 */
+            will-change: flex-basis;
+        }
+        #recipeFormulasView.stage-inactive #recipeListPanel {
+            flex-basis: 12%; /* Shrink */
+            transform: translateX(-60%) scale(0.9) rotateY(35deg);
+            opacity: 0.4;
+            cursor: pointer;
+        }
+        #recipeFormulasView.stage-inactive #recipeMainPanel {
+            flex-basis: 88%; /* Expand */
+        }
+    }
+
 </style>
 </head>
 <body class="antialiased">
