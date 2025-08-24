@@ -171,7 +171,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     /* --- UPDATED: Stage Manager Effect & Column Layout --- */
     @media (min-width: 1024px) {
         #recipeFormulasView {
-            gap: 0.25rem; /* Default gap for active state */
+            gap: 0.75rem; /* Wider gap for active state */
             transition: gap 0.5s var(--stage-manager-ease);
         }
         #recipeFormulasView.stage-inactive {
@@ -191,12 +191,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             flex-basis: 75%;
         }
         #recipeFormulasView.stage-inactive #recipeListPanel {
-            flex-basis: 12%; 
+            flex-basis: 10%; /* Shrink inactive panel further */
             transform: translateX(-50%);
             opacity: 0.6;
         }
         #recipeFormulasView.stage-inactive #recipeMainPanel {
-            flex-basis: 88%; 
+            flex-basis: 90%; /* Expand active panel more */
         }
     }
 
