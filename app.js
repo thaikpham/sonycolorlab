@@ -77,27 +77,42 @@ function attachViewEventListeners(viewName) {
         renderLibraryList();
         renderLibraryDetails();
 
-        // Stage Manager Effect Logic for Desktop
+        // --- Stage Manager Effect Logic for Desktop ---
         const view = document.getElementById('recipeFormulasView');
-        const listPanel = document.getElementById('recipeListPanel');
+        if (view && window.innerWidth >= 768) {
+            let stageTimeout;
 
-        const setInactive = () => {
-            if (window.innerWidth >= 768) {
-                view?.classList.add('stage-inactive');
-            }
-        };
-
-        const setActive = () => {
-            view?.classList.remove('stage-inactive');
-        };
-
-        if (view && listPanel) {
-            // Set inactive by default
-            setTimeout(setInactive, 100); 
+            const setStageActive = () => {
+                view.classList.remove('stage-inactive');
+                clearTimeout(stageTimeout);
+            };
             
-            listPanel.addEventListener('mouseenter', setActive);
-            listPanel.addEventListener('mouseleave', setInactive);
+            const setStageInactive = (delay = 300) => {
+                clearTimeout(stageTimeout);
+                stageTimeout = setTimeout(() => {
+                    view.classList.add('stage-inactive');
+                }, delay);
+            };
+
+            // Set inactive initially after a delay for the animation in
+            setStageInactive(1500);
+
+            // Use a trigger area on the left to activate the panel
+            const triggerArea = document.createElement('div');
+            Object.assign(triggerArea.style, {
+                position: 'absolute',
+                left: '0',
+                top: '0',
+                bottom: '0',
+                width: '40px', // 40px trigger zone
+                zIndex: '10'
+            });
+            view.appendChild(triggerArea);
+            
+            triggerArea.addEventListener('mouseenter', setStageActive);
+            view.addEventListener('mouseleave', setStageInactive);
         }
+        // --- End Stage Manager ---
 
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
