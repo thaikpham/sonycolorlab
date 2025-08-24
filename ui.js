@@ -210,8 +210,8 @@ const viewTemplates = {
     home: () => `
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
             <div class="w-full max-w-2xl mx-auto text-center">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" data-translate-key="landingTitle"></h1>
-                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" data-translate-key="landingSubtitle"></p>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;" data-translate-key="landingTitle"></h1>
+                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
                 <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center">
                     <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
@@ -532,4 +532,3 @@ export function displayTrendingRecipes(trendingIDs) {
     applyTranslations();
     container.style.display = 'block';
 }
-
