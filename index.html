@@ -108,12 +108,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
     }
     @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
-    .sleek-scrollbar { -webkit-overflow-scrolling: touch; }
-    .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
-    .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .sleek-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0); border-radius: 20px; border: 3px solid transparent; }
-    .sleek-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); }
-    .sleek-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.4); }
+    .sleek-scrollbar { -webkit-overflow-scrolling: touch; scrollbar-width: none; /* Firefox */ }
+    .sleek-scrollbar::-webkit-scrollbar { display: none; /* Safari and Chrome */ }
     .modal.hidden { display: none; }
     .modal-panel { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e5e7eb; }
     .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
@@ -170,9 +166,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             --left-panel-collapsed-width: 15%;
         }
         #recipeListPanel, #recipeMainPanel {
-            transition: width 0.6s var(--stage-manager-ease), 
-                        transform 0.6s var(--stage-manager-ease),
-                        opacity 0.6s var(--stage-manager-ease);
+            transition: all 0.5s var(--stage-manager-ease);
             will-change: width, transform, opacity;
         }
         #recipeListPanel {
