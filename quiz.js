@@ -2,11 +2,10 @@
  * quiz.js
  * This module encapsulates all logic and data related to the "Find My Color" quiz.
  * * ==============================================
- * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+ * NÂNG CẤP ANIMATION V2 - CẬP NHẬT NGÀY 25/08/2025
  * ==============================================
- * - Xóa bỏ việc điều khiển trực tiếp DOM (thêm/xóa class 'hidden') khỏi module này.
- * - Việc hiển thị/ẩn modal giờ đây sẽ do `app.js` (nơi gọi các hàm này) chịu trách nhiệm,
- * sử dụng các hàm `openModal`/`closeModal` mới để đảm bảo có animation.
+ * - Refactor `renderQuestion` to use CSS classes for smooth transitions
+ * instead of direct style manipulation, eliminating jank.
  */
 
 // --- QUIZ DATA ---
@@ -60,14 +59,11 @@ export class Quiz {
     start() {
         this.state.quiz.currentQuestionIndex = 0;
         this.state.quiz.answers = [];
-        // REMOVED: document.getElementById('quizModal').classList.remove('hidden');
         this.renderQuestion();
     }
 
     close() {
-        // REMOVED: document.getElementById('quizModal').classList.add('hidden');
-        // This method is now primarily for state reset if needed in the future.
-        // The visibility is handled by the caller in app.js.
+        // Visibility is handled by the caller in app.js.
     }
 
     handleAnswer(e) {
@@ -82,7 +78,7 @@ export class Quiz {
         setTimeout(() => {
             this.state.quiz.currentQuestionIndex++;
             this.renderQuestion();
-        }, 150);
+        }, 300); // Increased delay slightly for a better feel
     }
 
     renderQuestion() {
@@ -90,7 +86,7 @@ export class Quiz {
         const progressBar = document.getElementById('quizProgressBar');
         const qIndex = this.state.quiz.currentQuestionIndex;
 
-        const render = () => {
+        const renderNewContent = () => {
             if (qIndex >= quizQuestions.length) {
                 this.calculateAndShowResult();
                 return;
@@ -118,19 +114,12 @@ export class Quiz {
             progressBar.style.width = `${((qIndex) / quizQuestions.length) * 100}%`;
         };
 
-        const container = quizContent.querySelector('.quiz-question-container');
-        if (container) {
-            container.style.opacity = 0;
-            setTimeout(() => { 
-                render(); 
-                const newContainer = quizContent.querySelector('.quiz-question-container');
-                if (newContainer) {
-                    newContainer.style.opacity = 0;
-                    setTimeout(() => newContainer.style.opacity = 1, 10);
-                }
-            }, 150);
+        const currentContainer = quizContent.querySelector('.quiz-question-container');
+        if (currentContainer) {
+            currentContainer.classList.add('exiting');
+            currentContainer.addEventListener('animationend', renderNewContent, { once: true });
         } else {
-            render();
+            renderNewContent();
         }
     }
 
