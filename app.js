@@ -77,6 +77,23 @@ function attachViewEventListeners(viewName) {
         renderLibraryList();
         renderLibraryDetails();
 
+        // --- Stage Manager Effect Logic for Desktop ---
+        const view = document.getElementById('recipeFormulasView');
+        const listPanel = document.getElementById('recipeListPanel');
+        const mainPanel = document.getElementById('recipeMainPanel');
+
+        if (view && listPanel && mainPanel && window.innerWidth >= 1024) {
+            const setStageActive = () => view.classList.remove('stage-inactive');
+            const setStageInactive = () => view.classList.add('stage-inactive');
+
+            // Set inactive by default when the view loads
+            setTimeout(setStageInactive, 500);
+
+            listPanel.addEventListener('mouseenter', setStageActive);
+            mainPanel.addEventListener('mouseenter', setStageInactive);
+        }
+        // --- End Stage Manager ---
+
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
             // Use ResizeObserver to ensure the chart renders only when the container has dimensions
@@ -118,6 +135,16 @@ async function init() {
         const recipeItem = target.closest('.recipe-item');
         const trendingItem = target.closest('.trending-item');
         const collageItem = target.closest('.collage-item');
+        const d3Node = target.closest('.color-map-node-group');
+
+        // D3 Chart Node Selection
+        if (d3Node) {
+            const recipeData = d3.select(d3Node).datum();
+            if (recipeData && recipeData.id) {
+                handleRecipeSelection(recipeData.id);
+            }
+            return;
+        }
 
         // Navigation
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
