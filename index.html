@@ -87,11 +87,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         background-color: rgba(255, 255, 255, 0.8);
         transform: translateX(2px);
     }
-    .recipe-item.hover-highlight:not(.selected) {
-        background-color: rgba(230, 242, 255, 0.9);
-        box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.1);
-        transform: translateX(2px);
-    }
     .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; transform: scale(1); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.3); }
@@ -127,13 +122,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
     .photo-collage.images-3 { grid-template-columns: repeat(2, 1fr); }
     .photo-collage.images-3 > .collage-item:nth-child(1) { grid-column: span 2; }
-    .photo-collage.images-4 { grid-template-columns: repeat(3, 1fr); }
-    .photo-collage.images-4 > .collage-item:nth-child(1) { grid-column: span 3; }
-    .photo-collage.images-5 { grid-template-columns: repeat(3, 1fr); }
-    .photo-collage.images-5 > .collage-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .photo-collage.images-4 { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+    .photo-collage.images-5 { grid-template-columns: repeat(6, 1fr); }
+    .photo-collage.images-5 > .collage-item:nth-child(1) { grid-column: span 3; grid-row: span 2; }
+    .photo-collage.images-5 > .collage-item:nth-child(2) { grid-column: span 3; }
+    .photo-collage.images-5 > .collage-item:nth-child(3) { grid-column: span 2; }
+    .photo-collage.images-5 > .collage-item:nth-child(4) { grid-column: span 2; }
+    .photo-collage.images-5 > .collage-item:nth-child(5) { grid-column: span 2; }
     .photo-collage.images-6 { grid-template-columns: repeat(3, 1fr); }
-    .photo-collage.images-6 > .collage-item:nth-child(1) { grid-column: span 2; }
-    .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
     #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     #lightbox.visible { opacity: 1; pointer-events: auto; }
     #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 1; object-fit: contain; }
@@ -162,10 +158,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     /* --- Stage Manager Effect --- */
     @media (min-width: 1024px) {
         #recipeFormulasView {
-            gap: 0.5rem; /* Reduce gap between panels */
+            gap: 0.75rem; /* Adjust gap between panels */
         }
         #recipeListPanel, #recipeMainPanel {
-            transition: all 0.5s var(--stage-manager-ease);
+            transition: flex-basis 0.5s var(--stage-manager-ease), 
+                        transform 0.5s var(--stage-manager-ease),
+                        opacity 0.5s var(--stage-manager-ease);
             will-change: flex-basis, transform, opacity;
         }
         #recipeListPanel {
@@ -176,12 +174,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             flex-basis: 66.666667%; /* md:w-2/3 */
         }
         #recipeFormulasView.stage-inactive #recipeListPanel {
-            flex-basis: 18%;
+            flex-basis: 20%;
             transform: translateX(-50%);
             opacity: 0.6;
         }
         #recipeFormulasView.stage-inactive #recipeMainPanel {
-            flex-basis: 82%;
+            flex-basis: 80%;
         }
     }
 
@@ -266,6 +264,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
 </div>
+
 <!-- SCRIPT IMPORTS -->
 <!-- The main application logic is now loaded as a module -->
 <script type="module" src="app.js"></script>
