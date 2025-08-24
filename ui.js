@@ -184,10 +184,6 @@ function createFullRecipeHTML(recipe) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
                 <span data-translate-key="tweakWithAI"></span>
             </button>
-            <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 shadow-lg shadow-purple-500/30" id="captionAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
-                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text w-5 h-5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
-                <span data-translate-key="captionFromAI"></span>
-            </button>
             <button class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30" id="downloadPdfBtn" data-recipe-id="${recipe.id}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-5 w-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 <span data-translate-key="downloadPDFBtn"></span>
@@ -224,18 +220,18 @@ const viewTemplates = {
             </div>
         </div>`,
     recipeFormulas: () => `
-        <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row gap-6 absolute inset-0 view-transition">
-            <aside id="recipeListPanel" class="w-full md:w-2/5 lg:w-1/3 flex-shrink-0 glass-panel p-4 md:p-6 flex flex-col md:flex">
+        <div id="recipeFormulasView" class="w-full h-full flex flex-row absolute inset-0 view-transition">
+            <aside id="recipeListPanel" class="h-full flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                     <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
                     </button>
                 </div>
-                <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar pr-2 -mr-2"></div>
+                <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar"></div>
             </aside>
-            <main id="recipeMainPanel" class="w-full md:w-3/5 lg:w-2/3 flex flex-col min-h-0 hidden md:flex">
-                <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
+            <main id="recipeMainPanel" class="h-full flex-grow flex flex-col min-h-0">
+                <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
                         <div id="welcomeText" class="text-center">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
