@@ -252,7 +252,6 @@ const viewTemplates = {
                             </a>
                         </div>
                         <div id="colorMapContainer" class="flex-grow w-full"></div>
-                        <div id="trendingContainer" class="w-full mt-4"></div>
                     </div>
                     <div id="recipeContent" class="hidden"></div>
                 </div>
@@ -507,39 +506,4 @@ export function renderLibraryDetails() {
         <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
     `;
     applyTranslations();
-}
-
-/**
- * Renders the trending recipes section based on data from Firestore.
- * @param {string[]} trendingIDs - An array of recipe IDs to display.
- */
-export function displayTrendingRecipes(trendingIDs) {
-    const container = document.getElementById('trendingContainer');
-    if (!container) return;
-
-    const trendingRecipes = trendingIDs.map(id => recipesData.find(r => r.id === id)).filter(Boolean);
-
-    if (trendingRecipes.length === 0) {
-        container.innerHTML = '';
-        container.style.display = 'none';
-        return;
-    }
-
-    container.innerHTML = `
-        <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            ${trendingRecipes.map(recipe => `
-                <div class="trending-item rounded-xl p-3 cursor-pointer"
-                     data-recipe-id="${recipe.id}"
-                     style="--glow-color: ${recipe.personalityColor};">
-                    <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
-                        <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[getCurrentLanguage()]}</p>
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-    applyTranslations();
-    container.style.display = 'block';
 }
