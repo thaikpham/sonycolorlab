@@ -2,10 +2,10 @@
  * api.js
  * This module handles all interactions with external services.
  * * ==============================================
- * NÂNG CẤP TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
+ * GỠ BỎ TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
  * ==============================================
- * - Cập nhật `callGeminiAPI` để chấp nhận dữ liệu hình ảnh (base64).
- * - Tự động chuyển đổi sang model Vision (`gemini-pro-vision`) khi có hình ảnh.
+ * - Đã gỡ bỏ logic xử lý hình ảnh và model Vision.
+ * - Hàm `callGeminiAPI` giờ chỉ xử lý yêu cầu dạng văn bản.
  */
 
 // --- Firebase SDK Imports ---
@@ -61,32 +61,20 @@ export async function fetchTrendingRecipeIds() {
 }
 
 /**
- * Makes a POST request to the Gemini API to generate content, supporting both text and vision models.
+ * Makes a POST request to the Gemini API to generate content.
  * @param {string} prompt - The complete prompt to send to the API.
  * @param {AbortSignal} signal - An AbortSignal to allow for request cancellation.
- * @param {string|null} [base64ImageData=null] - Optional base64 encoded image data.
  * @returns {Promise<object>} A promise that resolves to the parsed JSON response from the API.
  */
-export async function callGeminiAPI(prompt, signal, base64ImageData = null) {
+export async function callGeminiAPI(prompt, signal) {
     if (!isAIEnabled) {
         throw new Error("API key not configured.");
     }
 
-    const model = base64ImageData ? 'gemini-pro-vision' : 'gemini-2.5-flash-preview-05-20';
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
-
-    const parts = [{ text: prompt }];
-    if (base64ImageData) {
-        parts.push({
-            inline_data: {
-                mime_type: 'image/jpeg',
-                data: base64ImageData
-            }
-        });
-    }
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
 
     const payload = {
-        contents: [{ parts: parts }],
+        contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
             responseMimeType: "application/json",
         }
