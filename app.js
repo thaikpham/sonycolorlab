@@ -1,18 +1,23 @@
 /**
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
- * It imports all necessary modules, orchestrates the application flow,
- * and sets up all global event listeners.
+ * * ==============================================
+ * NÂNG CẤP TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
+ * ==============================================
+ * - Thêm event listeners cho các input file ẩn (`imageUploadInput`, `imageCaptureInput`).
+ * - Gán sự kiện `change` của các input này vào hàm `handleImageUpload` của Quiz.
+ * - Thêm logic để kích hoạt các input file này khi người dùng nhấn nút trong Quiz.
  */
 
 // --- Local Module Imports ---
 import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
+import { parameterExplanations } from './translations.js';
 import { Quiz } from './quiz.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
 import { initializeFirebase } from './api.js';
-import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs } from './ui.js';
+import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal } from './ui.js';
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
     openLightbox,
@@ -24,11 +29,6 @@ import {
 
 // --- CORE APP LOGIC ---
 
-/**
- * Handles the selection of a recipe from the list or chart.
- * Updates the application state and triggers UI re-renders.
- * @param {string} id - The ID of the selected recipe.
- */
 function handleRecipeSelection(id) {
     state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
     state.isMobileDetailActive = !!state.selectedRecipeId;
@@ -37,7 +37,6 @@ function handleRecipeSelection(id) {
     renderLibraryDetails();
     updateChartSelection();
 
-    // Send tracking event to Google Analytics
     if (state.selectedRecipeId) {
         const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
         if (recipe) {
@@ -52,9 +51,6 @@ function handleRecipeSelection(id) {
     }
 }
 
-/**
- * Resets the recipe formula view back to the main chart/welcome screen.
- */
 function resetToChartView() {
     state.selectedRecipeId = null;
     state.isMobileDetailActive = false;
@@ -63,11 +59,6 @@ function resetToChartView() {
     updateChartSelection();
 }
 
-/**
- * Attaches event listeners specific to a newly rendered view.
- * This function is passed as a callback to the renderView function.
- * @param {string} viewName - The name of the view being attached ('home', 'recipeFormulas').
- */
 function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
         initializeBackgroundBlobs();
@@ -76,7 +67,6 @@ function attachViewEventListeners(viewName) {
         renderLibraryList();
         renderLibraryDetails();
 
-        // --- Stage Manager Effect Logic for Desktop ---
         const view = document.getElementById('recipeFormulasView');
         const listPanel = document.getElementById('recipeListPanel');
         const mainPanel = document.getElementById('recipeMainPanel');
@@ -85,21 +75,18 @@ function attachViewEventListeners(viewName) {
             const setStageActive = () => view.classList.remove('stage-inactive');
             const setStageInactive = () => view.classList.add('stage-inactive');
 
-            // Set inactive by default when the view loads
             setTimeout(setStageInactive, 500);
 
             listPanel.addEventListener('mouseenter', setStageActive);
             mainPanel.addEventListener('mouseenter', setStageInactive);
         }
-        // --- End Stage Manager ---
 
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
-            // Use ResizeObserver to ensure the chart renders only when the container has dimensions
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
                      renderColorMapChart('#colorMapContainer', recipesData);
-                     resizeObserver.unobserve(chartContainer); // Stop observing after first render
+                     resizeObserver.unobserve(chartContainer);
                 }
             });
             resizeObserver.observe(chartContainer);
@@ -108,21 +95,15 @@ function attachViewEventListeners(viewName) {
     }
 }
 
-/**
- * Initializes the entire application.
- * Sets up global event listeners and renders the initial view.
- */
 async function init() {
     initLanguage();
 
-    // Initialize the Quiz module, passing necessary dependencies
     state.quiz.instance = new Quiz({
         state,
         getCurrentLanguage,
         recipesData,
         recipeImages,
         applyTranslations,
-        // Pass a wrapper for renderView to ensure the event listener callback is always included
         renderView: (view, id) => renderView(view, id, attachViewEventListeners)
     });
 
@@ -135,7 +116,6 @@ async function init() {
         const collageItem = target.closest('.collage-item');
         const d3Node = target.closest('.color-map-node-group');
 
-        // D3 Chart Node Selection
         if (d3Node) {
             const recipeData = d3.select(d3Node).datum();
             if (recipeData && recipeData.id) {
@@ -144,7 +124,6 @@ async function init() {
             return;
         }
 
-        // Navigation
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
         if (target.closest('#hamburgerBtn')) { document.getElementById('mobileNavMenu').classList.remove('translate-x-full'); return; }
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
@@ -162,7 +141,6 @@ async function init() {
             return;
         }
 
-        // Language Switcher
         if (langBtn) {
             const newLang = langBtn.id === 'langEN' ? 'en' : 'vi';
             setLanguage(newLang);
@@ -170,22 +148,19 @@ async function init() {
             applyTranslations();
             if (state.currentView === 'recipeFormulas') {
                 renderLibraryList();
-                renderLibraryDetails(); // Re-render details to update language
-                renderColorMapChart('#colorMapContainer', recipesData); // Re-render chart for labels
+                renderLibraryDetails();
+                renderColorMapChart('#colorMapContainer', recipesData);
             }
             return;
         }
 
-        // Recipe Selection
         if (recipeItem) { handleRecipeSelection(recipeItem.dataset.recipeId); return; }
         if (collageItem) { openLightbox(collageItem.dataset.recipeId, collageItem.dataset.index); return; }
 
-        // Feature Buttons
         if (target.closest('#downloadPdfBtn')) { generateRecipePdf(target.closest('#downloadPdfBtn').dataset.recipeId); return; }
         if (target.closest('#shareRecipeBtn')) { shareRecipe(target.closest('#shareRecipeBtn').dataset.recipeId); return; }
         if (target.closest('#tweakWithAIBtn')) { openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId); return; }
 
-        // Save Guide Toggle
         if (target.closest('#toggleSaveGuideBtn')) {
             const btn = target.closest('#toggleSaveGuideBtn');
             const content = btn.parentElement.querySelector('#saveGuideContent');
@@ -204,21 +179,42 @@ async function init() {
             return;
         }
 
-        // Quiz Modal Interactions
-        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) { state.quiz.instance.start(); return; }
+        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) {
+            openModal('quizModal');
+            state.quiz.instance.start();
+            return;
+        }
         if (target.closest('#quizModal')) {
-            if (target.closest('#closeQuizBtn')) { state.quiz.instance.close(); return; }
-            if (target.closest('#retakeQuizBtn')) { state.quiz.instance.start(); return; }
+            if (target.closest('#closeQuizBtn')) {
+                closeModal('quizModal');
+                state.quiz.instance.close();
+                return;
+            }
+            if (target.closest('#retakeQuizBtn')) {
+                state.quiz.instance.start();
+                return;
+            }
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
-                state.quiz.instance.close();
+                closeModal('quizModal');
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
                 return;
             }
-            if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
+            // AI Quiz image buttons
+            if (target.closest('#uploadImageBtn')) {
+                document.getElementById('imageUploadInput').click();
+                return;
+            }
+            if (target.closest('#captureImageBtn')) {
+                document.getElementById('imageCaptureInput').click();
+                return;
+            }
+            if (target.closest('.quiz-option')) {
+                state.quiz.instance.handleAnswer(e);
+                return;
+            }
         }
 
-        // AI Lab Modal Interactions
         if (target.closest('#aiLabModal')) {
             if (target.closest('#closeAILabBtn')) { closeAILab(); return; }
             if (target.closest('#cancelAIBtn')) { state.ai.userPrompt = ''; state.ai.generatedRecipe = null; renderAILab(); return; }
@@ -228,7 +224,11 @@ async function init() {
         }
     });
 
-    // Tooltip Listeners
+    // Listen for file selection from hidden inputs
+    document.getElementById('imageUploadInput').addEventListener('change', (e) => state.quiz.instance.handleImageUpload(e));
+    document.getElementById('imageCaptureInput').addEventListener('change', (e) => state.quiz.instance.handleImageUpload(e));
+
+
     document.body.addEventListener('mouseover', (e) => {
         const title = e.target.closest('.parameter-title');
         const tooltipEl = document.getElementById('infoTooltip');
@@ -255,18 +255,14 @@ async function init() {
         }
     });
 
-    // Search Input Listener
     document.addEventListener('input', e => {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 
-    // Initial Render
     await renderView('home', null, attachViewEventListeners);
     updateLangSlider();
 
-    // Initialize Firebase in the background
     initializeFirebase();
 }
 
-// --- APP START ---
 document.addEventListener("DOMContentLoaded", init);

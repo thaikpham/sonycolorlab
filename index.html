@@ -40,6 +40,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
+        --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
         --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1);
     }
     body {
@@ -47,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         background-color: var(--background-light);
         color: var(--text-primary);
         position: relative;
-        overflow: hidden; /* Prevent body scroll, views handle their own scroll */
+        overflow: hidden;
     }
     .bg-blob {
         position: fixed;
@@ -68,13 +69,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         border: 1px solid var(--glass-border);    
         box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
         border-radius: 24px;
-        transition: all 0.4s var(--ease-out-cubic);
+        transition: all 0.4s var(--ease-apple);
     }
     @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
+    
     .recipe-item {
         border-left: 4px solid transparent;
-        transition: all 0.3s var(--ease-out-cubic);
+        transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple), box-shadow 0.4s var(--ease-apple);
         position: relative;
+        will-change: transform, box-shadow;
     }
     .recipe-item.selected {    
         background-color: white;
@@ -87,26 +90,99 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         background-color: rgba(255, 255, 255, 0.8);
         transform: translateX(2px);
     }
-    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; transform: scale(1); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn { 
+        border-radius: 9999px; 
+        font-weight: 600; 
+        transition: transform 0.25s var(--ease-apple), background-color 0.25s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 0.6rem; 
+        transform: scale(1); 
+        will-change: transform, box-shadow;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
     .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.3); }
-    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.35); }
-    .btn:active { transform: translateY(0px) scale(0.97); }
-    .view-transition { animation: fadeInScale 0.7s var(--ease-out-cubic) forwards; }
-    .view-transition-out { animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards; position: absolute; }
-    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-    @keyframes fadeOutScale { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 40px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+    .btn-primary:hover:not(:disabled) { 
+        background-color: var(--primary-accent-darker); 
+        transform: translateY(-3px) scale(1.03); 
+        box-shadow: 0 8px 25px rgba(0, 118, 255, 0.4);
+    }
+    .btn:active:not(:disabled) { transform: translateY(0px) scale(0.97); }
+
+    .view-transition, .view-transition-out {
+        will-change: transform, opacity;
+    }
+    .view-transition { animation: fadeInScale 0.6s var(--ease-apple) forwards; }
+    .view-transition-out { animation: fadeOutScale 0.4s var(--ease-apple) forwards; position: absolute; }
+    @keyframes fadeInScale { 
+        from { opacity: 0; transform: scale(0.99) translateY(10px); } 
+        to { opacity: 1; transform: scale(1) translateY(0); } 
+    }
+    @keyframes fadeOutScale { 
+        from { opacity: 1; transform: scale(1); } 
+        to { opacity: 0; transform: scale(0.99) translateY(-10px); } 
+    }
     .recipe-item-stagger {
         opacity: 0;
         transform: translateY(20px);
         animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
     }
     @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
-    .sleek-scrollbar { -webkit-overflow-scrolling: touch; scrollbar-width: none; /* Firefox */ }
-    .sleek-scrollbar::-webkit-scrollbar { display: none; /* Safari and Chrome */ }
+
+    .sleek-scrollbar { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .sleek-scrollbar::-webkit-scrollbar { display: none; }
+
     .modal.hidden { display: none; }
-    .modal-panel { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e5e7eb; }
+    .modal {
+        opacity: 0;
+        transition: opacity 0.3s var(--ease-apple);
+    }
+    .modal.visible {
+        opacity: 1;
+    }
+    .modal-panel { 
+        background: #ffffff; 
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
+        border: 1px solid #e5e7eb; 
+        transform: scale(0.95) translateY(15px);
+        opacity: 0;
+        transition: transform 0.35s var(--ease-apple), opacity 0.35s var(--ease-apple);
+        will-change: transform, opacity;
+    }
+    .modal.visible .modal-panel {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    
+    #recipeDetailPanelMobile {
+        opacity: 0;
+        transform: translateX(100%);
+        transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple);
+        pointer-events: none;
+        will-change: transform, opacity;
+    }
+    #recipeDetailPanelMobile.visible {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+
+    .quiz-question-container {
+        animation: quizFadeIn 0.4s var(--ease-apple) forwards;
+    }
+    .quiz-question-container.exiting {
+        animation: quizFadeOut 0.3s var(--ease-apple) forwards;
+    }
+    @keyframes quizFadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes quizFadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-15px); }
+    }
+
     .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
     #infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
     #infoTooltip.visible { opacity: 1; transform: translateY(0); }
@@ -124,7 +200,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         overflow: hidden;
         border-radius: 0.75rem;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        transition: box-shadow 0.3s var(--ease-apple), transform 0.3s var(--ease-apple);
         background-color: #f0f2f5;
         aspect-ratio: 1 / 1;
     }
@@ -137,15 +213,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         height: 100%;
         object-fit: cover;
         object-position: center center;
-        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition: transform 0.4s var(--ease-apple);
     }
-    .collage-item:hover img {
-        transform: scale(1.08);
-    }
+    .collage-item:hover img { transform: scale(1.08); }
     
-    #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s var(--ease-apple); pointer-events: none; }
     #lightbox.visible { opacity: 1; pointer-events: auto; }
-    #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 1; object-fit: contain; }
+    #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s var(--ease-apple), opacity 0.3s ease; opacity: 1; object-fit: contain; }
     #lightbox.visible img { transform: scale(1); }
     .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
     .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
@@ -154,11 +228,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     #lightboxClose { position: absolute; top: 1.5rem; right: 2rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
     #lightboxClose:hover { transform: scale(1.1); }
     #lightboxCounter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; }
+    
     #colorMapContainer, #homeColorMapContainer { width: 100%; height: 100%; min-height: 450px; position: relative; }
     #colorMapContainer svg, #homeColorMapContainer svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; }
     .color-map-node-group { cursor: pointer; }
-    .color-map-node-aura { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .color-map-node-core { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .color-map-node-aura { transition: all 0.3s var(--ease-apple); }
+    .color-map-node-core { transition: all 0.3s var(--ease-apple); }
     .color-map-node-group:hover .color-map-node-aura { opacity: 0.5; transform: scale(1.8); }
     .color-map-node-group:hover .color-map-node-core { transform: scale(1.2); }
     .color-map-node-group.selected .color-map-node-core { stroke: white; stroke-width: 3px; transform: scale(1.3); }
@@ -168,24 +243,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .axis-label { font-size: 0.75rem; font-weight: 600; fill: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
     .quadrant-label { font-size: 1.8rem; font-weight: 800; fill: rgba(203, 213, 225, 0.5); text-anchor: middle; pointer-events: none; opacity: 0; animation: text-fade-in 1s ease-out 0.5s forwards; }
     
-    /* --- UPDATED: Stage Manager Effect & Column Layout --- */
     @media (min-width: 1024px) {
-        #recipeFormulasView {
-            gap: 1rem; /* Constant gap */
-        }
+        #recipeFormulasView { gap: 1rem; }
         #recipeListPanel, #recipeMainPanel {
             transition: flex-basis 0.5s var(--stage-manager-ease), 
                         transform 0.5s var(--stage-manager-ease),
                         opacity 0.5s var(--stage-manager-ease);
             will-change: flex-basis, transform, opacity;
         }
-        #recipeListPanel {
-            flex-basis: 25%; 
-            transform: translateX(0%);
-        }
-        #recipeMainPanel {
-            flex-basis: 75%;
-        }
+        #recipeListPanel { flex-basis: 25%; transform: translateX(0%); }
+        #recipeMainPanel { flex-basis: 75%; }
         #recipeFormulasView.stage-inactive #recipeListPanel {
             flex-basis: 10%; 
             transform: translateX(-50%);
@@ -193,10 +260,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
         #recipeFormulasView.stage-inactive #recipeMainPanel {
             flex-basis: 90%; 
-			margin-left: -6%; /* Pull left by half of #recipeListPanel's width */
+			margin-left: -6%;
         }
     }
-
 </style>
 </head>
 <body class="antialiased">
@@ -250,7 +316,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 <div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div id="quizPanel" class="modal-panel w-full max-w-3xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
+    <div id="quizPanel" class="modal-panel w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl">
         <div class="flex justify-between items-center p-5 flex-shrink-0">
             <h2 class="text-xl font-bold" data-translate-key="quizTitle"></h2>
             <button id="closeQuizBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
@@ -264,10 +330,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 <div id="aiLabModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div id="aiLabPanel" class="modal-panel w-full max-w-4xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
+    <div id="aiLabPanel" class="modal-panel w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl">
         <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0-1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" /></svg>
                 </div>
                  <h2 class="text-xl font-bold" data-translate-key="aiLabTitle"></h2>
@@ -279,8 +345,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
+<!-- Hidden file inputs for AI Quiz -->
+<input type="file" id="imageUploadInput" accept="image/*" class="hidden">
+<input type="file" id="imageCaptureInput" accept="image/*" capture="environment" class="hidden">
+
 <!-- SCRIPT IMPORTS -->
-<!-- The main application logic is now loaded as a module -->
 <script type="module" src="app.js"></script>
 
 </body>
