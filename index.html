@@ -34,9 +34,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     :root {
         --primary-accent: #007AFF;
         --primary-accent-darker: #0056B3;
-        --background-light: #F7F7F7;
-        --glass-bg: rgba(255, 255, 255, 0.75);
-        --glass-border: rgba(0, 0, 0, 0.07);
+        --background-light: #F0F2F5;
+        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(0, 0, 0, 0.05);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
@@ -64,32 +64,37 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     .glass-panel {    
         background: var(--glass-bg);    
-        backdrop-filter: blur(40px) saturate(180%);    
-        -webkit-backdrop-filter: blur(40px) saturate(180%);    
+        backdrop-filter: blur(30px) saturate(180%);    
+        -webkit-backdrop-filter: blur(30px) saturate(180%);    
         border: 1px solid var(--glass-border);    
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
-        border-radius: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        border-radius: 20px;
         transition: all 0.4s var(--ease-apple);
     }
-    @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
+    @media (min-width: 768px) { 
+        .glass-panel { 
+            border-radius: 28px; 
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+        } 
+    }
     
+    /* NEW: Single-column list item style for mobile */
     .recipe-item {
         border-left: 4px solid transparent;
-        transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple), box-shadow 0.4s var(--ease-apple);
-        position: relative;
-        will-change: transform, box-shadow;
+        transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple), box-shadow 0.4s var(--ease-apple), border-color 0.3s var(--ease-apple);
+        will-change: transform, box-shadow, border-color;
     }
     .recipe-item.selected {    
         background-color: white;
-        color: var(--text-primary);    
         transform: translateX(4px) scale(1.02);
-        border-left-color: var(--glow-color);
-        box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 0 15px -3px var(--glow-color);
+        border-left-color: var(--glow-color, var(--primary-accent));
+        box-shadow: 0 5px 15px rgba(0,0,0,0.07);
     }
     .recipe-item:hover:not(.selected) { 
         background-color: rgba(255, 255, 255, 0.8);
         transform: translateX(2px);
     }
+
     .btn { 
         border-radius: 9999px; 
         font-weight: 600; 
@@ -158,14 +163,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     #recipeDetailPanelMobile {
         opacity: 0;
         transform: translateX(100%);
-        transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple);
+        transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple), visibility 0.4s;
         pointer-events: none;
+        visibility: hidden;
         will-change: transform, opacity;
     }
     #recipeDetailPanelMobile.visible {
         opacity: 1;
         transform: translateX(0);
         pointer-events: auto;
+        visibility: visible;
     }
 
     .quiz-question-container {
@@ -192,8 +199,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
     .photo-collage {
         display: grid;
-        gap: 0.75rem;
-        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+        grid-template-columns: repeat(3, 1fr);
+    }
+    @media (min-width: 640px) {
+        .photo-collage {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
     }
     .collage-item {
         cursor: pointer;
@@ -201,7 +214,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         border-radius: 0.75rem;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         transition: box-shadow 0.3s var(--ease-apple), transform 0.3s var(--ease-apple);
-        background-color: #f0f2f5;
+        background-color: #e2e8f0;
         aspect-ratio: 1 / 1;
     }
     .collage-item:hover {
@@ -223,9 +236,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     #lightbox.visible img { transform: scale(1); }
     .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
     .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
-    #lightboxPrev { left: 2rem; }
-    #lightboxNext { right: 2rem; }
-    #lightboxClose { position: absolute; top: 1.5rem; right: 2rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
+    #lightboxPrev { left: 1rem; }
+    #lightboxNext { right: 1rem; }
+    #lightboxClose { position: absolute; top: 1rem; right: 1rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
     #lightboxClose:hover { transform: scale(1.1); }
     #lightboxCounter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; }
     
@@ -269,10 +282,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
+<div id="appContainer" class="min-h-screen w-screen p-3 sm:p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
-			<img src="logo_black.png" alt="Alpha AI Color Lab Logo" class="h-20 w-auto">
+			<img src="logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
 		</button>
         <div class="flex items-center gap-2 md:gap-4">
             <nav id="mainNav" class="hidden md:flex items-center gap-4">

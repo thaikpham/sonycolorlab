@@ -3,11 +3,11 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+ * NÂNG CẤP GIAO DIỆN DI ĐỘNG - CẬP NHẬT NGÀY 25/08/2025
  * ==============================================
- * - Thêm hàm `openModal` và `closeModal` để quản lý hiệu ứng xuất hiện/biến mất của modal.
- * - Cập nhật `renderLibraryDetails` để xử lý hiệu ứng trượt cho panel chi tiết trên di động.
- * - Các thay đổi này tách biệt logic animation khỏi các module khác, giúp code sạch hơn.
+ * - Cập nhật `renderLibraryList` để render danh sách dạng 1 cột, thay vì dạng lưới 2 cột.
+ * - Cập nhật `viewTemplates.recipeFormulas` để loại bỏ các class grid không cần thiết.
+ * - Giao diện giờ đây tuân thủ thiết kế "mobile-first" một cột, tối ưu cho việc cuộn và xem.
  */
 
 // --- Local Module Imports ---
@@ -24,11 +24,6 @@ const mainContentEl = document.getElementById('mainContent');
 
 // --- HELPER FUNCTIONS ---
 
-/**
- * Displays a short-lived notification message (toast) at the bottom of the screen.
- * @param {string} message - The message to display.
- * @param {boolean} [isError=false] - If true, the toast will have a red error color.
- */
 export function showToast(message, isError = false) {
     let toast = document.getElementById('app-toast');
     if (!toast) {
@@ -54,31 +49,19 @@ export function showToast(message, isError = false) {
     }, 3000);
 }
 
-/**
- * [NEW] Opens a modal with a fade-in and scale-up animation.
- * @param {string} modalId - The ID of the modal element to open.
- */
 export function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
     modal.classList.remove('hidden');
-    // Use a tiny timeout to allow the browser to apply the 'hidden' removal 
-    // before adding the 'visible' class, which triggers the transition.
     setTimeout(() => {
         modal.classList.add('visible');
     }, 10);
 }
 
-/**
- * [NEW] Closes a modal with a fade-out animation.
- * @param {string} modalId - The ID of the modal element to close.
- */
 export function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
     modal.classList.remove('visible');
-    // Listen for the transition to end before setting display: none,
-    // otherwise the animation won't be visible.
     modal.addEventListener('transitionend', () => {
         if (!modal.classList.contains('visible')) {
             modal.classList.add('hidden');
@@ -89,10 +72,6 @@ export function closeModal(modalId) {
 
 // --- HTML TEMPLATE GENERATORS ---
 
-/**
- * Generates the HTML for the "How to Save" guide section.
- * @returns {string} The complete HTML string for the guide.
- */
 function createSaveGuideHTML() {
     const guideContent = {
         vi: `
@@ -157,12 +136,6 @@ function createSaveGuideHTML() {
     `;
 }
 
-/**
- * Generates the complete HTML for a single recipe's detail view, including image collage,
- * action buttons, settings grids, and CTA sections.
- * @param {object} recipe - The recipe object from recipes-core.js.
- * @returns {string} The complete HTML string for the recipe details.
- */
 function createFullRecipeHTML(recipe) {
     const demoImages = recipeImages[recipe.id] || [];
     
@@ -240,9 +213,6 @@ function createFullRecipeHTML(recipe) {
     `;
 }
 
-/**
- * An object containing template functions that return HTML strings for each application view.
- */
 const viewTemplates = {
     home: () => `
         <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
@@ -259,17 +229,17 @@ const viewTemplates = {
             </div>
         </div>`,
     recipeFormulas: () => `
-        <div id="recipeFormulasView" class="w-full h-full flex flex-row absolute inset-0 view-transition">
-            <aside id="recipeListPanel" class="h-full flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
+        <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
+            <aside id="recipeListPanel" class="h-full w-full md:w-auto md:flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                     <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
                     </button>
                 </div>
-                <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar"></div>
+                <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
             </aside>
-            <main id="recipeMainPanel" class="h-full flex-grow flex flex-col min-h-0">
+            <main id="recipeMainPanel" class="h-full flex-grow hidden md:flex flex-col min-h-0">
                 <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
                         <div id="welcomeText" class="text-center">
@@ -291,7 +261,6 @@ const viewTemplates = {
                     <div id="recipeContent" class="hidden"></div>
                 </div>
             </main>
-            <!-- UPDATED: Added 'visible' class for animation control -->
             <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
                 <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
                 <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
@@ -301,9 +270,6 @@ const viewTemplates = {
 
 // --- CORE UI RENDERING LOGIC ---
 
-/**
- * Initializes and animates the background blobs for the home screen.
- */
 export function initializeBackgroundBlobs() {
     const container = document.getElementById('blobContainer');
     if (!container) return;
@@ -366,13 +332,6 @@ export function initializeBackgroundBlobs() {
     animate();
 }
 
-/**
- * Renders a new view into the main content area with a transition animation.
- * @param {string} viewName - The name of the view to render ('home' or 'recipeFormulas').
- * @param {string|null} selectedId - An optional recipe ID to pre-select when the view loads.
- * @param {function} attachViewEventListeners - A callback function to attach events after the new view is in the DOM.
- * @returns {Promise<void>} A promise that resolves when the transition is complete.
- */
 export function renderView(viewName, selectedId = null, attachViewEventListeners) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
@@ -419,18 +378,14 @@ export function renderView(viewName, selectedId = null, attachViewEventListeners
     });
 }
 
-/**
- * Updates the recipe list to highlight the selected item and scrolls it into view.
- * @param {string|null} id - The ID of the recipe to select, or null to deselect all.
- */
 export function updateListSelectionAndScroll(id) {
     const listContainer = document.getElementById('recipeListContainer');
     if (!listContainer) return;
 
-    const oldSelectedItem = listContainer.querySelector('.recipe-item.selected');
-    if (oldSelectedItem) {
-        oldSelectedItem.classList.remove('selected');
-    }
+    listContainer.querySelectorAll('.recipe-item.selected').forEach(el => {
+        el.classList.remove('selected');
+        el.style.removeProperty('--glow-color');
+    });
 
     if (id) {
         const newSelectedItem = listContainer.querySelector(`.recipe-item[data-recipe-id="${id}"]`);
@@ -448,9 +403,6 @@ export function updateListSelectionAndScroll(id) {
     }
 }
 
-/**
- * Renders the list of recipes in the sidebar, filtering by the search input.
- */
 export async function renderLibraryList() {
     const container = document.getElementById('recipeListContainer');
     if (!container) return;
@@ -467,7 +419,7 @@ export async function renderLibraryList() {
         const isTrending = trendingIds.includes(recipe.id);
         const hasImages = recipeImages[recipe.id] && recipeImages[recipe.id].length > 0 && recipeImages[recipe.id].some(url => !url.includes('placehold.co'));
         const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
-        const animationStyle = `animation-delay: ${index * 40}ms;`;
+        const animationStyle = `animation-delay: ${index * 30}ms;`;
         
         const imageIconHTML = hasImages 
             ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image text-teal-500 flex-shrink-0"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`
@@ -477,12 +429,13 @@ export async function renderLibraryList() {
             ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-yellow-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` 
             : '';
 
-        return `<div class="recipe-item p-3 rounded-xl cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
+        // UPDATED: Simplified HTML for single-column list
+        return `<div class="recipe-item p-4 rounded-lg cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
                      data-recipe-id="${recipe.id}" 
                      style="${glowStyle} ${animationStyle}">
             <div class="flex justify-between items-start">
                 <span class="font-semibold text-primary pr-2">${recipe.name[getCurrentLanguage()]}</span>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 pt-1">
                     ${imageIconHTML}
                     ${trendingIconHTML}
                 </div>
@@ -492,17 +445,12 @@ export async function renderLibraryList() {
     }).join('');
 }
 
-/**
- * Renders the main content panel, showing either the welcome/chart view or the recipe details.
- * Also handles the responsive layout switching between desktop and mobile.
- */
 export function renderLibraryDetails() {
     const isMobile = window.innerWidth < 768;
     const recipeListPanel = document.getElementById('recipeListPanel');
     const recipeMainPanel = document.getElementById('recipeMainPanel');
     const recipeDetailPanelMobile = document.getElementById('recipeDetailPanelMobile');
 
-    // [UPDATED] Handle responsive visibility with animations
     if (isMobile) {
         recipeListPanel.classList.toggle('hidden', state.isMobileDetailActive);
         if (state.isMobileDetailActive) {
@@ -542,7 +490,7 @@ export function renderLibraryDetails() {
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
 
     recipeContentContainer.innerHTML = `
-        <div class="mb-4">
+        <div class="mb-4 hidden md:block">
             <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
         </div>
         <div>
