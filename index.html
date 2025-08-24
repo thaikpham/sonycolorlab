@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alpha AI Color Lab</title>
+<title>Alpha AI Color Lab by Sony</title>
 
 <!-- PWA and Add to Home Screen Configuration -->
-<link rel="icon" type="image/png" href="logo_black.png">
-<link rel="apple-touch-icon" href="logo_black.png">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/thaikpham/sonycolorlab/main/ColorlabQR.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/thaikpham/sonycolorlab/main/ColorlabQR.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="white">
 <meta name="apple-mobile-web-app-title" content="ColorLAB">
 <meta name="theme-color" content="#ffffff">
-<link rel="manifest" href="data:application/manifest+json;charset=utf-8,{%22name%22:%22Alpha%20AI%20Color%20Lab%22,%22short_name%22:%22ColorLAB%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23ffffff%22,%22icons%22:[{%22src%22:%22logo_black.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22logo_black.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,{%22name%22:%22Alpha%20AI%20Color%20Lab%22,%22short_name%22:%22ColorLAB%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23F7F7F7%22,%22theme_color%22:%22%23ffffff%22,%22icons%22:[{%22src%22:%22logo_black.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22logo_black.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://d3js.org/d3.v7.min.js" defer></script>
@@ -34,36 +34,38 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     :root {
         --primary-accent: #007AFF;
         --primary-accent-darker: #0056B3;
-        --glass-bg: rgba(255, 255, 255, 0.65);
-        --glass-border: rgba(0, 0, 0, 0.05);
+        --background-light: #F7F7F7;
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(0, 0, 0, 0.07);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
     }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #ffffff;
+        background-color: var(--background-light);
         color: var(--text-primary);
         position: relative;
+        overflow-x: hidden;
     }
     .bg-blob {
         position: fixed;
         border-radius: 50%;
-        filter: blur(120px); 
+        filter: blur(150px); 
         opacity: 0;
         z-index: -1;
         transition: opacity 1.5s var(--ease-out-cubic);
         will-change: transform;
     }
     .bg-blob.visible { 
-        opacity: 0.2;
+        opacity: 0.15;
     }
     .glass-panel {    
         background: var(--glass-bg);    
-        backdrop-filter: blur(50px) saturate(180%);    
-        -webkit-backdrop-filter: blur(50px) saturate(180%);    
+        backdrop-filter: blur(40px) saturate(180%);    
+        -webkit-backdrop-filter: blur(40px) saturate(180%);    
         border: 1px solid var(--glass-border);    
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
         border-radius: 24px;
         transition: all 0.4s var(--ease-out-cubic);
     }
@@ -71,27 +73,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .recipe-item {
         border-left: 4px solid transparent;
         transition: all 0.3s var(--ease-out-cubic);
+        position: relative;
     }
     .recipe-item.selected {    
-        background-color: rgba(0, 122, 255, 0.1);    
+        background-color: white;
         color: var(--text-primary);    
         transform: translateX(4px) scale(1.02);
         border-left-color: var(--glow-color);
-        box-shadow: 0 0 20px -2px var(--glow-color);
+        box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 0 15px -3px var(--glow-color);
     }
     .recipe-item:hover:not(.selected) { 
-        background-color: rgba(0, 0, 0, 0.04);
+        background-color: rgba(255, 255, 255, 0.8);
         transform: translateX(2px);
     }
     .recipe-item.hover-highlight:not(.selected) {
-        background-color: rgba(230, 242, 255, 0.8);
-        box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.15);
+        background-color: rgba(230, 242, 255, 0.9);
+        box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.1);
         transform: translateX(2px);
     }
-    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transform: scale(1); }
+    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; transform: scale(1); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
-    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.45); }
+    .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.3); }
+    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.35); }
     .btn:active { transform: translateY(0px) scale(0.97); }
     .view-transition { animation: fadeInScale 0.7s var(--ease-out-cubic) forwards; }
     .view-transition-out { animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards; position: absolute; }
@@ -114,59 +117,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
     #infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
     #infoTooltip.visible { opacity: 1; transform: translateY(0); }
-    .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+    .loader { width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .quiz-option { 
-        background-color: #f1f5f9;
-        border: none;
-        color: var(--text-primary);
-        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out, transform 0.15s ease-in-out; 
-        transform: scale(1); 
-    }
-    .quiz-option .lucide {
-        color: #475569;
-        transition: color 0.15s ease-in-out;
-    }
-    .quiz-option:hover { 
-        background-color: #e2e8f0;
-    }
-    .quiz-option.selected { 
-        background-color: var(--primary-accent); 
-        color: white;
-    }
-    .quiz-option.selected .lucide {
-        color: white;
-    }
-    .quiz-option:active { 
-        transform: scale(0.97); 
-        transition-duration: 0.1s;
-    }
-    .quiz-options-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-    .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
-    .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
     .photo-collage { display: grid; gap: 0.75rem; }
-    .collage-item { 
-        cursor: pointer; 
-        overflow: hidden; 
-        border-radius: 0.75rem; 
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-        transition: box-shadow 0.3s ease, transform 0.3s ease; 
-        background-color: #f0f2f5;
-    }
-    .collage-item:hover { 
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1); 
-        transform: translateY(-2px); 
-    }
-    .collage-item img { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
-        object-position: center center;
-        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .collage-item:hover img { 
-        transform: scale(1.08); 
-    }
+    .collage-item { cursor: pointer; overflow: hidden; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: box-shadow 0.3s ease, transform 0.3s ease; background-color: #f0f2f5; }
+    .collage-item:hover { box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .collage-item img { width: 100%; height: 100%; object-fit: cover; object-position: center center; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .collage-item:hover img { transform: scale(1.08); }
     .photo-collage.images-1 { grid-template-columns: 1fr; }
     .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
     .photo-collage.images-3 { grid-template-columns: repeat(2, 1fr); }
@@ -180,16 +137,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
     #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     #lightbox.visible { opacity: 1; pointer-events: auto; }
-    #lightbox img { 
-        max-width: 90vw; 
-        max-height: 85vh; 
-        border-radius: 0.5rem; 
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-        transform: scale(0.95); 
-        transition: transform 0.3s ease, opacity 0.3s ease; 
-        opacity: 1; 
-        object-fit: contain;
-    }
+    #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 1; object-fit: contain; }
     #lightbox.visible img { transform: scale(1); }
     .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
     .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
@@ -214,25 +162,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     #trendingContainer { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards; }
     .trending-item { background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.05); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
-    #addToHomeScreenBtn.visible { display: inline-flex; animation: fadeInDown 0.5s ease-out; }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     #qrCodeContainer {
         position: fixed;
         bottom: 1.5rem;
         right: 1.5rem;
         z-index: 10;
+        transition: opacity 0.3s, transform 0.3s;
     }
     #qrCodeContainer.hidden {
-        display: none;
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
     }
-    @media (max-width: 767px) {
+    @media (max-width: 1023px) {
         #qrCodeContainer {
             display: none;
         }
     }
 </style>
 </head>
-<body>
+<body class="antialiased">
 <div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -256,12 +205,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </button>
                 </div>
             </nav>
-            <button id="addToHomeScreenBtn" class="hidden items-center gap-2 bg-blue-50 text-blue-700 font-semibold px-4 py-2 rounded-full hover:bg-blue-100 transition-colors duration-200 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <span class="hidden sm:inline">Cài đặt App</span>
-            </button>
             <button id="hamburgerBtn" class="md:hidden p-2 rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-gray-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
@@ -273,7 +216,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </footer>
 </div>
 <div id="qrCodeContainer">
-    <img src="adobe-express-qr-code.svg" alt="QR Code cho sonycolorlab.app" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg">
+    <img src="https://raw.githubusercontent.com/thaikpham/sonycolorlab/main/ColorlabQR.png" alt="QR Code for sonycolorlab.app" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg border-4 border-white">
 </div>
 <div id="infoTooltip" class="hidden"></div>
 <div id="lightbox" class="hidden">
