@@ -11,6 +11,8 @@ import { parameterExplanations } from './translations.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { isAIEnabled } from './state.js';
+import { fetchTrendingRecipeIds } from './api.js';
+
 
 const mainContentEl = document.getElementById('mainContent');
 
@@ -250,7 +252,6 @@ const viewTemplates = {
                             </a>
                         </div>
                         <div id="colorMapContainer" class="flex-grow w-full"></div>
-                        <div id="trendingContainer" class="w-full mt-4"></div>
                     </div>
                     <div id="recipeContent" class="hidden"></div>
                 </div>
@@ -420,10 +421,11 @@ export function updateListSelectionAndScroll(id) {
 /**
  * Renders the list of recipes in the sidebar, filtering by the search input.
  */
-export function renderLibraryList() {
+export async function renderLibraryList() {
     const container = document.getElementById('recipeListContainer');
     if (!container) return;
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    const trendingIds = await fetchTrendingRecipeIds();
     
     // Filter recipes based on name or description in the current language
     const recipesToRender = recipesData.filter(r => 
@@ -433,13 +435,21 @@ export function renderLibraryList() {
     
     container.innerHTML = recipesToRender.map((recipe, index) => {
         const isSelected = recipe.id === state.selectedRecipeId;
+        const isTrending = trendingIds.includes(recipe.id);
         const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
         const animationStyle = `animation-delay: ${index * 40}ms;`; // Stagger animation
         
+        const trendingIconHTML = isTrending 
+            ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-yellow-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` 
+            : '';
+
         return `<div class="recipe-item p-3 rounded-xl cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
                      data-recipe-id="${recipe.id}" 
                      style="${glowStyle} ${animationStyle}">
-            <span class="font-semibold text-primary">${recipe.name[getCurrentLanguage()]}</span>
+            <div class="flex justify-between items-start">
+                <span class="font-semibold text-primary pr-2">${recipe.name[getCurrentLanguage()]}</span>
+                ${trendingIconHTML}
+            </div>
             <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[getCurrentLanguage()]}</p>
         </div>`;
     }).join('');
@@ -496,39 +506,4 @@ export function renderLibraryDetails() {
         <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
     `;
     applyTranslations();
-}
-
-/**
- * Renders the trending recipes section based on data from Firestore.
- * @param {string[]} trendingIDs - An array of recipe IDs to display.
- */
-export function displayTrendingRecipes(trendingIDs) {
-    const container = document.getElementById('trendingContainer');
-    if (!container) return;
-
-    const trendingRecipes = trendingIDs.map(id => recipesData.find(r => r.id === id)).filter(Boolean);
-
-    if (trendingRecipes.length === 0) {
-        container.innerHTML = '';
-        container.style.display = 'none';
-        return;
-    }
-
-    container.innerHTML = `
-        <h3 class="text-center font-bold text-gray-500 mb-3" data-translate-key="trendingTitle"></h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            ${trendingRecipes.map(recipe => `
-                <div class="trending-item rounded-xl p-3 cursor-pointer"
-                     data-recipe-id="${recipe.id}"
-                     style="--glow-color: ${recipe.personalityColor};">
-                    <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
-                        <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[getCurrentLanguage()]}</p>
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-    applyTranslations();
-    container.style.display = 'block';
 }

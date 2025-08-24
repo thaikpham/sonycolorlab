@@ -7,7 +7,7 @@
 
 // --- Local Module Imports ---
 import { state } from './state.js';
-import { callGeminiAPI } from './api.js';
+import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, getCurrentLanguage, applyTranslations } from './language.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
@@ -50,7 +50,9 @@ function loadScript(url, stateKey) {
  * @param {string} containerSelector - The CSS selector for the container element.
  * @param {object[]} data - The array of recipe data.
  */
-export function renderColorMapChart(containerSelector, data) {
+export async function renderColorMapChart(containerSelector, data) {
+    // Fetch trending recipe IDs
+    const trendingIds = await fetchTrendingRecipeIds();
     const container = d3.select(containerSelector);
     if (container.empty() || !data || data.length === 0) {
         console.warn("Chart container not found or no data provided.");
@@ -115,7 +117,8 @@ export function renderColorMapChart(containerSelector, data) {
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(getCurrentLanguage() === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(getCurrentLanguage() === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
 
-    const nodesData = data.filter(d => d.coords).map(d => ({...d}));
+    // Add isTrending flag to data
+    const nodesData = data.filter(d => d.coords).map(d => ({...d, isTrending: trendingIds.includes(d.id)}));
 
     state.chart.nodes = svg.selectAll(".color-map-node-group")
         .data(nodesData, d => d.id)
@@ -156,6 +159,18 @@ export function renderColorMapChart(containerSelector, data) {
         .attr("x", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 6)
         .attr("dy", "0.35em")
         .text(d => d.name[getCurrentLanguage()]);
+
+    // Add Lucide star icon for trending recipes
+    const starNodes = state.chart.nodes.filter(d => d.isTrending);
+    
+    starNodes.append("polygon")
+        .attr("class", "trending-star-icon")
+        .attr("points", "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2")
+        .attr("fill", "#FFC700")
+        .attr("stroke", "#B38B00")
+        .attr("stroke-width", 1.5)
+        .attr("transform", "translate(5, -15) scale(0.6)");
+
 
     state.chart.simulation = d3.forceSimulation(nodesData)
         .force("collide", d3.forceCollide().radius(d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 3).strength(0.8))

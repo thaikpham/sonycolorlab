@@ -12,7 +12,7 @@ import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
 import { initializeFirebase, fetchTrendingRecipeIds } from './api.js';
-import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, displayTrendingRecipes, initializeBackgroundBlobs } from './ui.js';
+import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs } from './ui.js';
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
     openCaptionLab, closeCaptionLab, handleCaptionGeneration,
@@ -76,7 +76,6 @@ function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
         renderLibraryList();
         renderLibraryDetails();
-        fetchTrendingRecipeIds().then(displayTrendingRecipes);
 
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
@@ -148,7 +147,6 @@ async function init() {
                 renderLibraryList();
                 renderLibraryDetails(); // Re-render details to update language
                 renderColorMapChart('#colorMapContainer', recipesData); // Re-render chart for labels
-                fetchTrendingRecipeIds().then(displayTrendingRecipes);
             }
             return;
         }
@@ -270,4 +268,3 @@ async function init() {
 
 // --- APP START ---
 document.addEventListener("DOMContentLoaded", init);
-
