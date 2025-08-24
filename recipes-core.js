@@ -778,10 +778,10 @@ const recipesData = [
         "personalityColor": "#CDDC39",
         "coords": { "x": 8, "y": 7 }
     },
-        {
+    {
         "id": "scl-042",
-        "name": { "vi": "SCL-042: Kando 25 Phuket", "en": "Kando 25 Phuket" },
-        "formattedName": "SCL-042: Kando 25 Phuket",
+        "name": { "vi": "SCL-42: Kando 25 Phuket", "en": "SCL-42: Kando 25 Phuket" },
+        "formattedName": "SCL-42: Kando 25 Phuket",
         "description": {
             "en": "Capture Phuket's cinematic soul. This S-Cinetone formula delivers a filmic look with lush greens, vibrant turquoise waters, and warm golden light, perfect for Thailand's tropical paradise.",
             "vi": "Nắm bắt linh hồn điện ảnh của Phuket. Công thức S-Cinetone này mang đến sắc màu đậm chất phim với tông xanh mướt, sắc lam ngọc sống động và ánh vàng ấm áp, hoàn hảo cho thiên đường nhiệt đới Thái Lan."
@@ -857,4 +857,5 @@ const recipesData = [
 ];
 
 export default recipesData;
+
 
