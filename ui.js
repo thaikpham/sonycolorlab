@@ -3,11 +3,10 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * NÂNG CẤP GIAO DIỆN DI ĐỘNG - CẬP NHẬT NGÀY 25/08/2025
+ * NÂNG CẤP GIAO DIỆN DI ĐỘNG (TRÀN VIỀN) - CẬP NHẬT NGÀY 25/08/2025
  * ==============================================
- * - Cập nhật `renderLibraryList` để render danh sách dạng 1 cột, thay vì dạng lưới 2 cột.
- * - Cập nhật `viewTemplates.recipeFormulas` để loại bỏ các class grid không cần thiết.
- * - Giao diện giờ đây tuân thủ thiết kế "mobile-first" một cột, tối ưu cho việc cuộn và xem.
+ * - Cập nhật `viewTemplates.recipeFormulas` để loại bỏ "glass-panel" ở màn hình chi tiết trên di động.
+ * - Giao diện chi tiết công thức giờ đây sẽ tràn viền, không còn bị đóng khung, giúp tận dụng tối đa không gian màn hình.
  */
 
 // --- Local Module Imports ---
@@ -261,9 +260,11 @@ const viewTemplates = {
                     <div id="recipeContent" class="hidden"></div>
                 </div>
             </main>
-            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
-                <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
-                <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
+            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] overflow-y-auto hidden sleek-scrollbar">
+                <div class="p-4">
+                    <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
+                    <div id="recipeContentMobile"></div>
+                </div>
             </div>
         </div>`,
 };
@@ -501,3 +502,4 @@ export function renderLibraryDetails() {
     `;
     applyTranslations();
 }
+" in the docume
