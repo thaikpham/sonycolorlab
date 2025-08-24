@@ -532,3 +532,4 @@ export function displayTrendingRecipes(trendingIDs) {
     applyTranslations();
     container.style.display = 'block';
 }
+
