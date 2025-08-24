@@ -77,6 +77,37 @@ function attachViewEventListeners(viewName) {
         renderLibraryList();
         renderLibraryDetails();
 
+        // Stage Manager Effect Logic for Desktop
+        const view = document.getElementById('recipeFormulasView');
+        const listPanel = document.getElementById('recipeListPanel');
+        let timeoutId = null;
+
+        const setInactive = () => {
+            if (!state.isMobileDetailActive && window.innerWidth >= 768) {
+                view?.classList.add('stage-inactive');
+            }
+        };
+
+        const setActive = () => {
+            clearTimeout(timeoutId);
+            view?.classList.remove('stage-inactive');
+        };
+
+        if (view && listPanel) {
+            timeoutId = setTimeout(setInactive, 1500); // Initially set to inactive after a delay
+            listPanel.addEventListener('mouseenter', setActive);
+            listPanel.addEventListener('mouseleave', () => {
+                timeoutId = setTimeout(setInactive, 500); // Set inactive after a short delay
+            });
+            listPanel.addEventListener('click', (e) => {
+                if (e.target.closest('.recipe-item')) {
+                    setActive();
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(setInactive, 2000); // Keep active longer after a click
+                }
+            });
+        }
+
         const chartContainer = document.getElementById('colorMapContainer');
         if (chartContainer) {
             // Use ResizeObserver to ensure the chart renders only when the container has dimensions
