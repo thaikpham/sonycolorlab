@@ -2,7 +2,11 @@
  * features.js
  * This module encapsulates logic for complex, self-contained features
  * like the AI labs, D3 chart, PDF generation, and image lightbox.
- * This keeps the main `app.js` controller clean and focused on orchestration.
+ * * ==============================================
+ * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+ * ==============================================
+ * - Import và sử dụng hàm `openModal`, `closeModal` từ `ui.js`.
+ * - Cập nhật `openAILab` và `closeAILab` để kích hoạt modal với hiệu ứng mượt mà.
  */
 
 // --- Local Module Imports ---
@@ -11,7 +15,8 @@ import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, getCurrentLanguage, applyTranslations } from './language.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
-import { showToast } from './ui.js';
+// UPDATED: Import modal functions
+import { showToast, openModal, closeModal } from './ui.js';
 
 // --- CDN URLs for external libraries ---
 const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
@@ -117,7 +122,6 @@ export async function renderColorMapChart(containerSelector, data) {
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(getCurrentLanguage() === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(getCurrentLanguage() === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
 
-    // Add isTrending flag to data
     const nodesData = data.filter(d => d.coords).map(d => ({...d, isTrending: trendingIds.includes(d.id)}));
 
     state.chart.nodes = svg.selectAll(".color-map-node-group")
@@ -145,7 +149,6 @@ export async function renderColorMapChart(containerSelector, data) {
         .attr("dy", "0.35em")
         .text(d => d.name[getCurrentLanguage()]);
 
-    // Add Lucide star icon for trending recipes
     const starNodes = state.chart.nodes.filter(d => d.isTrending);
     
     starNodes.append("polygon")
@@ -257,13 +260,15 @@ export function openAILab(recipeId) {
         abortController: state.ai.abortController ? (state.ai.abortController.abort(), null) : null
     });
 
-    document.getElementById('aiLabModal').classList.remove('hidden');
+    // UPDATED: Use animated modal function
+    openModal('aiLabModal');
     renderAILab();
 }
 
 export function closeAILab() {
     if (state.ai.abortController) state.ai.abortController.abort();
-    document.getElementById('aiLabModal').classList.add('hidden');
+    // UPDATED: Use animated modal function
+    closeModal('aiLabModal');
 }
 
 export function renderAILab() {
@@ -271,7 +276,7 @@ export function renderAILab() {
     if (!contentEl) return;
 
     if (state.ai.isGenerating) {
-        contentEl.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader"></div><p class="mt-4 text-gray-600">Gemini is thinking...</p></div>`;
+        contentEl.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader-dark"></div><p class="mt-4 text-gray-600">Gemini is thinking...</p></div>`;
         return;
     }
     if (state.ai.generatedRecipe) {
@@ -358,7 +363,7 @@ export function handleAIGeneration() {
     const userInput = document.getElementById('aiPromptInput').value.trim();
     if (!userInput) return;
     state.ai.userPrompt = userInput;
-    confirmAndCallAI(); // Directly call the API after getting prompt
+    confirmAndCallAI();
 }
 
 export async function confirmAndCallAI() {
@@ -394,7 +399,7 @@ export async function generateRecipePdf(recipeId, generatedRecipeData = null) {
 
     const btn = document.activeElement;
     const originalBtnContent = btn.innerHTML;
-    btn.innerHTML = `<div class="loader-dark"></div> Generating...`; // Use a dark loader for visibility on light buttons
+    btn.innerHTML = `<div class="loader-dark"></div> Generating...`;
     btn.disabled = true;
 
     try {
