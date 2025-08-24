@@ -11,6 +11,8 @@ import { parameterExplanations } from './translations.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { isAIEnabled } from './state.js';
+import { fetchTrendingRecipeIds } from './api.js';
+
 
 const mainContentEl = document.getElementById('mainContent');
 
@@ -420,10 +422,11 @@ export function updateListSelectionAndScroll(id) {
 /**
  * Renders the list of recipes in the sidebar, filtering by the search input.
  */
-export function renderLibraryList() {
+export async function renderLibraryList() {
     const container = document.getElementById('recipeListContainer');
     if (!container) return;
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    const trendingIds = await fetchTrendingRecipeIds();
     
     // Filter recipes based on name or description in the current language
     const recipesToRender = recipesData.filter(r => 
@@ -433,13 +436,21 @@ export function renderLibraryList() {
     
     container.innerHTML = recipesToRender.map((recipe, index) => {
         const isSelected = recipe.id === state.selectedRecipeId;
+        const isTrending = trendingIds.includes(recipe.id);
         const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
         const animationStyle = `animation-delay: ${index * 40}ms;`; // Stagger animation
         
+        const trendingIconHTML = isTrending 
+            ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-yellow-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` 
+            : '';
+
         return `<div class="recipe-item p-3 rounded-xl cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
                      data-recipe-id="${recipe.id}" 
                      style="${glowStyle} ${animationStyle}">
-            <span class="font-semibold text-primary">${recipe.name[getCurrentLanguage()]}</span>
+            <div class="flex justify-between items-start">
+                <span class="font-semibold text-primary pr-2">${recipe.name[getCurrentLanguage()]}</span>
+                ${trendingIconHTML}
+            </div>
             <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[getCurrentLanguage()]}</p>
         </div>`;
     }).join('');
