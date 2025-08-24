@@ -11,11 +11,10 @@ import { Quiz } from './quiz.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
-import { initializeFirebase, fetchTrendingRecipeIds } from './api.js';
+import { initializeFirebase } from './api.js';
 import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs } from './ui.js';
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
-    openCaptionLab, closeCaptionLab, handleCaptionGeneration,
     openLightbox,
     generateRecipePdf,
     shareRecipe,
@@ -133,7 +132,6 @@ async function init() {
         const navBtn = target.closest('[data-view]');
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
-        const trendingItem = target.closest('.trending-item');
         const collageItem = target.closest('.collage-item');
         const d3Node = target.closest('.color-map-node-group');
 
@@ -180,14 +178,12 @@ async function init() {
 
         // Recipe Selection
         if (recipeItem) { handleRecipeSelection(recipeItem.dataset.recipeId); return; }
-        if (trendingItem) { handleRecipeSelection(trendingItem.dataset.recipeId); return; }
         if (collageItem) { openLightbox(collageItem.dataset.recipeId, collageItem.dataset.index); return; }
 
         // Feature Buttons
         if (target.closest('#downloadPdfBtn')) { generateRecipePdf(target.closest('#downloadPdfBtn').dataset.recipeId); return; }
         if (target.closest('#shareRecipeBtn')) { shareRecipe(target.closest('#shareRecipeBtn').dataset.recipeId); return; }
         if (target.closest('#tweakWithAIBtn')) { openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId); return; }
-        if (target.closest('#captionAIBtn')) { openCaptionLab(target.closest('#captionAIBtn').dataset.recipeId); return; }
 
         // Save Guide Toggle
         if (target.closest('#toggleSaveGuideBtn')) {
@@ -229,27 +225,6 @@ async function init() {
             if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
             if (target.closest('#downloadAIPdfBtn')) { generateRecipePdf(target.closest('#downloadAIPdfBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
-        }
-
-        // Caption Lab Modal Interactions
-        if (target.closest('#captionLabModal')) {
-            if (target.closest('#closeCaptionLabBtn')) { closeCaptionLab(); return; }
-            if (target.closest('#generateCaptionBtn')) { handleCaptionGeneration(); return; }
-            const copyBtn = target.closest('[data-copy-target]');
-            if (copyBtn) {
-                const targetId = copyBtn.dataset.copyTarget;
-                const textToCopy = document.getElementById(targetId).innerText;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    const originalText = copyBtn.querySelector('span').innerText;
-                    copyBtn.querySelector('span').innerText = t('copiedBtn');
-                    copyBtn.disabled = true;
-                    setTimeout(() => {
-                        copyBtn.querySelector('span').innerText = originalText;
-                        copyBtn.disabled = false;
-                    }, 2000);
-                });
-                return;
-            }
         }
     });
 

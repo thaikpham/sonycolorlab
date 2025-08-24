@@ -125,22 +125,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .enter()
         .append("g")
         .attr("class", "color-map-node-group")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`)
-        .on("mouseover", function(event, d) {
-            d3.select(this).raise();
-            const recipeItem = document.querySelector(`.recipe-item[data-recipe-id='${d.id}']`);
-            if (recipeItem) {
-                recipeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                recipeItem.classList.add('hover-highlight');
-            }
-        })
-        .on("mouseout", function(event, d) {
-            const recipeItem = document.querySelector(`.recipe-item[data-recipe-id='${d.id}']`);
-            if (recipeItem) {
-                recipeItem.classList.remove('hover-highlight');
-            }
-        });
-        // The click event is delegated to the body in app.js to call handleRecipeSelection
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
     state.chart.nodes.append("circle")
         .attr("class", "color-map-node-aura")
@@ -400,116 +385,6 @@ export async function confirmAndCallAI() {
         }
     }
 }
-
-
-// --- CAPTION AI LAB ---
-
-export function openCaptionLab(recipeId) {
-    const recipe = recipesData.find(r => r.id === recipeId);
-    if (!recipe) return;
-
-    Object.assign(state.captionAI, {
-        recipe: recipe,
-        isGenerating: false,
-        userPrompt: '',
-        abortController: null,
-        result: null,
-    });
-
-    document.getElementById('captionLabModal').classList.remove('hidden');
-    renderCaptionLab();
-}
-
-export function closeCaptionLab() {
-    if (state.captionAI.abortController) {
-        state.captionAI.abortController.abort();
-    }
-    document.getElementById('captionLabModal').classList.add('hidden');
-}
-
-function renderCaptionLab() {
-    const contentEl = document.getElementById('captionLabContent');
-    if (!contentEl) return;
-
-    if (state.captionAI.isGenerating) {
-        contentEl.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader"></div><p class="mt-4 text-gray-600">Gemini is thinking...</p></div>`;
-        return;
-    }
-
-    if (state.captionAI.result) {
-        const { caption, hashtags } = state.captionAI.result;
-        contentEl.innerHTML = `
-            <h3 class="text-xl font-bold text-center" data-translate-key="captionResultTitle"></h3>
-            <div class="mt-4 p-4 bg-gray-50 border rounded-lg">
-                <p id="caption-text" class="text-gray-800 whitespace-pre-wrap">${caption}</p>
-                <p id="hashtags-text" class="mt-3 text-purple-700 font-semibold">${hashtags}</p>
-            </div>
-            <div class="mt-4 flex gap-2 justify-end">
-                 <button class="btn bg-gray-200 text-gray-800 py-2 px-4" data-copy-target="hashtags-text">
-                     <span data-translate-key="copyBtn"></span> Hashtags
-                 </button>
-                 <button class="btn btn-primary py-2 px-4" data-copy-target="caption-text">
-                     <span data-translate-key="copyBtn"></span> Caption
-                 </button>
-            </div>
-        `;
-    } else {
-        const recipeName = state.captionAI.recipe.name[getCurrentLanguage()];
-        contentEl.innerHTML = `
-            <p class="text-base text-gray-600 text-center">${t('captionLabDescription').replace('{recipeName}', `<b>${recipeName}</b>`)}</p>
-            <textarea id="captionPromptInput" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all min-h-[80px]" placeholder="${t('captionPromptPlaceholder')}"></textarea>
-            <div class="mt-6 text-center">
-                <button id="generateCaptionBtn" class="btn bg-purple-600 hover:bg-purple-700 text-white py-3 px-8 text-lg">
-                    <span data-translate-key="generateCaptionBtn"></span>
-                </button>
-            </div>
-        `;
-    }
-    applyTranslations();
-}
-
-export async function handleCaptionGeneration() {
-    const userInput = document.getElementById('captionPromptInput').value.trim();
-    if (!userInput) return;
-
-    state.captionAI.isGenerating = true;
-    state.captionAI.abortController = new AbortController();
-    renderCaptionLab();
-
-    const { recipe } = state.captionAI;
-    const recipeHashtag = `#${recipe.id.replace(/-/g, '')}${recipe.name.en.split(': ')[1]?.replace(/\s/g, '') || ''}`;
-    const prompt = `You are a witty, trendy, and creative social media expert for Sony Alpha Vietnam, specializing in Gen Z vocabulary and viral content. Your task is to generate a compelling social media post.
-**CRITICAL RULES:**
-1.  **Mandatory Hashtags:** The final hashtag string MUST include '#sonycolorlab', '#sonyalphavietnam', and '${recipeHashtag}'. This is non-negotiable.
-2.  **Tone & Style:** The caption's tone must be creative, subtle, sophisticated, and potentially humorous. Use trendy Vietnamese Gen Z slang and phrasing to make it highly shareable and viral.
-3.  **Language:** The entire response (caption and hashtags) MUST be in the same language as the User's Idea, which is: ${getCurrentLanguage()}.
-
-**CONTEXT:**
-* **Photographic Style:** "${recipe.name[getCurrentLanguage()]}" - This style is known for: "${recipe.description[getCurrentLanguage()]}".
-* **User's Idea:** "${userInput}"
-
-**TASK:**
-Based on all the rules and context, generate a caption and a set of hashtags.
-
-**OUTPUT FORMAT:**
-You must respond with only a single, valid JSON object with two keys: "caption" (string) and "hashtags" (string).`;
-
-    try {
-        state.captionAI.result = await callGeminiAPI(prompt, state.captionAI.abortController.signal);
-    } catch (error) {
-        if (error.name !== 'AbortError') {
-            console.error("Caption AI call failed:", error);
-            renderAIError(document.getElementById('captionLabContent'));
-        }
-    } finally {
-        state.captionAI.isGenerating = false;
-        state.captionAI.abortController = null;
-        if (!document.querySelector('.bg-red-50')) {
-             renderCaptionLab();
-        }
-    }
-}
-
 
 // --- PDF & SHARE FUNCTIONS ---
 
