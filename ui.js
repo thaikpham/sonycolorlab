@@ -2,6 +2,12 @@
  * ui.js
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
+ * * ==============================================
+ * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+ * ==============================================
+ * - Thêm hàm `openModal` và `closeModal` để quản lý hiệu ứng xuất hiện/biến mất của modal.
+ * - Cập nhật `renderLibraryDetails` để xử lý hiệu ứng trượt cho panel chi tiết trên di động.
+ * - Các thay đổi này tách biệt logic animation khỏi các module khác, giúp code sạch hơn.
  */
 
 // --- Local Module Imports ---
@@ -47,6 +53,39 @@ export function showToast(message, isError = false) {
         toast.style.bottom = '0px';
     }, 3000);
 }
+
+/**
+ * [NEW] Opens a modal with a fade-in and scale-up animation.
+ * @param {string} modalId - The ID of the modal element to open.
+ */
+export function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    // Use a tiny timeout to allow the browser to apply the 'hidden' removal 
+    // before adding the 'visible' class, which triggers the transition.
+    setTimeout(() => {
+        modal.classList.add('visible');
+    }, 10);
+}
+
+/**
+ * [NEW] Closes a modal with a fade-out animation.
+ * @param {string} modalId - The ID of the modal element to close.
+ */
+export function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.classList.remove('visible');
+    // Listen for the transition to end before setting display: none,
+    // otherwise the animation won't be visible.
+    modal.addEventListener('transitionend', () => {
+        if (!modal.classList.contains('visible')) {
+            modal.classList.add('hidden');
+        }
+    }, { once: true });
+}
+
 
 // --- HTML TEMPLATE GENERATORS ---
 
@@ -127,10 +166,8 @@ function createSaveGuideHTML() {
 function createFullRecipeHTML(recipe) {
     const demoImages = recipeImages[recipe.id] || [];
     
-    // --- UPDATED: createCollageHTML to generate a 4-column grid ---
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
-        // Show up to 8 images to create a max of two rows in a 4-column grid
         const count = Math.min(images.length, 8);
 
         const imageElements = images.slice(0, count).map((imgUrl, index) => `
@@ -144,7 +181,6 @@ function createFullRecipeHTML(recipe) {
                 >
             </div>`).join('');
 
-        // The container now has a single class, styled in index.html
         return `<div class="photo-collage">${imageElements}</div>`;
     };
 
@@ -255,6 +291,7 @@ const viewTemplates = {
                     <div id="recipeContent" class="hidden"></div>
                 </div>
             </main>
+            <!-- UPDATED: Added 'visible' class for animation control -->
             <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] p-4 overflow-y-auto hidden">
                 <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
                 <div class="glass-panel p-6 overflow-y-auto sleek-scrollbar"><div id="recipeContentMobile"></div></div>
@@ -344,7 +381,6 @@ export function renderView(viewName, selectedId = null, attachViewEventListeners
 
     if (viewName !== 'home') {
         document.body.style.overflowY = 'auto';
-        // Stop the animation if it's running
         if (state.animation.blobAnimationFrameId) {
             cancelAnimationFrame(state.animation.blobAnimationFrameId);
             state.animation.blobAnimationFrameId = null;
@@ -354,7 +390,6 @@ export function renderView(viewName, selectedId = null, attachViewEventListeners
         }
     } else {
         document.body.style.overflowY = 'hidden';
-        // Start the animation if it's not running
         if (!state.animation.blobAnimationFrameId) {
             initializeBackgroundBlobs();
         }
@@ -392,23 +427,19 @@ export function updateListSelectionAndScroll(id) {
     const listContainer = document.getElementById('recipeListContainer');
     if (!listContainer) return;
 
-    // Deselect previously selected item
     const oldSelectedItem = listContainer.querySelector('.recipe-item.selected');
     if (oldSelectedItem) {
         oldSelectedItem.classList.remove('selected');
     }
 
-    // Select the new item if an ID is provided
     if (id) {
         const newSelectedItem = listContainer.querySelector(`.recipe-item[data-recipe-id="${id}"]`);
         if (newSelectedItem) {
             newSelectedItem.classList.add('selected');
             const recipe = recipesData.find(r => r.id === id);
             if (recipe) {
-                // Apply glow color for the selected item
                 newSelectedItem.style.setProperty('--glow-color', recipe.personalityColor);
             }
-            // Scroll the item into the center of the view
             newSelectedItem.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
@@ -426,7 +457,6 @@ export async function renderLibraryList() {
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
     const trendingIds = await fetchTrendingRecipeIds();
     
-    // Filter recipes based on name or description in the current language
     const recipesToRender = recipesData.filter(r => 
         r.name[getCurrentLanguage()].toLowerCase().includes(searchTerm) || 
         r.description[getCurrentLanguage()].toLowerCase().includes(searchTerm)
@@ -437,7 +467,7 @@ export async function renderLibraryList() {
         const isTrending = trendingIds.includes(recipe.id);
         const hasImages = recipeImages[recipe.id] && recipeImages[recipe.id].length > 0 && recipeImages[recipe.id].some(url => !url.includes('placehold.co'));
         const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
-        const animationStyle = `animation-delay: ${index * 40}ms;`; // Stagger animation
+        const animationStyle = `animation-delay: ${index * 40}ms;`;
         
         const imageIconHTML = hasImages 
             ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image text-teal-500 flex-shrink-0"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`
@@ -472,13 +502,24 @@ export function renderLibraryDetails() {
     const recipeMainPanel = document.getElementById('recipeMainPanel');
     const recipeDetailPanelMobile = document.getElementById('recipeDetailPanelMobile');
 
-    // Handle responsive visibility
+    // [UPDATED] Handle responsive visibility with animations
     if (isMobile) {
         recipeListPanel.classList.toggle('hidden', state.isMobileDetailActive);
-        recipeDetailPanelMobile.classList.toggle('hidden', !state.isMobileDetailActive);
+        if (state.isMobileDetailActive) {
+            recipeDetailPanelMobile.classList.remove('hidden');
+            setTimeout(() => recipeDetailPanelMobile.classList.add('visible'), 10);
+        } else {
+            recipeDetailPanelMobile.classList.remove('visible');
+            recipeDetailPanelMobile.addEventListener('transitionend', () => {
+                if (!recipeDetailPanelMobile.classList.contains('visible')) {
+                    recipeDetailPanelMobile.classList.add('hidden');
+                }
+            }, { once: true });
+        }
     } else {
         recipeListPanel?.classList.remove('hidden');
         recipeDetailPanelMobile?.classList.add('hidden');
+        recipeDetailPanelMobile?.classList.remove('visible');
     }
 
     const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
@@ -489,7 +530,6 @@ export function renderLibraryDetails() {
     
     if (!recipeContentContainer) return;
 
-    // If no recipe is selected, show the welcome/chart view
     if (!recipe) {
         if (welcomeAndChartContainer) welcomeAndChartContainer.classList.remove('hidden');
         recipeContentContainer.classList.add('hidden');
@@ -497,7 +537,6 @@ export function renderLibraryDetails() {
         return;
     }
     
-    // If a recipe is selected, hide the welcome view and show the details
     if (welcomeAndChartContainer) welcomeAndChartContainer.classList.add('hidden');
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
