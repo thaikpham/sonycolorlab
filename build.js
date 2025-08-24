@@ -61,6 +61,7 @@ try {
         'index.html',
         'logo_black.png',
         'ColorlabQR.png',
+        'Logo.png',
         // All JS modules
         'app.js',
         'api.js',
