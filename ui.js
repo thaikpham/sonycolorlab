@@ -127,9 +127,11 @@ function createSaveGuideHTML() {
 function createFullRecipeHTML(recipe) {
     const demoImages = recipeImages[recipe.id] || [];
     
+    // --- UPDATED: createCollageHTML to generate a 4-column grid ---
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
-        const count = Math.min(images.length, 6);
+        // Show up to 8 images to create a max of two rows in a 4-column grid
+        const count = Math.min(images.length, 8);
 
         const imageElements = images.slice(0, count).map((imgUrl, index) => `
             <div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
@@ -142,7 +144,8 @@ function createFullRecipeHTML(recipe) {
                 >
             </div>`).join('');
 
-        return `<div class="photo-collage images-${count}">${imageElements}</div>`;
+        // The container now has a single class, styled in index.html
+        return `<div class="photo-collage">${imageElements}</div>`;
     };
 
     const createCTAHTML = (recipe) => {
