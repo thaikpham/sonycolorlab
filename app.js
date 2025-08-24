@@ -139,6 +139,7 @@ async function init() {
 
         // D3 Chart Node Selection
         if (d3Node) {
+            // d3.select is not a standard DOM API, so we retrieve data differently
             const recipeData = d3.select(d3Node).datum();
             if (recipeData && recipeData.id) {
                 handleRecipeSelection(recipeData.id);
