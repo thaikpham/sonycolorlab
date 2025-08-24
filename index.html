@@ -3,34 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alpha AI Color Lab</title>
+<title>Alpha AI Color Lab by Sony</title>
 
 <!-- PWA and Add to Home Screen Configuration -->
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" type="image/png" href="ColorlabQR.png">
+<link rel="apple-touch-icon" href="ColorlabQR.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="white">
 <meta name="apple-mobile-web-app-title" content="ColorLAB">
 <meta name="theme-color" content="#ffffff">
-<link rel="manifest" href="data:application/manifest+json,{
-    &quot;name&quot;: &quot;Alpha AI Color Lab&quot;,
-    &quot;short_name&quot;: &quot;ColorLAB&quot;,
-    &quot;start_url&quot;: &quot;https://www.sonycolorlab.app&quot;,
-    &quot;display&quot;: &quot;standalone&quot;,
-    &quot;background_color&quot;: &quot;#ffffff&quot;,
-    &quot;theme_color&quot;: &quot;#ffffff&quot;,
-    &quot;icons&quot;: [
-        { &quot;src&quot;: &quot;logo.png&quot;, &quot;sizes&quot;: &quot;192x192&quot;, &quot;type&quot;: &quot;image/png&quot; },
-        { &quot;src&quot;: &quot;logo.png&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/png&quot; }
-    ]
-}">
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,{%22name%22:%22Alpha%20AI%20Color%20Lab%22,%22short_name%22:%22ColorLAB%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23F7F7F7%22,%22theme_color%22:%22%23ffffff%22,%22icons%22:[{%22src%22:%22logo_black.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22logo_black.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- Tối ưu: Tải D3.js bất đồng bộ và trì hoãn (defer) để không chặn hiển thị -->
 <script src="https://d3js.org/d3.v7.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Tối ưu: Tải trước (preload) font để tăng tốc độ hiển thị -->
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 
@@ -43,167 +30,100 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     
 <style>
-    /* --- REFINED STYLES WITH BLOB ANIMATION --- */
     html { scroll-behavior: smooth; }
     :root {
         --primary-accent: #007AFF;
         --primary-accent-darker: #0056B3;
-        --glass-bg: rgba(255, 255, 255, 0.65);
-        --glass-border: rgba(0, 0, 0, 0.05);
+        --background-light: #F7F7F7;
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(0, 0, 0, 0.07);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
         --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
     }
     body {
         font-family: 'Be Vietnam Pro', sans-serif;
-        background-color: #ffffff; /* Changed to white */
+        background-color: var(--background-light);
         color: var(--text-primary);
         position: relative;
+        overflow-x: hidden;
     }
-
-    /* --- Background Blobs (Blurred) --- */
     .bg-blob {
         position: fixed;
         border-radius: 50%;
-        filter: blur(120px); 
+        filter: blur(150px); 
         opacity: 0;
         z-index: -1;
         transition: opacity 1.5s var(--ease-out-cubic);
         will-change: transform;
     }
     .bg-blob.visible { 
-        opacity: 0.2; /* Slightly reduced opacity for white background */
+        opacity: 0.15;
     }
-
-    /* --- Core Component Styling --- */
     .glass-panel {    
         background: var(--glass-bg);    
-        backdrop-filter: blur(50px) saturate(180%);    
-        -webkit-backdrop-filter: blur(50px) saturate(180%);    
+        backdrop-filter: blur(40px) saturate(180%);    
+        -webkit-backdrop-filter: blur(40px) saturate(180%);    
         border: 1px solid var(--glass-border);    
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
         border-radius: 24px;
         transition: all 0.4s var(--ease-out-cubic);
     }
     @media (min-width: 768px) { .glass-panel { border-radius: 28px; } }
-    
     .recipe-item {
         border-left: 4px solid transparent;
         transition: all 0.3s var(--ease-out-cubic);
+        position: relative;
     }
     .recipe-item.selected {    
-        background-color: rgba(0, 122, 255, 0.1);    
+        background-color: white;
         color: var(--text-primary);    
         transform: translateX(4px) scale(1.02);
         border-left-color: var(--glow-color);
-        box-shadow: 0 0 20px -2px var(--glow-color);
+        box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 0 15px -3px var(--glow-color);
     }
     .recipe-item:hover:not(.selected) { 
-        background-color: rgba(0, 0, 0, 0.04);
+        background-color: rgba(255, 255, 255, 0.8);
         transform: translateX(2px);
     }
     .recipe-item.hover-highlight:not(.selected) {
-        background-color: rgba(230, 242, 255, 0.8);
-        box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.15);
+        background-color: rgba(230, 242, 255, 0.9);
+        box-shadow: 0 0 8px 2px rgba(0, 122, 255, 0.1);
         transform: translateX(2px);
     }
-
-    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transform: scale(1); }
+    .btn { border-radius: 9999px; font-weight: 600; transition: all 0.25s var(--ease-out-cubic); display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; transform: scale(1); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.39); }
-    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.45); }
+    .btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.3); }
+    .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-darker); transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(0, 118, 255, 0.35); }
     .btn:active { transform: translateY(0px) scale(0.97); }
-
-    /* --- Refined & Unified View Transitions --- */
     .view-transition { animation: fadeInScale 0.7s var(--ease-out-cubic) forwards; }
     .view-transition-out { animation: fadeOutScale 0.5s var(--ease-out-cubic) forwards; position: absolute; }
     @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
     @keyframes fadeOutScale { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
-
-    /* --- Staggered List Animation --- */
     .recipe-item-stagger {
         opacity: 0;
         transform: translateY(20px);
         animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
     }
     @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
-
-    /* --- Sleek Scrollbar with iOS Momentum Scrolling --- */
     .sleek-scrollbar { -webkit-overflow-scrolling: touch; }
     .sleek-scrollbar::-webkit-scrollbar { width: 8px; }
     .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .sleek-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0); border-radius: 20px; border: 3px solid transparent; }
     .sleek-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); }
     .sleek-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.4); }
-
-    /* --- Other styles --- */
     .modal.hidden { display: none; }
     .modal-panel { background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #e5e7eb; }
     .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
     #infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
     #infoTooltip.visible { opacity: 1; transform: translateY(0); }
-    .comparison-grid .changed { background-color: #e6f2ff; border: 1px solid #99c8ff; box-shadow: 0 0 0 2px #e6f2ff; }
-    .comparison-grid .value-original { color: #6b7280; }
-    .comparison-grid .value-new { color: #1d4ed8; font-weight: 700; }
-    .loader { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+    .loader { width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    
-    /* --- UPDATED: iOS-inspired Quiz Option Styling --- */
-    .quiz-option { 
-        background-color: #f1f5f9; /* light grey */
-        border: none;
-        color: var(--text-primary);
-        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out, transform 0.15s ease-in-out; 
-        transform: scale(1); 
-    }
-    .quiz-option .lucide {
-        color: #475569; /* slate-600 */
-        transition: color 0.15s ease-in-out;
-    }
-    .quiz-option:hover { 
-        background-color: #e2e8f0; /* slightly darker grey */
-    }
-    .quiz-option.selected { 
-        background-color: var(--primary-accent); 
-        color: white;
-    }
-    .quiz-option.selected .lucide {
-        color: white;
-    }
-    .quiz-option:active { 
-        transform: scale(0.97); 
-        transition-duration: 0.1s;
-    }
-    .quiz-options-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-    .quiz-options-grid .quiz-option { flex: 1 1 45%; min-width: 200px; }
-    .quiz-options-grid.has-three-options .quiz-option:last-child { flex-basis: 100%; max-width: calc(50% - 0.5rem); }
-    
-    /* === IMAGE COMPOSITION & LOADING IMPROVEMENTS === */
     .photo-collage { display: grid; gap: 0.75rem; }
-    .collage-item { 
-        cursor: pointer; 
-        overflow: hidden; 
-        border-radius: 0.75rem; 
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-        transition: box-shadow 0.3s ease, transform 0.3s ease; 
-        background-color: #f0f2f5; /* Add a background for loading state */
-    }
-    .collage-item:hover { 
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1); 
-        transform: translateY(-2px); 
-    }
-    .collage-item img { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
-        object-position: center center;
-        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .collage-item:hover img { 
-        transform: scale(1.08); 
-    }
-    /* === END IMAGE IMPROVEMENTS === */
-
+    .collage-item { cursor: pointer; overflow: hidden; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: box-shadow 0.3s ease, transform 0.3s ease; background-color: #f0f2f5; }
+    .collage-item:hover { box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .collage-item img { width: 100%; height: 100%; object-fit: cover; object-position: center center; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .collage-item:hover img { transform: scale(1.08); }
     .photo-collage.images-1 { grid-template-columns: 1fr; }
     .photo-collage.images-2 { grid-template-columns: repeat(2, 1fr); }
     .photo-collage.images-3 { grid-template-columns: repeat(2, 1fr); }
@@ -215,19 +135,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .photo-collage.images-6 { grid-template-columns: repeat(3, 1fr); }
     .photo-collage.images-6 > .collage-item:nth-child(1) { grid-column: span 2; }
     .photo-collage.images-6 > .collage-item:nth-child(4) { grid-column: span 2; }
-    
     #lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     #lightbox.visible { opacity: 1; pointer-events: auto; }
-    #lightbox img { 
-        max-width: 90vw; 
-        max-height: 85vh; 
-        border-radius: 0.5rem; 
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-        transform: scale(0.95); 
-        transition: transform 0.3s ease, opacity 0.3s ease; 
-        opacity: 1; 
-        object-fit: contain;
-    }
+    #lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 1; object-fit: contain; }
     #lightbox.visible img { transform: scale(1); }
     .lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
     .lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
@@ -252,86 +162,63 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     #trendingContainer { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards; }
     .trending-item { background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.05); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .trending-item:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--glow-color); }
-    #addToHomeScreenBtn.visible { display: inline-flex; animation: fadeInDown 0.5s ease-out; }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* NEW: QR Code Styles */
     #qrCodeContainer {
         position: fixed;
         bottom: 1.5rem;
         right: 1.5rem;
         z-index: 10;
+        transition: opacity 0.3s, transform 0.3s;
     }
     #qrCodeContainer.hidden {
-        display: none;
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
     }
-    /* Hide QR code on mobile devices */
-    @media (max-width: 767px) {
+    @media (max-width: 1023px) {
         #qrCodeContainer {
             display: none;
         }
     }
-
 </style>
 </head>
-<body>
-<!-- Background Blobs will be injected here by JS -->
+<body class="antialiased">
 <div id="blobContainer" class="fixed inset-0 -z-10 overflow-hidden"></div>
-
-<!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4CCCKFW"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
-<!-- Main App Container -->
 <div id="appContainer" class="min-h-screen w-screen p-4 md:p-6 flex flex-col">
     <header class="flex justify-between items-center w-full z-20 flex-shrink-0">
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
 			<img src="logo_black.png" alt="Alpha AI Color Lab Logo" class="h-20 w-auto">
 		</button>
         <div class="flex items-center gap-2 md:gap-4">
-            <nav id="mainNav" class="hidden md:flex items-center gap-2">
+            <nav id="mainNav" class="hidden md:flex items-center gap-4">
                 <button data-view="recipeFormulas" class="nav-btn font-semibold text-gray-600 hover:text-black transition-colors px-4 py-2 rounded-full hover:bg-gray-100" data-translate-key="navRecipeFormulas"></button>
+                <div class="p-1 bg-gray-200/70 rounded-full flex relative">
+                    <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
+                    <button id="langVI" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-5 h-5 rounded-sm"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
+                        <span class="hidden sm:inline">VIE</span>
+                    </button>
+                    <button id="langEN" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-5 rounded-sm"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
+                        <span class="hidden sm:inline">ENG</span>
+                    </button>
+                </div>
             </nav>
-            <button id="addToHomeScreenBtn" class="hidden items-center gap-2 bg-blue-50 text-blue-700 font-semibold px-4 py-2 rounded-full hover:bg-blue-100 transition-colors duration-200 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <span class="hidden sm:inline">Cài đặt App</span>
-            </button>
-            <div class="p-1 bg-gray-200/70 rounded-full flex relative">
-                <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
-                <button id="langVI" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-5 h-5 rounded-sm"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
-                    <span class="hidden sm:inline">VIE</span>
-                </button>
-                <button id="langEN" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-5 rounded-sm"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
-                    <span class="hidden sm:inline">ENG</span>
-                </button>
-            </div>
             <button id="hamburgerBtn" class="md:hidden p-2 rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-gray-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
         </div>
     </header>
-
-    <div id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></div>
-    
+    <main id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></main>
     <footer class="text-center pt-4 pb-16 sm:py-4 text-gray-500 text-sm flex-shrink-0">
         Paint emotions with ColorLAB by Sony Alpha Vietnam
     </footer>
 </div>
-
-<!-- QR Code Container -->
 <div id="qrCodeContainer">
-    <!-- FIX: Changed src from .png to .svg -->
-    <img src="adobe-express-qr-code.svg" alt="QR Code" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg">
+    <img src="ColorlabQR.png" alt="QR Code for sonycolorlab.app" class="w-24 h-24 md:w-28 md:h-28 rounded-lg shadow-lg border-4 border-white">
 </div>
-
-
 <div id="infoTooltip" class="hidden"></div>
-
 <div id="lightbox" class="hidden">
     <span id="lightboxClose">&times;</span>
     <div id="lightboxPrev" class="lightbox-arrow">&#x2039;</div>
@@ -339,8 +226,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="lightboxNext" class="lightbox-arrow">&#x203A;</div>
     <div id="lightboxCounter"></div>
 </div>
-
-<div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden">
+<div id="mobileNavMenu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transform translate-x-full md:hidden transition-transform duration-300 ease-in-out">
     <div class="absolute top-0 right-0 h-full w-2/3 max-w-sm bg-white/80 backdrop-blur-xl shadow-2xl p-6">
         <button id="closeMobileNavBtn" class="absolute top-4 right-4 text-3xl p-2">&times;</button>
         <nav class="mt-16 flex flex-col gap-6 text-center">
@@ -348,8 +234,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </nav>
     </div>
 </div>
-
-<!-- Quiz Modal -->
 <div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div id="quizPanel" class="modal-panel w-full max-w-3xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
         <div class="flex justify-between items-center p-5 flex-shrink-0">
@@ -364,8 +248,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
 </div>
-
-<!-- Gemini AI Lab Modal -->
 <div id="aiLabModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div id="aiLabPanel" class="modal-panel w-full max-w-4xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
         <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
@@ -381,8 +263,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
 </div>
-
-<!-- Caption AI Lab Modal -->
 <div id="captionLabModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div id="captionLabPanel" class="modal-panel w-full max-w-2xl max-h-[90vh] flex flex-col view-transition rounded-2xl">
         <div class="flex justify-between items-center p-5 border-b border-gray-200 flex-shrink-0">
@@ -398,9 +278,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
 </div>
-
-
 <script type="module" src="app.js" defer></script>
-
 </body>
 </html>

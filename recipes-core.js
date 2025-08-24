@@ -16,12 +16,7 @@ const recipesData = [
         "colorDepth": { "R": "-1", "G": "+1", "B": "+5", "C": "+4", "M": "0", "Y": "+5" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FFD700",
-        "coords": { "x": 6, "y": 7 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczPPT3oBJKObBMX8NEdTxe-PLC2BEd0eRGUMSUiYxocel93ljDNFyG58LJiiPhijnKyWkjJbkSim54sWvSLrRxeM22uF82BlckublQ4qsSic7gwhAVe-XX0jEzRuxDJG7j25PHU6tLUGIT0IRHjy_AvXuQ=w1658-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPC_ounREkB_Q6oj6ZM7ckVGcKKZ_saJP5O63nURHPk09iTI8l4YwSqUzyxJm8ZG760nUJhm5JgmMWyk4uGlDDaaWwjJJPO4E9IAoF1pNfMHqx-2g3OcDS2COZ1w93K8j16X08W24leuMEhZvXx6L4uyw=w736-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPwAttTxhJ89lhQ4Lbp9Klq73D30WWsG21oDGzsTZ9ig_5IYa3hLxdsQnMIb-8xJF-SOUMsNjaoGm-1RbfHrcRDn8lrLR7krn4ubwBkoe7fKqWes36h-8T05_EvDvJiHM04HZYdZzSkJ_4O2y7yhyXc3A=w1658-h1105-s-no?authuser=0"
-        ]
+        "coords": { "x": 6, "y": 7 }
     },
     {
         "id": "scl-002",
@@ -40,13 +35,7 @@ const recipesData = [
         "colorDepth": { "R": "-4", "G": "+7", "B": "-2", "C": "-2", "M": "-5", "Y": "-3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#66CDAA",
-        "coords": { "x": -4, "y": 3 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczOxpa5cb1MQL79E_8e6z6hRtWdh8gAVfbThLtSl1DTjZIWjnLKRSDIt0NPfnOPujjvnpAgd8PS15D-yiX3yECWkkWgHexTe6lzdAdqR41bFZpNlBxbRT0Zir46-N6duJLPgh46ngita84YDEvu1tWbvYw=w1398-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczMjFiQE-XO4btZr1TMjdQFP0xShl7nWo4pCHcZdzmL3e8lHo_yAIK2MoFOtTnWpc11hOsEG94RKGIhJiEnDzfHGLo-QGSKSP1VhzcQI_JC2v-KIhkwmXqQ4LN6O_SKkbD1UTueUME89pSBO0gCfFmE0sQ=w1396-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOESZiKNucBWuMM3CWgxQ8_TKYDhGgDjRX-0XFG-cPf9npWj0BNhp5uN2R0hWVQStdlJs-TcRCl0YROZkoaBNj6NTkMBmvub5_jhPYObQU1RX8bj7HjAPmXmUPgK0Xw-HTSwWuY-oT86_DFS3LKWaWkLg=w786-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczNFTcQZmr9y__SzimI35R5akGnUbiRMCHpKyI5rKhVbHUke9mMbKH29Xq1pmb2_2t1m59OW4ZvifveAQum6-yjjs0PBLMayHMaHSSRVt--yWZ9Rvk8wGMtjaO2SNfMGMc1d7QDZdLM9k1S4zreLvAg4Ow=w785-h1048-s-no?authuser=0"
-        ]
+        "coords": { "x": -4, "y": 3 }
     },
     {
         "id": "scl-003",
@@ -65,12 +54,7 @@ const recipesData = [
         "colorDepth": { "R": "0", "G": "-2", "B": "+4", "C": "+5", "M": "+5", "Y": "+1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#4682B4",
-        "coords": { "x": -8, "y": 5 },
-        "demoImages": [
-            "https://placehold.co/800x600/4682B4/ffffff?text=Caspian+Blue+1",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Caspian+Blue+2",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Caspian+Blue+3"
-        ]
+        "coords": { "x": -8, "y": 5 }
     },
     {
         "id": "scl-004",
@@ -89,12 +73,7 @@ const recipesData = [
         "colorDepth": { "R": "-2", "G": "+6", "B": "+4", "C": "+5", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#CD853F",
-        "coords": { "x": 7, "y": 8 },
-        "demoImages": [
-            "https://placehold.co/800x600/CD853F/ffffff?text=Tuscan+Ochre+1",
-            "https://placehold.co/800x600/CD853F/ffffff?text=Tuscan+Ochre+2",
-            "https://placehold.co/800x600/CD853F/ffffff?text=Tuscan+Ochre+3"
-        ]
+        "coords": { "x": 7, "y": 8 }
     },
     {
         "id": "scl-005",
@@ -113,12 +92,7 @@ const recipesData = [
         "colorDepth": { "R": "-3", "G": "+6", "B": "-2", "C": "-3", "M": "-4", "Y": "+4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#B0E0E6",
-        "coords": { "x": -2, "y": -5 },
-        "demoImages": [
-            "https://placehold.co/800x600/B0E0E6/ffffff?text=Somerset+Meadow+1",
-            "https://placehold.co/800x600/B0E0E6/ffffff?text=Somerset+Meadow+2",
-            "https://placehold.co/800x600/B0E0E6/ffffff?text=Somerset+Meadow+3"
-        ]
+        "coords": { "x": -2, "y": -5 }
     },
     {
         "id": "scl-006",
@@ -137,12 +111,7 @@ const recipesData = [
         "colorDepth": { "R": "-2", "G": "+5", "B": "-3", "C": "+3", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "-7" },
         "personalityColor": "#D2B48C",
-        "coords": { "x": 0, "y": -7 },
-        "demoImages": [
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Faded+Cine+1",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Faded+Cine+2",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Faded+Cine+3"
-        ]
+        "coords": { "x": 0, "y": -7 }
     },
     {
         "id": "scl-007",
@@ -161,14 +130,7 @@ const recipesData = [
         "colorDepth": { "R": "+2", "G": "+7", "B": "-7", "C": "-6", "M": "+3", "Y": "+3" },
         "detailSettings": { "Level": "+2" },
         "personalityColor": "#8B0000",
-        "coords": { "x": -8, "y": 2 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczPNz3HyNLVWjqZhgiyju1VGPtXfjJF4tztdIYBzblUi7wrG7yGCxIfnBiSZCsGWXfOoJyyuPLeA_DQJ_xGzVClwtavTygTBGTwgXbf5X6p8TkZ2XoHCcU3JIRwhT29ogkDJ6RIRxtNu3EX8F6tCRiyUOQ=w1505-h1003-s-no?authuser=0",
-           "https://lh3.googleusercontent.com/pw/AP1GczNBM4neAiFR7EYS97H-_luFSF9db8xX7vvM3PZxt77uC0iTuyFQu0iHNldol62cePGpwCcXfTsfiGz47Mk2tFtpOyiSFImmSMwfkTb-gwVXXNLTYEDTz5Pk2NcZ2N4udQIiHe_9YUMeAvsICOgMo4Xzaw=w1505-h1003-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPl115MMMy6ly00qF_lY7njx3Hsmf96wSDtknELjmwXiueyyz9AQ-_delPgDP8bRlbr73cJN_NdZBUclNX3xO0sjmykjL_kNwV9HtT6tqAm0ZLztmMVX8E_8hJYxiyIukqysnBXb18Y5P07rBn4Ajv4_Q=w1505-h1003-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOzjHgr4eN_zfm3mHKjyFSoQp1A2DNRoXtu7MIpvkS-TTUZJfcRoZToBQy-XKRROkH0hsYbv-fSs-EEG4nOAUa-j-AwlP1BKOGDnvlKnsf8UBEkP5MtgZk5Y76ea0AcIA6oJXkfflNbRwKANmcSZ4Z_Nw=w1505-h1003-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczP8SHU45N8inO-CkroVkR_rjReWxpLBwUuUL_U2MS5r9W5kRWIn3agIiBnNlR4iTQ6V_-qubNu0jWS-XPlkTDPGds_QHDWXndTGNggTVOUUkQN1EQgWkwmcyyXH6WsreEZDF92ocoP5G5Qk9G16u5n3IQ=w1505-h1003-s-no?authuser=0",
-        ]
+        "coords": { "x": -8, "y": 2 }
     },
     {
         "id": "scl-008",
@@ -187,12 +149,7 @@ const recipesData = [
         "colorDepth": { "R": "0", "G": "+6", "B": "+4", "C": "-2", "M": "+3", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#4682B4",
-        "coords": { "x": 0, "y": 4 },
-        "demoImages": [
-            "https://placehold.co/800x600/4682B4/ffffff?text=Modern+Classic+1",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Modern+Classic+2",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Modern+Classic+3"
-        ]
+        "coords": { "x": 0, "y": 4 }
     },
     {
         "id": "scl-009",
@@ -211,12 +168,7 @@ const recipesData = [
         "colorDepth": { "R": "-5", "G": "+6", "B": "+3", "C": "+4", "M": "-6", "Y": "-1" },
         "detailSettings": { "Level": "-7" },
         "personalityColor": "#008080",
-        "coords": { "x": -5, "y": -3 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczMGoUhcLmIXQbNn7PeBBgEvqPEx8PFXMnms2qJYqeiNBxnGmbXjZQBFaY-M58rIKX-Vq9KSlta7ol9RG5hD73b139Rt7zpNP8T6uqviIsMB4pW5mTYQUYCNiqc4VOp_1XM1fW-hDuBFamIn9J-z98L39w=w1571-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczMJY5QCZ92Y01uO5ra30hoNlSVg-jXPr5gUkHaZQe45CyneNwOIrhvnkziPFHlCLzscxk8An-3kJWU_5VFuWaMf6KQY_GvCge4Od7qAyiAdU0OZHWh058E0H872y6fhgz5WHOVFlElssVS0cXTl8dGaUQ=w699-h1048-s-no?authuser=0",
-            "https://placehold.co/800x600/008080/ffffff?text=Urban+Teal+3"
-        ]
+        "coords": { "x": -5, "y": -3 }
     },
     {
         "id": "scl-010",
@@ -235,12 +187,7 @@ const recipesData = [
         "colorDepth": { "R": "-3", "G": "+7", "B": "-2", "C": "+5", "M": "+3", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#3CB371",
-        "coords": { "x": 2, "y": -6 },
-        "demoImages": [
-            "https://placehold.co/800x600/3CB371/ffffff?text=Cinema+Verde+1",
-            "https://placehold.co/800x600/3CB371/ffffff?text=Cinema+Verde+2",
-            "https://placehold.co/800x600/3CB371/ffffff?text=Cinema+Verde+3"
-        ]
+        "coords": { "x": 2, "y": -6 }
     },
     {
         "id": "scl-011",
@@ -259,12 +206,7 @@ const recipesData = [
         "colorDepth": { "R": "-5", "G": "-7", "B": "-6", "C": "+4", "M": "-7", "Y": "-5" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#4169E1",
-        "coords": { "x": -7, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/4169E1/ffffff?text=Midnight+Halogen+1",
-            "https://placehold.co/800x600/4169E1/ffffff?text=Midnight+Halogen+2",
-            "https://placehold.co/800x600/4169E1/ffffff?text=Midnight+Halogen+3"
-        ]
+        "coords": { "x": -7, "y": 0 }
     },
     {
         "id": "scl-012",
@@ -283,12 +225,7 @@ const recipesData = [
         "colorDepth": { "R": "+2", "G": "+5", "B": "+1", "C": "+2", "M": "+4", "Y": "+3" },
         "detailSettings": { "Level": "-7" },
         "personalityColor": "#FFBF00",
-        "coords": { "x": 4, "y": -2 },
-        "demoImages": [
-            "https://placehold.co/800x600/FFBF00/ffffff?text=Amber+Glow+1",
-            "https://placehold.co/800x600/FFBF00/ffffff?text=Amber+Glow+2",
-            "https://placehold.co/800x600/FFBF00/ffffff?text=Amber+Glow+3"
-        ]
+        "coords": { "x": 4, "y": -2 }
     },
     {
         "id": "scl-013",
@@ -307,12 +244,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+5", "B": "+5", "C": "+7", "M": "+7", "Y": "-3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#A9A9A9",
-        "coords": { "x": -5, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/A9A9A9/ffffff?text=Flatiron+Mist+1",
-            "https://placehold.co/800x600/A9A9A9/ffffff?text=Flatiron+Mist+2",
-            "https://placehold.co/800x600/A9A9A9/ffffff?text=Flatiron+Mist+3"
-        ]
+        "coords": { "x": -5, "y": 0 }
     },
     {
         "id": "scl-014",
@@ -331,12 +263,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+7", "B": "+1", "C": "+2", "M": "-7", "Y": "0" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FF00FF",
-        "coords": { "x": 3, "y": 6 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF00FF/ffffff?text=Magenta+Bloom+1",
-            "https://placehold.co/800x600/FF00FF/ffffff?text=Magenta+Bloom+2",
-            "https://placehold.co/800x600/FF00FF/ffffff?text=Magenta+Bloom+3"
-        ]
+        "coords": { "x": 3, "y": 6 }
     },
     {
         "id": "scl-015",
@@ -355,14 +282,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+5", "B": "-4", "C": "+2", "M": "+6", "Y": "+5" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#BC8F8F",
-        "coords": { "x": 1, "y": -4 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczNJ3RXM0585Sa5XfkKlkTNS984e9cNlb0RisEQmafa9UkYgK-VFiPLk5Z7FBqXbWx4aZfP6cLYqrJznVW5-sa7oeWJEA88xV--tF2Ii_38QbW9jAtQfxD6qhicMOUUMYA7wwIk3ZY4imY7zq6Yi0I47rA=w736-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczN1BaNaDzKjA13jI00EqgyQFLloAuIrwQUK6ukrbr2urqQNTEjwndCJZ8VScevfMakAuKRDqHf1TVPEcsZaOUZCTjbeYFJ7OOmmOVyiWrcnGVhxrEXhkxgebjbmgwY2ebIT1wRP__0WHPWvlEjw00p--g=w1658-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczNHf35toE3B_O7cvaYdN9E2lEe17qrNodlcoco0xN2w-C4hZ-CyFnKR8zFi3V3YiC14_8fUFirOTjcu9g0hpfCbAjrStzKvD_OIGCQUtipRveVi5aZpfCDCaM2hXCdFkhsmkgHaailH_wL_ZpAQvjKQPg=w736-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPwuN6kjA8C_Txs4TivJ6ccayeqe0ELhzSu3S4KSCgftD6bI5S1_K6sw1HRs1WTsHGzl-ELjLQZarkvQAJyVOCTcLV8KFxlHwlWoR2aYqGfnOJKvv9eiqOtpcPqwB1uUvzLUKTWA6MLwB3GmVmQwv8Lyg=w736-h1105-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczP3pw_-lNaE6VWJqE4xrTsu1ci0hwApdt5W6ygqU3XyLr5mbfq0rwwBS0R_7-7KL375lKvRbuaMZbEwUFKff5eVvu4xU1N48BcqshERAxsDNCLrDIiDKhPF0sNjCmJKwbAc8Ylarn4AIkjgnv_JCYSEqQ=w736-h1105-s-no?authuser=0"
-        ]
+        "coords": { "x": 1, "y": -4 }
     },
     {
         "id": "scl-016",
@@ -381,12 +301,7 @@ const recipesData = [
         "colorDepth": { "R": "-1", "G": "+5", "B": "+3", "C": "+2", "M": "-3", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#8FBC8F",
-        "coords": { "x": 0, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/8FBC8F/ffffff?text=Everyday+Natural+1",
-            "https://placehold.co/800x600/8FBC8F/ffffff?text=Everyday+Natural+2",
-            "https://placehold.co/800x600/8FBC8F/ffffff?text=Everyday+Natural+3"
-        ]
+        "coords": { "x": 0, "y": 0 }
     },
     {
         "id": "scl-017",
@@ -405,12 +320,7 @@ const recipesData = [
         "colorDepth": { "R": "0", "G": "+2", "B": "+3", "C": "+2", "M": "-6", "Y": "0" },
         "detailSettings": { "Level": "-2" },
         "personalityColor": "#DB7093",
-        "coords": { "x": -3, "y": -1 },
-        "demoImages": [
-            "https://placehold.co/800x600/DB7093/ffffff?text=Soft+Portrait+1",
-            "https://placehold.co/800x600/DB7093/ffffff?text=Soft+Portrait+2",
-            "https://placehold.co/800x600/DB7093/ffffff?text=Soft+Portrait+3"
-        ]
+        "coords": { "x": -3, "y": -1 }
     },
     {
         "id": "scl-018",
@@ -429,12 +339,7 @@ const recipesData = [
         "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "+2", "Y": "+1" },
         "detailSettings": { "Level": "+4" },
         "personalityColor": "#8A2BE2",
-        "coords": { "x": 8, "y": 9 },
-        "demoImages": [
-            "https://placehold.co/800x600/8A2BE2/ffffff?text=Vector+Graphic+1",
-            "https://placehold.co/800x600/8A2BE2/ffffff?text=Vector+Graphic+2",
-            "https://placehold.co/800x600/8A2BE2/ffffff?text=Vector+Graphic+3"
-        ]
+        "coords": { "x": 8, "y": 9 }
     },
     {
         "id": "scl-019",
@@ -453,12 +358,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+5" },
         "detailSettings": { "Level": "+2" },
         "personalityColor": "#FF69B4",
-        "coords": { "x": 8, "y": 6 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF69B4/ffffff?text=Pop+Art+1",
-            "https://placehold.co/800x600/FF69B4/ffffff?text=Pop+Art+2",
-            "https://placehold.co/800x600/FF69B4/ffffff?text=Pop+Art+3"
-        ]
+        "coords": { "x": 8, "y": 6 }
     },
     {
         "id": "scl-020",
@@ -477,12 +377,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "-4", "B": "-5", "C": "-3", "M": "+3", "Y": "-1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#D2B48C",
-        "coords": { "x": 5, "y": -1 },
-        "demoImages": [
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Autumn+Haze+1",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Autumn+Haze+2",
-            "https://placehold.co/800x600/D2B48C/ffffff?text=Autumn+Haze+3"
-        ]
+        "coords": { "x": 5, "y": -1 }
     },
     {
         "id": "scl-021",
@@ -501,12 +396,7 @@ const recipesData = [
         "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-5", "M": "+5", "Y": "+4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#ADD8E6",
-        "coords": { "x": -1, "y": -3 },
-        "demoImages": [
-            "https://placehold.co/800x600/ADD8E6/ffffff?text=Muted+Pastels+1",
-            "https://placehold.co/800x600/ADD8E6/ffffff?text=Muted+Pastels+2",
-            "https://placehold.co/800x600/ADD8E6/ffffff?text=Muted+Pastels+3"
-        ]
+        "coords": { "x": -1, "y": -3 }
     },
     {
         "id": "scl-022",
@@ -525,12 +415,7 @@ const recipesData = [
         "colorDepth": { "R": "+1", "G": "+7", "B": "0", "C": "+3", "M": "+2", "Y": "+1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#D3D3D3",
-        "coords": { "x": 0, "y": -1 },
-        "demoImages": [
-            "https://placehold.co/800x600/D3D3D3/ffffff?text=Neutral+Standard+1",
-            "https://placehold.co/800x600/D3D3D3/ffffff?text=Neutral+Standard+2",
-            "https://placehold.co/800x600/D3D3D3/ffffff?text=Neutral+Standard+3"
-        ]
+        "coords": { "x": 0, "y": -1 }
     },
     {
         "id": "scl-023",
@@ -549,12 +434,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+7", "B": "+3", "C": "-5", "M": "+3", "Y": "-2" },
         "detailSettings": { "Level": "+2" },
         "personalityColor": "#4682B4",
-        "coords": { "x": -6, "y": 3 },
-        "demoImages": [
-            "https://placehold.co/800x600/4682B4/ffffff?text=Alpine+Cool+1",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Alpine+Cool+2",
-            "https://placehold.co/800x600/4682B4/ffffff?text=Alpine+Cool+3"
-        ]
+        "coords": { "x": -6, "y": 3 }
     },
     {
         "id": "scl-024",
@@ -573,12 +453,7 @@ const recipesData = [
         "colorDepth": { "R": "+2", "G": "+7", "B": "-4", "C": "-4", "M": "-5", "Y": "+3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#00CED1",
-        "coords": { "x": -9, "y": 1 },
-        "demoImages": [
-            "https://placehold.co/800x600/00CED1/ffffff?text=Arctic+Negative+1",
-            "https://placehold.co/800x600/00CED1/ffffff?text=Arctic+Negative+2",
-            "https://placehold.co/800x600/00CED1/ffffff?text=Arctic+Negative+3"
-        ]
+        "coords": { "x": -9, "y": 1 }
     },
     {
         "id": "scl-025",
@@ -597,15 +472,7 @@ const recipesData = [
         "colorDepth": { "R": "-3", "G": "-2", "B": "+3", "C": "+7", "M": "-3", "Y": "-2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#8B0000",
-        "coords": { "x": 7, "y": 5 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczMP2AEjGlQrwqDJ-VyuT0P9ShdSS1Tm19qow343gNOuct0e3ZkefE4AckBfJ2YN7nrt0TKlOPBsZbCOKMiUPTLG1N0vYxUyjELnj6B546cuM6i3TaOdZV_TC2st7n6deBT2tbdX5yCaopzKw8iQ6XAV4A=w638-h957-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczNEHTJZj671xPsGQeRPOW6tlN2Tj6He0s3wXoI9nhMhi-Ko02KwcBfAtm3_58ZB8EQn_0eDn7G4xxTIiZDub6srAsYFnY0mGbEU706x2JuIkN0-Xkfx0LULgkar-yAeCnDiEOiIIxzFvmNvANH1azFCXw=w638-h957-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczNX1wq7sByA605G4rBM9qnPexoiYU7D6w25SttegSY7CIiLkJHl-sFnp3JliJFhKzp9V3ttWbBNMN9Exlfo-UnUQgTjSCFJzDpXIJTP9IKFX2QsBQNFo3FgpIQCOC3jqnlM6n6b1xL_WNXGDDkFXbnWzA=w638-h957-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOU2CYTi1ixMYBTDx8_YoUGDNo3eoYfX9trmiSk6UXuPN1t7gjAlV3f7452584ECcV4xW_WNbCgntS24bp0LJGJlBQYm27sEiS9rTveQ0cARsNJGGfEdeMI-sbSCt3E2S2dewMzuMTqWNVla5XvkV2wGA=w638-h957-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOfOlE-MLMd2bae-ld7MKPnKwFrY5OknvbvnOBX9FrVvT09H2W_7tI5j8zsbfQiZvTshSfzLq7-24_p_7yxM8gFFJikJTF-_aNpRNkmN6uNHZ6WpbHxiv56HIb8haPcMhMyQFcKJmjQGZPOnwjktjmlUQ=w1436-h957-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczMtAEFr7mikWQ7imz5N1Bwew2x57Hxhia6aKMOFDtEsx8mm0afzG62srHH9D6VQIH9iOWpaMXTOBIEOQs0jiIfAKWdz69VqZkMt3Zf_DrcXAteGTNbiHqwiaxF8bu9a6pnGkfX16t6SHopTuYvS5Kjdqw=w638-h957-s-no?authuser=0"
-        ]
+        "coords": { "x": 7, "y": 5 }
     },
     {
         "id": "scl-026",
@@ -624,12 +491,7 @@ const recipesData = [
         "colorDepth": { "R": "-4", "G": "-1", "B": "+7", "C": "+6", "M": "+5", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FF4500",
-        "coords": { "x": 9, "y": 6 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+1",
-            "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+2",
-            "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+3"
-        ]
+        "coords": { "x": 9, "y": 6 }
     },
     {
         "id": "scl-027",
@@ -648,12 +510,7 @@ const recipesData = [
         "colorDepth": { "R": "0", "G": "+3", "B": "+2", "C": "+2", "M": "-3", "Y": "+1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#F0E68C",
-        "coords": { "x": 5, "y": 4 },
-        "demoImages": [
-            "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+1",
-            "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+2",
-            "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+3"
-        ]
+        "coords": { "x": 5, "y": 4 }
     },
     {
         "id": "scl-028",
@@ -672,12 +529,7 @@ const recipesData = [
         "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FF4500",
-        "coords": { "x": 9, "y": 9 },
-        "demoImages": [
-            "https://placehold.co/800x600/FF4500/ffffff?text=Phoenix+Fire+1",
-            "https://placehold.co/800x600/FF4500/ffffff?text=Phoenix+Fire+2",
-            "https://placehold.co/800x600/FF4500/ffffff?text=Phoenix+Fire+3"
-        ]
+        "coords": { "x": 9, "y": 9 }
     },
     {
         "id": "scl-029",
@@ -696,12 +548,7 @@ const recipesData = [
         "colorDepth": { "R": "+5", "G": "+7", "B": "-6", "C": "-5", "M": "+7", "Y": "-4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#6495ED",
-        "coords": { "x": -8, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/6495ED/ffffff?text=Hollywood+Cool+1",
-            "https://placehold.co/800x600/6495ED/ffffff?text=Hollywood+Cool+2",
-            "https://placehold.co/800x600/6495ED/ffffff?text=Hollywood+Cool+3"
-        ]
+        "coords": { "x": -8, "y": 0 }
     },
     {
         "id": "scl-030",
@@ -720,12 +567,7 @@ const recipesData = [
         "colorDepth": { "R": "-1", "G": "+1", "B": "-1", "C": "+3", "M": "-3", "Y": "-1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#555555",
-        "coords": { "x": 0, "y": 0 },
-        "demoImages": [
-            "https://placehold.co/800x600/555555/ffffff?text=Graphite+Standard+1",
-            "https://placehold.co/800x600/555555/ffffff?text=Graphite+Standard+2",
-            "https://placehold.co/800x600/555555/ffffff?text=Graphite+Standard+3"
-        ]
+        "coords": { "x": 0, "y": 0 }
     },
     {
         "id": "scl-031",
@@ -744,12 +586,7 @@ const recipesData = [
         "colorDepth": { "R": "+2", "G": "-4", "B": "-1", "C": "+2", "M": "-1", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#333333",
-        "coords": { "x": 8, "y": 5 },
-        "demoImages": [
-            "https://placehold.co/800x600/333333/ffffff?text=Obsidian+Contrast+1",
-            "https://placehold.co/800x600/333333/ffffff?text=Obsidian+Contrast+2",
-            "https://placehold.co/800x600/333333/ffffff?text=Obsidian+Contrast+3"
-        ]
+        "coords": { "x": 8, "y": 5 }
     },
     {
         "id": "scl-032",
@@ -768,12 +605,7 @@ const recipesData = [
         "colorDepth": { "R": "-4", "G": "-1", "B": "+6", "C": "+5", "M": "-3", "Y": "-3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#777777",
-        "coords": { "x": 6, "y": -2 },
-        "demoImages": [
-            "https://placehold.co/800x600/777777/ffffff?text=Newsprint+Grit+1",
-            "https://placehold.co/800x600/777777/ffffff?text=Newsprint+Grit+2",
-            "https://placehold.co/800x600/777777/ffffff?text=Newsprint+Grit+3"
-        ]
+        "coords": { "x": 6, "y": -2 }
     },
     {
         "id": "scl-033",
@@ -792,12 +624,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+3", "B": "+3", "C": "+2", "M": "+3", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#AAAAAA",
-        "coords": { "x": -5, "y": -5 },
-        "demoImages": [
-            "https://placehold.co/800x600/AAAAAA/ffffff?text=Silver+Gelatin+1",
-            "https://placehold.co/800x600/AAAAAA/ffffff?text=Silver+Gelatin+2",
-            "https://placehold.co/800x600/AAAAAA/ffffff?text=Silver+Gelatin+3"
-        ]
+        "coords": { "x": -5, "y": -5 }
     },
     {
         "id": "scl-034",
@@ -816,12 +643,7 @@ const recipesData = [
         "colorDepth": { "R": "-1", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#BBBBBB",
-        "coords": { "x": 3, "y": 7 },
-        "demoImages": [
-            "https://placehold.co/800x600/BBBBBB/ffffff?text=Crystal+Clear+1",
-            "https://placehold.co/800x600/BBBBBB/ffffff?text=Crystal+Clear+2",
-            "https://placehold.co/800x600/BBBBBB/ffffff?text=Crystal+Clear+3"
-        ]
+        "coords": { "x": 3, "y": 7 }
     },
     {
         "id": "scl-035",
@@ -840,12 +662,7 @@ const recipesData = [
         "colorDepth": { "R": "0", "G": "+3", "B": "0", "C": "+2", "M": "+3", "Y": "0" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#888888",
-        "coords": { "x": -2, "y": 2 },
-        "demoImages": [
-            "https://placehold.co/800x600/888888/ffffff?text=Classic+Reportage+1",
-            "https://placehold.co/800x600/888888/ffffff?text=Classic+Reportage+2",
-            "https://placehold.co/800x600/888888/ffffff?text=Classic+Reportage+3"
-        ]
+        "coords": { "x": -2, "y": 2 }
     },
     {
         "id": "scl-036",
@@ -864,12 +681,7 @@ const recipesData = [
         "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "+7", "Y": "+1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#222222",
-        "coords": { "x": 9, "y": 9 },
-        "demoImages": [
-            "https://placehold.co/800x600/222222/ffffff?text=Noir+Film+1",
-            "https://placehold.co/800x600/222222/ffffff?text=Noir+Film+2",
-            "https://placehold.co/800x600/222222/ffffff?text=Noir+Film+3"
-        ]
+        "coords": { "x": 9, "y": 9 }
     },
     {
         "id": "scl-037",
@@ -888,12 +700,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+2", "B": "+7", "C": "+7", "M": "+4", "Y": "-5" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#666666",
-        "coords": { "x": -4, "y": -7 },
-        "demoImages": [
-            "https://placehold.co/800x600/666666/ffffff?text=Low+Light+Grain+1",
-            "https://placehold.co/800x600/666666/ffffff?text=Low+Light+Grain+2",
-            "https://placehold.co/800x600/666666/ffffff?text=Low+Light+Grain+3"
-        ]
+        "coords": { "x": -4, "y": -7 }
     },
     {
         "id": "scl-038",
@@ -912,12 +719,7 @@ const recipesData = [
         "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "+3", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#444444",
-        "coords": { "x": 5, "y": 4 },
-        "demoImages": [
-            "https://placehold.co/800x600/444444/ffffff?text=Modern+B%26W+1",
-            "https://placehold.co/800x600/444444/ffffff?text=Modern+B%26W+2",
-            "https://placehold.co/800x600/444444/ffffff?text=Modern+B%26W+3"
-        ]
+        "coords": { "x": 5, "y": 4 }
     },
     {
         "id": "scl-039",
@@ -936,12 +738,7 @@ const recipesData = [
         "colorDepth": { "R": "+7", "G": "+7", "B": "-7", "C": "-7", "M": "+7", "Y": "+7" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#708090",
-        "coords": { "x": -6, "y": -8 },
-        "demoImages": [
-            "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+1",
-            "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+2",
-            "https://placehold.co/800x600/708090/ffffff?text=Ortho+Portrait+3"
-        ]
+        "coords": { "x": -6, "y": -8 }
     },
     {
         "id": "scl-040",
@@ -960,12 +757,7 @@ const recipesData = [
         "colorDepth": { "R": "+3", "G": "+7", "B": "-5", "C": "-5", "M": "+4", "Y": "+4" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#E53935",
-        "coords": { "x": 2, "y": 3 },
-        "demoImages": [
-            "https://placehold.co/800x600/E53935/ffffff?text=Santa+Color+1",
-            "https://placehold.co/800x600/E53935/ffffff?text=Santa+Color+2",
-            "https://placehold.co/800x600/E53935/ffffff?text=Santa+Color+3"
-        ]
+        "coords": { "x": 2, "y": 3 }
     },
     {
         "id": "scl-041",
@@ -984,12 +776,7 @@ const recipesData = [
         "colorDepth": { "R": "+4", "G": "+5", "B": "0", "C": "0", "M": "-3", "Y": "+7" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#CDDC39",
-        "coords": { "x": 8, "y": 7 },
-        "demoImages": [
-            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+1",
-            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+2",
-            "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+3"
-        ]
+        "coords": { "x": 8, "y": 7 }
     },
         {
         "id": "scl-042",
@@ -1008,14 +795,7 @@ const recipesData = [
         "colorDepth": { "R": "-2", "G": "+4", "B": "+4", "C": "+5", "M": "-2", "Y": "-3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#CDDC39",
-        "coords": { "x": 0, "y": -2 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczMuIrMcPNoiJOw1LEmaBRsrq_2P9F6R_hWvmL8G9zfHJLXFNa6G1PQ32tIAtP7hRq0PO6RZw0XVXn7jkItO43KGJt9XElSfAGx7x0j47XyYhINeykyzx0QTlneEjUuyn0PrU7F2sgC_-uOeK-ipcyXj3A=w1571-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczMjSFgmGv95gnxvRpyIYv7r4RMWFeEz0XoVhZqbnq_9bowtqQLXSm5ZM1foweENdQmzOQjj94_NwXYiSrYsoDS7_0sVvJuZCKH1oGbqfkZjSz5d_hh-2D2ZPzUHTKaqeDtAMLpCSLcealhYGu-HT0V0SA=w1571-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczNh_0GbjAJcS9ku8jc6JCnu-rVFhRyR24JyZJ0jLBHpaO4fjrPOXzeA1FyOTxlgxZStTP6JE6g6COk9-3WEQuVuWMna2rV_1PW8nKLNZfwKoHElZFPRimTGpWL8uVvR_U8mXKxwyZQSv5xSSwPGX3wN6w=w1571-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczPYNhuf8JhXK_59Ft8JP8xvM_860GEtE-XYgoWRS76TZBzgtkXTqkuGiUAff-4DXvnnI9jlsYU7k_VzS3Sbp0jwSHkeZwOha9c9EJfeb3bdW7nONFTlNYcHEs_W8nfsOIyV7ui9dvweleL_E6jdKCVJhg=w1571-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOWhh97lEdBo31q9wITtjA8_semXxcoxG_JFDiLqTRQwrofviEe928cRUX01zoWqELi8ACvZ1Qfk3sUIrfyP9cJs1rSeSRPg9LMPTvfKnZihHtZNBedcROI4P4e0quaPZFGDnogY3EBWnCEPnoY-O-qcQ=w1571-h1048-s-no?authuser=0"
-        ]
+        "coords": { "x": 0, "y": -2 }
     },
     {
         "id": "PROCOLOR-001",
@@ -1034,11 +814,7 @@ const recipesData = [
         "colorDepth": { "R": "-1", "G": "-1", "B": "+1", "C": "+1", "M": "+1", "Y": "-1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#708090",
-        "coords": { "x": 1, "y": 1 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczPxaOjzhD4jE_WqMK3d_-E0xMbf62ixSg0ccUYS51nYXHOk-y4HJ3wwq3F3Hmd51W_jjYo0JWWCTMLQ1vhmOTCV7YXO6eBW1_CmzD0bRY9Iv2u24oYSctIa0TolR1beQFo7sFoE5UaWCoN4rpl50GwnUw=w481-h1048-s-no?authuser=0",
-            "https://lh3.googleusercontent.com/pw/AP1GczOukBYkXG6Tx4wyZVr6SG-4KO7SDu_hOHlqqWH7lXECgaSQd-E1Y5Gei5OM7tpYtdqJPG3T3GviII7Lbq3ytJpFe5hn2j2eZmQYOkyhIVlronmdHn2p-i_Ikfg4JQNMCa7GOALUFPOTUSVGW1MTgVr5bA=w484-h1048-s-no?authuser=0"
-        ]
+        "coords": { "x": 1, "y": 1 }
     },
       {
         "id": "PROCOLOR-002",
@@ -1057,10 +833,7 @@ const recipesData = [
         "colorDepth": { "R": "-1", "G": "-1", "B": "+1", "C": "+1", "M": "+1", "Y": "-1" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#708090",
-        "coords": { "x": 1, "y": 1 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczOiKfRCji6HVmrDbEjGkPSMq2AhbTcb_yrVtbh_jB_sdosTRQqgZrQNpi10frovhZfIOQiaTkwpM297DcA1cLf5VtZLYh6MjOXRd1itNsZZF5BJlJ4_CloE9YdOIF9ceLzlVymOP55hTkYJQ4_D3edM-Q=w484-h1048-s-no?authuser=0"
-        ]
+        "coords": { "x": 1, "y": 1 }
     },
           {
         "id": "PROCOLOR-003",
@@ -1079,11 +852,9 @@ const recipesData = [
         "colorDepth": { "R": "-2", "G": "-5", "B": "+3", "C": "+3", "M": "-4", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#708090",
-        "coords": { "x": 1, "y": 1 },
-        "demoImages": [
-            "https://lh3.googleusercontent.com/pw/AP1GczPr5IM9fb8Mxygh4GGj44LBb0b4IXpdKOoRm_nPd8RtU1mbQONyQ36KZZs7PQImtpbA3xhWKp7S3AO534tRrgbssXY_dp3SBgQ7Y0hQPY7wymdLYCrTIp3KqeJb2RJcBjuPfNSmP3hXUgkHHujBcKZE4g=w442-h957-s-no?authuser=0"
-        ]
-          },
+        "coords": { "x": 1, "y": 1 }
+          }
 ];
 
 export default recipesData;
+

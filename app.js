@@ -3,14 +3,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+// --- Local Module Imports ---
+import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
+import { Quiz } from './quiz.js'; // Import the new Quiz module
+import { parameterExplanations } from './translations.js';
+import recipesData from './recipes-core.js';
+import recipeImages from './recipes-images.js';
+
 // --- PDF & Canvas Library Imports ---
-// We will load these dynamically when needed to keep initial load fast 
 const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
 
 
 // --- CONFIGURATION & STATE ---
-// Các placeholder này sẽ được thay thế bởi build script
 const API_KEY = "%%GEMINI_API_KEY%%";
 const __firebase_config = "%%FIREBASE_CONFIG%%";
 const __app_id = "%%APP_ID%%";
@@ -19,7 +24,6 @@ const isAIEnabled = API_KEY && API_KEY !== '%%GEMINI_API_KEY%%';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
 
 const state = {
-    currentLang: 'vi',
     currentView: 'home',
     selectedRecipeId: null,
     isMobileDetailActive: false,
@@ -42,6 +46,7 @@ const state = {
         result: null,
     },
     quiz: {
+        instance: null, // A property to hold the Quiz class instance
         currentQuestionIndex: 0,
         answers: [],
     },
@@ -55,7 +60,6 @@ const state = {
     animation: {
         blobAnimationFrameId: null,
     },
-    // NEW: Track dynamically loaded scripts to prevent re-loading
     scripts: {
         jspdf: false,
         html2canvas: false,
@@ -64,134 +68,10 @@ const state = {
 
 const mainContentEl = document.getElementById('mainContent');
 
-// Cache-busting: Thêm version query để buộc tải lại file mới khi có thay đổi
-import recipesData from './recipes.js?v=2.1';
+// --- Quiz Questions array has been moved to quiz.js ---
 
-// --- UPDATED: Quiz questions with new Lucide icons ---
-const quizQuestions = [
-    {
-        question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
-        options: [
-            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>' },
-            { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: { vi: 'Phong cảnh', en: 'Landscape' }, icon: '<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>' },
-            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>' },
-            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: '<path d="M17 8h-7a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4h7a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4Z"/><path d="M17 18v2a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2"/><path d="M20 8v8"/>' }
-        ]
-    },
-    {
-        question: { vi: "Tone màu chủ đạo bạn muốn?", en: "What's your preferred color tone?" },
-        options: [
-            { tags: ['warm', 'golden-hour', 'amber-tint'], text: { vi: 'Ấm', en: 'Warm' }, icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>' },
-            { tags: ['neutral', 'clean', 'balanced'], text: { vi: 'Trung tính', en: 'Neutral' }, icon: '<line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/>' },
-            { tags: ['cool-tone', 'deep-blues', 'cyan-teal'], text: { vi: 'Lạnh', en: 'Cool' }, icon: '<line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/>' }
-        ]
-    },
-    {
-        question: { vi: "Kiểu tương phản bạn thích?", en: "How do you like your contrast?" },
-        options: [
-            { tags: ['high-contrast', 'dramatic', 'powerful'], text: { vi: 'Gắt', en: 'Punchy' }, icon: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>' },
-            { tags: ['normal', 'balanced', 'versatile'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<path d="M5 12h14"/><path d="M12 5v14"/>' },
-            { tags: ['soft-contrast', 'faded', 'lifted-blacks'], text: { vi: 'Nhẹ & Mờ', en: 'Soft & Faded' }, icon: '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" x2="2" y1="8" y2="22"/><line x1="17.5" x2="9" y1="15" y2="15"/>' },
-        ]
-    },
-    {
-        question: { vi: "Độ bão hòa màu sắc?", en: "And saturation?" },
-        options: [
-            { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: { vi: 'Đậm', en: 'Rich' }, icon: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.7-3.29C8.2 7.95 7 6.46 7 5.06V3"/><path d="M14 3v2.06c0 1.4-.93 2.89-2.3 3.9-1.13 1.03-1.7 2.13-1.7 3.29 0 2.22 1.8 4.05 4 4.05Z"/>' },
-            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="currentColor"/>' },
-            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Nhạt', en: 'Muted' }, icon: '<circle cx="12" cy="12" r="10"/><path d="M22 2 2 22"/>' },
-            { tags: ['bw'], text: { vi: 'Trắng & Đen', en: 'Black & White' }, icon: '<circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0-10 10h20a10 10 0 0 0-10-10z"/>' }
-        ]
-    }
-];
 
-const translations = {
-    headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
-    navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
-    landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
-    landingSubtitle: {vi: "Khám phá và tạo ra công thức màu độc đáo cho máy ảnh Sony Alpha của bạn, với sự hỗ trợ từ AI.", en: "Discover and create unique color recipes for your Sony Alpha camera, powered by AI."},
-    startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
-    findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
-    quizTitle: {vi: "Trắc nghiệm Tìm màu", en: "Color Finder Quiz"},
-    quizResultTitle: {vi: "Gợi ý cho bạn!", en: "Our Suggestion For You!"},
-    quizResultDescription: {vi: "Dựa trên câu trả lời của bạn, chúng tôi nghĩ bạn sẽ thích công thức này:", en: "Based on your answers, we think you'll love this recipe:"},
-    viewRecipeBtn: {vi: "Xem chi tiết công thức", en: "View Recipe Details"},
-    retakeQuizBtn: {vi: "Làm lại trắc nghiệm", en: "Retake Quiz"},
-    searchInputPlaceholder: {vi: "Tìm công thức...", en: "Search recipes..."},
-    recipeDetailWelcomeTitle: {vi: "Bản đồ màu Tương tác", en: "Interactive Color Map"},
-    recipeDetailWelcomeText: {vi: "Khám phá các công thức màu một cách trực quan. Chọn một công thức trong danh sách hoặc trên biểu đồ để xem chi tiết.", en: "Explore color recipes visually. Select a recipe from the list or the chart to see details."},
-    whiteBalanceTitle: {vi: "Cân bằng trắng (WB)", en: "White Balance (WB)"},
-    recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
-    colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
-    detailTitle: {vi: "Chi tiết", en: "Detail"},
-    sonyGuideBtn: {vi: "Xem tài liệu gốc từ Sony", en: "View Official Sony Guide"},
-    backToChartBtn: {vi: "← Quay lại Bản đồ màu", en: "← Back to Color Map"},
-    backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
-    ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
-    ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
-    ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
-    trendingTitle: {vi: "Công thức thịnh hành", en: "Trending Recipes"},
-    trendingLoading: {vi: "Đang tải công thức thịnh hành...", en: "Loading trending recipes..."},
-    aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
-    aiLabDescription: {vi: "Mô tả phong cách bạn muốn, Gemini sẽ tinh chỉnh công thức màu <b>{recipeName}</b> cho bạn.", en: "Describe the style you want, and Gemini will tweak the <b>{recipeName}</b> recipe for you."},
-    aiPromptPlaceholder: {vi: "VD: tông màu trong trẻo, hơi ngả xanh như phim của Wes Anderson...", en: "E.g., a clean, slightly teal look like a Wes Anderson film..."},
-    aiGenerateBtn: {vi: "Tinh chỉnh với AI", en: "Tweak with AI"},
-    aiConfirmPromptTitle: {vi: "Xác nhận yêu cầu", en: "Confirm Request"},
-    aiConfirmPromptText: {vi: "OK! Tôi sẽ tạo một phiên bản mới của <b>{recipeName}</b> với phong cách <i>\"{userPrompt}\"</i>. Tiếp tục nhé?", en: "Got it! I will generate a new version of <b>{recipeName}</b> with a style inspired by <i>\"{userPrompt}\"</i>. Shall we proceed?"},
-    aiConfirmBtn: {vi: "Đồng ý", en: "Confirm & Generate"},
-    aiCancelBtn: {vi: "Hủy", en: "Cancel"},
-    aiComparisonTitle: {vi: "Kết quả từ Gemini AI", en: "Result from Gemini AI"},
-    aiComparisonDescription: {vi: "Đây là phiên bản mới được tạo dựa trên yêu cầu của bạn. Các thông số thay đổi đã được làm nổi bật.", en: "Here is the new version based on your request. Changed parameters are highlighted."},
-    aiOriginalTitle: {vi: "Công thức gốc", en: "Original Recipe"},
-    aiNewTitle: {vi: "Công thức mới (AI)", en: "New Recipe (AI)"},
-    aiErrorTitle: {vi: "Đã có lỗi xảy ra", en: "An Error Occurred"},
-    aiErrorText: {vi: "Rất tiếc, không thể tạo công thức lúc này. Vui lòng kiểm tra lại API Key hoặc thử lại sau.", en: "Sorry, the recipe could not be generated at this time. Please check your API Key or try again later."},
-    tweakWithAI: {vi: "Tinh chỉnh với Gemini AI", en: "Tweak with Gemini AI"},
-    aiKeyNotConfigured: { vi: "Chưa cấu hình Gemini API Key", en: "Gemini API Key not configured" },
-    captionLabTitle: {vi: "Trợ lý Caption Viral", en: "Viral Caption Assistant"},
-    captionLabDescription: {vi: "Nhập ý tưởng cho bài đăng của bạn. AI sẽ giúp bạn viết một caption thật 'chất' theo phong cách màu <b>{recipeName}</b>.", en: "Enter an idea for your post. AI will help you write a captivating caption in the <b>{recipeName}</b> color style."},
-    captionPromptPlaceholder: {vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt...", en: "E.g., a sunset afternoon in Dalat..."},
-    generateCaptionBtn: {vi: "Tạo Caption", en: "Generate Caption"},
-    captionResultTitle: {vi: "Gợi ý từ AI", en: "Suggestion from AI"},
-    copyBtn: {vi: "Sao chép", en: "Copy"},
-    copiedBtn: {vi: "Đã sao chép!", en: "Copied!"},
-    captionFromAI: { vi: "Tạo Caption Viral", en: "Viral Caption AI" },
-    shareRecipeBtn: {vi: "Chia sẻ Công thức", en: "Share Recipe"},
-    downloadPDFBtn: {vi: "Tải PDF", en: "Download PDF"},
-    saveGuideTitle: { vi: "Lưu công thức vào máy ảnh", en: "Save Recipe to Camera" },
-    saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
-    showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
-    hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" }
-};
-
-const parameterExplanations = {
-    'Black level': { vi: "Điều chỉnh điểm đen. Giá trị âm (-) làm vùng tối sâu hơn, tăng tương phản. Giá trị dương (+) nâng vùng tối, tạo hiệu ứng 'mờ' hoài cổ.", en: "Adjusts the black point. Negative (-) values deepen shadows for more contrast. Positive (+) values lift shadows for a 'faded' look." },
-    'Gamma': { vi: "Xác định đường cong tương phản tổng thể, là nền tảng cho 'look' của bạn. Cine & S-Cinetone cho cảm giác điện ảnh, trong khi S-Log tối đa hóa dải tần nhạy sáng để hậu kỳ.", en: "Defines the overall contrast curve, the foundation of your look. Cine & S-Cinetone provide a cinematic feel, while S-Log maximizes dynamic range for post-production." },
-    'Black Gamma': { vi: "Tinh chỉnh độ tương phản riêng trong vùng tối. 'Range' xác định vùng ảnh hưởng (Hẹp/Vừa/Rộng). 'Level' tăng hoặc giảm độ sáng của vùng đó.", en: "Fine-tunes contrast specifically in the shadow areas. 'Range' sets the affected area (Narrow/Middle/Wide). 'Level' brightens or darkens that area." },
-    'Knee': { vi: "Kiểm soát cách các vùng sáng (highlight) được nén lại để tránh bị 'cháy sáng'. Chế độ Tự động hoạt động tốt, trong khi Thủ công cho phép kiểm soát chính xác hơn.", en: "Controls how highlights are compressed to prevent 'clipping' (overexposure). Auto mode works well; Manual mode offers precise control." },
-    'Color Mode': { vi: "Xác định không gian màu và cách màu sắc được tái tạo. Nên chọn chế độ phù hợp với Gamma đã chọn (ví dụ: S-Cinetone, S-Gamut3.Cine).", en: "Determines the color space and how colors are rendered. Should be matched with the chosen Gamma (e.g., S-Cinetone, S-Gamut3.Cine)." },
-    'Saturation': { vi: "Điều chỉnh cường độ tổng thể của tất cả các màu. Tăng để có màu rực rỡ, giảm để có màu dịu hơn hoặc đơn sắc.", en: "Adjusts the overall intensity of all colors. Increase for vibrant colors, decrease for a more muted or monochrome look." },
-    'Color Phase': { vi: "Dịch chuyển nhẹ toàn bộ quang phổ màu về phía đỏ hoặc xanh lá. Hữu ích để tinh chỉnh tông màu tổng thể hoặc cân bằng màu giữa các máy ảnh.", en: "Slightly shifts the entire color spectrum towards red or green. Useful for subtle global tone adjustments or matching cameras." },
-    'Color Depth': { vi: "Công cụ mạnh nhất. Tăng/giảm độ sáng của từng kênh màu riêng lẻ (Đỏ, Lục, Lam, Cyan, Magenta, Vàng) để tinh chỉnh màu sắc một cách chính xác.", en: "The most powerful tool. Brightens or darkens individual color channels (R, G, B, C, M, Y) for precise color tuning." },
-    'R': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Đỏ. Tăng (+) để màu đỏ tối và đậm hơn (son môi, da). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Red channel. Increase (+) for darker, richer reds (lipstick, skin). Decrease (-) for lighter, paler reds." },
-    'G': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lục. Tăng (+) để màu xanh lá cây tối và đậm hơn (cây cỏ). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Green channel. Increase (+) for darker, richer greens (foliage). Decrease (-) for lighter, paler greens." },
-    'B': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lam. Tăng (+) để màu xanh dương tối và đậm hơn (quần áo, đường phố). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Blue channel. Increase (+) for darker, richer blues (clothing, streets). Decrease (-) for lighter, paler blues." },
-    'C': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Lục lam. Tăng (+) để màu da trời tối và đậm hơn. Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Cyan channel. Increase (+) for darker, richer cyan (sky). Decrease (-) for lighter, paler cyan." },
-    'M': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Cánh sen. Tăng (+) để màu hồng/tím tối và đậm hơn (da người, son môi). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Magenta channel. Increase (+) for darker, richer magenta (skin tones, lipstick). Decrease (-) for lighter, paler magenta." },
-    'Y': { vi: "Điều chỉnh độ sáng (luminance) của kênh màu Vàng. Tăng (+) để màu vàng tối và đậm hơn (da người Á Đông). Giảm (-) để sáng và nhạt hơn.", en: "Adjusts the luminance of the Yellow channel. Increase (+) for darker, richer yellows (Asian skin tones). Decrease (-) for lighter, paler yellows." },
-    'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
-    'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
-};
-
-// --- NEW UTILITY FUNCTIONS ---
-
-/**
- * Dynamically loads a script and returns a promise.
- * Prevents re-loading if the script is already in the state.
- * @param {string} url - The URL of the script to load.
- * @param {string} stateKey - The key in state.scripts to track the script's status.
- * @returns {Promise<void>}
- */
+// --- UTILITY FUNCTIONS ---
 function loadScript(url, stateKey) {
     return new Promise((resolve, reject) => {
         if (state.scripts[stateKey]) {
@@ -209,11 +89,6 @@ function loadScript(url, stateKey) {
     });
 }
 
-/**
- * Displays a temporary toast message at the bottom of the screen.
- * @param {string} message - The message to display.
- * @param {boolean} [isError=false] - If true, displays the toast with an error color.
- */
 function showToast(message, isError = false) {
     let toast = document.getElementById('app-toast');
     if (!toast) {
@@ -248,20 +123,6 @@ function showToast(message, isError = false) {
 
 
 // --- UI & LOGIC FUNCTIONS ---
-function t(key) { return translations[key]?.[state.currentLang] || key; }
-
-function applyTranslations() {
-    document.querySelectorAll('[data-translate-key]').forEach(el => {
-        const key = el.dataset.translateKey;
-        if (translations[key]?.[state.currentLang]) {
-            const element = el;
-            if (element.placeholder !== undefined) element.placeholder = t(key);
-            else element.innerHTML = t(key);
-        }
-    });
-}
-
-// NEW: Function to generate the HTML for the save guide
 function createSaveGuideHTML() {
     const guideContent = {
         vi: `
@@ -320,13 +181,14 @@ function createSaveGuideHTML() {
                 </button>
             </div>
             <div id="saveGuideContent" class="mt-4 text-sm md:text-base overflow-hidden max-h-0 transition-all duration-700 ease-in-out">
-                ${guideContent[state.currentLang]}
+                ${guideContent[getCurrentLanguage()]}
             </div>
         </div>
     `;
 }
 
 function createFullRecipeHTML(recipe) {
+    const demoImages = recipeImages[recipe.id] || [];
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
         const count = Math.min(images.length, 6);
@@ -364,7 +226,7 @@ function createFullRecipeHTML(recipe) {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         loading="lazy" 
                         decoding="async"
-                        alt="Ảnh demo ${index + 1} cho công thức màu ${recipe.name[state.currentLang]}"
+                        alt="Ảnh demo ${index + 1} cho công thức màu ${recipe.name[getCurrentLanguage()]}"
                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Không tải được ảnh</div>';"
                     >
                 </div>`;
@@ -380,10 +242,6 @@ function createFullRecipeHTML(recipe) {
             <h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4>
             <p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p>
             <div class="mt-5 flex flex-wrap justify-center gap-4">
-                 <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary py-2.5 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <span data-translate-key="ctaButton"></span>
-                </a>
                 <button id="shareRecipeBtn" data-recipe-id="${recipe.id}" class="btn bg-green-500 hover:bg-green-600 text-white py-2.5 px-6 shadow-lg shadow-green-500/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2 h-5 w-5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
                     <span data-translate-key="shareRecipeBtn"></span>
@@ -410,7 +268,7 @@ function createFullRecipeHTML(recipe) {
     const aiDisabledAttr = !isAIEnabled ? `disabled title="${t('aiKeyNotConfigured')}"` : '';
 
     return `
-        ${createCollageHTML(recipe.demoImages)}
+        ${createCollageHTML(demoImages)}
         <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
             <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
@@ -424,7 +282,6 @@ function createFullRecipeHTML(recipe) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-5 w-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 <span data-translate-key="downloadPDFBtn"></span>
             </button>
-            <!-- SONY GUIDE BUTTON RESTORED -->
             <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-5 w-5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 <span data-translate-key="sonyGuideBtn"></span>
@@ -467,7 +324,20 @@ const viewTemplates = {
             <main id="recipeMainPanel" class="w-full md:w-3/5 lg:w-2/3 flex flex-col min-h-0 hidden md:flex">
                 <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-10 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
-                        <div id="welcomeText" class="text-center"><h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2><p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p></div>
+                        <div id="welcomeText" class="text-center">
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
+                            <p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+                            <a href="https://forms.gle/your-form-id" target="_blank" rel="noopener noreferrer" class="btn bg-green-500 hover:bg-green-600 text-white py-3 px-6 shadow-lg shadow-green-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle h-5 w-5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+                                <span data-translate-key="contributeRecipeBtn"></span>
+                            </a>
+                            <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary py-3 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                <span data-translate-key="ctaButton"></span>
+                            </a>
+                        </div>
                         <div id="colorMapContainer" class="flex-grow w-full"></div>
                         <div id="trendingContainer" class="w-full mt-4"></div>
                     </div>
@@ -531,7 +401,7 @@ function renderColorMapChart(containerSelector, data) {
         .attr("x", d => d.x)
         .attr("y", d => d.y)
         .attr("dy", "0.35em")
-        .text(d => d.text[state.currentLang]);
+        .text(d => d.text[getCurrentLanguage()]);
 
     svg.append("g").attr("class", "grid")
         .call(d3.axisBottom(xScale).ticks(10).tickSize(height).tickFormat(""))
@@ -542,10 +412,10 @@ function renderColorMapChart(containerSelector, data) {
 
     svg.selectAll(".domain").remove();
 
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(state.currentLang === 'vi' ? '← Lạnh' : '← Cool');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(state.currentLang === 'vi' ? 'Ấm →' : 'Warm →');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(state.currentLang === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(state.currentLang === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(getCurrentLanguage() === 'vi' ? '← Lạnh' : '← Cool');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(getCurrentLanguage() === 'vi' ? 'Ấm →' : 'Warm →');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(getCurrentLanguage() === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(getCurrentLanguage() === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
 
     const nodesData = data.filter(d => d.coords).map(d => ({...d}));
 
@@ -589,7 +459,7 @@ function renderColorMapChart(containerSelector, data) {
         .attr("class", "color-map-node-label")
         .attr("x", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 6)
         .attr("dy", "0.35em")
-        .text(d => d.name[state.currentLang]);
+        .text(d => d.name[getCurrentLanguage()]);
 
     state.chart.simulation = d3.forceSimulation(nodesData)
         .force("collide", d3.forceCollide().radius(d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 3).strength(0.8))
@@ -643,7 +513,7 @@ function displayTrendingRecipes(trendingIDs) {
                      style="--glow-color: ${recipe.personalityColor};">
                     <div class="flex items-center gap-3">
                         <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${recipe.personalityColor};"></div>
-                        <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[state.currentLang]}</p>
+                        <p class="text-sm font-semibold text-gray-700 truncate">${recipe.name[getCurrentLanguage()]}</p>
                     </div>
                 </div>
             `).join('')}
@@ -657,14 +527,12 @@ async function fetchTrendingRecipes() {
     const container = document.getElementById('trendingContainer');
     if (!container) return;
 
-    // Show a loading state initially
     container.innerHTML = `<p class="text-center text-gray-500 text-sm italic" data-translate-key="trendingLoading"></p>`;
     container.style.display = 'block';
-    applyTranslations(); // Apply translation for the loading text
+    applyTranslations();
 
     const fallbackToDummyData = () => {
         console.log("Falling back to dummy trending data.");
-        // A hand-picked list of popular/interesting recipes as placeholders
         const dummyTrendingIDs = ["scl-001", "scl-007", "scl-008", "scl-015", "scl-027"];
         displayTrendingRecipes(dummyTrendingIDs);
     };
@@ -681,100 +549,22 @@ async function fetchTrendingRecipes() {
 
         if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
             const trendingData = docSnap.data();
-            console.log("Successfully fetched real trending data:", trendingData);
             displayTrendingRecipes(trendingData.ids);
         } else {
-            // If doc doesn't exist or has no IDs, use dummy data as a placeholder
             console.warn("Real trending data not found or empty in Firestore. Using dummy data as placeholder.");
             fallbackToDummyData();
         }
     } catch (error) {
-        // If any other error occurs during fetch, also use dummy data
         console.error("Error fetching real trending data from Firestore, using dummy data:", error);
         fallbackToDummyData();
     }
 }
 
 
-// --- QUIZ LOGIC ---
-function startQuiz() {
-    state.quiz.currentQuestionIndex = 0;
-    state.quiz.answers = [];
-    document.getElementById('quizModal').classList.remove('hidden');
-    renderQuizQuestion();
-}
+// --- QUIZ LOGIC has been moved to quiz.js ---
 
-function closeQuiz() { document.getElementById('quizModal').classList.add('hidden'); }
 
-function renderQuizQuestion() {
-    const quizContent = document.getElementById('quizContent');
-    const progressBar = document.getElementById('quizProgressBar');
-    const qIndex = state.quiz.currentQuestionIndex;
-
-    const render = () => {
-        if (qIndex >= quizQuestions.length) {
-            calculateAndShowQuizResult();
-            return;
-        }
-        const questionData = quizQuestions[qIndex];
-        const hasThreeOptions = questionData.options.length === 3;
-        const gridClass = `quiz-options-grid ${hasThreeOptions ? 'has-three-options' : ''}`;
-
-        quizContent.innerHTML = `
-            <div class="quiz-question-container">
-                <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[state.currentLang]}</h3>
-                <div class="${gridClass}">
-                    ${questionData.options.map(opt => `
-                        <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4" data-tags="${opt.tags.join(',')}">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
-                                ${opt.icon}
-                            </svg>
-                            <span class="font-semibold text-lg">${opt.text[state.currentLang]}</span>
-                        </button>
-                    `).join('')}
-                </div>
-            </div>`;
-        progressBar.style.width = `${((qIndex) / quizQuestions.length) * 100}%`;
-    };
-
-    const container = quizContent.querySelector('.quiz-question-container');
-    if (container) {
-        container.classList.add('exiting');
-        setTimeout(() => { render(); }, 150);
-    } else {
-        render();
-    }
-}
-
-function handleQuizAnswer(e) {
-    const selectedOption = e.target.closest('.quiz-option');
-    if (!selectedOption) return;
-    document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
-    selectedOption.classList.add('selected');
-    const tags = selectedOption.dataset.tags.split(',');
-    state.quiz.answers.push(...tags);
-    // Reduced delay for a "snappier" feel
-    setTimeout(() => { 
-        state.quiz.currentQuestionIndex++; 
-        renderQuizQuestion(); 
-    }, 150);
-}
-
-function calculateAndShowQuizResult() {
-    const scores = recipesData.map(recipe => {
-        let score = recipe.tags.reduce((acc, tag) => acc + (state.quiz.answers.includes(tag) ? 1 : 0), 0);
-        if (state.quiz.answers.includes('bw') && recipe.type === 'bw') { score += 2; }
-        return { id: recipe.id, score: score };
-    });
-    scores.sort((a, b) => b.score - a.score);
-    const bestMatch = recipesData.find(r => r.id === scores[0].id);
-    const quizContent = document.getElementById('quizContent');
-    document.getElementById('quizProgressBar').style.width = '100%';
-    quizContent.innerHTML = `<div class="text-center view-transition"><h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3><p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p><div class="my-8 p-6 bg-gray-100 rounded-2xl border flex flex-col sm:flex-row items-center gap-6"><img src="${bestMatch.demoImages[0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview"><div class="text-left"><h4 class="text-xl font-bold">${bestMatch.name[state.currentLang]}</h4><p class="text-gray-600 mt-1">${bestMatch.description[state.currentLang]}</p></div></div><div class="flex flex-col sm:flex-row gap-4 justify-center"><button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base"><span data-translate-key="viewRecipeBtn"></span></button><button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base"><span data-translate-key="retakeQuizBtn"></span></button></div></div>`;
-    applyTranslations();
-}
-
-// --- OPTIMIZATION: Centralized Gemini API call function ---
+// --- GEMINI API CALL ---
 async function callGeminiAPI(prompt, signal) {
     if (!isAIEnabled) {
         console.error("Gemini API key not configured.");
@@ -856,7 +646,7 @@ function renderAILab() {
 }
 
 function renderAIPromptInput(container) {
-    const recipeName = state.ai.originalRecipe.name[state.currentLang];
+    const recipeName = state.ai.originalRecipe.name[getCurrentLanguage()];
     container.innerHTML = `
         <p class="text-lg text-gray-600 text-center">${t('aiLabDescription').replace('{recipeName}', `<b>${recipeName}</b>`)}</p>
         <textarea id="aiPromptInput" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${t('aiPromptPlaceholder')}"></textarea>
@@ -869,7 +659,7 @@ function renderAIPromptInput(container) {
 }
 
 function renderAIConfirmation(container) {
-    const recipeName = state.ai.originalRecipe.name[state.currentLang];
+    const recipeName = state.ai.originalRecipe.name[getCurrentLanguage()];
     const confirmText = t('aiConfirmPromptText')
         .replace('{recipeName}', `<b>${recipeName}</b>`)
         .replace('{userPrompt}', state.ai.userPrompt);
@@ -919,7 +709,7 @@ function renderAIComparison(container) {
         <div class="mt-6 grid grid-cols-1">
              <div class="border-2 border-blue-500 rounded-xl p-4 bg-white shadow-lg">
                 <h4 class="text-xl font-bold text-center text-blue-600" data-translate-key="aiNewTitle"></h4>
-                <p class="text-center text-gray-500">${generated.name[state.currentLang]}</p>
+                <p class="text-center text-gray-500">${generated.name[getCurrentLanguage()]}</p>
             </div>
         </div>
         <div class="mt-6 space-y-6">
@@ -959,7 +749,7 @@ async function confirmAndCallAI() {
     state.ai.abortController = new AbortController();
     renderAILab();
 
-    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${state.ai.userPrompt}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${state.currentLang}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${state.ai.userPrompt}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
 
     try {
         const generatedRecipe = await callGeminiAPI(expertPrompt, state.ai.abortController.signal);
@@ -1031,7 +821,7 @@ function renderCaptionLab() {
             </div>
         `;
     } else {
-        const recipeName = state.captionAI.recipe.name[state.currentLang];
+        const recipeName = state.captionAI.recipe.name[getCurrentLanguage()];
         contentEl.innerHTML = `
             <p class="text-base text-gray-600 text-center">${t('captionLabDescription').replace('{recipeName}', `<b>${recipeName}</b>`)}</p>
             <textarea id="captionPromptInput" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all min-h-[80px]" placeholder="${t('captionPromptPlaceholder')}"></textarea>
@@ -1059,10 +849,10 @@ async function handleCaptionGeneration() {
 **CRITICAL RULES:**
 1.  **Mandatory Hashtags:** The final hashtag string MUST include '#sonycolorlab', '#sonyalphavietnam', and '${recipeHashtag}'. This is non-negotiable.
 2.  **Tone & Style:** The caption's tone must be creative, subtle, sophisticated, and potentially humorous. Use trendy Vietnamese Gen Z slang and phrasing to make it highly shareable and viral.
-3.  **Language:** The entire response (caption and hashtags) MUST be in the same language as the User's Idea, which is: ${state.currentLang}.
+3.  **Language:** The entire response (caption and hashtags) MUST be in the same language as the User's Idea, which is: ${getCurrentLanguage()}.
 
 **CONTEXT:**
-* **Photographic Style:** "${recipe.name[state.currentLang]}" - This style is known for: "${recipe.description[state.currentLang]}".
+* **Photographic Style:** "${recipe.name[getCurrentLanguage()]}" - This style is known for: "${recipe.description[getCurrentLanguage()]}".
 * **User's Idea:** "${userInput}"
 
 **TASK:**
@@ -1089,15 +879,10 @@ You must respond with only a single, valid JSON object with two keys: "caption" 
 
 
 // --- CORE APP LOGIC ---
-
-/**
- * ADDED BACK: This function creates the soft, blurred blobs in the background.
- * They move gently and do NOT interact with each other.
- */
 function initializeBackgroundBlobs() {
     const container = document.getElementById('blobContainer');
     if (!container) return;
-    container.innerHTML = ''; // Clear previous blobs
+    container.innerHTML = '';
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
@@ -1165,7 +950,6 @@ function renderView(viewName, selectedId = null) {
 
     if (viewName !== 'home') {
         document.body.style.overflowY = 'auto';
-        // Stop blob animation if it is running
         if (state.animation.blobAnimationFrameId) {
             cancelAnimationFrame(state.animation.blobAnimationFrameId);
             state.animation.blobAnimationFrameId = null;
@@ -1175,7 +959,6 @@ function renderView(viewName, selectedId = null) {
         }
     } else {
         document.body.style.overflowY = 'hidden';
-        // Only start animations if they are not already running
         if (!state.animation.blobAnimationFrameId) {
             initializeBackgroundBlobs();
         }
@@ -1241,7 +1024,6 @@ function handleRecipeSelection(id) {
     if (state.selectedRecipeId) {
         const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
         if (recipe) {
-            // This is the correct way to push events to GTM
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 event: 'view_recipe',
@@ -1251,18 +1033,6 @@ function handleRecipeSelection(id) {
             });
         }
     }
-}
-
-function updateLangSlider() {
-    const glider = document.getElementById('lang-glider');
-    const langVI = document.getElementById('langVI');
-    const langEN = document.getElementById('langEN');
-    if (!glider || !langVI || !langEN) return;
-    langVI.classList.toggle('text-blue-600', state.currentLang === 'vi');
-    langVI.classList.toggle('text-gray-500', state.currentLang !== 'vi');
-    langEN.classList.toggle('text-blue-600', state.currentLang === 'en');
-    langEN.classList.toggle('text-gray-500', state.currentLang !== 'en');
-    glider.style.transform = state.currentLang === 'vi' ? 'translateX(0%)' : 'translateX(100%)';
 }
 
 function attachViewEventListeners(viewName) {
@@ -1289,7 +1059,7 @@ function renderLibraryList() {
     const container = document.getElementById('recipeListContainer');
     if (!container) return;
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-    const recipesToRender = recipesData.filter(r => r.name[state.currentLang].toLowerCase().includes(searchTerm) || r.description[state.currentLang].toLowerCase().includes(searchTerm));
+    const recipesToRender = recipesData.filter(r => r.name[getCurrentLanguage()].toLowerCase().includes(searchTerm) || r.description[getCurrentLanguage()].toLowerCase().includes(searchTerm));
     
     container.innerHTML = recipesToRender.map((recipe, index) => {
         const isSelected = recipe.id === state.selectedRecipeId;
@@ -1299,8 +1069,8 @@ function renderLibraryList() {
         return `<div class="recipe-item p-3 rounded-xl cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
                      data-recipe-id="${recipe.id}" 
                      style="${glowStyle} ${animationStyle}">
-            <span class="font-semibold text-primary">${recipe.name[state.currentLang]}</span>
-            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.currentLang]}</p>
+            <span class="font-semibold text-primary">${recipe.name[getCurrentLanguage()]}</span>
+            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[getCurrentLanguage()]}</p>
         </div>`;
     }).join('');
 }
@@ -1339,8 +1109,8 @@ function renderLibraryDetails() {
             <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
         </div>
         <div>
-            <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[state.currentLang]}</h3>
-            <p class="text-lg text-neutral-600 mt-1">"${recipe.description[state.currentLang]}"</p>
+            <h3 class="text-3xl md:text-4xl font-bold">${recipe.name[getCurrentLanguage()]}</h3>
+            <p class="text-lg text-neutral-600 mt-1">"${recipe.description[getCurrentLanguage()]}"</p>
         </div>
         <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
     `;
@@ -1349,9 +1119,11 @@ function renderLibraryDetails() {
 
 function openLightbox(recipeId, startIndex) {
     const recipe = recipesData.find(r => r.id === recipeId);
-    if (!recipe || !recipe.demoImages) return;
+    if (!recipe) return;
+    const images = recipeImages[recipe.id] || [];
+    if (images.length === 0) return;
 
-    state.lightbox.images = recipe.demoImages;
+    state.lightbox.images = images;
     state.lightbox.currentIndex = parseInt(startIndex, 10);
 
     const lightbox = document.getElementById('lightbox');
@@ -1413,14 +1185,7 @@ async function initializeFirebase() {
     }
 }
 
-// --- NEW PDF & SHARE FUNCTIONS ---
-
-/**
- * Generates and downloads a PDF for a given recipe.
- * Can also generate a comparison PDF if AI-generated data is provided.
- * @param {string} recipeId - The ID of the original recipe.
- * @param {object|null} [generatedRecipeData=null] - The AI-generated recipe object.
- */
+// --- PDF & SHARE FUNCTIONS ---
 async function generateRecipePdf(recipeId, generatedRecipeData = null) {
     const originalRecipe = recipesData.find(r => r.id === recipeId);
     if (!originalRecipe) return;
@@ -1478,8 +1243,8 @@ async function generateRecipePdf(recipeId, generatedRecipeData = null) {
             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
                 <h1 style="font-size: 24px; font-weight: 800; margin: 0;">Alpha AI Color Lab</h1>
             </div>
-            <h2 style="font-size: 32px; font-weight: 700; margin: 24px 0 8px 0;">${generatedRecipeData ? generatedRecipeData.name[state.currentLang] : originalRecipe.name[state.currentLang]}</h2>
-            <p style="font-size: 14px; color: #6e6e73; margin: 0 0 24px 0; font-style: italic;">"${generatedRecipeData ? generatedRecipeData.description[state.currentLang] : originalRecipe.description[state.currentLang]}"</p>
+            <h2 style="font-size: 32px; font-weight: 700; margin: 24px 0 8px 0;">${generatedRecipeData ? generatedRecipeData.name[getCurrentLanguage()] : originalRecipe.name[getCurrentLanguage()]}</h2>
+            <p style="font-size: 14px; color: #6e6e73; margin: 0 0 24px 0; font-style: italic;">"${generatedRecipeData ? generatedRecipeData.description[getCurrentLanguage()] : originalRecipe.description[getCurrentLanguage()]}"</p>
         `;
 
         if (generatedRecipeData) {
@@ -1491,7 +1256,7 @@ async function generateRecipePdf(recipeId, generatedRecipeData = null) {
                     </div>
                     ${originalRecipe.colorDepth ? `<h4 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Color Depth</h4><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;">${createComparisonSettingsHTML(originalRecipe.colorDepth, generatedRecipeData.colorDepth)}</div>` : ''}
                 </div>
-                 <p style="font-size: 12px; color: #6e6e73; text-align: center; margin-top: 16px;">Based on original recipe: ${originalRecipe.name[state.currentLang]}</p>
+                 <p style="font-size: 12px; color: #6e6e73; text-align: center; margin-top: 16px;">Based on original recipe: ${originalRecipe.name[getCurrentLanguage()]}</p>
             `;
         } else {
              contentHTML += `
@@ -1531,17 +1296,13 @@ async function generateRecipePdf(recipeId, generatedRecipeData = null) {
     }
 }
 
-/**
- * Shares a recipe using the Web Share API or copies the link as a fallback.
- * @param {string} recipeId - The ID of the recipe to share.
- */
 async function shareRecipe(recipeId) {
     const recipe = recipesData.find(r => r.id === recipeId);
     if (!recipe) return;
 
     const shareData = {
-        title: `Sony Color Lab: ${recipe.name[state.currentLang]}`,
-        text: `Check out this Sony Alpha color recipe: "${recipe.name[state.currentLang]}".\n${recipe.description[state.currentLang]}`,
+        title: `Sony Color Lab: ${recipe.name[getCurrentLanguage()]}`,
+        text: `Check out this Sony Alpha color recipe: "${recipe.name[getCurrentLanguage()]}".\n${recipe.description[getCurrentLanguage()]}`,
         url: window.location.href
     };
     
@@ -1563,13 +1324,24 @@ async function shareRecipe(recipeId) {
 
 
 async function init() {
-    // Attach global event listeners immediately
+    initLanguage();
+
+    // Initialize the Quiz module
+    state.quiz.instance = new Quiz({
+        state,
+        getCurrentLanguage,
+        recipesData,
+        recipeImages,
+        applyTranslations,
+        renderView
+    });
+
     document.body.addEventListener('mouseover', (e) => {
         const title = e.target.closest('.parameter-title');
         const tooltipEl = document.getElementById('infoTooltip');
         if (title && tooltipEl) {
             const key = title.dataset.paramKey;
-            const explanation = parameterExplanations[key]?.[state.currentLang];
+            const explanation = parameterExplanations[key]?.[getCurrentLanguage()];
             if (explanation) {
                 tooltipEl.innerHTML = explanation;
                 const titleRect = title.getBoundingClientRect();
@@ -1607,7 +1379,6 @@ async function init() {
         if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
 
-        // --- NEW: Handle PDF and Share buttons ---
         if (target.closest('#downloadPdfBtn')) {
             generateRecipePdf(target.closest('#downloadPdfBtn').dataset.recipeId);
             return;
@@ -1617,7 +1388,6 @@ async function init() {
             return;
         }
 
-        // NEW: Handle Save Guide toggle
         if (target.closest('#toggleSaveGuideBtn')) {
             const btn = target.closest('#toggleSaveGuideBtn');
             const content = btn.parentElement.querySelector('#saveGuideContent');
@@ -1626,27 +1396,28 @@ async function init() {
 
             if (isHidden) {
                 content.classList.remove('max-h-0');
-                content.classList.add('max-h-[1000px]'); // Use a large enough max-height for the transition
+                content.classList.add('max-h-[1000px]');
                 btnSpan.dataset.translateKey = 'hideGuideBtn';
             } else {
                 content.classList.add('max-h-0');
                 content.classList.remove('max-h-[1000px]');
                 btnSpan.dataset.translateKey = 'showGuideBtn';
             }
-            applyTranslations(); // Re-apply to update button text
+            applyTranslations();
             return;
         }
 
+        // Updated Quiz modal event handling
         if (target.closest('#quizModal')) {
-            if (target.closest('#closeQuizBtn')) { closeQuiz(); return; }
-            if (target.closest('#retakeQuizBtn')) { state.quiz.currentQuestionIndex = 0; state.quiz.answers = []; renderQuizQuestion(); return; }
+            if (target.closest('#closeQuizBtn')) { state.quiz.instance.close(); return; }
+            if (target.closest('#retakeQuizBtn')) { state.quiz.instance.start(); return; }
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
-                closeQuiz();
+                state.quiz.instance.close();
                 await renderView('recipeFormulas', recipeId);
                 return;
             }
-            if (target.closest('.quiz-option')) { handleQuizAnswer(e); return; }
+            if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
         }
 
         if (target.closest('#aiLabModal')) {
@@ -1658,7 +1429,6 @@ async function init() {
             }
             if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
-            // --- NEW: Handle AI PDF button ---
             if (target.closest('#downloadAIPdfBtn')) {
                 generateRecipePdf(target.closest('#downloadAIPdfBtn').dataset.recipeId, state.ai.generatedRecipe);
                 return;
@@ -1685,7 +1455,12 @@ async function init() {
             }
         }
 
-        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) { startQuiz(); return; }
+        // Updated Quiz start buttons
+        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) { 
+            state.quiz.instance.start(); 
+            return; 
+        }
+        
         if (target.closest('#tweakWithAIBtn')) { openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId); return; }
         if (target.closest('#captionAIBtn')) { openCaptionLab(target.closest('#captionAIBtn').dataset.recipeId); return; }
 
@@ -1702,7 +1477,8 @@ async function init() {
         }
 
         if (langBtn) {
-            state.currentLang = langBtn.id === 'langEN' ? 'en' : 'vi';
+            const newLang = langBtn.id === 'langEN' ? 'en' : 'vi';
+            setLanguage(newLang);
             updateLangSlider();
             applyTranslations();
             if (state.currentView === 'recipeFormulas') {
@@ -1737,21 +1513,15 @@ async function init() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 
-    // --- SIMPLIFIED INITIALIZATION FLOW ---
-
-    // 1. Render the initial view HTML immediately.
     await renderView('home');
+    updateLangSlider();
 
-    // 2. Start non-critical tasks in the background.
     initializeFirebase().then(() => {
         console.log("Firebase is ready in the background.");
-        // If the user navigates to the formulas page while firebase is initializing,
-        // this ensures the trending recipes are fetched once ready.
         if (state.currentView === 'recipeFormulas') {
             fetchTrendingRecipes();
         }
     });
 }
 
-// Run init after the DOM is fully loaded.
 document.addEventListener("DOMContentLoaded", init);
