@@ -436,9 +436,14 @@ export async function renderLibraryList() {
     container.innerHTML = recipesToRender.map((recipe, index) => {
         const isSelected = recipe.id === state.selectedRecipeId;
         const isTrending = trendingIds.includes(recipe.id);
+        const hasImages = recipeImages[recipe.id] && recipeImages[recipe.id].length > 0 && recipeImages[recipe.id].some(url => !url.includes('placehold.co'));
         const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
         const animationStyle = `animation-delay: ${index * 40}ms;`; // Stagger animation
         
+        const imageIconHTML = hasImages 
+            ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image text-teal-500 flex-shrink-0"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`
+            : '';
+
         const trendingIconHTML = isTrending 
             ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-yellow-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` 
             : '';
@@ -448,7 +453,10 @@ export async function renderLibraryList() {
                      style="${glowStyle} ${animationStyle}">
             <div class="flex justify-between items-start">
                 <span class="font-semibold text-primary pr-2">${recipe.name[getCurrentLanguage()]}</span>
-                ${trendingIconHTML}
+                <div class="flex items-center gap-2">
+                    ${imageIconHTML}
+                    ${trendingIconHTML}
+                </div>
             </div>
             <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[getCurrentLanguage()]}</p>
         </div>`;
