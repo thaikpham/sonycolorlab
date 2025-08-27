@@ -283,15 +283,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
     }
 
-    /* --- NEW: Master CTA Button Styles --- */
-    #masterCtaContainer {
+    /* --- NEW: Ultimate Button Styles --- */
+    #ultimateButtonContainer {
         transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple);
     }
-    #quickActionsMenu {
-        transform-origin: bottom center;
+    #ultimateActionsMenu {
+        transform-origin: bottom right;
         transition: transform 0.3s var(--ease-out-back), opacity 0.3s var(--ease-out-back);
     }
-    #quickActionsMenu.hidden {
+    #ultimateActionsMenu.hidden {
         transform: scale(0.8) translateY(10px);
         opacity: 0;
         pointer-events: none;
@@ -325,10 +325,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </nav>
         </div>
     </header>
-    <main id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></main>
-    <footer class="text-center pt-4 sm:py-4 text-gray-500 text-sm flex-shrink-0">
-        Paint emotions with ColorLAB by Sony Alpha Vietnam
-    </footer>
+    <main id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6"></main>
 </div>
 
 <div id="infoTooltip" class="hidden"></div>
@@ -372,14 +369,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<!-- NEW: Master CTA Button Container -->
-<div id="masterCtaContainer" class="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+<!-- NEW: Ultimate Button Container -->
+<div id="ultimateButtonContainer" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
     <!-- Quick Actions Menu (initially hidden) -->
-    <div id="quickActionsMenu" class="hidden flex-col items-center gap-3 mb-3">
+    <div id="ultimateActionsMenu" class="hidden flex-col items-end gap-3 mb-3">
         <!-- Menu items will be rendered here by ui.js -->
     </div>
     <!-- The main button itself -->
-    <div id="masterCtaButtonWrapper">
+    <div id="ultimateButtonWrapper">
         <!-- The button will be rendered here by ui.js -->
     </div>
 </div>
