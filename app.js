@@ -2,16 +2,11 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * NÂNG CẤP TRANG CHỦ - CẬP NHẬT NGÀY 27/08/2025
+ * NÂNG CẤP GIAO DIỆN - CẬP NHẬT NGÀY 27/08/2025
  * ==============================================
- * - Thêm logic để render bản đồ màu D3.js trên trang chủ mới.
- * - Cập nhật trình xử lý sự kiện để điều hướng từ nút "Tiến vào Color Lab".
- * - Tối ưu hóa logic FAB và xử lý lớp phủ (overlay).
- * * ==============================================
- * SỬA LỖI NÚT QUIZ - CẬP NHẬT NGÀY 27/08/2025
- * ==============================================
- * - Đảm bảo sự kiện click cho nút "Find My Color" (cả trong FAB và
- * trong trang recipes) đều hoạt động chính xác.
+ * - Loại bỏ hoàn toàn logic xử lý FAB (Floating Action Button).
+ * - Thêm logic để xử lý nút đa chức năng mới (#masterCtaBtn).
+ * - Nút đa chức năng sẽ thay đổi tùy theo view hiện tại (home vs. recipeFormulas).
  */
 
 // --- Local Module Imports ---
@@ -31,9 +26,6 @@ import {
     renderColorMapChart,
     updateChartSelection
 } from './features.js';
-
-// --- MODULE-LEVEL VARIABLES ---
-let fabContainer, fabOverlay;
 
 // --- CORE APP LOGIC ---
 
@@ -72,11 +64,10 @@ function attachViewEventListeners(viewName) {
         initializeBackgroundBlobs();
         const homeChartContainer = document.getElementById('homeColorMapContainer');
         if (homeChartContainer) {
-            // Use ResizeObserver to ensure the container is ready before drawing
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
                      renderColorMapChart('#homeColorMapContainer', recipesData);
-                     resizeObserver.unobserve(homeChartContainer); // Stop observing after drawing
+                     resizeObserver.unobserve(homeChartContainer);
                 }
             });
             resizeObserver.observe(homeChartContainer);
@@ -114,22 +105,25 @@ function attachViewEventListeners(viewName) {
     }
 }
 
-function toggleFabMenu(forceClose = false) {
-    if (fabContainer) {
-        if (forceClose) {
-            fabContainer.classList.remove('open');
-        } else {
-            fabContainer.classList.toggle('open');
-        }
+function toggleQuickActionsMenu(forceClose = false) {
+    const menu = document.getElementById('quickActionsMenu');
+    const icon = document.getElementById('masterCtaIcon');
+    if (!menu || !icon) return;
+
+    const isOpen = !menu.classList.contains('hidden');
+
+    if (forceClose || isOpen) {
+        menu.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        menu.classList.remove('hidden');
+        icon.style.transform = 'rotate(45deg)';
     }
 }
 
 
 async function init() {
     initLanguage();
-    
-    fabContainer = document.getElementById('fabContainer');
-    fabOverlay = document.getElementById('fab-overlay');
 
     state.quiz.instance = new Quiz({
         state,
@@ -144,23 +138,39 @@ async function init() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
-        if (target.closest('#fabMainBtn')) {
-            toggleFabMenu();
-            return;
-        }
-        if (target.id === 'fab-overlay' && fabContainer.classList.contains('open')) {
-            toggleFabMenu(true);
+        // --- Master CTA Button Logic ---
+        if (target.closest('#masterCtaBtn')) {
+            if (state.currentView === 'home') {
+                await renderView('recipeFormulas', null, attachViewEventListeners);
+            } else if (state.currentView === 'recipeFormulas') {
+                toggleQuickActionsMenu();
+            }
             return;
         }
 
-        const navBtn = target.closest('.fab-menu-item');
+        // --- Quick Actions Menu Logic ---
+        if (target.closest('#quickActionQuizBtn')) {
+            toggleQuickActionsMenu(true);
+            openModal('quizModal');
+            state.quiz.instance.start();
+            return;
+        }
+        if (target.closest('#quickActionHomeBtn')) {
+            toggleQuickActionsMenu(true);
+            await renderView('home', null, attachViewEventListeners);
+            return;
+        }
+        // Close menu if clicking outside
+        if (!target.closest('#masterCtaContainer')) {
+            toggleQuickActionsMenu(true);
+        }
+        
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
         const collageItem = target.closest('.collage-item');
         const d3Node = target.closest('.color-map-node-group');
 
         if (d3Node) {
-            // If chart on home page is clicked, go to recipes view and select
             if (state.currentView === 'home') {
                 const recipeId = d3.select(d3Node).datum().id;
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
@@ -170,27 +180,10 @@ async function init() {
             return;
         }
         
-        // New home page button
-        if (target.closest('#enterLabBtn')) {
-            await renderView('recipeFormulas', null, attachViewEventListeners);
-            return;
-        }
-
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
-
-        if (navBtn) {
-            toggleFabMenu(true);
-            if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
-                resetToChartView();
-            } else {
-                await renderView(navBtn.dataset.view, null, attachViewEventListeners);
-            }
-            return;
-        }
         
-        if (target.closest('#startQuizBtnFab') || target.closest('#quizShortcutBtn')) {
-            toggleFabMenu(true);
+        if (target.closest('#quizShortcutBtn')) { // Keep this for recipe list view
             openModal('quizModal');
             state.quiz.instance.start();
             return;
@@ -201,7 +194,6 @@ async function init() {
             setLanguage(newLang);
             updateLangSlider();
             applyTranslations();
-            // Re-render views that depend on language
             if (state.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 renderLibraryDetails();
