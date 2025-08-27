@@ -389,40 +389,25 @@ export async function confirmAndCallAI() {
 
 /**
  * Handles the AI recipe generation from the quiz prompt.
- * Reads user input, constructs a prompt, calls the API, and delegates rendering.
+ * @param {string} userInput - The user's creative text prompt.
+ * @param {object} answers - The answers object from the quiz state.
  */
-export async function handleQuizAIGeneration() {
-    const userInput = document.getElementById('aiQuizPrompt')?.value.trim();
-    
-    // If there's no input, just show the standard result.
-    if (!userInput) {
-        state.quiz.instance.calculateAndShowResult();
-        return;
-    }
+export async function handleQuizAIGeneration(userInput, answers) {
+    const { instance } = state.quiz;
+    if (!instance) return;
 
-    // Show loading state by delegating to the quiz instance's UI functions
-    state.quiz.instance.ui.renderLoading();
+    instance.ui.renderLoading();
     applyTranslations();
     
-    const preferences = state.quiz.answers.join(', ');
+    const preferences = Object.values(answers).flat().join(', ');
     const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the user's preferences from a quiz: "${preferences}". Now, consider the user's creative prompt: "${userInput}". Your task is to generate a completely new, creative, and fully detailed JSON object representing a unique color recipe that matches this inspiration. The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
 
     try {
-        // The AbortController is not used here, but the parameter is kept for API consistency
         const generatedRecipe = await callGeminiAPI(expertPrompt, null);
-        
-        // Find the render function on the quiz instance (passed via dependencies)
-        if (state.quiz.instance && typeof state.quiz.instance.ui.renderAIResult === 'function') {
-            state.quiz.instance.ui.renderAIResult(generatedRecipe);
-        } else {
-            throw new Error("UI render function for AI result not found.");
-        }
-
+        instance.ui.renderQuizAIResult(generatedRecipe);
     } catch (error) {
         console.error("Quiz Gemini API call failed:", error);
-        if (state.quiz.instance && typeof state.quiz.instance.ui.renderError === 'function') {
-            state.quiz.instance.ui.renderError();
-        }
+        instance.ui.renderQuizError();
     } finally {
         applyTranslations();
     }
