@@ -7,6 +7,11 @@
  * - Thêm logic để render bản đồ màu D3.js trên trang chủ mới.
  * - Cập nhật trình xử lý sự kiện để điều hướng từ nút "Tiến vào Color Lab".
  * - Tối ưu hóa logic FAB và xử lý lớp phủ (overlay).
+ * * ==============================================
+ * SỬA LỖI NÚT QUIZ - CẬP NHẬT NGÀY 27/08/2025
+ * ==============================================
+ * - Đảm bảo sự kiện click cho nút "Find My Color" (cả trong FAB và
+ * trong trang recipes) đều hoạt động chính xác.
  */
 
 // --- Local Module Imports ---
