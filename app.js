@@ -2,9 +2,11 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * GỠ BỎ TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
+ * NÂNG CẤP ĐIỀU HƯỚNG V2 - CẬP NHẬT NGÀY 27/08/2025
  * ==============================================
- * - Đã gỡ bỏ các event listener cho input file không còn tồn tại.
+ * - Gỡ bỏ hoàn toàn logic điều hướng dạng "dock" ở cuối trang.
+ * - Triển khai logic cho Nút hành động nổi (Floating Action Button - FAB) mới.
+ * - Thêm event listener để đóng/mở menu FAB và xử lý click vào các nút con.
  */
 
 // --- Local Module Imports ---
@@ -108,7 +110,15 @@ async function init() {
     // --- GLOBAL EVENT LISTENERS (EVENT DELEGATION) ---
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
-        const navBtn = target.closest('[data-view]');
+        const fabContainer = document.getElementById('fabContainer');
+        
+        // NEW: FAB Menu Logic
+        if (target.closest('#fabMainBtn')) {
+            fabContainer.classList.toggle('open');
+            return;
+        }
+
+        const navBtn = target.closest('.fab-menu-item'); // Changed selector
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
         const collageItem = target.closest('.collage-item');
@@ -123,19 +133,23 @@ async function init() {
         }
 
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
-        if (target.closest('#hamburgerBtn')) { document.getElementById('mobileNavMenu').classList.remove('translate-x-full'); return; }
-        if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
 
         if (navBtn) {
+            fabContainer.classList.remove('open'); // Close FAB menu on selection
             if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
                 resetToChartView();
             } else {
                 await renderView(navBtn.dataset.view, null, attachViewEventListeners);
             }
-            if(target.closest('.nav-btn-mobile')) {
-                 document.getElementById('mobileNavMenu').classList.add('translate-x-full');
-            }
+            return;
+        }
+        
+        // NEW: Handle Quiz button from FAB
+        if (target.closest('#startQuizBtnFab')) {
+            fabContainer.classList.remove('open');
+            openModal('quizModal');
+            state.quiz.instance.start();
             return;
         }
 
@@ -177,11 +191,7 @@ async function init() {
             return;
         }
 
-        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) {
-            openModal('quizModal');
-            state.quiz.instance.start();
-            return;
-        }
+        // REMOVED: Old #startQuizBtn listener, now handled by #startQuizBtnFab
         if (target.closest('#quizModal')) {
             if (target.closest('#closeQuizBtn')) {
                 closeModal('quizModal');
