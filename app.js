@@ -1,7 +1,7 @@
 // --- Local Module Imports ---
 import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
 import { parameterExplanations } from './translations.js';
-import { Quiz } from './quiz.js';
+import { Quiz, quizQuestions } from './quiz.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
@@ -10,7 +10,7 @@ import { initializeFirebase } from './api.js';
 import { 
     renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, 
     initializeBackgroundBlobs, openModal, closeModal, renderUltimateButton,
-    renderQuizQuestion, renderQuizAIPrompt, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError
+    renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError
 } from './ui.js';
 // Import Feature functions for the quiz and others
 import {
@@ -20,7 +20,7 @@ import {
     shareRecipe,
     renderColorMapChart,
     updateChartSelection,
-    handleQuizAIGeneration // Import the new quiz AI handler
+    handleQuizAIGeneration
 } from './features.js';
 
 // --- CORE APP LOGIC ---
@@ -110,7 +110,6 @@ function toggleUltimateActionsMenu(forceClose = false) {
     const isOpen = menu.classList.contains('menu-open');
 
     if (forceClose || isOpen) {
-        // Close animation
         menu.classList.remove('menu-open');
         icon.style.transform = 'rotate(0deg)';
         actionButtons.forEach(btn => {
@@ -118,7 +117,6 @@ function toggleUltimateActionsMenu(forceClose = false) {
             btn.style.transform = `scale(0.5)`;
         });
     } else {
-        // Open animation
         menu.classList.add('menu-open');
         icon.style.transform = 'rotate(135deg)';
         
@@ -146,17 +144,13 @@ function toggleUltimateActionsMenu(forceClose = false) {
 async function init() {
     initLanguage();
 
-    // UPDATED: Pass the UI rendering functions into the Quiz constructor
     state.quiz.instance = new Quiz({
         state,
-        getCurrentLanguage,
         recipesData,
-        recipeImages,
         applyTranslations,
-        renderView: (view, id) => renderView(view, id, attachViewEventListeners),
+        handleQuizAIGeneration,
         ui: {
-            renderQuizQuestion,
-            renderQuizAIPrompt,
+            renderOnePageQuizLayout,
             renderQuizResult,
             renderQuizAIResult,
             renderQuizLoading,
@@ -190,7 +184,6 @@ async function init() {
             await renderView('home', null, attachViewEventListeners);
             return;
         }
-        // Close menu if clicking outside the container
         if (!target.closest('#ultimateButtonWrapper')) {
             toggleUltimateActionsMenu(true);
         }
@@ -269,10 +262,7 @@ async function init() {
                 return;
             }
             if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
-            
-            // --- NEW: Handle quiz AI buttons ---
-            if (target.closest('#generateAiRecipeBtn')) { handleQuizAIGeneration(); return; }
-            if (target.closest('#skipAiBtn')) { state.quiz.instance.calculateAndShowResult(); return; }
+            if (target.closest('#submitQuizBtn')) { state.quiz.instance.submitQuiz(); return; }
         }
 
         if (target.closest('#aiLabModal')) {
