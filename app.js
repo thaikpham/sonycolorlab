@@ -5,8 +5,9 @@
  * NÂNG CẤP GIAO DIỆN - CẬP NHẬT NGÀY 27/08/2025
  * ==============================================
  * - Loại bỏ hoàn toàn logic xử lý FAB (Floating Action Button).
- * - Thêm logic để xử lý nút đa chức năng mới (#masterCtaBtn).
- * - Nút đa chức năng sẽ thay đổi tùy theo view hiện tại (home vs. recipeFormulas).
+ * - Thêm logic để xử lý nút đa chức năng mới (#ultimateCtaBtn).
+ * - Nút đa chức năng sẽ thay đổi tùy theo view hiện tại và tích hợp tất cả
+ * các hành động phụ vào một menu duy nhất.
  */
 
 // --- Local Module Imports ---
@@ -17,7 +18,7 @@ import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
 import { initializeFirebase } from './api.js';
-import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal } from './ui.js';
+import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal, renderUltimateButton } from './ui.js';
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
     openLightbox,
@@ -105,9 +106,9 @@ function attachViewEventListeners(viewName) {
     }
 }
 
-function toggleQuickActionsMenu(forceClose = false) {
-    const menu = document.getElementById('quickActionsMenu');
-    const icon = document.getElementById('masterCtaIcon');
+function toggleUltimateActionsMenu(forceClose = false) {
+    const menu = document.getElementById('ultimateActionsMenu');
+    const icon = document.getElementById('ultimateCtaIcon');
     if (!menu || !icon) return;
 
     const isOpen = !menu.classList.contains('hidden');
@@ -138,31 +139,31 @@ async function init() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
-        // --- Master CTA Button Logic ---
-        if (target.closest('#masterCtaBtn')) {
+        // --- Ultimate Button Logic ---
+        if (target.closest('#ultimateCtaBtn')) {
             if (state.currentView === 'home') {
                 await renderView('recipeFormulas', null, attachViewEventListeners);
             } else if (state.currentView === 'recipeFormulas') {
-                toggleQuickActionsMenu();
+                toggleUltimateActionsMenu();
             }
             return;
         }
 
-        // --- Quick Actions Menu Logic ---
-        if (target.closest('#quickActionQuizBtn')) {
-            toggleQuickActionsMenu(true);
+        // --- Ultimate Actions Menu Logic ---
+        if (target.closest('#ultimateQuizBtn')) {
+            toggleUltimateActionsMenu(true);
             openModal('quizModal');
             state.quiz.instance.start();
             return;
         }
-        if (target.closest('#quickActionHomeBtn')) {
-            toggleQuickActionsMenu(true);
+        if (target.closest('#ultimateHomeBtn')) {
+            toggleUltimateActionsMenu(true);
             await renderView('home', null, attachViewEventListeners);
             return;
         }
-        // Close menu if clicking outside
-        if (!target.closest('#masterCtaContainer')) {
-            toggleQuickActionsMenu(true);
+        // Close menu if clicking outside the container
+        if (!target.closest('#ultimateButtonContainer')) {
+            toggleUltimateActionsMenu(true);
         }
         
         const langBtn = target.closest('.lang-btn-slider');
@@ -183,7 +184,7 @@ async function init() {
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
         
-        if (target.closest('#quizShortcutBtn')) { // Keep this for recipe list view
+        if (target.closest('#quizShortcutBtn')) {
             openModal('quizModal');
             state.quiz.instance.start();
             return;
