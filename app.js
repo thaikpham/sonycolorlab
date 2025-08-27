@@ -18,7 +18,6 @@ import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
 import { initializeFirebase } from './api.js';
-// FIXED: Added renderUltimateButton to import
 import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal, renderUltimateButton } from './ui.js';
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
@@ -107,7 +106,6 @@ function attachViewEventListeners(viewName) {
     }
 }
 
-// FIXED: Renamed function to match ui.js
 function toggleUltimateActionsMenu(forceClose = false) {
     const menu = document.getElementById('ultimateActionsMenu');
     const icon = document.getElementById('ultimateCtaIcon');
@@ -142,7 +140,6 @@ async function init() {
         const target = e.target;
         
         // --- Ultimate Button Logic ---
-        // FIXED: Changed selector to #ultimateCtaBtn
         if (target.closest('#ultimateCtaBtn')) {
             if (state.currentView === 'home') {
                 await renderView('recipeFormulas', null, attachViewEventListeners);
@@ -153,7 +150,6 @@ async function init() {
         }
 
         // --- Ultimate Actions Menu Logic ---
-        // FIXED: Changed selectors to match ui.js
         if (target.closest('#ultimateQuizBtn')) {
             toggleUltimateActionsMenu(true);
             openModal('quizModal');
@@ -166,7 +162,6 @@ async function init() {
             return;
         }
         // Close menu if clicking outside the container
-        // FIXED: Changed selector to #ultimateButtonContainer
         if (!target.closest('#ultimateButtonContainer')) {
             toggleUltimateActionsMenu(true);
         }
