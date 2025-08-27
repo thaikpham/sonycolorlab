@@ -11,9 +11,9 @@
  * * ==============================================
  * CẬP NHẬT BỐ CỤC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
- * - Tăng giá trị `radius` trong hàm `toggleUltimateActionsMenu` từ 125 lên 140.
- * - Mở rộng góc `startAngle` và `endAngle` để các nút được phân bổ trên một
- * vòng cung rộng hơn, tăng khoảng cách giữa chúng.
+ * - Tăng giá trị `radius` trong hàm `toggleUltimateActionsMenu` lên 150.
+ * - Mở rộng góc `startAngle` và `endAngle` (170 đến 280) để các nút được
+ * phân bổ trên một vòng cung rộng hơn, tăng khoảng cách an toàn giữa chúng.
  */
 
 // --- Local Module Imports ---
@@ -135,10 +135,10 @@ function toggleUltimateActionsMenu(forceClose = false) {
             menu.classList.add('menu-open');
             icon.style.transform = 'rotate(135deg)';
             
-            // UPDATED: Increased radius and angle spread for better spacing
-            const radius = 140; 
-            const startAngle = 175; 
-            const endAngle = 275;   
+            // UPDATED: Final adjustment for better spacing
+            const radius = 150; 
+            const startAngle = 170; 
+            const endAngle = 280;   
             
             const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
