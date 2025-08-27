@@ -114,19 +114,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     .btn:active:not(:disabled) { transform: translateY(0px) scale(0.97); }
 
+    /* --- UPDATED: View transition animations --- */
     .view-transition, .view-transition-out {
         will-change: transform, opacity, filter;
     }
-    .view-transition { animation: fadeInScale 0.7s var(--ease-out-back) forwards; }
-    .view-transition-out { animation: fadeOutScale 0.4s var(--ease-out-back) forwards; position: absolute; }
-    @keyframes fadeInScale { 
-        from { opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(5px); } 
-        to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); } 
+    .view-transition { 
+        animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; 
+    }
+    .view-transition-out { 
+        animation: fadeOutScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+        position: absolute; 
+    }
+    @keyframes zoomInFade { 
+        from { opacity: 0; transform: scale(0.95); filter: blur(8px); } 
+        to { opacity: 1; transform: scale(1); filter: blur(0px); } 
     }
     @keyframes fadeOutScale { 
         from { opacity: 1; transform: scale(1); filter: blur(0px); } 
-        to { opacity: 0; transform: scale(0.98) translateY(-20px); filter: blur(5px); } 
+        to { opacity: 0; transform: scale(0.95); filter: blur(8px); } 
     }
+    /* --- End of update --- */
 
     .recipe-item-stagger {
         opacity: 0;
