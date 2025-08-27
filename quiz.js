@@ -6,15 +6,15 @@
  * * ==============================================
  * REFACTOR & TÁI CẤU TRÚC - NGÀY 28/08/2025
  * ==============================================
- * - Tách biệt logic: Chỉ giữ lại luồng xử lý quiz và quản lý state.
- * - Toàn bộ phần render giao diện (DOM manipulation) đã được chuyển sang `ui.js`.
- * - Logic xử lý AI (gọi API, hiển thị kết quả AI) đã được chuyển sang `features.js`.
- * - Cấu trúc class được đơn giản hóa, nhận các hàm render từ bên ngoài.
+ * - Chuyển sang mô hình "One Page Quiz".
+ * - `start()`: Gọi hàm render layout một lần duy nhất.
+ * - `handleAnswer()`: Chỉ xử lý logic chọn/bỏ chọn và cập nhật state, không render lại toàn bộ.
+ * - Thêm `submitQuiz()` để xử lý logic khi người dùng bấm nút hoàn thành.
+ * - Loại bỏ logic render khỏi file này, chỉ còn gọi các hàm từ `ui.js`.
  */
 
 // --- QUIZ DATA ---
-// This data is core to the quiz's logic and remains here.
-const quizQuestions = [
+export const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
         options: [
@@ -65,33 +65,20 @@ const quizQuestions = [
 
 export class Quiz {
     constructor(dependencies) {
-        // Core dependencies
         this.state = dependencies.state;
         this.recipesData = dependencies.recipesData;
-        this.recipeImages = dependencies.recipeImages;
-
-        // UI rendering functions (injected from ui.js)
-        this.ui = {
-            renderQuestion: dependencies.ui.renderQuizQuestion,
-            renderAIPrompt: dependencies.ui.renderQuizAIPrompt,
-            renderResult: dependencies.ui.renderQuizResult,
-            renderAIResult: dependencies.ui.renderQuizAIResult,
-            renderLoading: dependencies.ui.renderQuizLoading,
-            renderError: dependencies.ui.renderQuizError
-        };
-
-        // Other dependencies
+        this.ui = dependencies.ui;
         this.applyTranslations = dependencies.applyTranslations;
+        this.handleQuizAIGeneration = dependencies.handleQuizAIGeneration;
     }
 
     start() {
-        this.state.quiz.currentQuestionIndex = 0;
-        this.state.quiz.answers = [];
-        this.renderNextStep();
+        this.state.quiz.answers = {}; // Use an object to store answers by index
+        this.ui.renderOnePageQuizLayout(quizQuestions);
+        this.applyTranslations();
     }
 
     close() {
-        // Logic to close the quiz (e.g., reset state) can go here.
         // Visibility is handled by the caller in app.js.
     }
 
@@ -99,63 +86,75 @@ export class Quiz {
         const selectedOption = e.target.closest('.quiz-option');
         if (!selectedOption) return;
 
+        const questionIndex = selectedOption.dataset.questionIndex;
         const tags = selectedOption.dataset.tags.split(',');
-        this.state.quiz.answers.push(...tags);
+        
+        // Store answer
+        this.state.quiz.answers[questionIndex] = tags;
 
-        // Animate out the old question before showing the new one
-        const currentContainer = document.querySelector('#quizContent .quiz-question-container');
-        if (currentContainer) {
-            currentContainer.classList.add('exiting');
-            currentContainer.addEventListener('animationend', () => {
-                const currentQuestion = quizQuestions[this.state.quiz.currentQuestionIndex];
-                // Logic to skip saturation question for B&W
-                if (tags.includes('bw') && currentQuestion.options.some(o => o.tags.includes('bw'))) {
-                    this.state.quiz.currentQuestionIndex += 2;
-                } else {
-                    this.state.quiz.currentQuestionIndex++;
-                }
-                this.renderNextStep();
-            }, { once: true });
+        // Update UI for the specific question island
+        const island = selectedOption.closest('.quiz-island');
+        island.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
+        selectedOption.classList.add('selected');
+
+        // Special handling for B&W choice
+        const bwIsland = document.querySelector('.quiz-island[data-question-index="4"]');
+        if(questionIndex === '3') { // If "Color vs B&W" is answered
+            if(tags.includes('bw')) {
+                bwIsland?.classList.add('hidden');
+                delete this.state.quiz.answers['4']; // Remove saturation answer if it exists
+            } else {
+                bwIsland?.classList.remove('hidden');
+            }
+        }
+        
+        this.checkCompletion();
+    }
+    
+    checkCompletion() {
+        const requiredQuestions = quizQuestions.filter(q => q.type !== 'ai_prompt' && q.type !== 'conditional_saturation');
+        const answeredCount = Object.keys(this.state.quiz.answers).filter(key => {
+            const q = quizQuestions[key];
+            return q && q.type !== 'ai_prompt' && q.type !== 'conditional_saturation';
+        }).length;
+
+        const isBwSelected = this.state.quiz.answers['3']?.includes('bw');
+        let allAnswered = answeredCount >= requiredQuestions.length;
+
+        // If color is selected, saturation is also required
+        if (!isBwSelected && !this.state.quiz.answers['4']) {
+            allAnswered = false;
+        }
+
+        const submitBtn = document.getElementById('submitQuizBtn');
+        if (submitBtn) {
+            submitBtn.disabled = !allAnswered;
         }
     }
 
-    renderNextStep() {
-        const qIndex = this.state.quiz.currentQuestionIndex;
-
-        if (qIndex >= quizQuestions.length) {
-            this.calculateAndShowResult();
-            return;
-        }
-
-        const questionData = quizQuestions[qIndex];
-
-        if (questionData.type === 'ai_prompt') {
-            this.ui.renderAIPrompt(questionData);
+    submitQuiz() {
+        const aiPrompt = document.getElementById('aiQuizPrompt')?.value.trim();
+        if (aiPrompt) {
+            this.handleQuizAIGeneration(aiPrompt, this.state.quiz.answers);
         } else {
-            // For standard questions, pass data to the UI function
-            const totalQuestions = quizQuestions.filter(q => q.type !== 'ai_prompt').length;
-            this.ui.renderQuestion(questionData, qIndex, totalQuestions);
+            this.calculateAndShowResult();
         }
-        this.applyTranslations();
     }
 
     calculateAndShowResult() {
-        const isBW = this.state.quiz.answers.includes('bw');
-        // Filter recipes based on B&W preference
+        const allAnswers = Object.values(this.state.quiz.answers).flat();
+        const isBW = allAnswers.includes('bw');
         const availableRecipes = this.recipesData.filter(r => isBW ? r.type === 'bw' : r.type === 'color');
 
-        // Score each recipe based on matching tags
         const scores = availableRecipes.map(recipe => {
-            let score = recipe.tags.reduce((acc, tag) => acc + (this.state.quiz.answers.includes(tag) ? 1 : 0), 0);
+            let score = recipe.tags.reduce((acc, tag) => acc + (allAnswers.includes(tag) ? 1 : 0), 0);
             return { id: recipe.id, score: score };
         });
 
-        // Find the best match
         scores.sort((a, b) => b.score - a.score);
         const bestMatch = this.recipesData.find(r => r.id === scores[0].id);
 
-        // Delegate rendering to the UI module
-        this.ui.renderResult(bestMatch, this.recipeImages);
+        this.ui.renderQuizResult(bestMatch);
         this.applyTranslations();
     }
 }
