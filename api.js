@@ -6,6 +6,12 @@
  * ==============================================
  * - Đã gỡ bỏ logic xử lý hình ảnh và model Vision.
  * - Hàm `callGeminiAPI` giờ chỉ xử lý yêu cầu dạng văn bản.
+ * * ==============================================
+ * SỬA LỖI KHỞI TẠO FIREBASE - CẬP NHẬT NGÀY 27/08/2025
+ * ==============================================
+ * - Thêm logic để xử lý an toàn trường hợp cấu hình Firebase không tồn tại
+ * hoặc không hợp lệ, ngăn ứng dụng bị lỗi và cho phép các tính năng
+ * không phụ thuộc Firebase tiếp tục hoạt động.
  */
 
 // --- Firebase SDK Imports ---
@@ -21,8 +27,10 @@ import { state, __firebase_config, __app_id, isAIEnabled, API_KEY } from './stat
  * and sets the Firestore database instance in the global state.
  */
 export async function initializeFirebase() {
-    if (typeof __firebase_config === 'undefined' || __firebase_config.startsWith("%%")) {
-        console.warn("Firebase config not found. Trending feature will be disabled.");
+    // If config is not defined, is the placeholder, or is the literal string "undefined", skip.
+    if (typeof __firebase_config === 'undefined' || __firebase_config.startsWith("%%") || __firebase_config === 'undefined') {
+        console.warn("Firebase config not found. Features requiring Firebase will be disabled.");
+        state.firebase.db = null; // Ensure db is null
         return;
     }
     try {
@@ -34,7 +42,7 @@ export async function initializeFirebase() {
         console.log("Firebase initialized and user signed in anonymously.");
     } catch (error) {
         console.error("Firebase initialization failed:", error);
-        state.firebase.db = null;
+        state.firebase.db = null; // Ensure db is null on error
     }
 }
 
