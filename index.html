@@ -8,6 +8,7 @@
 <!-- PWA and Add to Home Screen Configuration -->
 <link rel="icon" type="image/png" href="Logo.png">
 <link rel="apple-touch-icon" href="Logo.png">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="white">
 <meta name="apple-mobile-web-app-title" content="ColorLAB">
@@ -39,7 +40,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --glass-border: rgba(0, 0, 0, 0.05);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
-        --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* New satisfying ease */
+        --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
         --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
         --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1);
     }
@@ -114,7 +115,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     .btn:active:not(:disabled) { transform: translateY(0px) scale(0.97); }
 
-    /* --- UPDATED: View transition animations --- */
     .view-transition, .view-transition-out {
         will-change: transform, opacity, filter;
     }
@@ -133,7 +133,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         from { opacity: 1; transform: scale(1); filter: blur(0px); } 
         to { opacity: 0; transform: scale(0.95); filter: blur(8px); } 
     }
-    /* --- End of update --- */
 
     .recipe-item-stagger {
         opacity: 0;
@@ -284,111 +283,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
     }
 
-    /* --- Floating Action Button (FAB) Styles --- */
-    #fabContainer {
-        position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        z-index: 50;
-        transform: scale(0.95) translateY(10px);
-        opacity: 0;
-        animation: fab-fade-in 0.5s var(--ease-out-back) 0.5s forwards;
+    /* --- NEW: Master CTA Button Styles --- */
+    #masterCtaContainer {
+        transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple);
     }
-    @keyframes fab-fade-in {
-        to {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-    }
-    #fabMainBtn {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background-color: var(--primary-accent);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 10px 25px rgba(0, 118, 255, 0.4);
-        cursor: pointer;
-        transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple);
-        border: none;
-    }
-    #fabMainBtn:hover {
-        background-color: var(--primary-accent-darker);
-    }
-    #fabMainBtn:active {
-        transform: scale(0.9);
-    }
-    #fabMainBtn svg {
-        transition: transform 0.3s var(--ease-out-back);
-    }
-    #fabContainer.open #fabMainBtn svg {
-        transform: rotate(45deg);
-    }
-    .fab-menu-item {
-        position: absolute;
-        bottom: 8px; /* Center relative to main button */
-        right: 8px; /* Center relative to main button */
-        width: 48px;
-        height: 48px;
-        background-color: white;
-        color: var(--primary-accent);
-        border-radius: 50%;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0;
-        transform: scale(0.5);
+    #quickActionsMenu {
+        transform-origin: bottom center;
         transition: transform 0.3s var(--ease-out-back), opacity 0.3s var(--ease-out-back);
-        pointer-events: none;
     }
-    #fabContainer.open .fab-menu-item {
-        opacity: 1;
-        transform: scale(1);
-        pointer-events: auto;
-    }
-    /* Staggered animation for menu items */
-    #fabContainer.open .fab-menu-item:nth-child(1) { transform: translateY(-75px) scale(1); transition-delay: 0.05s; }
-    #fabContainer.open .fab-menu-item:nth-child(2) { transform: translateY(-140px) scale(1); transition-delay: 0.1s; }
-    #fabContainer.open .fab-menu-item:nth-child(3) { transform: translateY(-205px) scale(1); transition-delay: 0.15s; }
-    .fab-menu-item:hover {
-        background-color: #f0f2f5;
-        transform: scale(1.1);
-    }
-    #fabContainer.open .fab-menu-item:nth-child(1):hover { transform: translateY(-75px) scale(1.1); }
-    #fabContainer.open .fab-menu-item:nth-child(2):hover { transform: translateY(-140px) scale(1.1); }
-    #fabContainer.open .fab-menu-item:nth-child(3):hover { transform: translateY(-205px) scale(1.1); }
-
-    .fab-tooltip {
-        position: absolute;
-        right: 120%;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: #1d1d1f;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        white-space: nowrap;
+    #quickActionsMenu.hidden {
+        transform: scale(0.8) translateY(10px);
         opacity: 0;
         pointer-events: none;
-        transition: all 0.2s var(--ease-apple);
-    }
-    .fab-menu-item:hover .fab-tooltip {
-        opacity: 1;
-        transform: translateY(-50%) translateX(-10px);
-    }
-    /* IMPROVEMENT: FAB Overlay */
-    #fab-overlay {
-        transition: opacity 0.3s var(--ease-apple);
-    }
-    #fabContainer.open + #fab-overlay {
-        opacity: 1;
-        pointer-events: auto;
     }
 
 </style>
@@ -466,28 +372,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<!-- Floating Action Button (FAB) Navigation -->
-<div id="fabContainer">
-    <div id="fabMenu">
-        <button data-view="home" class="fab-menu-item">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-             <span class="fab-tooltip" data-translate-key="navHome"></span>
-        </button>
-        <button data-view="recipeFormulas" class="fab-menu-item">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.5-2.449 5.5-5.5S18.051 2 15 2Z"/><path d="m9 12-2 2"/><path d="m12 9-2 2"/><path d="m15 6-2 2"/></svg>
-             <span class="fab-tooltip" data-translate-key="navRecipeFormulas"></span>
-        </button>
-        <button id="startQuizBtnFab" class="fab-menu-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
-            <span class="fab-tooltip" data-translate-key="findMyColorBtn"></span>
-        </button>
+<!-- NEW: Master CTA Button Container -->
+<div id="masterCtaContainer" class="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+    <!-- Quick Actions Menu (initially hidden) -->
+    <div id="quickActionsMenu" class="hidden flex-col items-center gap-3 mb-3">
+        <!-- Menu items will be rendered here by ui.js -->
     </div>
-    <button id="fabMainBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-    </button>
+    <!-- The main button itself -->
+    <div id="masterCtaButtonWrapper">
+        <!-- The button will be rendered here by ui.js -->
+    </div>
 </div>
-<!-- IMPROVEMENT: Added overlay div -->
-<div id="fab-overlay" class="fixed inset-0 bg-black/20 z-40 opacity-0 pointer-events-none"></div>
 
 
 <!-- SCRIPT IMPORTS -->
