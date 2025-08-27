@@ -117,9 +117,9 @@ function toggleUltimateActionsMenu(forceClose = false) {
         icon.style.transform = 'rotate(135deg)';
         
         // --- UPDATED: Widened the arc by 10 degrees on each side ---
-        const radius = 150; 
-        const startAngle = 185; // Starts from 180 - 10
-        const endAngle = 285;   // Ends at 270 + 10, creating a wider 110-degree fan
+        const radius = 130; 
+        const startAngle = 175; // Starts from 180 - 10
+        const endAngle = 280;   // Ends at 270 + 10, creating a wider 110-degree fan
         
         const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
