@@ -2,11 +2,19 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * NÂNG CẤP TRANG CHỦ - CẬP NHẬT NGÀY 27/08/2025
+ * CẬP NHẬT LOGIC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
- * - Thêm logic để render bản đồ màu D3.js trên trang chủ mới.
- * - Cập nhật trình xử lý sự kiện để điều hướng từ nút "Tiến vào Color Lab".
- * - Tối ưu hóa logic FAB và xử lý lớp phủ (overlay).
+ * - Cập nhật hàm `toggleUltimateActionsMenu` để xử lý animation xoay cho logo
+ * và sắp xếp các nút con theo hình vòng cung.
+ * - Đảm bảo logic điều hướng và mở menu hoạt động chính xác với cấu trúc
+ * button mới.
+ * * ==============================================
+ * ĐẠI TU BỐ CỤC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
+ * ==============================================
+ * - Sửa lỗi selector trong `toggleUltimateActionsMenu` để tìm đúng các nút icon mới.
+ * - Tăng mạnh giá trị `radius` lên 140 để các nút có khoảng cách an toàn.
+ * - Điều chỉnh `startAngle` và `endAngle` (180 đến 270) để các nút được
+ * phân bổ trên một vòng cung 90 độ hoàn hảo.
  */
 
 // --- Local Module Imports ---
@@ -17,7 +25,7 @@ import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
 import { initializeFirebase } from './api.js';
-import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal } from './ui.js';
+import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal, renderUltimateButton } from './ui.js';
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
     openLightbox,
@@ -26,9 +34,6 @@ import {
     renderColorMapChart,
     updateChartSelection
 } from './features.js';
-
-// --- MODULE-LEVEL VARIABLES ---
-let fabContainer, fabOverlay;
 
 // --- CORE APP LOGIC ---
 
@@ -67,11 +72,10 @@ function attachViewEventListeners(viewName) {
         initializeBackgroundBlobs();
         const homeChartContainer = document.getElementById('homeColorMapContainer');
         if (homeChartContainer) {
-            // Use ResizeObserver to ensure the container is ready before drawing
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
                      renderColorMapChart('#homeColorMapContainer', recipesData);
-                     resizeObserver.unobserve(homeChartContainer); // Stop observing after drawing
+                     resizeObserver.unobserve(homeChartContainer);
                 }
             });
             resizeObserver.observe(homeChartContainer);
@@ -109,22 +113,51 @@ function attachViewEventListeners(viewName) {
     }
 }
 
-function toggleFabMenu(forceClose = false) {
-    if (fabContainer) {
-        if (forceClose) {
-            fabContainer.classList.remove('open');
-        } else {
-            fabContainer.classList.toggle('open');
-        }
+function toggleUltimateActionsMenu(forceClose = false) {
+    const menu = document.getElementById('ultimateActionsMenu');
+    const icon = document.getElementById('ultimateCtaIcon');
+    if (!menu || !icon) return;
+
+    const actionButtons = menu.querySelectorAll('.ultimate-action-btn');
+    const isOpen = menu.classList.contains('menu-open');
+
+    if (forceClose || isOpen) {
+        // Close animation
+        menu.classList.remove('menu-open');
+        icon.style.transform = 'rotate(0deg)';
+        actionButtons.forEach(btn => {
+            btn.classList.remove('visible');
+            btn.style.transform = `scale(0.5)`;
+        });
+    } else {
+        // Open animation
+        menu.classList.add('menu-open');
+        icon.style.transform = 'rotate(135deg)';
+        
+        // FINAL ADJUSTMENT: Increased radius for safe spacing
+        const radius = 140; 
+        const startAngle = 180; 
+        const endAngle = 270;   
+        
+        const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
+
+        actionButtons.forEach((btn, index) => {
+            const angle = startAngle + (angleStep * index);
+            const angleRad = angle * (Math.PI / 180);
+
+            const x = radius * Math.cos(angleRad);
+            const y = radius * Math.sin(angleRad);
+            
+            btn.style.transitionDelay = `${index * 40}ms`;
+            btn.classList.add('visible');
+            btn.style.transform = `translate(${x}px, ${y}px) scale(1)`;
+        });
     }
 }
 
 
 async function init() {
     initLanguage();
-    
-    fabContainer = document.getElementById('fabContainer');
-    fabOverlay = document.getElementById('fab-overlay');
 
     state.quiz.instance = new Quiz({
         state,
@@ -139,23 +172,39 @@ async function init() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
-        if (target.closest('#fabMainBtn')) {
-            toggleFabMenu();
-            return;
-        }
-        if (target.id === 'fab-overlay' && fabContainer.classList.contains('open')) {
-            toggleFabMenu(true);
+        // --- Ultimate Button Logic ---
+        if (target.closest('#ultimateCtaBtn')) {
+            if (state.currentView === 'home') {
+                await renderView('recipeFormulas', null, attachViewEventListeners);
+            } else if (state.currentView === 'recipeFormulas') {
+                toggleUltimateActionsMenu();
+            }
             return;
         }
 
-        const navBtn = target.closest('.fab-menu-item');
+        // --- Ultimate Actions Menu Logic ---
+        if (target.closest('#ultimateQuizBtn')) {
+            toggleUltimateActionsMenu(true);
+            openModal('quizModal');
+            state.quiz.instance.start();
+            return;
+        }
+        if (target.closest('#ultimateHomeBtn')) {
+            toggleUltimateActionsMenu(true);
+            await renderView('home', null, attachViewEventListeners);
+            return;
+        }
+        // Close menu if clicking outside the container
+        if (!target.closest('#ultimateButtonWrapper')) {
+            toggleUltimateActionsMenu(true);
+        }
+        
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
         const collageItem = target.closest('.collage-item');
         const d3Node = target.closest('.color-map-node-group');
 
         if (d3Node) {
-            // If chart on home page is clicked, go to recipes view and select
             if (state.currentView === 'home') {
                 const recipeId = d3.select(d3Node).datum().id;
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
@@ -165,27 +214,10 @@ async function init() {
             return;
         }
         
-        // New home page button
-        if (target.closest('#enterLabBtn')) {
-            await renderView('recipeFormulas', null, attachViewEventListeners);
-            return;
-        }
-
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
-
-        if (navBtn) {
-            toggleFabMenu(true);
-            if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
-                resetToChartView();
-            } else {
-                await renderView(navBtn.dataset.view, null, attachViewEventListeners);
-            }
-            return;
-        }
         
-        if (target.closest('#startQuizBtnFab') || target.closest('#quizShortcutBtn')) {
-            toggleFabMenu(true);
+        if (target.closest('#quizShortcutBtn')) {
             openModal('quizModal');
             state.quiz.instance.start();
             return;
@@ -196,7 +228,6 @@ async function init() {
             setLanguage(newLang);
             updateLangSlider();
             applyTranslations();
-            // Re-render views that depend on language
             if (state.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 renderLibraryDetails();
@@ -290,3 +321,4 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+

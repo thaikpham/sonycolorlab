@@ -8,6 +8,7 @@
 <!-- PWA and Add to Home Screen Configuration -->
 <link rel="icon" type="image/png" href="Logo.png">
 <link rel="apple-touch-icon" href="Logo.png">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="white">
 <meta name="apple-mobile-web-app-title" content="ColorLAB">
@@ -39,7 +40,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --glass-border: rgba(0, 0, 0, 0.05);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
-        --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* New satisfying ease */
+        --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
         --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
         --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1);
     }
@@ -117,15 +118,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .view-transition, .view-transition-out {
         will-change: transform, opacity, filter;
     }
-    .view-transition { animation: fadeInScale 0.7s var(--ease-out-back) forwards; }
-    .view-transition-out { animation: fadeOutScale 0.4s var(--ease-out-back) forwards; position: absolute; }
-    @keyframes fadeInScale { 
-        from { opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(5px); } 
-        to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); } 
+    .view-transition { 
+        animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; 
+    }
+    .view-transition-out { 
+        animation: fadeOutScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+        position: absolute; 
+    }
+    @keyframes zoomInFade { 
+        from { opacity: 0; transform: scale(0.95); filter: blur(8px); } 
+        to { opacity: 1; transform: scale(1); filter: blur(0px); } 
     }
     @keyframes fadeOutScale { 
         from { opacity: 1; transform: scale(1); filter: blur(0px); } 
-        to { opacity: 0; transform: scale(0.98) translateY(-20px); filter: blur(5px); } 
+        to { opacity: 0; transform: scale(0.95); filter: blur(8px); } 
     }
 
     .recipe-item-stagger {
@@ -277,112 +283,96 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
     }
 
-    /* --- Floating Action Button (FAB) Styles --- */
-    #fabContainer {
+    #ultimateButtonContainer {
         position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
+        bottom: 2.5rem;
+        right: 2.5rem;
         z-index: 50;
-        transform: scale(0.95) translateY(10px);
-        opacity: 0;
-        animation: fab-fade-in 0.5s var(--ease-out-back) 0.5s forwards;
     }
-    @keyframes fab-fade-in {
-        to {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
+    #ultimateButtonWrapper {
+        position: relative;
+        width: 80px;
+        height: 80px;
     }
-    #fabMainBtn {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background-color: var(--primary-accent);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 10px 25px rgba(0, 118, 255, 0.4);
-        cursor: pointer;
-        transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple);
-        border: none;
-    }
-    #fabMainBtn:hover {
-        background-color: var(--primary-accent-darker);
-    }
-    #fabMainBtn:active {
-        transform: scale(0.9);
-    }
-    #fabMainBtn svg {
-        transition: transform 0.3s var(--ease-out-back);
-    }
-    #fabContainer.open #fabMainBtn svg {
-        transform: rotate(45deg);
-    }
-    .fab-menu-item {
+    #ultimateActionsMenu {
         position: absolute;
-        bottom: 8px; /* Center relative to main button */
-        right: 8px; /* Center relative to main button */
-        width: 48px;
-        height: 48px;
-        background-color: white;
-        color: var(--primary-accent);
-        border-radius: 50%;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0;
-        transform: scale(0.5);
-        transition: transform 0.3s var(--ease-out-back), opacity 0.3s var(--ease-out-back);
+        inset: 0;
         pointer-events: none;
     }
-    #fabContainer.open .fab-menu-item {
+    .ultimate-action-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 56px;
+        height: 56px;
+        margin-left: -28px;
+        margin-top: -28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transform-origin: center;
+        transition: transform 0.3s var(--ease-out-back), opacity 0.3s ease, background-color 0.2s ease;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 5;
+        transform: scale(0.5);
+    }
+    .ultimate-action-btn.visible {
         opacity: 1;
-        transform: scale(1);
         pointer-events: auto;
     }
-    /* Staggered animation for menu items */
-    #fabContainer.open .fab-menu-item:nth-child(1) { transform: translateY(-75px) scale(1); transition-delay: 0.05s; }
-    #fabContainer.open .fab-menu-item:nth-child(2) { transform: translateY(-140px) scale(1); transition-delay: 0.1s; }
-    #fabContainer.open .fab-menu-item:nth-child(3) { transform: translateY(-205px) scale(1); transition-delay: 0.15s; }
-    .fab-menu-item:hover {
-        background-color: #f0f2f5;
-        transform: scale(1.1);
-    }
-    #fabContainer.open .fab-menu-item:nth-child(1):hover { transform: translateY(-75px) scale(1.1); }
-    #fabContainer.open .fab-menu-item:nth-child(2):hover { transform: translateY(-140px) scale(1.1); }
-    #fabContainer.open .fab-menu-item:nth-child(3):hover { transform: translateY(-205px) scale(1.1); }
-
-    .fab-tooltip {
+    .ultimate-action-btn .ultimate-tooltip {
         position: absolute;
         right: 120%;
         top: 50%;
-        transform: translateY(-50%);
-        background-color: #1d1d1f;
+        transform: translateY(-50%) translateX(10px);
+        background-color: rgba(29, 29, 31, 0.9);
         color: white;
         padding: 6px 12px;
         border-radius: 8px;
-        font-size: 12px;
+        font-size: 0.875rem;
         font-weight: 600;
         white-space: nowrap;
         opacity: 0;
+        transition: opacity 0.2s ease, transform 0.2s ease;
         pointer-events: none;
-        transition: all 0.2s var(--ease-apple);
     }
-    .fab-menu-item:hover .fab-tooltip {
+    .ultimate-action-btn:hover .ultimate-tooltip {
         opacity: 1;
-        transform: translateY(-50%) translateX(-10px);
+        transform: translateY(-50%) translateX(0);
     }
-    /* IMPROVEMENT: FAB Overlay */
-    #fab-overlay {
-        transition: opacity 0.3s var(--ease-apple);
+    #ultimateCtaBtn {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
     }
-    #fabContainer.open + #fab-overlay {
-        opacity: 1;
-        pointer-events: auto;
+
+    .liquid-glass-button {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        transition: all 0.4s var(--ease-apple);
     }
+    .liquid-glass-button:hover {
+        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+        transform: scale(1.1);
+    }
+
+    .btn-pastel-cyan { background-color: rgba(26, 188, 156, 0.8); }
+    .btn-pastel-magenta { background-color: rgba(155, 89, 182, 0.8); }
+    .btn-pastel-yellow { background-color: rgba(241, 196, 15, 0.8); }
+    .btn-pastel-red { background-color: rgba(231, 76, 60, 0.8); }
+    .btn-pastel-blue { background-color: rgba(52, 152, 219, 0.8); }
+
+    .btn-pastel-cyan:hover { background-color: rgba(26, 188, 156, 1); }
+    .btn-pastel-magenta:hover { background-color: rgba(155, 89, 182, 1); }
+    .btn-pastel-yellow:hover { background-color: rgba(241, 196, 15, 1); }
+    .btn-pastel-red:hover { background-color: rgba(231, 76, 60, 1); }
+    .btn-pastel-blue:hover { background-color: rgba(52, 152, 219, 1); }
 
 </style>
 </head>
@@ -412,10 +402,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </nav>
         </div>
     </header>
-    <main id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6 mb-2"></main>
-    <footer class="text-center pt-4 sm:py-4 text-gray-500 text-sm flex-shrink-0">
-        Paint emotions with ColorLAB by Sony Alpha Vietnam
-    </footer>
+    <main id="mainContent" class="flex-grow min-h-0 relative mt-4 md:mt-6"></main>
 </div>
 
 <div id="infoTooltip" class="hidden"></div>
@@ -459,28 +446,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<!-- Floating Action Button (FAB) Navigation -->
-<div id="fabContainer">
-    <div id="fabMenu">
-        <button data-view="home" class="fab-menu-item">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-             <span class="fab-tooltip" data-translate-key="navHome"></span>
-        </button>
-        <button data-view="recipeFormulas" class="fab-menu-item">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.5-2.449 5.5-5.5S18.051 2 15 2Z"/><path d="m9 12-2 2"/><path d="m12 9-2 2"/><path d="m15 6-2 2"/></svg>
-             <span class="fab-tooltip" data-translate-key="navRecipeFormulas"></span>
-        </button>
-        <button id="startQuizBtnFab" class="fab-menu-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
-            <span class="fab-tooltip" data-translate-key="findMyColorBtn"></span>
-        </button>
+<!-- Ultimate Button Container -->
+<div id="ultimateButtonContainer" class="fixed bottom-8 right-8 z-50">
+    <div id="ultimateButtonWrapper">
+        <!-- Menu and button will be rendered here by ui.js -->
     </div>
-    <button id="fabMainBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-    </button>
 </div>
-<!-- IMPROVEMENT: Added overlay div -->
-<div id="fab-overlay" class="fixed inset-0 bg-black/20 z-40 opacity-0 pointer-events-none"></div>
 
 
 <!-- SCRIPT IMPORTS -->

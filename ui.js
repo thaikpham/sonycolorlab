@@ -3,12 +3,21 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * NÂNG CẤP TRANG CHỦ - CẬP NHẬT NGÀY 27/08/2025
+ * CẬP NHẬT GIAO DIỆN NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
- * - Thiết kế lại hoàn toàn giao diện trang chủ (viewTemplates.home).
- * - Loại bỏ 2 nút bấm cũ, thay bằng bản đồ màu D3.js làm trung tâm.
- * - Thêm một nút "Tiến vào Color Lab" duy nhất để điều hướng.
- * - Tinh chỉnh giao diện chi tiết công thức để tối ưu hiển thị.
+ * - Thay thế nút "Enter Color Lab" trên trang chủ bằng logo với hiệu ứng Liquid Glass.
+ * - Loại bỏ hiệu ứng blob động bên trong nút để có giao diện trong suốt hoàn toàn.
+ * - Cập nhật logic render để hiển thị đúng nút cho từng giao diện.
+ * - Gán các màu pastel cho các nút chức năng.
+ * - Tăng kích thước nút CTA trên trang chủ lên 80x80px.
+ * - Chuyển các nút chức năng sang dạng icon tròn, có tooltip khi hover.
+ * * ==============================================
+ * SỬA LỖI TƯƠNG TÁC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
+ * ==============================================
+ * - Sửa lại hàm `renderUltimateButton` để không phá hủy cấu trúc DOM.
+ * - Thay vì dùng `innerHTML` để ghi đè toàn bộ wrapper, hàm sẽ quản lý việc
+ * thêm/xóa nút CTA và cập nhật nội dung menu một cách độc lập,
+ * đảm bảo `#ultimateActionsMenu` luôn tồn tại để các hàm khác có thể tương tác.
  */
 
 // --- Local Module Imports ---
@@ -163,21 +172,6 @@ function createFullRecipeHTML(recipe) {
         return `<div class="photo-collage">${imageElements}</div>`;
     };
 
-    const createCTAHTML = (recipe) => {
-        const recipeHashtag = `#${recipe.id.replace(/-/g, '')}`;
-        const ctaText = t('ctaText').replace('{recipeHashtag}', `<b class="font-semibold text-blue-900">${recipeHashtag}</b>`);
-        return `<div class="mt-8 p-5 md:p-6 bg-blue-50 border border-blue-200/50 rounded-2xl text-center">
-            <h4 class="text-lg md:text-xl font-bold text-blue-800" data-translate-key="ctaTitle"></h4>
-            <p class="mt-2 text-blue-700/90 max-w-2xl mx-auto text-sm md:text-base">${ctaText}</p>
-            <div class="mt-5 flex flex-wrap justify-center gap-4">
-                <button id="shareRecipeBtn" data-recipe-id="${recipe.id}" class="btn bg-green-500 hover:bg-green-600 text-white py-2.5 px-6 shadow-lg shadow-green-500/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2 h-5 w-5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
-                    <span data-translate-key="shareRecipeBtn"></span>
-                </button>
-            </div>
-        </div>`;
-    };
-
     const createSettingsGrid = (settings) => {
         if (!settings) return '';
         return Object.entries(settings).map(([key, value]) => {
@@ -206,16 +200,15 @@ function createFullRecipeHTML(recipe) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-5 w-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 <span data-translate-key="downloadPDFBtn"></span>
             </button>
-            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-5 w-5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                <span data-translate-key="sonyGuideBtn"></span>
-            </a>
+             <button id="shareRecipeBtn" data-recipe-id="${recipe.id}" class="btn bg-green-500 hover:bg-green-600 text-white py-2.5 px-6 shadow-lg shadow-green-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2 h-5 w-5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+                <span data-translate-key="shareRecipeBtn"></span>
+            </button>
         </div>
         <div class="space-y-8 mt-8">
             ${sections.map(section => `<div><h4 class="text-xl font-bold mb-3 text-gray-700" data-translate-key="${section.titleKey}"></h4><div class="p-4 bg-gray-500/5 rounded-2xl">${section.content}</div></div>`).join('')}
         </div>
         ${createSaveGuideHTML()}
-        ${createCTAHTML(recipe)}
     `;
 }
 
@@ -226,22 +219,13 @@ const viewTemplates = {
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;" data-translate-key="landingTitle"></h1>
                 <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
             </div>
-            <div id="homeColorMapContainer" class="w-full max-w-4xl h-1/2 max-h-[500px] my-8 cursor-pointer"></div>
-            <div class="text-center">
-                 <button id="enterLabBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-beaker"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg>
-                    <span data-translate-key="enterLabBtn"></span>
-                </button>
-            </div>
+            <div id="homeColorMapContainer" class="w-full max-w-4xl flex-grow my-8 cursor-pointer"></div>
         </div>`,
     recipeFormulas: () => `
         <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
             <aside id="recipeListPanel" class="h-full w-full md:w-auto md:flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                    <button id="quizShortcutBtn" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-blue-500" title="Find My Color Quiz">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
-                    </button>
                 </div>
                 <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
             </aside>
@@ -252,17 +236,7 @@ const viewTemplates = {
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
                             <p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
-                            <a href="https://forms.gle/your-form-id" target="_blank" rel="noopener noreferrer" class="btn bg-green-500 hover:bg-green-600 text-white py-3 px-6 shadow-lg shadow-green-500/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle h-5 w-5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
-                                <span data-translate-key="contributeRecipeBtn"></span>
-                            </a>
-                            <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn btn-primary py-3 px-6 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                <span data-translate-key="ctaButton"></span>
-                            </a>
-                        </div>
-                        <div id="colorMapContainer" class="flex-grow w-full"></div>
+                        <div id="colorMapContainer" class="flex-grow w-full mt-8"></div>
                     </div>
                     <div id="recipeContent" class="hidden"></div>
                 </div>
@@ -314,6 +288,7 @@ export function initializeBackgroundBlobs() {
 
     function animate() {
         if (state.currentView !== 'home') {
+            cancelAnimationFrame(state.animation.blobAnimationFrameId);
             state.animation.blobAnimationFrameId = null;
             return;
         }
@@ -337,14 +312,67 @@ export function initializeBackgroundBlobs() {
 
         state.animation.blobAnimationFrameId = requestAnimationFrame(animate);
     }
+
+    if (state.animation.blobAnimationFrameId) {
+        cancelAnimationFrame(state.animation.blobAnimationFrameId);
+    }
     animate();
 }
+
+export function renderUltimateButton() {
+    const wrapper = document.getElementById('ultimateButtonWrapper');
+    if (!wrapper) return;
+
+    wrapper.innerHTML = ''; // Clear wrapper for a fresh, safe render
+
+    const mainButtonHTML = `
+        <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 80px; height: 80px; padding: 16px; border-radius: 32px;">
+             <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
+        </button>
+    `;
+
+    if (state.currentView === 'home') {
+        wrapper.innerHTML = mainButtonHTML;
+    } else if (state.currentView === 'recipeFormulas') {
+        const icons = {
+            backToHome: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+            findMyColorBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`,
+            sonyGuideBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+            contributeRecipeBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" x2="12" y1="18" y2="12"/><line x1="9" x2="15" y1="15" y2="15"/></svg>`,
+            ctaButton: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+        };
+
+        const menuActions = [
+             { id: 'ultimateHomeBtn', key: 'backToHome', colorClass: 'btn-pastel-blue', icon: icons.backToHome },
+             { id: 'ultimateQuizBtn', key: 'findMyColorBtn', colorClass: 'btn-pastel-red', icon: icons.findMyColorBtn },
+             { key: 'sonyGuideBtn', href: 'https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html', colorClass: 'btn-pastel-yellow', icon: icons.sonyGuideBtn },
+             { key: 'contributeRecipeBtn', href: 'https://forms.gle/your-form-id', colorClass: 'btn-pastel-magenta', icon: icons.contributeRecipeBtn },
+             { key: 'ctaButton', href: 'https://www.facebook.com/groups/sonyalphavietnamoffical', colorClass: 'btn-pastel-cyan', icon: icons.ctaButton }
+        ];
+
+        const menuHTML = `<div id="ultimateActionsMenu">` + menuActions.reverse().map(action => {
+            const commonAttrs = `class="ultimate-action-btn ${action.colorClass}"`;
+            const content = `${action.icon}<span class="ultimate-tooltip" data-translate-key="${action.key}"></span>`;
+            if (action.href) {
+                return `<a href="${action.href}" target="_blank" rel="noopener noreferrer" ${commonAttrs}>${content}</a>`;
+            } else {
+                return `<button id="${action.id}" ${commonAttrs}>${content}</button>`;
+            }
+        }).join('') + `</div>`;
+        
+        wrapper.innerHTML = menuHTML + mainButtonHTML;
+    }
+    
+    applyTranslations();
+}
+
 
 export function renderView(viewName, selectedId = null, attachViewEventListeners) {
     state.currentView = viewName;
     if (selectedId) { state.selectedRecipeId = selectedId; }
 
     const blobContainer = document.getElementById('blobContainer');
+    const ultimateButtonContainer = document.getElementById('ultimateButtonContainer');
 
     if (viewName !== 'home') {
         document.body.style.overflowY = 'auto';
@@ -362,10 +390,7 @@ export function renderView(viewName, selectedId = null, attachViewEventListeners
         }
     }
 
-    const footerEl = document.querySelector('footer');
-    if (footerEl) {
-        footerEl.classList.toggle('hidden', viewName === 'recipeFormulas');
-    }
+    ultimateButtonContainer.classList.toggle('hidden', viewName !== 'home' && viewName !== 'recipeFormulas');
 
     return new Promise(resolve => {
         const currentContent = mainContentEl.children[0];
@@ -374,12 +399,14 @@ export function renderView(viewName, selectedId = null, attachViewEventListeners
             currentContent.addEventListener('animationend', () => {
                 mainContentEl.innerHTML = viewTemplates[viewName]();
                 if (attachViewEventListeners) attachViewEventListeners(viewName);
+                renderUltimateButton();
                 applyTranslations();
                 resolve();
             }, { once: true });
         } else {
             mainContentEl.innerHTML = viewTemplates[viewName]();
             if (attachViewEventListeners) attachViewEventListeners(viewName);
+            renderUltimateButton();
             applyTranslations();
             resolve();
         }
