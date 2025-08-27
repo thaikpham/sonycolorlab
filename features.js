@@ -3,15 +3,12 @@
  * This module encapsulates logic for complex, self-contained features
  * like the AI labs, D3 chart, PDF generation, and image lightbox.
  * * ==============================================
- * NÂNG CẤP ANIMATION - CẬP NHẬT NGÀY 24/08/2025
+ * CẬP NHẬT TÍNH NĂNG QUIZ AI - NGÀY 28/08/2025
  * ==============================================
- * - Import và sử dụng hàm `openModal`, `closeModal` từ `ui.js`.
- * - Cập nhật `openAILab` và `closeAILab` để kích hoạt modal với hiệu ứng mượt mà.
- * * ==============================================
- * TỐI ƯU HÓA TRẢI NGHIỆM - CẬP NHẬT NGÀY 27/08/2025
- * ==============================================
- * - Gỡ bỏ hiệu ứng chuyển động (transition) của các chấm màu trên bản đồ D3.js
- * để giao diện tĩnh và đỡ lặp lại.
+ * - Thêm hàm `handleQuizAIGeneration` để xử lý logic tạo công thức màu
+ * từ prompt của người dùng trong quiz.
+ * - Hàm này sẽ chịu trách nhiệm đọc input, hiển thị loading, tạo prompt,
+ * gọi API và điều phối việc render kết quả hoặc lỗi.
  */
 
 // --- Local Module Imports ---
@@ -20,7 +17,6 @@ import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, getCurrentLanguage, applyTranslations } from './language.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
-// UPDATED: Import modal functions
 import { showToast, openModal, closeModal } from './ui.js';
 
 // --- CDN URLs for external libraries ---
@@ -172,10 +168,8 @@ export async function renderColorMapChart(containerSelector, data) {
 
     for (let i = 0; i < 120; ++i) state.chart.simulation.tick();
 
-    // --- UPDATED: Removed the transition for a static, immediate render of nodes. ---
     state.chart.nodes
         .attr("transform", d => `translate(${d.x}, ${d.y})`);
-    // --- End of update ---
 
     updateChartSelection();
 }
@@ -262,14 +256,12 @@ export function openAILab(recipeId) {
         abortController: state.ai.abortController ? (state.ai.abortController.abort(), null) : null
     });
 
-    // UPDATED: Use animated modal function
     openModal('aiLabModal');
     renderAILab();
 }
 
 export function closeAILab() {
     if (state.ai.abortController) state.ai.abortController.abort();
-    // UPDATED: Use animated modal function
     closeModal('aiLabModal');
 }
 
@@ -392,6 +384,50 @@ export async function confirmAndCallAI() {
         }
     }
 }
+
+// --- QUIZ AI FEATURE ---
+
+/**
+ * Handles the AI recipe generation from the quiz prompt.
+ * Reads user input, constructs a prompt, calls the API, and delegates rendering.
+ */
+export async function handleQuizAIGeneration() {
+    const userInput = document.getElementById('aiQuizPrompt')?.value.trim();
+    
+    // If there's no input, just show the standard result.
+    if (!userInput) {
+        state.quiz.instance.calculateAndShowResult();
+        return;
+    }
+
+    // Show loading state by delegating to the quiz instance's UI functions
+    state.quiz.instance.ui.renderLoading();
+    applyTranslations();
+    
+    const preferences = state.quiz.answers.join(', ');
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the user's preferences from a quiz: "${preferences}". Now, consider the user's creative prompt: "${userInput}". Your task is to generate a completely new, creative, and fully detailed JSON object representing a unique color recipe that matches this inspiration. The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
+
+    try {
+        // The AbortController is not used here, but the parameter is kept for API consistency
+        const generatedRecipe = await callGeminiAPI(expertPrompt, null);
+        
+        // Find the render function on the quiz instance (passed via dependencies)
+        if (state.quiz.instance && typeof state.quiz.instance.ui.renderAIResult === 'function') {
+            state.quiz.instance.ui.renderAIResult(generatedRecipe);
+        } else {
+            throw new Error("UI render function for AI result not found.");
+        }
+
+    } catch (error) {
+        console.error("Quiz Gemini API call failed:", error);
+        if (state.quiz.instance && typeof state.quiz.instance.ui.renderError === 'function') {
+            state.quiz.instance.ui.renderError();
+        }
+    } finally {
+        applyTranslations();
+    }
+}
+
 
 // --- PDF & SHARE FUNCTIONS ---
 
