@@ -26,6 +26,11 @@
  * - Điều chỉnh `endAngle` về 270 độ để tạo một cung tròn 90 độ hoàn hảo,
  * giúp bố cục gọn gàng, khoa học và thẩm mỹ hơn.
  * - Giảm nhẹ `radius` xuống 140 để cụm nút chặt chẽ hơn.
+ * * ==============================================
+ * TĂNG BIÊN ĐỘ HÌNH QUẠT (LẦN 2) - NGÀY 27/08/2025
+ * ==============================================
+ * - Mở rộng cung tròn của các nút vệ tinh thêm 10 độ mỗi bên (từ 170 đến 280 độ)
+ * để tạo cảm giác bung ra rộng hơn theo yêu cầu.
  */
 
 // --- Local Module Imports ---
@@ -145,10 +150,10 @@ function toggleUltimateActionsMenu(forceClose = false) {
         menu.classList.add('menu-open');
         icon.style.transform = 'rotate(135deg)';
         
-        // --- UPDATED: Tighter 90-degree arc for a more controlled layout ---
-        const radius = 140; // Slightly reduced for a tighter cluster
-        const startAngle = 180; // Starts from the left
-        const endAngle = 270; // Ends at the top, creating a perfect 90-degree fan
+        // --- UPDATED: Widened the arc by 10 degrees on each side ---
+        const radius = 140; 
+        const startAngle = 170; // Starts from 180 - 10
+        const endAngle = 280;   // Ends at 270 + 10, creating a wider 110-degree fan
         
         const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
@@ -220,7 +225,7 @@ async function init() {
                 const recipeId = d3.select(d3Node).datum().id;
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
             } else {
-                handleSelection(d3.select(d3Node).datum().id);
+                handleRecipeSelection(d3.select(d3Node).datum().id);
             }
             return;
         }
@@ -332,4 +337,3 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
