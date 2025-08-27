@@ -7,6 +7,11 @@
  * ==============================================
  * - Import và sử dụng hàm `openModal`, `closeModal` từ `ui.js`.
  * - Cập nhật `openAILab` và `closeAILab` để kích hoạt modal với hiệu ứng mượt mà.
+ * * ==============================================
+ * TỐI ƯU HÓA TRẢI NGHIỆM - CẬP NHẬT NGÀY 27/08/2025
+ * ==============================================
+ * - Gỡ bỏ hiệu ứng chuyển động (transition) của các chấm màu trên bản đồ D3.js
+ * để giao diện tĩnh và đỡ lặp lại.
  */
 
 // --- Local Module Imports ---
@@ -128,8 +133,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .data(nodesData, d => d.id)
         .enter()
         .append("g")
-        .attr("class", "color-map-node-group")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+        .attr("class", "color-map-node-group");
 
     state.chart.nodes.append("circle")
         .attr("class", "color-map-node-aura")
@@ -168,12 +172,10 @@ export async function renderColorMapChart(containerSelector, data) {
 
     for (let i = 0; i < 120; ++i) state.chart.simulation.tick();
 
+    // --- UPDATED: Removed the transition for a static, immediate render of nodes. ---
     state.chart.nodes
-        .transition()
-        .duration(1200)
-        .delay((d, i) => i * 10)
-        .ease(d3.easeCubicOut)
         .attr("transform", d => `translate(${d.x}, ${d.y})`);
+    // --- End of update ---
 
     updateChartSelection();
 }
