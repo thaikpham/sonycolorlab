@@ -3,11 +3,12 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * NÂNG CẤP GIAO DIỆN DI ĐỘNG & TÊN CÔNG THỨC - CẬP NHẬT NGÀY 25/08/2025
+ * NÂNG CẤP TRANG CHỦ - CẬP NHẬT NGÀY 27/08/2025
  * ==============================================
- * - Thêm hàm `formatRecipeName` để loại bỏ số 0 không cần thiết trong tên công thức (VD: SCL-001 -> SCL-1).
- * - Cập nhật `viewTemplates.recipeFormulas` để loại bỏ "glass-panel" ở màn hình chi tiết trên di động.
- * - Giao diện chi tiết công thức giờ đây sẽ tràn viền, không còn bị đóng khung.
+ * - Thiết kế lại hoàn toàn giao diện trang chủ (viewTemplates.home).
+ * - Loại bỏ 2 nút bấm cũ, thay bằng bản đồ màu D3.js làm trung tâm.
+ * - Thêm một nút "Tiến vào Color Lab" duy nhất để điều hướng.
+ * - Tinh chỉnh giao diện chi tiết công thức để tối ưu hiển thị.
  */
 
 // --- Local Module Imports ---
@@ -24,12 +25,6 @@ const mainContentEl = document.getElementById('mainContent');
 
 // --- HELPER FUNCTIONS ---
 
-/**
- * Formats the recipe name to remove leading zeros from the ID number.
- * e.g., "SCL-001: Name" becomes "SCL-1: Name"
- * @param {string} name - The original recipe name.
- * @returns {string} The formatted recipe name.
- */
 function formatRecipeName(name) {
     if (!name) return '';
     return name.replace(/(SCL|PROCOLOR)-0+/, '$1-');
@@ -226,17 +221,17 @@ function createFullRecipeHTML(recipe) {
 
 const viewTemplates = {
     home: () => `
-        <div id="homeView" class="w-full h-full flex items-center justify-center absolute inset-0 p-4 md:p-8">
-            <div class="w-full max-w-2xl mx-auto text-center">
+        <div id="homeView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 p-4 md:p-8">
+            <div class="text-center">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;" data-translate-key="landingTitle"></h1>
                 <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
-                <div class="flex flex-col sm:flex-row gap-4 mt-10 justify-center">
-                    <button id="startQuizBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-6 w-6"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
-                        <span data-translate-key="findMyColorBtn"></span>
-                    </button>
-                    <button data-view="recipeFormulas" class="nav-btn btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 py-4 px-10 text-lg whitespace-nowrap" data-translate-key="startExploringBtn"></button>
-                </div>
+            </div>
+            <div id="homeColorMapContainer" class="w-full max-w-4xl h-1/2 max-h-[500px] my-8 cursor-pointer"></div>
+            <div class="text-center">
+                 <button id="enterLabBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-beaker"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg>
+                    <span data-translate-key="enterLabBtn"></span>
+                </button>
             </div>
         </div>`,
     recipeFormulas: () => `
@@ -442,7 +437,6 @@ export async function renderLibraryList() {
             ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-yellow-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` 
             : '';
 
-        // UPDATED: Simplified HTML for single-column list
         return `<div class="recipe-item p-4 rounded-lg cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
                      data-recipe-id="${recipe.id}" 
                      style="${glowStyle} ${animationStyle}">
