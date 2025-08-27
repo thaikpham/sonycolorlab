@@ -11,6 +11,13 @@
  * - Gán các màu pastel cho các nút chức năng.
  * - Loại bỏ icon khỏi các nút chức năng trong menu.
  * - Đồng bộ kích thước nút CTA trên trang chủ về 72x72px.
+ * * ==============================================
+ * SỬA LỖI TƯƠNG TÁC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
+ * ==============================================
+ * - Sửa lại hàm `renderUltimateButton` để không phá hủy cấu trúc DOM.
+ * - Thay vì dùng `innerHTML` để ghi đè toàn bộ wrapper, hàm sẽ quản lý việc
+ * thêm/xóa nút CTA và cập nhật nội dung menu một cách độc lập,
+ * đảm bảo `#ultimateActionsMenu` luôn tồn tại để các hàm khác có thể tương tác.
  */
 
 // --- Local Module Imports ---
@@ -316,17 +323,25 @@ export function renderUltimateButton() {
     const wrapper = document.getElementById('ultimateButtonWrapper');
     const menu = document.getElementById('ultimateActionsMenu');
     if (!wrapper || !menu) return;
-    
+
+    // Xóa nút bấm cũ và nội dung menu cũ để tránh trùng lặp
+    let existingButton = wrapper.querySelector('#ultimateCtaBtn');
+    if (existingButton) {
+        existingButton.remove();
+    }
+    menu.innerHTML = '';
+
+    // HTML cho nút bấm chính
     const mainButtonHTML = `
         <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
              <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back); position: relative; z-index: 2;">
         </button>
     `;
 
+    // Render dựa trên view hiện tại
     if (state.currentView === 'home') {
-        menu.innerHTML = ''; // Clear menu on home
-        wrapper.innerHTML = mainButtonHTML;
-
+        wrapper.insertAdjacentHTML('beforeend', mainButtonHTML);
+        menu.classList.add('hidden');
     } else if (state.currentView === 'recipeFormulas') {
         const menuActions = [
              { id: 'ultimateHomeBtn', key: 'backToHome', colorClass: 'btn-pastel-blue' },
@@ -346,11 +361,9 @@ export function renderUltimateButton() {
             }
         }).join('');
         
-        wrapper.innerHTML = mainButtonHTML;
-    } else {
-        wrapper.innerHTML = '';
-        menu.innerHTML = '';
+        wrapper.insertAdjacentHTML('beforeend', mainButtonHTML);
     }
+    
     applyTranslations();
 }
 
