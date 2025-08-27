@@ -2,11 +2,11 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * SỬA LỖI & TỐI ƯU HÓA - CẬP NHẬT NGÀY 27/08/2025
+ * NÂNG CẤP TRANG CHỦ - CẬP NHẬT NGÀY 27/08/2025
  * ==============================================
- * - Sửa lỗi không tương tác được do thiếu trình xử lý sự kiện cho nút quiz trên trang chủ.
- * - Tối ưu hóa: Lấy tham chiếu đến các phần tử FAB một lần khi khởi tạo thay vì mỗi lần click.
- * - Cải tiến UX: Thêm logic để xử lý lớp phủ (overlay) khi mở/đóng menu FAB.
+ * - Thêm logic để render bản đồ màu D3.js trên trang chủ mới.
+ * - Cập nhật trình xử lý sự kiện để điều hướng từ nút "Tiến vào Color Lab".
+ * - Tối ưu hóa logic FAB và xử lý lớp phủ (overlay).
  */
 
 // --- Local Module Imports ---
@@ -65,6 +65,17 @@ function resetToChartView() {
 function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
         initializeBackgroundBlobs();
+        const homeChartContainer = document.getElementById('homeColorMapContainer');
+        if (homeChartContainer) {
+            // Use ResizeObserver to ensure the container is ready before drawing
+            const resizeObserver = new ResizeObserver(entries => {
+                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
+                     renderColorMapChart('#homeColorMapContainer', recipesData);
+                     resizeObserver.unobserve(homeChartContainer); // Stop observing after drawing
+                }
+            });
+            resizeObserver.observe(homeChartContainer);
+        }
     }
     if (viewName === 'recipeFormulas') {
         renderLibraryList();
@@ -100,7 +111,6 @@ function attachViewEventListeners(viewName) {
 
 function toggleFabMenu(forceClose = false) {
     if (fabContainer) {
-        const isOpen = fabContainer.classList.contains('open');
         if (forceClose) {
             fabContainer.classList.remove('open');
         } else {
@@ -113,7 +123,6 @@ function toggleFabMenu(forceClose = false) {
 async function init() {
     initLanguage();
     
-    // OPTIMIZATION: Get FAB elements once
     fabContainer = document.getElementById('fabContainer');
     fabOverlay = document.getElementById('fab-overlay');
 
@@ -130,12 +139,10 @@ async function init() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
-        // FAB Menu Logic
         if (target.closest('#fabMainBtn')) {
             toggleFabMenu();
             return;
         }
-        // Close FAB if overlay is clicked
         if (target.id === 'fab-overlay' && fabContainer.classList.contains('open')) {
             toggleFabMenu(true);
             return;
@@ -148,7 +155,19 @@ async function init() {
         const d3Node = target.closest('.color-map-node-group');
 
         if (d3Node) {
-            handleRecipeSelection(d3.select(d3Node).datum().id);
+            // If chart on home page is clicked, go to recipes view and select
+            if (state.currentView === 'home') {
+                const recipeId = d3.select(d3Node).datum().id;
+                await renderView('recipeFormulas', recipeId, attachViewEventListeners);
+            } else {
+                handleRecipeSelection(d3.select(d3Node).datum().id);
+            }
+            return;
+        }
+        
+        // New home page button
+        if (target.closest('#enterLabBtn')) {
+            await renderView('recipeFormulas', null, attachViewEventListeners);
             return;
         }
 
@@ -156,7 +175,7 @@ async function init() {
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
 
         if (navBtn) {
-            toggleFabMenu(true); // Close FAB menu on selection
+            toggleFabMenu(true);
             if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
                 resetToChartView();
             } else {
@@ -165,8 +184,7 @@ async function init() {
             return;
         }
         
-        // Handle Quiz buttons from both FAB and Home page
-        if (target.closest('#startQuizBtnFab') || target.closest('#startQuizBtn')) {
+        if (target.closest('#startQuizBtnFab') || target.closest('#quizShortcutBtn')) {
             toggleFabMenu(true);
             openModal('quizModal');
             state.quiz.instance.start();
@@ -178,10 +196,13 @@ async function init() {
             setLanguage(newLang);
             updateLangSlider();
             applyTranslations();
+            // Re-render views that depend on language
             if (state.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 renderLibraryDetails();
                 renderColorMapChart('#colorMapContainer', recipesData);
+            } else if (state.currentView === 'home') {
+                renderColorMapChart('#homeColorMapContainer', recipesData);
             }
             return;
         }
@@ -212,25 +233,15 @@ async function init() {
         }
 
         if (target.closest('#quizModal')) {
-            if (target.closest('#closeQuizBtn')) {
-                closeModal('quizModal');
-                state.quiz.instance.close();
-                return;
-            }
-            if (target.closest('#retakeQuizBtn')) {
-                state.quiz.instance.start();
-                return;
-            }
+            if (target.closest('#closeQuizBtn')) { closeModal('quizModal'); state.quiz.instance.close(); return; }
+            if (target.closest('#retakeQuizBtn')) { state.quiz.instance.start(); return; }
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
                 closeModal('quizModal');
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
                 return;
             }
-            if (target.closest('.quiz-option')) {
-                state.quiz.instance.handleAnswer(e);
-                return;
-            }
+            if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
         }
 
         if (target.closest('#aiLabModal')) {
