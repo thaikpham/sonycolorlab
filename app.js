@@ -20,12 +20,6 @@
  * ==============================================
  * - Tăng `radius` từ 140 lên 150 để các nút xa tâm hơn.
  * - Tăng `endAngle` từ 270 lên 300 để các nút tản ra trên một cung tròn rộng hơn (120 độ).
- * * ==============================================
- * XOAY TRỤC VÀ ĐẢM BẢO KHOẢNG CÁCH AN TOÀN - NGÀY 27/08/2025
- * ==============================================
- * - Giảm `radius` xuống 120 để các nút không bị tràn ra ngoài biên.
- * - Thay đổi `startAngle` thành 90 và `endAngle` thành 180 để các nút
- * tản ra ở góc phần tư trên bên trái.
  */
 
 // --- Local Module Imports ---
@@ -145,10 +139,10 @@ function toggleUltimateActionsMenu(forceClose = false) {
         menu.classList.add('menu-open');
         icon.style.transform = 'rotate(135deg)';
         
-        // --- UPDATED: Rotated axis to top-left quadrant and reduced radius for safety ---
-        const radius = 120; // Reduced for safe area
-        const startAngle = 90;  // Starts from top
-        const endAngle = 180;   // Ends at left
+        // --- UPDATED: Increased radius and angle for a wider, more discrete fan layout ---
+        const radius = 150; // Increased from 140
+        const startAngle = 180; 
+        const endAngle = 300; // Increased from 270 to create a 120-degree arc
         
         const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
