@@ -12,9 +12,9 @@
  * ĐẠI TU BỐ CỤC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
  * - Sửa lỗi selector trong `toggleUltimateActionsMenu` để tìm đúng các nút icon mới.
- * - Tăng mạnh giá trị `radius` lên 110 để các nút có khoảng cách an toàn.
- * - Mở rộng góc `startAngle` và `endAngle` (170 đến 280) để các nút được
- * phân bổ trên một vòng cung rộng hơn.
+ * - Tăng mạnh giá trị `radius` lên 140 để các nút có khoảng cách an toàn.
+ * - Điều chỉnh `startAngle` và `endAngle` (180 đến 270) để các nút được
+ * phân bổ trên một vòng cung 90 độ hoàn hảo.
  */
 
 // --- Local Module Imports ---
@@ -118,7 +118,6 @@ function toggleUltimateActionsMenu(forceClose = false) {
     const icon = document.getElementById('ultimateCtaIcon');
     if (!menu || !icon) return;
 
-    // FIXED: Correct selector for new icon buttons
     const actionButtons = menu.querySelectorAll('.ultimate-action-btn');
     const isOpen = menu.classList.contains('menu-open');
 
@@ -135,9 +134,10 @@ function toggleUltimateActionsMenu(forceClose = false) {
         menu.classList.add('menu-open');
         icon.style.transform = 'rotate(135deg)';
         
-        const radius = 110; 
-        const startAngle = 170; 
-        const endAngle = 280;   
+        // FINAL ADJUSTMENT: Increased radius for safe spacing
+        const radius = 140; 
+        const startAngle = 180; 
+        const endAngle = 270;   
         
         const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
@@ -321,3 +321,4 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
