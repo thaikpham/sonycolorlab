@@ -9,7 +9,7 @@
  * - Đảm bảo logic điều hướng và mở menu hoạt động chính xác với cấu trúc
  * button mới.
  * * ==============================================
- * CẬP NHẬT BỐ CỤC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
+ * ĐẠI TU BỐ CỤC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
  * - Tăng mạnh giá trị `radius` trong hàm `toggleUltimateActionsMenu` lên 180.
  * - Mở rộng góc `startAngle` và `endAngle` (165 đến 285) để các nút được
@@ -323,4 +323,3 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
