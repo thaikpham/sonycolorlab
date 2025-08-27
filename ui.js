@@ -8,7 +8,7 @@
  * - Thay thế nút "Enter Color Lab" trên trang chủ bằng logo với hiệu ứng Liquid Glass.
  * - Loại bỏ hiệu ứng blob động bên trong nút để có giao diện trong suốt hoàn toàn.
  * - Cập nhật logic render để hiển thị đúng nút cho từng giao diện.
- * - Tăng độ trong suốt và đảm bảo các tab menu xếp theo chiều dọc.
+ * - Gán các màu pastel cho các nút chức năng.
  * - Loại bỏ icon khỏi các nút chức năng trong menu.
  * - Đồng bộ kích thước nút CTA trên trang chủ về 72x72px.
  */
@@ -316,39 +316,37 @@ export function renderUltimateButton() {
     const wrapper = document.getElementById('ultimateButtonWrapper');
     const menu = document.getElementById('ultimateActionsMenu');
     if (!wrapper || !menu) return;
+    
+    const mainButtonHTML = `
+        <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
+             <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back); position: relative; z-index: 2;">
+        </button>
+    `;
 
     if (state.currentView === 'home') {
-        menu.innerHTML = '';
-        menu.classList.add('hidden');
-        wrapper.innerHTML = `
-            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; border-radius: 28px; display: flex; align-items: center; justify-content: center; padding: 14px;">
-                <img src="Logo.png" alt="Enter Color Lab" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); position: relative; z-index: 2;">
-            </button>
-        `;
+        menu.innerHTML = ''; // Clear menu on home
+        wrapper.innerHTML = mainButtonHTML;
 
     } else if (state.currentView === 'recipeFormulas') {
-        menu.innerHTML = `
-            <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn">
-                <span data-translate-key="ctaButton"></span>
-            </a>
-            <a href="https://forms.gle/your-form-id" target="_blank" rel="noopener noreferrer" class="btn">
-                <span data-translate-key="contributeRecipeBtn"></span>
-            </a>
-            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn">
-                <span data-translate-key="sonyGuideBtn"></span>
-            </a>
-            <button id="ultimateQuizBtn" class="btn">
-                <span data-translate-key="findMyColorBtn"></span>
-            </button>
-             <button id="ultimateHomeBtn" class="btn">
-                 <span data-translate-key="backToHome"></span>
-            </button>
-        `;
-        wrapper.innerHTML = `
-            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
-                <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back); position: relative; z-index: 2;">
-            </button>
-        `;
+        const menuActions = [
+             { id: 'ultimateHomeBtn', key: 'backToHome', colorClass: 'btn-pastel-blue' },
+             { id: 'ultimateQuizBtn', key: 'findMyColorBtn', colorClass: 'btn-pastel-red' },
+             { key: 'sonyGuideBtn', href: 'https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html', colorClass: 'btn-pastel-yellow' },
+             { key: 'contributeRecipeBtn', href: 'https://forms.gle/your-form-id', colorClass: 'btn-pastel-magenta' },
+             { key: 'ctaButton', href: 'https://www.facebook.com/groups/sonyalphavietnamoffical', colorClass: 'btn-pastel-cyan' }
+        ];
+
+        menu.innerHTML = menuActions.reverse().map(action => {
+            const commonAttrs = `class="btn ${action.colorClass}"`;
+            const content = `<span data-translate-key="${action.key}"></span>`;
+            if (action.href) {
+                return `<a href="${action.href}" target="_blank" rel="noopener noreferrer" ${commonAttrs}>${content}</a>`;
+            } else {
+                return `<button id="${action.id}" ${commonAttrs}>${content}</button>`;
+            }
+        }).join('');
+        
+        wrapper.innerHTML = mainButtonHTML;
     } else {
         wrapper.innerHTML = '';
         menu.innerHTML = '';
@@ -525,4 +523,3 @@ export function renderLibraryDetails() {
     `;
     applyTranslations();
 }
-
