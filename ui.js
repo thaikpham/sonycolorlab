@@ -3,11 +3,12 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * SỬA LỖI & ĐỒNG BỘ HÓA - CẬP NHẬT NGÀY 27/08/2025
+ * CẬP NHẬT GIAO DIỆN NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
- * - Sửa lỗi nghiêm trọng: Loại bỏ tham chiếu đến `footerEl` không còn tồn tại.
- * - Hoàn thiện việc tích hợp tất cả các hành động vào menu của "nút đa chức năng".
- * - Dọn dẹp mã nguồn, loại bỏ các nút CTA cũ khỏi template.
+ * - Thay thế nút "Enter Color Lab" trên trang chủ bằng logo với hiệu ứng Liquid Glass.
+ * - Thay thế nút "+" trên trang công thức bằng logo với hiệu ứng phát sáng Siri.
+ * - Cập nhật logic render để hiển thị đúng nút cho từng giao diện.
+ * - Tinh chỉnh kiểu dáng của các mục trong menu hành động nhanh.
  */
 
 // --- Local Module Imports ---
@@ -312,38 +313,46 @@ export function renderUltimateButton() {
     if (state.currentView === 'home') {
         menu.innerHTML = ''; // Clear menu
         menu.classList.add('hidden');
+        // This is the main button on the home page, replacing the "Enter Color Lab" text button
         wrapper.innerHTML = `
-            <button id="ultimateCtaBtn" class="btn btn-primary py-4 px-10 text-lg whitespace-nowrap">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-beaker"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg>
-                <span data-translate-key="enterLabBtn"></span>
+            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 160px; height: 160px; border-radius: 40px; display: flex; align-items: center; justify-content: center; padding: 25px; transition: all 0.4s var(--ease-apple);">
+                <img src="Logo.png" alt="Enter Color Lab" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
             </button>
         `;
+        // Add hover effect via JS for simplicity and to avoid complex CSS selectors
+        const btn = document.getElementById('ultimateCtaBtn');
+        if(btn) {
+            btn.onmouseover = () => { btn.style.transform = 'scale(1.1)'; btn.style.boxShadow = '0 12px 40px 0 rgba(31, 38, 135, 0.2)'; };
+            btn.onmouseout = () => { btn.style.transform = 'scale(1)'; btn.style.boxShadow = '0 8px 32px 0 rgba(31, 38, 135, 0.1)'; };
+        }
+
     } else if (state.currentView === 'recipeFormulas') {
+        // This is the multi-function control button on the recipe page
         menu.innerHTML = `
-            <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn bg-white/80 backdrop-blur-sm border border-gray-200/80 text-gray-800 py-3 px-5 shadow-md hover:bg-white/95 w-full justify-start">
+            <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 <span data-translate-key="ctaButton"></span>
             </a>
-            <a href="https://forms.gle/your-form-id" target="_blank" rel="noopener noreferrer" class="btn bg-white/80 backdrop-blur-sm border border-gray-200/80 text-gray-800 py-3 px-5 shadow-md hover:bg-white/95 w-full justify-start">
+            <a href="https://forms.gle/your-form-id" target="_blank" rel="noopener noreferrer" class="btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle h-5 w-5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
                 <span data-translate-key="contributeRecipeBtn"></span>
             </a>
-            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn bg-white/80 backdrop-blur-sm border border-gray-200/80 text-gray-800 py-3 px-5 shadow-md hover:bg-white/95 w-full justify-start">
+            <a href="https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html" target="_blank" rel="noopener noreferrer" class="btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-5 w-5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 <span data-translate-key="sonyGuideBtn"></span>
             </a>
-            <button id="ultimateQuizBtn" class="btn bg-white/80 backdrop-blur-sm border border-gray-200/80 text-gray-800 py-3 px-5 shadow-md hover:bg-white/95 w-full justify-start">
+            <button id="ultimateQuizBtn" class="btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2 h-5 w-5"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2 18.28V22h3.72L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
                 <span data-translate-key="findMyColorBtn"></span>
             </button>
-             <button id="ultimateHomeBtn" class="btn bg-white/80 backdrop-blur-sm border border-gray-200/80 text-gray-800 py-3 px-5 shadow-md hover:bg-white/95 w-full justify-start">
+             <button id="ultimateHomeBtn" class="btn">
                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                  <span data-translate-key="backToHome"></span>
             </button>
         `;
         wrapper.innerHTML = `
-            <button id="ultimateCtaBtn" class="btn btn-primary w-16 h-16 rounded-full p-0 text-lg shadow-lg">
-                <svg id="ultimateCtaIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus transition-transform duration-300"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <button id="ultimateCtaBtn" class="liquid-glass-button siri-glow" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
+                <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
             </button>
         `;
     } else {
