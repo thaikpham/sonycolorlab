@@ -283,7 +283,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
     }
 
-    /* --- NEW: Ultimate Button Styles --- */
     #ultimateButtonContainer {
         transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple);
     }
@@ -295,6 +294,70 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         transform: scale(0.8) translateY(10px);
         opacity: 0;
         pointer-events: none;
+    }
+    
+    /* --- ADDED: Liquid Glass & Siri Glow Styles --- */
+    .liquid-glass-button {
+        background: rgba(255, 255, 255, 0.25); /* Adjusted transparency */
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        transition: all 0.4s var(--ease-apple);
+    }
+
+    .siri-glow {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    .siri-glow::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 50%;
+        left: 50%;
+        width: 150%;
+        padding-bottom: 150%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: conic-gradient(
+            from 0deg,
+            #ff69b4, /* Pink */
+            #8a2be2, /* BlueViolet */
+            #00ffff, /* Cyan */
+            #7fff00, /* Chartreuse */
+            #f0e68c, /* Khaki */
+            #ff8c00, /* DarkOrange */
+            #ff69b4  /* Pink again to close the loop */
+        );
+        animation: siri-spin 4s linear infinite;
+    }
+
+    @keyframes siri-spin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Adjusting the action menu tabs */
+    #ultimateActionsMenu .btn {
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.4); /* Less transparent */
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 1rem;
+        width: auto;
+        min-width: 250px;
+        justify-content: flex-start; /* Align content to the left */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.2s var(--ease-apple), background-color 0.2s var(--ease-apple);
+    }
+
+    #ultimateActionsMenu .btn:hover {
+        background: rgba(255, 255, 255, 0.7);
+        transform: translateX(-5px);
     }
 
 </style>
@@ -369,7 +432,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<!-- NEW: Ultimate Button Container -->
+<!-- Ultimate Button Container -->
 <div id="ultimateButtonContainer" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
     <!-- Quick Actions Menu (initially hidden) -->
     <div id="ultimateActionsMenu" class="hidden flex-col items-end gap-3 mb-3">
