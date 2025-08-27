@@ -6,10 +6,11 @@
  * CẬP NHẬT GIAO DIỆN NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
  * - Thay thế nút "Enter Color Lab" trên trang chủ bằng logo với hiệu ứng Liquid Glass.
- * - Thay thế hiệu ứng phát sáng Siri bằng hiệu ứng blob động bên trong nút.
+ * - Loại bỏ hiệu ứng blob động bên trong nút để có giao diện trong suốt hoàn toàn.
  * - Cập nhật logic render để hiển thị đúng nút cho từng giao diện.
  * - Tăng độ trong suốt và đảm bảo các tab menu xếp theo chiều dọc.
  * - Loại bỏ icon khỏi các nút chức năng trong menu.
+ * - Đồng bộ kích thước nút CTA trên trang chủ về 72x72px.
  */
 
 // --- Local Module Imports ---
@@ -311,65 +312,6 @@ export function initializeBackgroundBlobs() {
     animate();
 }
 
-function initializeButtonBlobs(buttonElement) {
-    const container = buttonElement.querySelector('.button-blob-container');
-    if (!container) return;
-    container.innerHTML = ''; // Clear previous blobs
-
-    const bounds = buttonElement.getBoundingClientRect();
-    const { width, height } = bounds;
-
-    const blobData = [
-        { color: '#ffc107', r: width * 0.4 },
-        { color: '#00bcd4', r: width * 0.35 },
-        { color: '#e91e63', r: width * 0.3 },
-        { color: '#4caf50', r: width * 0.45 },
-    ].map(d => ({
-        ...d,
-        x: Math.random() * (width - d.r * 2) + d.r,
-        y: Math.random() * (height - d.r * 2) + d.r,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4
-    }));
-
-    const blobElements = blobData.map(data => {
-        const el = document.createElement('div');
-        el.className = 'button-blob';
-        el.style.width = `${data.r * 2}px`;
-        el.style.height = `${data.r * 2}px`;
-        el.style.backgroundColor = data.color;
-        container.appendChild(el);
-        return { el, data };
-    });
-
-    let animationId;
-    function animate() {
-        if (state.currentView !== 'recipeFormulas' || !document.body.contains(buttonElement)) {
-            cancelAnimationFrame(animationId);
-            return;
-        }
-
-        blobElements.forEach(item => {
-            const blob = item.data;
-            blob.x += blob.vx;
-            blob.y += blob.vy;
-
-            if (blob.x - blob.r < 0 || blob.x + blob.r > width) {
-                blob.vx *= -1;
-                blob.x = Math.max(blob.r, Math.min(width - blob.r, blob.x));
-            }
-            if (blob.y - blob.r < 0 || blob.y + blob.r > height) {
-                blob.vy *= -1;
-                blob.y = Math.max(blob.r, Math.min(height - blob.r, blob.y));
-            }
-            item.el.style.transform = `translate(${blob.x - blob.r}px, ${blob.y - blob.r}px)`;
-        });
-
-        animationId = requestAnimationFrame(animate);
-    }
-    animate();
-}
-
 export function renderUltimateButton() {
     const wrapper = document.getElementById('ultimateButtonWrapper');
     const menu = document.getElementById('ultimateActionsMenu');
@@ -379,15 +321,10 @@ export function renderUltimateButton() {
         menu.innerHTML = '';
         menu.classList.add('hidden');
         wrapper.innerHTML = `
-            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 160px; height: 160px; border-radius: 40px; display: flex; align-items: center; justify-content: center; padding: 25px;">
+            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; border-radius: 28px; display: flex; align-items: center; justify-content: center; padding: 14px;">
                 <img src="Logo.png" alt="Enter Color Lab" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); position: relative; z-index: 2;">
             </button>
         `;
-        const btn = document.getElementById('ultimateCtaBtn');
-        if(btn) {
-            btn.onmouseover = () => { btn.style.transform = 'scale(1.1)'; btn.style.boxShadow = '0 12px 40px 0 rgba(31, 38, 135, 0.2)'; };
-            btn.onmouseout = () => { btn.style.transform = 'scale(1)'; btn.style.boxShadow = '0 8px 32px 0 rgba(31, 38, 135, 0.1)'; };
-        }
 
     } else if (state.currentView === 'recipeFormulas') {
         menu.innerHTML = `
@@ -409,14 +346,9 @@ export function renderUltimateButton() {
         `;
         wrapper.innerHTML = `
             <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
-                <div class="button-blob-container"></div>
                 <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back); position: relative; z-index: 2;">
             </button>
         `;
-        const btn = document.getElementById('ultimateCtaBtn');
-        if (btn) {
-            initializeButtonBlobs(btn);
-        }
     } else {
         wrapper.innerHTML = '';
         menu.innerHTML = '';
@@ -593,3 +525,4 @@ export function renderLibraryDetails() {
     `;
     applyTranslations();
 }
+
