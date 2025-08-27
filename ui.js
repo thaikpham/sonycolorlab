@@ -10,7 +10,7 @@
  * - Cập nhật logic render để hiển thị đúng nút cho từng giao diện.
  * - Gán các màu pastel cho các nút chức năng.
  * - Loại bỏ icon khỏi các nút chức năng trong menu.
- * - Đồng bộ kích thước nút CTA trên trang chủ về 72x72px.
+ * - Tăng kích thước nút CTA trên trang chủ lên 80x80px.
  * * ==============================================
  * SỬA LỖI TƯƠNG TÁC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
@@ -324,21 +324,21 @@ export function renderUltimateButton() {
     const menu = document.getElementById('ultimateActionsMenu');
     if (!wrapper || !menu) return;
 
-    // Xóa nút bấm cũ và nội dung menu cũ để tránh trùng lặp
+    // Clear old button and menu content to avoid duplication
     let existingButton = wrapper.querySelector('#ultimateCtaBtn');
     if (existingButton) {
         existingButton.remove();
     }
     menu.innerHTML = '';
 
-    // HTML cho nút bấm chính
+    // HTML for the main button
     const mainButtonHTML = `
-        <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
+        <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 80px; height: 80px; padding: 16px; border-radius: 32px;">
              <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back); position: relative; z-index: 2;">
         </button>
     `;
 
-    // Render dựa trên view hiện tại
+    // Render based on the current view
     if (state.currentView === 'home') {
         wrapper.insertAdjacentHTML('beforeend', mainButtonHTML);
         menu.classList.add('hidden');
