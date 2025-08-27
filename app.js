@@ -8,6 +8,11 @@
  * và sắp xếp các nút con theo hình vòng cung.
  * - Đảm bảo logic điều hướng và mở menu hoạt động chính xác với cấu trúc
  * button mới.
+ * * ==============================================
+ * CẬP NHẬT BỐ CỤC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
+ * ==============================================
+ * - Tăng giá trị `radius` trong hàm `toggleUltimateActionsMenu` từ 110 lên 125
+ * để các nút con có thêm không gian và không bị chồng chéo lên nhau.
  */
 
 // --- Local Module Imports ---
@@ -128,8 +133,9 @@ function toggleUltimateActionsMenu(forceClose = false) {
         requestAnimationFrame(() => {
             menu.classList.add('menu-open');
             icon.style.transform = 'rotate(135deg)';
-
-            const radius = 110; // Distance from center
+            
+            // UPDATED: Increased radius for better spacing
+            const radius = 125; // Distance from center
             const startAngle = 180; // 9 o'clock
             const endAngle = 270;   // 12 o'clock
             // Distribute buttons evenly along the arc
