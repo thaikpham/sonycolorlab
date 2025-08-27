@@ -321,10 +321,9 @@ export function initializeBackgroundBlobs() {
 
 export function renderUltimateButton() {
     const wrapper = document.getElementById('ultimateButtonWrapper');
-    const menu = document.getElementById('ultimateActionsMenu');
-    if (!wrapper || !menu) return;
+    if (!wrapper) return;
 
-    wrapper.innerHTML = ''; // Clear wrapper for fresh render
+    wrapper.innerHTML = ''; // Clear wrapper for a fresh, safe render
 
     const mainButtonHTML = `
         <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 80px; height: 80px; padding: 16px; border-radius: 32px;">
