@@ -31,6 +31,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     
 <style>
+    /* General Styles */
     html { scroll-behavior: smooth; }
     :root {
         --primary-accent: #007AFF;
@@ -359,15 +360,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .btn-pastel-red:hover { background-color: rgba(231, 76, 60, 1); }
     .btn-pastel-blue:hover { background-color: rgba(52, 152, 219, 1); }
 
-    /* --- NEW QUIZ ONE-PAGE STYLES --- */
+    /* --- REWORKED QUIZ STYLES --- */
     #quizContent {
         --island-gap: 1.5rem;
         --island-padding: 1.75rem;
-    }
-    .quiz-one-page-layout {
-        display: flex;
-        flex-direction: column;
-        gap: var(--island-gap);
     }
     .quiz-island {
         background: rgba(255, 255, 255, 0.5);
@@ -376,10 +372,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         border: 1px solid rgba(0, 0, 0, 0.07);
         border-radius: 24px;
         padding: var(--island-padding);
-        opacity: 0.5;
+        opacity: 0;
         transform: translateY(20px);
         transition: opacity 0.5s var(--ease-apple), transform 0.5s var(--ease-apple);
         will-change: opacity, transform;
+        display: flex;
+        flex-direction: column;
     }
     .quiz-island.active {
         opacity: 1;
@@ -406,27 +404,51 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .quiz-option.selected svg {
         stroke: var(--primary-accent);
     }
-    #quizSubmitIsland {
-        position: sticky;
-        bottom: var(--island-padding);
-        z-index: 10;
-    }
     
+    /* Mobile layout: single column scroll */
+    @media (max-width: 1023px) {
+        .quiz-one-page-layout {
+            display: flex;
+            flex-direction: column;
+            gap: var(--island-gap);
+        }
+    }
+
+    /* Desktop layout: Masonry-style Grid */
     @media (min-width: 1024px) {
+        #quizContent {
+            height: 100%; /* Ensure content area can be used for grid height */
+        }
         .quiz-one-page-layout {
             display: grid;
+            height: 100%;
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: auto auto auto;
+            grid-template-rows: auto auto 1fr; /* Allow rows to size by content */
             gap: var(--island-gap);
-            align-items: start;
+            grid-template-areas:
+                "q0 q1 q2"
+                "q0 q5 q5"
+                "q3 q5 q5"
+                "q4 sub sub";
         }
-        .quiz-island[data-grid-area="1"] { grid-area: 1 / 1 / 2 / 2; }
-        .quiz-island[data-grid-area="2"] { grid-area: 1 / 2 / 2 / 3; }
-        .quiz-island[data-grid-area="3"] { grid-area: 1 / 3 / 2 / 4; }
-        .quiz-island[data-grid-area="4"] { grid-area: 2 / 1 / 3 / 2; }
-        .quiz-island[data-grid-area="5"] { grid-area: 2 / 2 / 3 / 3; }
-        .quiz-island[data-grid-area="6"] { grid-area: 2 / 3 / 4 / 4; }
-        .quiz-island[data-grid-area="submit"] { grid-area: 3 / 1 / 4 / 3; }
+
+        /* Assigning each question block to its named grid area */
+        .quiz-island[data-question-index="0"] { grid-area: q0; }
+        .quiz-island[data-question-index="1"] { grid-area: q1; }
+        .quiz-island[data-question-index="2"] { grid-area: q2; }
+        .quiz-island[data-question-index="3"] { grid-area: q3; }
+        .quiz-island[data-question-index="4"] { grid-area: q4; }
+        .quiz-island[data-question-index="5"] { grid-area: q5; }
+        #quizSubmitIsland { grid-area: sub; }
+
+        /* Make AI prompt area fill its available space */
+        .quiz-island[data-question-index="5"], #aiQuizPrompt {
+            flex-grow: 1; 
+        }
+        /* Push the submit button to the bottom of its area for a clean look */
+        #quizSubmitIsland {
+            justify-content: flex-end; 
+        }
     }
 
     .quiz-result-view {
@@ -480,6 +502,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <h2 class="text-xl font-bold" data-translate-key="quizTitle"></h2>
             <button id="closeQuizBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
         </div>
+        <!-- The quiz content will be dynamically rendered here by ui.js -->
+        <!-- The new CSS rules will automatically apply the grid layout on desktop -->
         <div id="quizContent" class="p-4 md:p-6 flex-grow overflow-y-auto sleek-scrollbar"></div>
     </div>
 </div>
@@ -513,4 +537,3 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 </body>
 </html>
-
