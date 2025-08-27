@@ -2,9 +2,11 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * GỠ BỎ TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
+ * NÂNG CẤP TRANG CHỦ - CẬP NHẬT NGÀY 27/08/2025
  * ==============================================
- * - Đã gỡ bỏ các event listener cho input file không còn tồn tại.
+ * - Thêm logic để render bản đồ màu D3.js trên trang chủ mới.
+ * - Cập nhật trình xử lý sự kiện để điều hướng từ nút "Tiến vào Color Lab".
+ * - Tối ưu hóa logic FAB và xử lý lớp phủ (overlay).
  */
 
 // --- Local Module Imports ---
@@ -24,6 +26,9 @@ import {
     renderColorMapChart,
     updateChartSelection
 } from './features.js';
+
+// --- MODULE-LEVEL VARIABLES ---
+let fabContainer, fabOverlay;
 
 // --- CORE APP LOGIC ---
 
@@ -60,6 +65,17 @@ function resetToChartView() {
 function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
         initializeBackgroundBlobs();
+        const homeChartContainer = document.getElementById('homeColorMapContainer');
+        if (homeChartContainer) {
+            // Use ResizeObserver to ensure the container is ready before drawing
+            const resizeObserver = new ResizeObserver(entries => {
+                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
+                     renderColorMapChart('#homeColorMapContainer', recipesData);
+                     resizeObserver.unobserve(homeChartContainer); // Stop observing after drawing
+                }
+            });
+            resizeObserver.observe(homeChartContainer);
+        }
     }
     if (viewName === 'recipeFormulas') {
         renderLibraryList();
@@ -93,8 +109,22 @@ function attachViewEventListeners(viewName) {
     }
 }
 
+function toggleFabMenu(forceClose = false) {
+    if (fabContainer) {
+        if (forceClose) {
+            fabContainer.classList.remove('open');
+        } else {
+            fabContainer.classList.toggle('open');
+        }
+    }
+}
+
+
 async function init() {
     initLanguage();
+    
+    fabContainer = document.getElementById('fabContainer');
+    fabOverlay = document.getElementById('fab-overlay');
 
     state.quiz.instance = new Quiz({
         state,
@@ -108,34 +138,56 @@ async function init() {
     // --- GLOBAL EVENT LISTENERS (EVENT DELEGATION) ---
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
-        const navBtn = target.closest('[data-view]');
+        
+        if (target.closest('#fabMainBtn')) {
+            toggleFabMenu();
+            return;
+        }
+        if (target.id === 'fab-overlay' && fabContainer.classList.contains('open')) {
+            toggleFabMenu(true);
+            return;
+        }
+
+        const navBtn = target.closest('.fab-menu-item');
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
         const collageItem = target.closest('.collage-item');
         const d3Node = target.closest('.color-map-node-group');
 
         if (d3Node) {
-            const recipeData = d3.select(d3Node).datum();
-            if (recipeData && recipeData.id) {
-                handleRecipeSelection(recipeData.id);
+            // If chart on home page is clicked, go to recipes view and select
+            if (state.currentView === 'home') {
+                const recipeId = d3.select(d3Node).datum().id;
+                await renderView('recipeFormulas', recipeId, attachViewEventListeners);
+            } else {
+                handleRecipeSelection(d3.select(d3Node).datum().id);
             }
+            return;
+        }
+        
+        // New home page button
+        if (target.closest('#enterLabBtn')) {
+            await renderView('recipeFormulas', null, attachViewEventListeners);
             return;
         }
 
         if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
-        if (target.closest('#hamburgerBtn')) { document.getElementById('mobileNavMenu').classList.remove('translate-x-full'); return; }
-        if (target.closest('#closeMobileNavBtn')) { document.getElementById('mobileNavMenu').classList.add('translate-x-full'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
 
         if (navBtn) {
+            toggleFabMenu(true);
             if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
                 resetToChartView();
             } else {
                 await renderView(navBtn.dataset.view, null, attachViewEventListeners);
             }
-            if(target.closest('.nav-btn-mobile')) {
-                 document.getElementById('mobileNavMenu').classList.add('translate-x-full');
-            }
+            return;
+        }
+        
+        if (target.closest('#startQuizBtnFab') || target.closest('#quizShortcutBtn')) {
+            toggleFabMenu(true);
+            openModal('quizModal');
+            state.quiz.instance.start();
             return;
         }
 
@@ -144,10 +196,13 @@ async function init() {
             setLanguage(newLang);
             updateLangSlider();
             applyTranslations();
+            // Re-render views that depend on language
             if (state.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 renderLibraryDetails();
                 renderColorMapChart('#colorMapContainer', recipesData);
+            } else if (state.currentView === 'home') {
+                renderColorMapChart('#homeColorMapContainer', recipesData);
             }
             return;
         }
@@ -177,31 +232,16 @@ async function init() {
             return;
         }
 
-        if (target.closest('#startQuizBtn') || target.closest('#quizShortcutBtn')) {
-            openModal('quizModal');
-            state.quiz.instance.start();
-            return;
-        }
         if (target.closest('#quizModal')) {
-            if (target.closest('#closeQuizBtn')) {
-                closeModal('quizModal');
-                state.quiz.instance.close();
-                return;
-            }
-            if (target.closest('#retakeQuizBtn')) {
-                state.quiz.instance.start();
-                return;
-            }
+            if (target.closest('#closeQuizBtn')) { closeModal('quizModal'); state.quiz.instance.close(); return; }
+            if (target.closest('#retakeQuizBtn')) { state.quiz.instance.start(); return; }
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
                 closeModal('quizModal');
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
                 return;
             }
-            if (target.closest('.quiz-option')) {
-                state.quiz.instance.handleAnswer(e);
-                return;
-            }
+            if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
         }
 
         if (target.closest('#aiLabModal')) {
