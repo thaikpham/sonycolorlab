@@ -3,21 +3,13 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * CẬP NHẬT GIAO DIỆN NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
+ * CẬP NHẬT GIAO DIỆN QUIZ - NGÀY 28/08/2025
  * ==============================================
- * - Thay thế nút "Enter Color Lab" trên trang chủ bằng logo với hiệu ứng Liquid Glass.
- * - Loại bỏ hiệu ứng blob động bên trong nút để có giao diện trong suốt hoàn toàn.
- * - Cập nhật logic render để hiển thị đúng nút cho từng giao diện.
- * - Gán các màu pastel cho các nút chức năng.
- * - Tăng kích thước nút CTA trên trang chủ lên 80x80px.
- * - Chuyển các nút chức năng sang dạng icon tròn, có tooltip khi hover.
- * * ==============================================
- * SỬA LỖI TƯƠNG TÁC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
- * ==============================================
- * - Sửa lại hàm `renderUltimateButton` để không phá hủy cấu trúc DOM.
- * - Thay vì dùng `innerHTML` để ghi đè toàn bộ wrapper, hàm sẽ quản lý việc
- * thêm/xóa nút CTA và cập nhật nội dung menu một cách độc lập,
- * đảm bảo `#ultimateActionsMenu` luôn tồn tại để các hàm khác có thể tương tác.
+ * - Thêm các hàm render mới dành riêng cho Quiz: `renderQuizQuestion`,
+ * `renderQuizAIPrompt`, `renderQuizResult`, `renderQuizAIResult`,
+ * `renderQuizLoading`, `renderQuizError`.
+ * - Các hàm này chịu trách nhiệm tạo HTML và cập nhật nội dung cho modal quiz,
+ * giúp tách biệt hoàn toàn logic giao diện ra khỏi file `quiz.js`.
  */
 
 // --- Local Module Imports ---
@@ -534,4 +526,157 @@ export function renderLibraryDetails() {
         <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
     `;
     applyTranslations();
+}
+
+
+// --- QUIZ UI RENDERING ---
+
+/**
+ * Renders a standard question in the quiz modal.
+ * @param {object} questionData - The data for the current question.
+ * @param {number} qIndex - The current question index.
+ * @param {number} totalQuestions - The total number of standard questions.
+ */
+export function renderQuizQuestion(questionData, qIndex, totalQuestions) {
+    const quizContent = document.getElementById('quizContent');
+    const progressBar = document.getElementById('quizProgressBar');
+
+    const gridClass = `grid gap-4 ${questionData.options.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
+
+    quizContent.innerHTML = `
+        <div class="quiz-question-container">
+            <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[getCurrentLanguage()]}</h3>
+            <div class="${gridClass}">
+                ${questionData.options.map(opt => `
+                    <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-gray-300 bg-transparent hover:bg-gray-100 transition-all duration-200" data-tags="${opt.tags.join(',')}">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
+                            ${opt.icon}
+                        </svg>
+                        <span class="font-semibold text-lg">${opt.text[getCurrentLanguage()]}</span>
+                    </button>
+                `).join('')}
+            </div>
+        </div>`;
+    
+    progressBar.style.width = `${(qIndex / totalQuestions) * 100}%`;
+}
+
+/**
+ * Renders the final, optional AI prompt screen in the quiz.
+ * @param {object} questionData - The data for the AI prompt step.
+ */
+export function renderQuizAIPrompt(questionData) {
+    const quizContent = document.getElementById('quizContent');
+    const progressBar = document.getElementById('quizProgressBar');
+
+    quizContent.innerHTML = `
+        <div class="quiz-question-container text-center view-transition">
+            <h3 class="text-2xl md:text-3xl font-semibold mb-2">${questionData.question[getCurrentLanguage()]}</h3>
+            <p class="text-gray-600 mb-6">${questionData.description[getCurrentLanguage()]}</p>
+            <textarea id="aiQuizPrompt" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${t('aiQuizPromptPlaceholder')}"></textarea>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+                <button id="generateAiRecipeBtn" class="btn btn-primary py-3 px-8 text-base">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                    <span data-translate-key="aiQuizGenerateBtn"></span>
+                </button>
+                <button id="skipAiBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
+                    <span data-translate-key="aiQuizSkipBtn"></span>
+                </button>
+            </div>
+        </div>`;
+    
+    progressBar.style.width = '100%';
+}
+
+/**
+ * Renders the standard quiz result based on tag scoring.
+ * @param {object} bestMatch - The recipe object that best matches the answers.
+ * @param {object} recipeImages - The collection of all recipe images.
+ */
+export function renderQuizResult(bestMatch, recipeImages) {
+    const quizContent = document.getElementById('quizContent');
+    document.getElementById('quizProgressBar').style.width = '100%';
+
+    quizContent.innerHTML = `
+        <div class="text-center view-transition">
+            <h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3>
+            <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
+            <div class="my-8 p-6 bg-gray-100 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
+                <img src="${recipeImages[bestMatch.id][0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview">
+                <div class="text-left">
+                    <h4 class="text-xl font-bold">${bestMatch.name[getCurrentLanguage()]}</h4>
+                    <p class="text-gray-600 mt-1">${bestMatch.description[getCurrentLanguage()]}</p>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base">
+                    <span data-translate-key="viewRecipeBtn"></span>
+                </button>
+                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
+                    <span data-translate-key="retakeQuizBtn"></span>
+                </button>
+            </div>
+        </div>`;
+}
+
+/**
+ * Renders the result of a successfully generated AI recipe from the quiz.
+ * @param {object} recipe - The AI-generated recipe object.
+ */
+export function renderQuizAIResult(recipe) {
+    const quizContent = document.getElementById('quizContent');
+    document.getElementById('quizProgressBar').style.width = '100%';
+
+    const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
+        <div class="flex flex-col p-3 rounded-lg bg-white">
+            <span class="text-sm text-gray-500 font-medium">${key}</span>
+            <span class="font-semibold text-lg text-gray-800">${value}</span>
+        </div>`).join('');
+
+    quizContent.innerHTML = `
+        <div class="text-center view-transition">
+            <h3 class="text-2xl font-bold" data-translate-key="aiQuizResultTitle"></h3>
+            <p class="mt-2 text-gray-600" data-translate-key="aiQuizResultDescription"></p>
+            <div class="my-8 p-6 bg-gray-100 rounded-2xl border text-left">
+                <h4 class="text-2xl font-bold text-center">${recipe.name[getCurrentLanguage()]}</h4>
+                <p class="text-gray-600 mt-1 text-center italic">"${recipe.description[getCurrentLanguage()]}"</p>
+                
+                <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
+                <div class="p-3 bg-white rounded-lg font-semibold">${recipe.whiteBalance}</div>
+
+                <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.settings)}</div>
+                
+                ${recipe.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(recipe.colorDepth)}</div>` : ''}
+                ${recipe.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.detailSettings)}</div>` : ''}
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
+                    <span data-translate-key="retakeQuizBtn"></span>
+                </button>
+            </div>
+        </div>`;
+}
+
+/**
+ * Renders a loading spinner within the quiz modal.
+ */
+export function renderQuizLoading() {
+    const quizContent = document.getElementById('quizContent');
+    quizContent.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader-dark"></div><p class="mt-4 text-gray-600" data-translate-key="aiQuizGenerating"></p></div>`;
+}
+
+/**
+ * Renders a generic error message within the quiz modal.
+ */
+export function renderQuizError() {
+    const quizContent = document.getElementById('quizContent');
+    quizContent.innerHTML = `
+        <div class="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
+            <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
+            <p class="mt-2 text-red-700" data-translate-key="aiErrorText"></p>
+            <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base mt-4">
+                <span data-translate-key="retakeQuizBtn"></span>
+            </button>
+        </div>`;
 }
