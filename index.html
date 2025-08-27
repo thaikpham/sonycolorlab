@@ -296,31 +296,32 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     #ultimateActionsMenu {
         position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 80px;
-        height: 80px;
+        inset: 0;
         pointer-events: none;
-    }
-    #ultimateActionsMenu.hidden {
-        display: none;
     }
     .ultimate-action-btn {
         position: absolute;
-        bottom: 12px;
-        right: 12px;
+        top: 50%;
+        left: 50%;
         width: 56px;
         height: 56px;
+        margin-left: -28px;
+        margin-top: -28px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         transform-origin: center;
-        transition: transform 0.4s var(--ease-out-back), opacity 0.4s var(--ease-out-back), background-color 0.2s ease;
+        transition: transform 0.3s var(--ease-out-back), opacity 0.3s ease, background-color 0.2s ease;
         opacity: 0;
         pointer-events: none;
         z-index: 5;
+        transform: scale(0.5);
+    }
+    .ultimate-action-btn.visible {
+        opacity: 1;
+        pointer-events: auto;
     }
     .ultimate-action-btn .ultimate-tooltip {
         position: absolute;
@@ -342,12 +343,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         opacity: 1;
         transform: translateY(-50%) translateX(0);
     }
-    #ultimateActionsMenu.menu-open .ultimate-action-btn {
-        opacity: 1;
-        pointer-events: auto;
-    }
     #ultimateCtaBtn {
-        position: relative;
+        position: absolute;
+        inset: 0;
         z-index: 10;
     }
 
