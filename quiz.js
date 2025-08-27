@@ -1,19 +1,19 @@
 /**
  * quiz.js
- * This module encapsulates all logic and data related to the "Find My Color" quiz.
+ * This module encapsulates the core logic and data for the "Find My Color" quiz.
+ * It manages the quiz flow, state, and answer processing, but delegates
+ * rendering and complex features to other modules.
  * * ==============================================
- * CẬP NHẬT TÍNH NĂNG AI - NGÀY 28/08/2025
+ * REFACTOR & TÁI CẤU TRÚC - NGÀY 28/08/2025
  * ==============================================
- * - Cập nhật lại câu hỏi về Độ bão hòa màu theo yêu cầu.
- * - Thêm bước cuối cùng: cho phép người dùng nhập prompt để Gemini AI
- * sáng tạo một công thức màu hoàn toàn mới.
- * - Thêm logic gọi API và hiển thị kết quả do AI tạo ra.
+ * - Tách biệt logic: Chỉ giữ lại luồng xử lý quiz và quản lý state.
+ * - Toàn bộ phần render giao diện (DOM manipulation) đã được chuyển sang `ui.js`.
+ * - Logic xử lý AI (gọi API, hiển thị kết quả AI) đã được chuyển sang `features.js`.
+ * - Cấu trúc class được đơn giản hóa, nhận các hàm render từ bên ngoài.
  */
 
-// --- Local Module Imports ---
-import { callGeminiAPI } from './api.js';
-
 // --- QUIZ DATA ---
+// This data is core to the quiz's logic and remains here.
 const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
@@ -65,22 +65,33 @@ const quizQuestions = [
 
 export class Quiz {
     constructor(dependencies) {
+        // Core dependencies
         this.state = dependencies.state;
-        this.getCurrentLanguage = dependencies.getCurrentLanguage;
         this.recipesData = dependencies.recipesData;
         this.recipeImages = dependencies.recipeImages;
+
+        // UI rendering functions (injected from ui.js)
+        this.ui = {
+            renderQuestion: dependencies.ui.renderQuizQuestion,
+            renderAIPrompt: dependencies.ui.renderQuizAIPrompt,
+            renderResult: dependencies.ui.renderQuizResult,
+            renderAIResult: dependencies.ui.renderQuizAIResult,
+            renderLoading: dependencies.ui.renderQuizLoading,
+            renderError: dependencies.ui.renderQuizError
+        };
+
+        // Other dependencies
         this.applyTranslations = dependencies.applyTranslations;
-        this.renderView = dependencies.renderView;
-        this.callGeminiAPI = callGeminiAPI;
     }
 
     start() {
         this.state.quiz.currentQuestionIndex = 0;
         this.state.quiz.answers = [];
-        this.renderQuestion();
+        this.renderNextStep();
     }
 
     close() {
+        // Logic to close the quiz (e.g., reset state) can go here.
         // Visibility is handled by the caller in app.js.
     }
 
@@ -88,199 +99,63 @@ export class Quiz {
         const selectedOption = e.target.closest('.quiz-option');
         if (!selectedOption) return;
 
-        document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
-        selectedOption.classList.add('selected');
-
         const tags = selectedOption.dataset.tags.split(',');
         this.state.quiz.answers.push(...tags);
 
-        setTimeout(() => {
-            const currentQuestion = quizQuestions[this.state.quiz.currentQuestionIndex];
-            if (tags.includes('bw') && currentQuestion.options.some(o => o.tags.includes('bw'))) {
-                 this.state.quiz.currentQuestionIndex += 2; // Skip saturation question
-            } else {
-                 this.state.quiz.currentQuestionIndex++;
-            }
-            this.renderQuestion();
-        }, 300);
-    }
-
-    renderQuestion() {
-        const quizContent = document.getElementById('quizContent');
-        const progressBar = document.getElementById('quizProgressBar');
-        let qIndex = this.state.quiz.currentQuestionIndex;
-        
-        const renderNewContent = () => {
-            if (qIndex >= quizQuestions.length) {
-                this.calculateAndShowResult();
-                return;
-            }
-
-            const questionData = quizQuestions[qIndex];
-            
-            if (questionData.type === 'ai_prompt') {
-                this.renderAIPromptScreen();
-                progressBar.style.width = '100%';
-                return;
-            }
-
-            const gridClass = `grid gap-4 ${questionData.options.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
-
-            quizContent.innerHTML = `
-                <div class="quiz-question-container">
-                    <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[this.getCurrentLanguage()]}</h3>
-                    <div class="${gridClass}">
-                        ${questionData.options.map(opt => `
-                            <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-gray-300 bg-transparent hover:bg-gray-100 transition-all duration-200" data-tags="${opt.tags.join(',')}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
-                                    ${opt.icon}
-                                </svg>
-                                <span class="font-semibold text-lg">${opt.text[this.getCurrentLanguage()]}</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>`;
-            
-            progressBar.style.width = `${((qIndex) / (quizQuestions.length -1)) * 100}%`;
-        };
-
-        const currentContainer = quizContent.querySelector('.quiz-question-container');
+        // Animate out the old question before showing the new one
+        const currentContainer = document.querySelector('#quizContent .quiz-question-container');
         if (currentContainer) {
             currentContainer.classList.add('exiting');
-            currentContainer.addEventListener('animationend', renderNewContent, { once: true });
-        } else {
-            renderNewContent();
+            currentContainer.addEventListener('animationend', () => {
+                const currentQuestion = quizQuestions[this.state.quiz.currentQuestionIndex];
+                // Logic to skip saturation question for B&W
+                if (tags.includes('bw') && currentQuestion.options.some(o => o.tags.includes('bw'))) {
+                    this.state.quiz.currentQuestionIndex += 2;
+                } else {
+                    this.state.quiz.currentQuestionIndex++;
+                }
+                this.renderNextStep();
+            }, { once: true });
         }
     }
 
-    renderAIPromptScreen() {
-        const quizContent = document.getElementById('quizContent');
-        const questionData = quizQuestions.find(q => q.type === 'ai_prompt');
+    renderNextStep() {
+        const qIndex = this.state.quiz.currentQuestionIndex;
 
-        quizContent.innerHTML = `
-            <div class="quiz-question-container text-center view-transition">
-                <h3 class="text-2xl md:text-3xl font-semibold mb-2">${questionData.question[this.getCurrentLanguage()]}</h3>
-                <p class="text-gray-600 mb-6">${questionData.description[this.getCurrentLanguage()]}</p>
-                <textarea id="aiQuizPrompt" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${this.getCurrentLanguage() === 'vi' ? 'VD: một buổi chiều hoàng hôn ở Đà Lạt, tông màu cine, hơi buồn...' : 'e.g., a sunset afternoon in Dalat, cinematic tone, a bit melancholic...'}"></textarea>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                    <button id="generateAiRecipeBtn" class="btn btn-primary py-3 px-8 text-base">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-                        <span>Sáng tạo với AI</span>
-                    </button>
-                    <button id="skipAiBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                        <span>Bỏ qua & Xem gợi ý</span>
-                    </button>
-                </div>
-            </div>`;
-
-        document.getElementById('skipAiBtn').addEventListener('click', () => this.calculateAndShowResult());
-        document.getElementById('generateAiRecipeBtn').addEventListener('click', () => this.handleAIGeneration());
-    }
-
-    async handleAIGeneration() {
-        const userInput = document.getElementById('aiQuizPrompt').value.trim();
-        const quizContent = document.getElementById('quizContent');
-
-        if (!userInput) {
+        if (qIndex >= quizQuestions.length) {
             this.calculateAndShowResult();
             return;
         }
 
-        quizContent.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader-dark"></div><p class="mt-4 text-gray-600">Gemini đang sáng tạo...</p></div>`;
+        const questionData = quizQuestions[qIndex];
 
-        const preferences = this.state.quiz.answers.join(', ');
-        const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the user's preferences from a quiz: "${preferences}". Now, consider the user's creative prompt: "${userInput}". Your task is to generate a completely new, creative, and fully detailed JSON object representing a unique color recipe that matches this inspiration. The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in Vietnamese. The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
-
-        try {
-            const generatedRecipe = await this.callGeminiAPI(expertPrompt, null);
-            this.showAIResult(generatedRecipe);
-        } catch (error) {
-            console.error("Quiz Gemini API call failed:", error);
-            quizContent.innerHTML = `
-                <div class="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <h3 class="text-xl font-bold text-red-800">Đã có lỗi xảy ra</h3>
-                    <p class="mt-2 text-red-700">Rất tiếc, không thể tạo công thức lúc này. Vui lòng thử lại.</p>
-                    <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base mt-4">
-                        <span>Làm lại trắc nghiệm</span>
-                    </button>
-                </div>`;
-            document.getElementById('retakeQuizBtn').addEventListener('click', () => this.start());
+        if (questionData.type === 'ai_prompt') {
+            this.ui.renderAIPrompt(questionData);
+        } else {
+            // For standard questions, pass data to the UI function
+            const totalQuestions = quizQuestions.filter(q => q.type !== 'ai_prompt').length;
+            this.ui.renderQuestion(questionData, qIndex, totalQuestions);
         }
-    }
-
-    showAIResult(recipe) {
-        const quizContent = document.getElementById('quizContent');
-        document.getElementById('quizProgressBar').style.width = '100%';
-
-        const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
-            <div class="flex flex-col p-3 rounded-lg bg-white">
-                <span class="text-sm text-gray-500 font-medium">${key}</span>
-                <span class="font-semibold text-lg text-gray-800">${value}</span>
-            </div>`).join('');
-
-        quizContent.innerHTML = `
-            <div class="text-center view-transition">
-                <h3 class="text-2xl font-bold">Công thức Sáng tạo từ Gemini!</h3>
-                <p class="mt-2 text-gray-600">Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:</p>
-                <div class="my-8 p-6 bg-gray-100 rounded-2xl border text-left">
-                    <h4 class="text-2xl font-bold text-center">${recipe.name[this.getCurrentLanguage()]}</h4>
-                    <p class="text-gray-600 mt-1 text-center italic">"${recipe.description[this.getCurrentLanguage()]}"</p>
-                    
-                    <h5 class="text-base font-bold mt-6 mb-2">Cân bằng trắng (WB)</h5>
-                    <div class="p-3 bg-white rounded-lg font-semibold">${recipe.whiteBalance}</div>
-
-                    <h5 class="text-base font-bold mt-4 mb-2">Cài đặt Chính</h5>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.settings)}</div>
-                    
-                    ${recipe.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2">Độ sâu màu</h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(recipe.colorDepth)}</div>` : ''}
-                    ${recipe.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2">Chi tiết</h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.detailSettings)}</div>` : ''}
-                </div>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                        <span>Làm lại trắc nghiệm</span>
-                    </button>
-                </div>
-            </div>`;
-            
-        document.getElementById('retakeQuizBtn').addEventListener('click', () => this.start());
+        this.applyTranslations();
     }
 
     calculateAndShowResult() {
         const isBW = this.state.quiz.answers.includes('bw');
+        // Filter recipes based on B&W preference
         const availableRecipes = this.recipesData.filter(r => isBW ? r.type === 'bw' : r.type === 'color');
 
+        // Score each recipe based on matching tags
         const scores = availableRecipes.map(recipe => {
             let score = recipe.tags.reduce((acc, tag) => acc + (this.state.quiz.answers.includes(tag) ? 1 : 0), 0);
             return { id: recipe.id, score: score };
         });
 
+        // Find the best match
         scores.sort((a, b) => b.score - a.score);
         const bestMatch = this.recipesData.find(r => r.id === scores[0].id);
-        
-        const quizContent = document.getElementById('quizContent');
-        document.getElementById('quizProgressBar').style.width = '100%';
 
-        quizContent.innerHTML = `
-            <div class="text-center view-transition">
-                <h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3>
-                <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
-                <div class="my-8 p-6 bg-gray-100 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
-                    <img src="${this.recipeImages[bestMatch.id][0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview">
-                    <div class="text-left">
-                        <h4 class="text-xl font-bold">${bestMatch.name[this.getCurrentLanguage()]}</h4>
-                        <p class="text-gray-600 mt-1">${bestMatch.description[this.getCurrentLanguage()]}</p>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base">
-                        <span data-translate-key="viewRecipeBtn"></span>
-                    </button>
-                    <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                        <span data-translate-key="retakeQuizBtn"></span>
-                    </button>
-                </div>
-            </div>`;
-            
+        // Delegate rendering to the UI module
+        this.ui.renderResult(bestMatch, this.recipeImages);
         this.applyTranslations();
     }
 }
