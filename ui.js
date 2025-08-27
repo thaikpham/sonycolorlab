@@ -324,21 +324,16 @@ export function renderUltimateButton() {
     const menu = document.getElementById('ultimateActionsMenu');
     if (!wrapper || !menu) return;
 
-    let existingButton = wrapper.querySelector('#ultimateCtaBtn');
-    if (existingButton) {
-        existingButton.remove();
-    }
-    menu.innerHTML = '';
+    wrapper.innerHTML = ''; // Clear wrapper for fresh render
 
     const mainButtonHTML = `
         <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 80px; height: 80px; padding: 16px; border-radius: 32px;">
-             <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back); position: relative; z-index: 2;">
+             <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
         </button>
     `;
 
     if (state.currentView === 'home') {
-        wrapper.insertAdjacentHTML('beforeend', mainButtonHTML);
-        menu.classList.add('hidden');
+        wrapper.innerHTML = mainButtonHTML;
     } else if (state.currentView === 'recipeFormulas') {
         const icons = {
             backToHome: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
@@ -356,7 +351,7 @@ export function renderUltimateButton() {
              { key: 'ctaButton', href: 'https://www.facebook.com/groups/sonyalphavietnamoffical', colorClass: 'btn-pastel-cyan', icon: icons.ctaButton }
         ];
 
-        menu.innerHTML = menuActions.reverse().map(action => {
+        const menuHTML = `<div id="ultimateActionsMenu">` + menuActions.reverse().map(action => {
             const commonAttrs = `class="ultimate-action-btn ${action.colorClass}"`;
             const content = `${action.icon}<span class="ultimate-tooltip" data-translate-key="${action.key}"></span>`;
             if (action.href) {
@@ -364,9 +359,9 @@ export function renderUltimateButton() {
             } else {
                 return `<button id="${action.id}" ${commonAttrs}>${content}</button>`;
             }
-        }).join('');
+        }).join('') + `</div>`;
         
-        wrapper.insertAdjacentHTML('beforeend', mainButtonHTML);
+        wrapper.innerHTML = menuHTML + mainButtonHTML;
     }
     
     applyTranslations();
