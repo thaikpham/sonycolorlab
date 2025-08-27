@@ -11,9 +11,10 @@
  * * ==============================================
  * ĐẠI TU BỐ CỤC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
- * - Tăng mạnh giá trị `radius` trong hàm `toggleUltimateActionsMenu` lên 180.
- * - Mở rộng góc `startAngle` và `endAngle` (165 đến 285) để các nút được
- * phân bổ trên một vòng cung rộng hơn, tăng khoảng cách an toàn giữa chúng.
+ * - Sửa lỗi selector trong `toggleUltimateActionsMenu` để tìm đúng các nút icon mới.
+ * - Tăng mạnh giá trị `radius` lên 110 để các nút có khoảng cách an toàn.
+ * - Mở rộng góc `startAngle` và `endAngle` (170 đến 280) để các nút được
+ * phân bổ trên một vòng cung rộng hơn.
  */
 
 // --- Local Module Imports ---
@@ -117,42 +118,39 @@ function toggleUltimateActionsMenu(forceClose = false) {
     const icon = document.getElementById('ultimateCtaIcon');
     if (!menu || !icon) return;
 
-    const actionButtons = menu.querySelectorAll('.btn, a.btn');
+    // FIXED: Correct selector for new icon buttons
+    const actionButtons = menu.querySelectorAll('.ultimate-action-btn');
     const isOpen = menu.classList.contains('menu-open');
 
     if (forceClose || isOpen) {
         // Close animation
         menu.classList.remove('menu-open');
         icon.style.transform = 'rotate(0deg)';
-        actionButtons.forEach((btn) => {
-            btn.style.transform = 'translate(0px, 0px) scale(0.8)';
-            btn.style.opacity = '0';
+        actionButtons.forEach(btn => {
+            btn.classList.remove('visible');
+            btn.style.transform = `scale(0.5)`;
         });
     } else {
         // Open animation
-        menu.classList.remove('hidden');
-        requestAnimationFrame(() => {
-            menu.classList.add('menu-open');
-            icon.style.transform = 'rotate(135deg)';
-            
-            // UPDATED: Final adjustment for better spacing
-            const radius = 180; 
-            const startAngle = 165; 
-            const endAngle = 285;   
-            
-            const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
+        menu.classList.add('menu-open');
+        icon.style.transform = 'rotate(135deg)';
+        
+        const radius = 110; 
+        const startAngle = 170; 
+        const endAngle = 280;   
+        
+        const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
-            actionButtons.forEach((btn, index) => {
-                const angle = startAngle + (angleStep * index);
-                const angleRad = angle * (Math.PI / 180);
+        actionButtons.forEach((btn, index) => {
+            const angle = startAngle + (angleStep * index);
+            const angleRad = angle * (Math.PI / 180);
 
-                const x = radius * Math.cos(angleRad);
-                const y = radius * Math.sin(angleRad);
-                
-                btn.style.transitionDelay = `${index * 40}ms`;
-                btn.style.transform = `translate(${x}px, ${y}px) scale(1)`;
-                btn.style.opacity = '1';
-            });
+            const x = radius * Math.cos(angleRad);
+            const y = radius * Math.sin(angleRad);
+            
+            btn.style.transitionDelay = `${index * 40}ms`;
+            btn.classList.add('visible');
+            btn.style.transform = `translate(${x}px, ${y}px) scale(1)`;
         });
     }
 }
