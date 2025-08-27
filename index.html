@@ -291,13 +291,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     #ultimateButtonWrapper {
         position: relative;
+        width: 72px;
+        height: 72px;
     }
     #ultimateActionsMenu {
         position: absolute;
         bottom: 0;
         right: 0;
-        width: 300px;
-        height: 300px;
         pointer-events: none;
     }
     #ultimateActionsMenu.hidden {
@@ -314,10 +314,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         width: auto;
         padding: 12px 24px;
         color: white;
+        z-index: 5;
     }
     #ultimateActionsMenu.menu-open .btn {
         opacity: 1;
         pointer-events: auto;
+    }
+    #ultimateCtaBtn {
+        position: relative;
+        z-index: 10;
     }
 
     .liquid-glass-button {
