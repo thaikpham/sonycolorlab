@@ -15,6 +15,11 @@
  * - Tăng mạnh giá trị `radius` lên 140 để các nút có khoảng cách an toàn.
  * - Điều chỉnh `startAngle` và `endAngle` (180 đến 270) để các nút được
  * phân bổ trên một vòng cung 90 độ hoàn hảo.
+ * * ==============================================
+ * TĂNG BIÊN ĐỘ HÌNH QUẠT - NGÀY 27/08/2025
+ * ==============================================
+ * - Tăng `radius` từ 140 lên 150 để các nút xa tâm hơn.
+ * - Tăng `endAngle` từ 270 lên 300 để các nút tản ra trên một cung tròn rộng hơn (120 độ).
  */
 
 // --- Local Module Imports ---
@@ -134,10 +139,10 @@ function toggleUltimateActionsMenu(forceClose = false) {
         menu.classList.add('menu-open');
         icon.style.transform = 'rotate(135deg)';
         
-        // FINAL ADJUSTMENT: Increased radius for safe spacing
-        const radius = 140; 
+        // --- UPDATED: Increased radius and angle for a wider, more discrete fan layout ---
+        const radius = 150; // Increased from 140
         const startAngle = 180; 
-        const endAngle = 270;   
+        const endAngle = 300; // Increased from 270 to create a 120-degree arc
         
         const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
@@ -321,4 +326,3 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
