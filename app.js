@@ -5,7 +5,7 @@
  * CẬP NHẬT LOGIC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
  * - Cập nhật hàm `toggleUltimateActionsMenu` để xử lý animation xoay cho logo
- * thay vì icon cũ.
+ * và sắp xếp các nút con theo hình vòng cung.
  * - Đảm bảo logic điều hướng và mở menu hoạt động chính xác với cấu trúc
  * button mới.
  */
@@ -108,17 +108,45 @@ function attachViewEventListeners(viewName) {
 
 function toggleUltimateActionsMenu(forceClose = false) {
     const menu = document.getElementById('ultimateActionsMenu');
-    const icon = document.getElementById('ultimateCtaIcon'); // Get the icon/image
+    const icon = document.getElementById('ultimateCtaIcon');
     if (!menu || !icon) return;
 
-    const isOpen = !menu.classList.contains('hidden');
+    const actionButtons = menu.querySelectorAll('.btn, a.btn');
+    const isOpen = menu.classList.contains('menu-open');
 
     if (forceClose || isOpen) {
-        menu.classList.add('hidden');
-        icon.style.transform = 'rotate(0deg)'; // Rotate back
+        // Close animation
+        menu.classList.remove('menu-open');
+        icon.style.transform = 'rotate(0deg)';
+        actionButtons.forEach((btn) => {
+            btn.style.transform = 'translate(0px, 0px) scale(0.8)';
+            btn.style.opacity = '0';
+        });
     } else {
+        // Open animation
         menu.classList.remove('hidden');
-        icon.style.transform = 'rotate(135deg)'; // Rotate on open
+        requestAnimationFrame(() => {
+            menu.classList.add('menu-open');
+            icon.style.transform = 'rotate(135deg)';
+
+            const radius = 110; // Distance from center
+            const startAngle = 180; // 9 o'clock
+            const endAngle = 270;   // 12 o'clock
+            // Distribute buttons evenly along the arc
+            const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
+
+            actionButtons.forEach((btn, index) => {
+                const angle = startAngle + (angleStep * index);
+                const angleRad = angle * (Math.PI / 180);
+
+                const x = radius * Math.cos(angleRad);
+                const y = radius * Math.sin(angleRad);
+                
+                btn.style.transitionDelay = `${index * 40}ms`;
+                btn.style.transform = `translate(${x}px, ${y}px) scale(1)`;
+                btn.style.opacity = '1';
+            });
+        });
     }
 }
 
@@ -162,7 +190,7 @@ async function init() {
             return;
         }
         // Close menu if clicking outside the container
-        if (!target.closest('#ultimateButtonContainer')) {
+        if (!target.closest('#ultimateButtonWrapper')) {
             toggleUltimateActionsMenu(true);
         }
         
