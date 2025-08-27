@@ -2,12 +2,12 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * SỬA LỖI & ĐỒNG BỘ HÓA - CẬP NHẬT NGÀY 27/08/2025
+ * CẬP NHẬT LOGIC NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
- * - Sửa lỗi không tương thích giữa app.js và các file giao diện (ui.js, index.html).
- * - Đồng bộ hóa tên hàm và ID của "nút đa chức năng" để đảm bảo sự kiện
- * được xử lý chính xác.
- * - Loại bỏ hoàn toàn footer và các logic liên quan.
+ * - Cập nhật hàm `toggleUltimateActionsMenu` để xử lý animation xoay cho logo
+ * thay vì icon cũ.
+ * - Đảm bảo logic điều hướng và mở menu hoạt động chính xác với cấu trúc
+ * button mới.
  */
 
 // --- Local Module Imports ---
@@ -108,17 +108,17 @@ function attachViewEventListeners(viewName) {
 
 function toggleUltimateActionsMenu(forceClose = false) {
     const menu = document.getElementById('ultimateActionsMenu');
-    const icon = document.getElementById('ultimateCtaIcon');
+    const icon = document.getElementById('ultimateCtaIcon'); // Get the icon/image
     if (!menu || !icon) return;
 
     const isOpen = !menu.classList.contains('hidden');
 
     if (forceClose || isOpen) {
         menu.classList.add('hidden');
-        icon.style.transform = 'rotate(0deg)';
+        icon.style.transform = 'rotate(0deg)'; // Rotate back
     } else {
         menu.classList.remove('hidden');
-        icon.style.transform = 'rotate(45deg)';
+        icon.style.transform = 'rotate(135deg)'; // Rotate on open
     }
 }
 
