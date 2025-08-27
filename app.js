@@ -2,11 +2,11 @@
  * app.js (Main Controller)
  * This is the entry point and central controller of the application.
  * * ==============================================
- * NÂNG CẤP ĐIỀU HƯỚNG V2 - CẬP NHẬT NGÀY 27/08/2025
+ * SỬA LỖI & TỐI ƯU HÓA - CẬP NHẬT NGÀY 27/08/2025
  * ==============================================
- * - Gỡ bỏ hoàn toàn logic điều hướng dạng "dock" ở cuối trang.
- * - Triển khai logic cho Nút hành động nổi (Floating Action Button - FAB) mới.
- * - Thêm event listener để đóng/mở menu FAB và xử lý click vào các nút con.
+ * - Sửa lỗi không tương tác được do thiếu trình xử lý sự kiện cho nút quiz trên trang chủ.
+ * - Tối ưu hóa: Lấy tham chiếu đến các phần tử FAB một lần khi khởi tạo thay vì mỗi lần click.
+ * - Cải tiến UX: Thêm logic để xử lý lớp phủ (overlay) khi mở/đóng menu FAB.
  */
 
 // --- Local Module Imports ---
@@ -26,6 +26,9 @@ import {
     renderColorMapChart,
     updateChartSelection
 } from './features.js';
+
+// --- MODULE-LEVEL VARIABLES ---
+let fabContainer, fabOverlay;
 
 // --- CORE APP LOGIC ---
 
@@ -95,8 +98,24 @@ function attachViewEventListeners(viewName) {
     }
 }
 
+function toggleFabMenu(forceClose = false) {
+    if (fabContainer) {
+        const isOpen = fabContainer.classList.contains('open');
+        if (forceClose) {
+            fabContainer.classList.remove('open');
+        } else {
+            fabContainer.classList.toggle('open');
+        }
+    }
+}
+
+
 async function init() {
     initLanguage();
+    
+    // OPTIMIZATION: Get FAB elements once
+    fabContainer = document.getElementById('fabContainer');
+    fabOverlay = document.getElementById('fab-overlay');
 
     state.quiz.instance = new Quiz({
         state,
@@ -110,25 +129,26 @@ async function init() {
     // --- GLOBAL EVENT LISTENERS (EVENT DELEGATION) ---
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
-        const fabContainer = document.getElementById('fabContainer');
         
-        // NEW: FAB Menu Logic
+        // FAB Menu Logic
         if (target.closest('#fabMainBtn')) {
-            fabContainer.classList.toggle('open');
+            toggleFabMenu();
+            return;
+        }
+        // Close FAB if overlay is clicked
+        if (target.id === 'fab-overlay' && fabContainer.classList.contains('open')) {
+            toggleFabMenu(true);
             return;
         }
 
-        const navBtn = target.closest('.fab-menu-item'); // Changed selector
+        const navBtn = target.closest('.fab-menu-item');
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
         const collageItem = target.closest('.collage-item');
         const d3Node = target.closest('.color-map-node-group');
 
         if (d3Node) {
-            const recipeData = d3.select(d3Node).datum();
-            if (recipeData && recipeData.id) {
-                handleRecipeSelection(recipeData.id);
-            }
+            handleRecipeSelection(d3.select(d3Node).datum().id);
             return;
         }
 
@@ -136,7 +156,7 @@ async function init() {
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
 
         if (navBtn) {
-            fabContainer.classList.remove('open'); // Close FAB menu on selection
+            toggleFabMenu(true); // Close FAB menu on selection
             if (navBtn.dataset.view === 'recipeFormulas' && state.currentView === 'recipeFormulas') {
                 resetToChartView();
             } else {
@@ -145,9 +165,9 @@ async function init() {
             return;
         }
         
-        // NEW: Handle Quiz button from FAB
-        if (target.closest('#startQuizBtnFab')) {
-            fabContainer.classList.remove('open');
+        // Handle Quiz buttons from both FAB and Home page
+        if (target.closest('#startQuizBtnFab') || target.closest('#startQuizBtn')) {
+            toggleFabMenu(true);
             openModal('quizModal');
             state.quiz.instance.start();
             return;
@@ -191,7 +211,6 @@ async function init() {
             return;
         }
 
-        // REMOVED: Old #startQuizBtn listener, now handled by #startQuizBtnFab
         if (target.closest('#quizModal')) {
             if (target.closest('#closeQuizBtn')) {
                 closeModal('quizModal');
