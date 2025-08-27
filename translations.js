@@ -50,7 +50,14 @@ export const translations = {
     saveGuideTitle: { vi: "Lưu công thức vào máy ảnh", en: "Save Recipe to Camera" },
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
-    hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" }
+    hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" },
+    // --- NEW QUIZ AI TRANSLATIONS ---
+    aiQuizPromptPlaceholder: { vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt, tông màu cine, hơi buồn...", en: "e.g., a sunset afternoon in Dalat, cinematic tone, a bit melancholic..." },
+    aiQuizGenerateBtn: { vi: "Sáng tạo với AI", en: "Generate with AI" },
+    aiQuizSkipBtn: { vi: "Bỏ qua & Xem gợi ý", en: "Skip & Get Suggestion" },
+    aiQuizGenerating: { vi: "Gemini đang sáng tạo...", en: "Gemini is creating..." },
+    aiQuizResultTitle: { vi: "Công thức Sáng tạo từ Gemini!", en: "Creative Recipe from Gemini!" },
+    aiQuizResultDescription: { vi: "Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:", en: "Here is the unique recipe created based on your inspiration:" }
 };
 
 export const parameterExplanations = {
