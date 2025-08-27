@@ -3,13 +3,13 @@
  * This module is responsible for all DOM manipulations and HTML generation.
  * It reads from the central state and updates the UI accordingly. It does not modify the state itself.
  * * ==============================================
- * CẬP NHẬT GIAO DIỆN QUIZ - NGÀY 28/08/2025
+ * NÂNG CẤP GIAO DIỆN QUIZ - NGÀY 28/08/2025
  * ==============================================
- * - Thêm các hàm render mới dành riêng cho Quiz: `renderQuizQuestion`,
- * `renderQuizAIPrompt`, `renderQuizResult`, `renderQuizAIResult`,
- * `renderQuizLoading`, `renderQuizError`.
- * - Các hàm này chịu trách nhiệm tạo HTML và cập nhật nội dung cho modal quiz,
- * giúp tách biệt hoàn toàn logic giao diện ra khỏi file `quiz.js`.
+ * - Tái cấu trúc toàn bộ phần render của Quiz thành dạng "One Page".
+ * - Thêm hàm `renderOnePageQuizLayout` để tạo layout "đảo nội dung" (content islands)
+ * cho desktop và layout cuộn cho mobile.
+ * - Cập nhật các hàm render kết quả để thay thế layout quiz thay vì chỉ một câu hỏi.
+ * - Áp dụng phong cách "Liquid Glass" cho các thành phần UI của quiz.
  */
 
 // --- Local Module Imports ---
@@ -529,79 +529,74 @@ export function renderLibraryDetails() {
 }
 
 
-// --- QUIZ UI RENDERING ---
+// --- NEW: QUIZ ONE-PAGE UI RENDERING ---
 
 /**
- * Renders a standard question in the quiz modal.
- * @param {object} questionData - The data for the current question.
- * @param {number} qIndex - The current question index.
- * @param {number} totalQuestions - The total number of standard questions.
+ * Renders the entire one-page quiz layout.
+ * @param {Array<object>} questions - The array of question data from quiz.js.
  */
-export function renderQuizQuestion(questionData, qIndex, totalQuestions) {
+export function renderOnePageQuizLayout(questions) {
     const quizContent = document.getElementById('quizContent');
-    const progressBar = document.getElementById('quizProgressBar');
+    if (!quizContent) return;
 
-    const gridClass = `grid gap-4 ${questionData.options.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
+    const gridAreas = ["1", "2", "3", "4", "5", "6"];
 
-    quizContent.innerHTML = `
-        <div class="quiz-question-container">
-            <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[getCurrentLanguage()]}</h3>
-            <div class="${gridClass}">
-                ${questionData.options.map(opt => `
-                    <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-gray-300 bg-transparent hover:bg-gray-100 transition-all duration-200" data-tags="${opt.tags.join(',')}">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
-                            ${opt.icon}
-                        </svg>
-                        <span class="font-semibold text-lg">${opt.text[getCurrentLanguage()]}</span>
-                    </button>
-                `).join('')}
-            </div>
-        </div>`;
-    
-    progressBar.style.width = `${(qIndex / totalQuestions) * 100}%`;
+    const questionsHTML = questions.map((q, index) => {
+        if (q.type === 'ai_prompt') {
+            // AI Prompt Island
+            return `
+                <div class="quiz-island" data-question-index="${index}" data-grid-area="6" style="transition-delay: ${index * 100}ms;">
+                    <h3 class="text-xl font-bold text-center mb-2">${q.question[getCurrentLanguage()]}</h3>
+                    <p class="text-gray-600 text-center text-sm mb-4">${q.description[getCurrentLanguage()]}</p>
+                    <textarea id="aiQuizPrompt" class="w-full p-3 rounded-xl bg-white/60 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all min-h-[100px]" placeholder="${t('aiQuizPromptPlaceholder')}"></textarea>
+                </div>`;
+        } else {
+            // Standard Question Island
+            const optionsHTML = q.options.map(opt => `
+                <button class="quiz-option w-full text-left p-4 flex items-center gap-4" data-tags="${opt.tags.join(',')}" data-question-index="${index}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-8 h-8 flex-shrink-0 text-gray-500 transition-colors">${opt.icon}</svg>
+                    <span class="font-semibold text-base md:text-lg">${opt.text[getCurrentLanguage()]}</span>
+                </button>`).join('');
+            
+            return `
+                <div class="quiz-island" data-question-index="${index}" data-grid-area="${gridAreas[index] || ''}" style="transition-delay: ${index * 100}ms;">
+                    <h3 class="text-xl font-bold text-center mb-4">${q.question[getCurrentLanguage()]}</h3>
+                    <div class="space-y-3">${optionsHTML}</div>
+                </div>`;
+        }
+    }).join('');
+
+    const submitHTML = `
+        <div id="quizSubmitIsland" class="quiz-island" data-grid-area="submit" style="transition-delay: ${questions.length * 100}ms;">
+             <p class="text-center text-gray-600 mb-4" data-translate-key="quizSubmitInfo"></p>
+             <button id="submitQuizBtn" class="btn btn-primary w-full py-4 text-lg" disabled>
+                <span data-translate-key="quizSubmitBtn"></span>
+            </button>
+        </div>
+    `;
+
+    quizContent.innerHTML = `<div class="quiz-one-page-layout">${questionsHTML}${submitHTML}</div>`;
+
+    // Trigger activation animation
+    setTimeout(() => {
+        document.querySelectorAll('.quiz-island').forEach(island => {
+            island.classList.add('active');
+        });
+    }, 100);
 }
 
-/**
- * Renders the final, optional AI prompt screen in the quiz.
- * @param {object} questionData - The data for the AI prompt step.
- */
-export function renderQuizAIPrompt(questionData) {
-    const quizContent = document.getElementById('quizContent');
-    const progressBar = document.getElementById('quizProgressBar');
-
-    quizContent.innerHTML = `
-        <div class="quiz-question-container text-center view-transition">
-            <h3 class="text-2xl md:text-3xl font-semibold mb-2">${questionData.question[getCurrentLanguage()]}</h3>
-            <p class="text-gray-600 mb-6">${questionData.description[getCurrentLanguage()]}</p>
-            <textarea id="aiQuizPrompt" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${t('aiQuizPromptPlaceholder')}"></textarea>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                <button id="generateAiRecipeBtn" class="btn btn-primary py-3 px-8 text-base">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-                    <span data-translate-key="aiQuizGenerateBtn"></span>
-                </button>
-                <button id="skipAiBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                    <span data-translate-key="aiQuizSkipBtn"></span>
-                </button>
-            </div>
-        </div>`;
-    
-    progressBar.style.width = '100%';
-}
 
 /**
- * Renders the standard quiz result based on tag scoring.
+ * Renders the standard quiz result by replacing the quiz layout.
  * @param {object} bestMatch - The recipe object that best matches the answers.
- * @param {object} recipeImages - The collection of all recipe images.
  */
-export function renderQuizResult(bestMatch, recipeImages) {
+export function renderQuizResult(bestMatch) {
     const quizContent = document.getElementById('quizContent');
-    document.getElementById('quizProgressBar').style.width = '100%';
-
     quizContent.innerHTML = `
-        <div class="text-center view-transition">
-            <h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3>
+        <div class="quiz-result-view text-center max-w-2xl mx-auto py-8">
+            <h3 class="text-3xl font-bold" data-translate-key="quizResultTitle"></h3>
             <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
-            <div class="my-8 p-6 bg-gray-100 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
+            <div class="my-8 p-6 bg-white/80 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
                 <img src="${recipeImages[bestMatch.id][0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview">
                 <div class="text-left">
                     <h4 class="text-xl font-bold">${bestMatch.name[getCurrentLanguage()]}</h4>
@@ -620,29 +615,27 @@ export function renderQuizResult(bestMatch, recipeImages) {
 }
 
 /**
- * Renders the result of a successfully generated AI recipe from the quiz.
+ * Renders the AI-generated recipe result by replacing the quiz layout.
  * @param {object} recipe - The AI-generated recipe object.
  */
 export function renderQuizAIResult(recipe) {
     const quizContent = document.getElementById('quizContent');
-    document.getElementById('quizProgressBar').style.width = '100%';
-
     const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
-        <div class="flex flex-col p-3 rounded-lg bg-white">
+        <div class="flex flex-col p-3 rounded-lg bg-white/70">
             <span class="text-sm text-gray-500 font-medium">${key}</span>
             <span class="font-semibold text-lg text-gray-800">${value}</span>
         </div>`).join('');
 
     quizContent.innerHTML = `
-        <div class="text-center view-transition">
-            <h3 class="text-2xl font-bold" data-translate-key="aiQuizResultTitle"></h3>
+        <div class="quiz-result-view text-center max-w-3xl mx-auto py-8">
+            <h3 class="text-3xl font-bold" data-translate-key="aiQuizResultTitle"></h3>
             <p class="mt-2 text-gray-600" data-translate-key="aiQuizResultDescription"></p>
-            <div class="my-8 p-6 bg-gray-100 rounded-2xl border text-left">
+            <div class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
                 <h4 class="text-2xl font-bold text-center">${recipe.name[getCurrentLanguage()]}</h4>
                 <p class="text-gray-600 mt-1 text-center italic">"${recipe.description[getCurrentLanguage()]}"</p>
                 
                 <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
-                <div class="p-3 bg-white rounded-lg font-semibold">${recipe.whiteBalance}</div>
+                <div class="p-3 bg-white/70 rounded-lg font-semibold">${recipe.whiteBalance}</div>
 
                 <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.settings)}</div>
@@ -659,24 +652,26 @@ export function renderQuizAIResult(recipe) {
 }
 
 /**
- * Renders a loading spinner within the quiz modal.
+ * Renders a loading spinner by replacing the quiz layout.
  */
 export function renderQuizLoading() {
     const quizContent = document.getElementById('quizContent');
-    quizContent.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader-dark"></div><p class="mt-4 text-gray-600" data-translate-key="aiQuizGenerating"></p></div>`;
+    quizContent.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="loader-dark"></div><p class="mt-4 text-gray-600" data-translate-key="aiQuizGenerating"></p></div>`;
 }
 
 /**
- * Renders a generic error message within the quiz modal.
+ * Renders an error message by replacing the quiz layout.
  */
 export function renderQuizError() {
     const quizContent = document.getElementById('quizContent');
     quizContent.innerHTML = `
-        <div class="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
-            <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
-            <p class="mt-2 text-red-700" data-translate-key="aiErrorText"></p>
-            <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base mt-4">
-                <span data-translate-key="retakeQuizBtn"></span>
-            </button>
+        <div class="quiz-result-view text-center max-w-lg mx-auto py-8">
+            <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
+                <p class="mt-2 text-red-700" data-translate-key="aiErrorText"></p>
+                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base mt-4">
+                    <span data-translate-key="retakeQuizBtn"></span>
+                </button>
+            </div>
         </div>`;
 }
