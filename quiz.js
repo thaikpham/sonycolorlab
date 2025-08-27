@@ -2,11 +2,12 @@
  * quiz.js
  * This module encapsulates all logic and data related to the "Find My Color" quiz.
  * * ==============================================
- * CẬP NHẬT CUỐI CÙNG - NGÀY 25/08/2025
+ * CẬP NHẬT CUỐI CÙNG - NGÀY 27/08/2025
  * ==============================================
  * - Đã gỡ bỏ hoàn toàn bước phân tích ảnh bằng AI.
  * - Thêm câu hỏi lựa chọn "Ảnh màu" và "Trắng & Đen".
  * - Giữ lại toàn bộ icon màu sắc để giao diện sinh động.
+ * - Loại bỏ nền màu của các nút lựa chọn để giao diện thoáng hơn.
  */
 
 // --- QUIZ DATA ---
@@ -114,7 +115,7 @@ export class Quiz {
                     <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[this.getCurrentLanguage()]}</h3>
                     <div class="${gridClass}">
                         ${questionData.options.map(opt => `
-                            <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-transparent bg-gray-100 hover:bg-gray-200 transition-all duration-200" data-tags="${opt.tags.join(',')}">
+                            <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-gray-300 bg-transparent hover:bg-gray-100 transition-all duration-200" data-tags="${opt.tags.join(',')}">
                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
                                     ${opt.icon}
                                 </svg>
