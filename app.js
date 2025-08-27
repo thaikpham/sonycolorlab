@@ -15,6 +15,17 @@
  * - Tăng mạnh giá trị `radius` lên 140 để các nút có khoảng cách an toàn.
  * - Điều chỉnh `startAngle` và `endAngle` (180 đến 270) để các nút được
  * phân bổ trên một vòng cung 90 độ hoàn hảo.
+ * * ==============================================
+ * TĂNG BIÊN ĐỘ HÌNH QUẠT - NGÀY 27/08/2025
+ * ==============================================
+ * - Tăng `radius` từ 140 lên 150 để các nút xa tâm hơn.
+ * - Tăng `endAngle` từ 270 lên 300 để các nút tản ra trên một cung tròn rộng hơn (120 độ).
+ * * ==============================================
+ * TỐI ƯU HÓA BỐ CỤC NÚT VỆ TINH - NGÀY 27/08/2025
+ * ==============================================
+ * - Điều chỉnh `endAngle` về 270 độ để tạo một cung tròn 90 độ hoàn hảo,
+ * giúp bố cục gọn gàng, khoa học và thẩm mỹ hơn.
+ * - Giảm nhẹ `radius` xuống 140 để cụm nút chặt chẽ hơn.
  */
 
 // --- Local Module Imports ---
@@ -134,10 +145,10 @@ function toggleUltimateActionsMenu(forceClose = false) {
         menu.classList.add('menu-open');
         icon.style.transform = 'rotate(135deg)';
         
-        // FINAL ADJUSTMENT: Increased radius for safe spacing
-        const radius = 140; 
-        const startAngle = 180; 
-        const endAngle = 270;   
+        // --- UPDATED: Tighter 90-degree arc for a more controlled layout ---
+        const radius = 140; // Slightly reduced for a tighter cluster
+        const startAngle = 180; // Starts from the left
+        const endAngle = 270; // Ends at the top, creating a perfect 90-degree fan
         
         const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
@@ -209,7 +220,7 @@ async function init() {
                 const recipeId = d3.select(d3Node).datum().id;
                 await renderView('recipeFormulas', recipeId, attachViewEventListeners);
             } else {
-                handleRecipeSelection(d3.select(d3Node).datum().id);
+                handleSelection(d3.select(d3Node).datum().id);
             }
             return;
         }
