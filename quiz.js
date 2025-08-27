@@ -2,13 +2,16 @@
  * quiz.js
  * This module encapsulates all logic and data related to the "Find My Color" quiz.
  * * ==============================================
- * CẬP NHẬT CUỐI CÙNG - NGÀY 27/08/2025
+ * CẬP NHẬT TÍNH NĂNG AI - NGÀY 28/08/2025
  * ==============================================
- * - Đã gỡ bỏ hoàn toàn bước phân tích ảnh bằng AI.
- * - Thêm câu hỏi lựa chọn "Ảnh màu" và "Trắng & Đen".
- * - Giữ lại toàn bộ icon màu sắc để giao diện sinh động.
- * - Loại bỏ nền màu của các nút lựa chọn để giao diện thoáng hơn.
+ * - Cập nhật lại câu hỏi về Độ bão hòa màu theo yêu cầu.
+ * - Thêm bước cuối cùng: cho phép người dùng nhập prompt để Gemini AI
+ * sáng tạo một công thức màu hoàn toàn mới.
+ * - Thêm logic gọi API và hiển thị kết quả do AI tạo ra.
  */
+
+// --- Local Module Imports ---
+import { callGeminiAPI } from './api.js';
 
 // --- QUIZ DATA ---
 const quizQuestions = [
@@ -46,12 +49,17 @@ const quizQuestions = [
     },
     {
         type: 'conditional_saturation',
-        question: { vi: "Độ bão hòa màu sắc?", en: "And saturation?" },
+        question: { vi: "Bạn thích độ bão hòa màu như thế nào?", en: "How do you like your color saturation?" },
         options: [
             { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: { vi: 'Đậm', en: 'Rich' }, icon: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.7-3.29C8.2 7.95 7 6.46 7 5.06V3" stroke="#e11d48"/><path d="M14 3v2.06c0 1.4-.93 2.89-2.3 3.9-1.13 1.03-1.7 2.13-1.7 3.29 0 2.22 1.8 4.05 4 4.05Z" stroke="#f43f5e"/>' },
-            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<circle cx="12" cy="12" r="10" stroke="#71717a"/><circle cx="12" cy="12" r="4" fill="#a1a1aa"/>' },
-            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Nhạt', en: 'Muted' }, icon: '<circle cx="12" cy="12" r="10" stroke="#a1a1aa"/><path d="M22 2 2 22" stroke="#d4d4d8"/>' },
+            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Vừa phải', en: 'Natural' }, icon: '<circle cx="12" cy="12" r="10" stroke="#71717a"/><circle cx="12" cy="12" r="4" fill="#a1a1aa"/>' },
+            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Hơi nhạt', en: 'Muted' }, icon: '<circle cx="12" cy="12" r="10" stroke="#a1a1aa"/><path d="M22 2 2 22" stroke="#d4d4d8"/>' },
         ]
+    },
+    {
+        type: 'ai_prompt',
+        question: { vi: "Sáng tạo màu sắc theo cảm hứng của bạn", en: "Create a color recipe from your inspiration" },
+        description: { vi: "Hãy miêu tả bối cảnh, cảm xúc, hoặc phong cách bạn muốn. Gemini sẽ cố gắng tạo ra một công thức màu độc đáo cho bạn. (Không bắt buộc)", en: "Describe the context, mood, or style you want. Gemini will try to create a unique color recipe for you. (Optional)" }
     }
 ];
 
@@ -63,6 +71,7 @@ export class Quiz {
         this.recipeImages = dependencies.recipeImages;
         this.applyTranslations = dependencies.applyTranslations;
         this.renderView = dependencies.renderView;
+        this.callGeminiAPI = callGeminiAPI;
     }
 
     start() {
@@ -108,6 +117,13 @@ export class Quiz {
             }
 
             const questionData = quizQuestions[qIndex];
+            
+            if (questionData.type === 'ai_prompt') {
+                this.renderAIPromptScreen();
+                progressBar.style.width = '100%';
+                return;
+            }
+
             const gridClass = `grid gap-4 ${questionData.options.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
 
             quizContent.innerHTML = `
@@ -125,7 +141,7 @@ export class Quiz {
                     </div>
                 </div>`;
             
-            progressBar.style.width = `${((qIndex) / (quizQuestions.length)) * 100}%`;
+            progressBar.style.width = `${((qIndex) / (quizQuestions.length -1)) * 100}%`;
         };
 
         const currentContainer = quizContent.querySelector('.quiz-question-container');
@@ -135,6 +151,98 @@ export class Quiz {
         } else {
             renderNewContent();
         }
+    }
+
+    renderAIPromptScreen() {
+        const quizContent = document.getElementById('quizContent');
+        const questionData = quizQuestions.find(q => q.type === 'ai_prompt');
+
+        quizContent.innerHTML = `
+            <div class="quiz-question-container text-center view-transition">
+                <h3 class="text-2xl md:text-3xl font-semibold mb-2">${questionData.question[this.getCurrentLanguage()]}</h3>
+                <p class="text-gray-600 mb-6">${questionData.description[this.getCurrentLanguage()]}</p>
+                <textarea id="aiQuizPrompt" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${this.getCurrentLanguage() === 'vi' ? 'VD: một buổi chiều hoàng hôn ở Đà Lạt, tông màu cine, hơi buồn...' : 'e.g., a sunset afternoon in Dalat, cinematic tone, a bit melancholic...'}"></textarea>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+                    <button id="generateAiRecipeBtn" class="btn btn-primary py-3 px-8 text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                        <span>Sáng tạo với AI</span>
+                    </button>
+                    <button id="skipAiBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
+                        <span>Bỏ qua & Xem gợi ý</span>
+                    </button>
+                </div>
+            </div>`;
+
+        document.getElementById('skipAiBtn').addEventListener('click', () => this.calculateAndShowResult());
+        document.getElementById('generateAiRecipeBtn').addEventListener('click', () => this.handleAIGeneration());
+    }
+
+    async handleAIGeneration() {
+        const userInput = document.getElementById('aiQuizPrompt').value.trim();
+        const quizContent = document.getElementById('quizContent');
+
+        if (!userInput) {
+            this.calculateAndShowResult();
+            return;
+        }
+
+        quizContent.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader-dark"></div><p class="mt-4 text-gray-600">Gemini đang sáng tạo...</p></div>`;
+
+        const preferences = this.state.quiz.answers.join(', ');
+        const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the user's preferences from a quiz: "${preferences}". Now, consider the user's creative prompt: "${userInput}". Your task is to generate a completely new, creative, and fully detailed JSON object representing a unique color recipe that matches this inspiration. The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in Vietnamese. The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
+
+        try {
+            const generatedRecipe = await this.callGeminiAPI(expertPrompt, null);
+            this.showAIResult(generatedRecipe);
+        } catch (error) {
+            console.error("Quiz Gemini API call failed:", error);
+            quizContent.innerHTML = `
+                <div class="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h3 class="text-xl font-bold text-red-800">Đã có lỗi xảy ra</h3>
+                    <p class="mt-2 text-red-700">Rất tiếc, không thể tạo công thức lúc này. Vui lòng thử lại.</p>
+                    <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base mt-4">
+                        <span>Làm lại trắc nghiệm</span>
+                    </button>
+                </div>`;
+            document.getElementById('retakeQuizBtn').addEventListener('click', () => this.start());
+        }
+    }
+
+    showAIResult(recipe) {
+        const quizContent = document.getElementById('quizContent');
+        document.getElementById('quizProgressBar').style.width = '100%';
+
+        const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
+            <div class="flex flex-col p-3 rounded-lg bg-white">
+                <span class="text-sm text-gray-500 font-medium">${key}</span>
+                <span class="font-semibold text-lg text-gray-800">${value}</span>
+            </div>`).join('');
+
+        quizContent.innerHTML = `
+            <div class="text-center view-transition">
+                <h3 class="text-2xl font-bold">Công thức Sáng tạo từ Gemini!</h3>
+                <p class="mt-2 text-gray-600">Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:</p>
+                <div class="my-8 p-6 bg-gray-100 rounded-2xl border text-left">
+                    <h4 class="text-2xl font-bold text-center">${recipe.name[this.getCurrentLanguage()]}</h4>
+                    <p class="text-gray-600 mt-1 text-center italic">"${recipe.description[this.getCurrentLanguage()]}"</p>
+                    
+                    <h5 class="text-base font-bold mt-6 mb-2">Cân bằng trắng (WB)</h5>
+                    <div class="p-3 bg-white rounded-lg font-semibold">${recipe.whiteBalance}</div>
+
+                    <h5 class="text-base font-bold mt-4 mb-2">Cài đặt Chính</h5>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.settings)}</div>
+                    
+                    ${recipe.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2">Độ sâu màu</h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(recipe.colorDepth)}</div>` : ''}
+                    ${recipe.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2">Chi tiết</h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.detailSettings)}</div>` : ''}
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
+                        <span>Làm lại trắc nghiệm</span>
+                    </button>
+                </div>
+            </div>`;
+            
+        document.getElementById('retakeQuizBtn').addEventListener('click', () => this.start());
     }
 
     calculateAndShowResult() {
