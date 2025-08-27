@@ -6,9 +6,9 @@
  * CẬP NHẬT GIAO DIỆN NÚT ĐA CHỨC NĂNG - NGÀY 27/08/2025
  * ==============================================
  * - Thay thế nút "Enter Color Lab" trên trang chủ bằng logo với hiệu ứng Liquid Glass.
- * - Thay thế nút "+" trên trang công thức bằng logo với hiệu ứng phát sáng Siri.
+ * - Thay thế hiệu ứng phát sáng Siri bằng hiệu ứng blob động bên trong nút.
  * - Cập nhật logic render để hiển thị đúng nút cho từng giao diện.
- * - Tinh chỉnh kiểu dáng của các mục trong menu hành động nhanh.
+ * - Tăng độ trong suốt và đảm bảo các tab menu xếp theo chiều dọc.
  */
 
 // --- Local Module Imports ---
@@ -279,6 +279,7 @@ export function initializeBackgroundBlobs() {
 
     function animate() {
         if (state.currentView !== 'home') {
+            cancelAnimationFrame(state.animation.blobAnimationFrameId);
             state.animation.blobAnimationFrameId = null;
             return;
         }
@@ -302,6 +303,69 @@ export function initializeBackgroundBlobs() {
 
         state.animation.blobAnimationFrameId = requestAnimationFrame(animate);
     }
+
+    if (state.animation.blobAnimationFrameId) {
+        cancelAnimationFrame(state.animation.blobAnimationFrameId);
+    }
+    animate();
+}
+
+function initializeButtonBlobs(buttonElement) {
+    const container = buttonElement.querySelector('.button-blob-container');
+    if (!container) return;
+    container.innerHTML = ''; // Clear previous blobs
+
+    const bounds = buttonElement.getBoundingClientRect();
+    const { width, height } = bounds;
+
+    const blobData = [
+        { color: '#ffc107', r: width * 0.4 },
+        { color: '#00bcd4', r: width * 0.35 },
+        { color: '#e91e63', r: width * 0.3 },
+        { color: '#4caf50', r: width * 0.45 },
+    ].map(d => ({
+        ...d,
+        x: Math.random() * (width - d.r * 2) + d.r,
+        y: Math.random() * (height - d.r * 2) + d.r,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4
+    }));
+
+    const blobElements = blobData.map(data => {
+        const el = document.createElement('div');
+        el.className = 'button-blob';
+        el.style.width = `${data.r * 2}px`;
+        el.style.height = `${data.r * 2}px`;
+        el.style.backgroundColor = data.color;
+        container.appendChild(el);
+        return { el, data };
+    });
+
+    let animationId;
+    function animate() {
+        if (state.currentView !== 'recipeFormulas' || !document.body.contains(buttonElement)) {
+            cancelAnimationFrame(animationId);
+            return;
+        }
+
+        blobElements.forEach(item => {
+            const blob = item.data;
+            blob.x += blob.vx;
+            blob.y += blob.vy;
+
+            if (blob.x - blob.r < 0 || blob.x + blob.r > width) {
+                blob.vx *= -1;
+                blob.x = Math.max(blob.r, Math.min(width - blob.r, blob.x));
+            }
+            if (blob.y - blob.r < 0 || blob.y + blob.r > height) {
+                blob.vy *= -1;
+                blob.y = Math.max(blob.r, Math.min(height - blob.r, blob.y));
+            }
+            item.el.style.transform = `translate(${blob.x - blob.r}px, ${blob.y - blob.r}px)`;
+        });
+
+        animationId = requestAnimationFrame(animate);
+    }
     animate();
 }
 
@@ -311,15 +375,13 @@ export function renderUltimateButton() {
     if (!wrapper || !menu) return;
 
     if (state.currentView === 'home') {
-        menu.innerHTML = ''; // Clear menu
+        menu.innerHTML = '';
         menu.classList.add('hidden');
-        // This is the main button on the home page, replacing the "Enter Color Lab" text button
         wrapper.innerHTML = `
-            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 160px; height: 160px; border-radius: 40px; display: flex; align-items: center; justify-content: center; padding: 25px; transition: all 0.4s var(--ease-apple);">
-                <img src="Logo.png" alt="Enter Color Lab" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 160px; height: 160px; border-radius: 40px; display: flex; align-items: center; justify-content: center; padding: 25px;">
+                <img src="Logo.png" alt="Enter Color Lab" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); position: relative; z-index: 2;">
             </button>
         `;
-        // Add hover effect via JS for simplicity and to avoid complex CSS selectors
         const btn = document.getElementById('ultimateCtaBtn');
         if(btn) {
             btn.onmouseover = () => { btn.style.transform = 'scale(1.1)'; btn.style.boxShadow = '0 12px 40px 0 rgba(31, 38, 135, 0.2)'; };
@@ -327,7 +389,6 @@ export function renderUltimateButton() {
         }
 
     } else if (state.currentView === 'recipeFormulas') {
-        // This is the multi-function control button on the recipe page
         menu.innerHTML = `
             <a href="https://www.facebook.com/groups/sonyalphavietnamoffical" target="_blank" rel="noopener noreferrer" class="btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -351,10 +412,15 @@ export function renderUltimateButton() {
             </button>
         `;
         wrapper.innerHTML = `
-            <button id="ultimateCtaBtn" class="liquid-glass-button siri-glow" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
-                <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
+            <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 72px; height: 72px; padding: 14px; border-radius: 28px;">
+                <div class="button-blob-container"></div>
+                <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back); position: relative; z-index: 2;">
             </button>
         `;
+        const btn = document.getElementById('ultimateCtaBtn');
+        if (btn) {
+            initializeButtonBlobs(btn);
+        }
     } else {
         wrapper.innerHTML = '';
         menu.innerHTML = '';
