@@ -284,64 +284,66 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
 
     #ultimateButtonContainer {
-        transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple);
+        position: fixed;
+        bottom: 1.5rem; /* 24px */
+        right: 1.5rem;  /* 24px */
+        z-index: 50;
+    }
+    #ultimateButtonWrapper {
+        position: relative;
     }
     #ultimateActionsMenu {
-        transform-origin: bottom right;
-        transition: transform 0.3s var(--ease-out-back), opacity 0.3s var(--ease-out-back);
-    }
-    #ultimateActionsMenu.hidden {
-        transform: scale(0.8) translateY(10px);
-        opacity: 0;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 300px;
+        height: 300px;
         pointer-events: none;
     }
-    
-    /* --- UPDATED: Liquid Glass & Blob Animation Styles --- */
+    #ultimateActionsMenu.hidden {
+        display: none;
+    }
+    #ultimateActionsMenu .btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        transform-origin: bottom right;
+        transition: transform 0.4s var(--ease-out-back), opacity 0.4s var(--ease-out-back), background-color 0.2s ease;
+        opacity: 0;
+        pointer-events: none;
+        width: auto;
+        padding: 12px 24px;
+        color: white;
+    }
+    #ultimateActionsMenu.menu-open .btn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
     .liquid-glass-button {
-        background: rgba(255, 255, 255, 0.2); /* More transparent */
+        background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
         border: 1px solid rgba(255, 255, 255, 0.3);
         box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         transition: all 0.4s var(--ease-apple);
-        position: relative; /* Needed for blob container */
-        overflow: hidden;   /* Needed for blob container */
+    }
+    .liquid-glass-button:hover {
+        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+        transform: scale(1.1);
     }
 
-    .button-blob-container {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        border-radius: inherit; /* Make blobs respect the button's border-radius */
-        z-index: 1;
-    }
+    .btn-pastel-cyan { background-color: rgba(26, 188, 156, 0.7); border-color: rgba(26, 188, 156, 0.9); }
+    .btn-pastel-magenta { background-color: rgba(155, 89, 182, 0.7); border-color: rgba(155, 89, 182, 0.9); }
+    .btn-pastel-yellow { background-color: rgba(241, 196, 15, 0.7); border-color: rgba(241, 196, 15, 0.9); }
+    .btn-pastel-red { background-color: rgba(231, 76, 60, 0.7); border-color: rgba(231, 76, 60, 0.9); }
+    .btn-pastel-blue { background-color: rgba(52, 152, 219, 0.7); border-color: rgba(52, 152, 219, 0.9); }
 
-    .button-blob {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(12px); /* Slightly less blur for smaller size */
-        will-change: transform;
-        opacity: 0.7;
-    }
-
-    /* Adjusting the action menu tabs for vertical layout and more transparency */
-    #ultimateActionsMenu .btn {
-        padding: 12px 20px;
-        background: rgba(255, 255, 255, 0.15); /* More transparent */
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 1rem;
-        width: 260px; /* Fixed width for vertical alignment */
-        justify-content: flex-start;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        transition: transform 0.2s var(--ease-apple), background-color 0.2s var(--ease-apple);
-    }
-
-    #ultimateActionsMenu .btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateX(-5px);
-    }
+    .btn-pastel-cyan:hover { background-color: rgba(26, 188, 156, 0.9); }
+    .btn-pastel-magenta:hover { background-color: rgba(155, 89, 182, 0.9); }
+    .btn-pastel-yellow:hover { background-color: rgba(241, 196, 15, 0.9); }
+    .btn-pastel-red:hover { background-color: rgba(231, 76, 60, 0.9); }
+    .btn-pastel-blue:hover { background-color: rgba(52, 152, 219, 0.9); }
 
 </style>
 </head>
@@ -416,14 +418,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <!-- Ultimate Button Container -->
-<div id="ultimateButtonContainer" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-    <!-- Quick Actions Menu (initially hidden) -->
-    <div id="ultimateActionsMenu" class="hidden flex flex-col items-end gap-3 mb-3">
-        <!-- Menu items will be rendered here by ui.js -->
-    </div>
-    <!-- The main button itself -->
+<div id="ultimateButtonContainer" class="fixed bottom-6 right-6 z-50">
     <div id="ultimateButtonWrapper">
-        <!-- The button will be rendered here by ui.js -->
+        <div id="ultimateActionsMenu" class="hidden">
+            <!-- Menu items will be rendered here by ui.js -->
+        </div>
+        <!-- The main button itself will be rendered here by ui.js -->
     </div>
 </div>
 
