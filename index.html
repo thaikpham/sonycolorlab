@@ -39,7 +39,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         --glass-border: rgba(0, 0, 0, 0.05);
         --text-primary: #1d1d1f;
         --text-secondary: #6e6e73;
-        --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1);
+        --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* New satisfying ease */
         --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
         --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1);
     }
@@ -56,7 +56,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         filter: blur(150px); 
         opacity: 0;
         z-index: -1;
-        transition: opacity 1.5s var(--ease-out-cubic);
+        transition: opacity 1.5s var(--ease-out-back);
         will-change: transform;
     }
     .bg-blob.visible { 
@@ -117,8 +117,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .view-transition, .view-transition-out {
         will-change: transform, opacity, filter;
     }
-    .view-transition { animation: fadeInScale 0.7s var(--ease-out-cubic) forwards; }
-    .view-transition-out { animation: fadeOutScale 0.4s var(--ease-out-cubic) forwards; position: absolute; }
+    .view-transition { animation: fadeInScale 0.7s var(--ease-out-back) forwards; }
+    .view-transition-out { animation: fadeOutScale 0.4s var(--ease-out-back) forwards; position: absolute; }
     @keyframes fadeInScale { 
         from { opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(5px); } 
         to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); } 
@@ -131,7 +131,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .recipe-item-stagger {
         opacity: 0;
         transform: translateY(20px);
-        animation: listItemFadeIn 0.5s var(--ease-out-cubic) forwards;
+        animation: listItemFadeIn 0.5s var(--ease-out-back) forwards;
     }
     @keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
 
@@ -277,7 +277,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
     }
 
-    /* --- NEW: Floating Action Button (FAB) Styles --- */
+    /* --- Floating Action Button (FAB) Styles --- */
     #fabContainer {
         position: fixed;
         bottom: 1.5rem;
@@ -285,7 +285,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         z-index: 50;
         transform: scale(0.95) translateY(10px);
         opacity: 0;
-        animation: fab-fade-in 0.5s var(--ease-out-cubic) 0.5s forwards;
+        animation: fab-fade-in 0.5s var(--ease-out-back) 0.5s forwards;
     }
     @keyframes fab-fade-in {
         to {
@@ -314,7 +314,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         transform: scale(0.9);
     }
     #fabMainBtn svg {
-        transition: transform 0.3s var(--ease-out-cubic);
+        transition: transform 0.3s var(--ease-out-back);
     }
     #fabContainer.open #fabMainBtn svg {
         transform: rotate(45deg);
@@ -335,7 +335,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         cursor: pointer;
         opacity: 0;
         transform: scale(0.5);
-        transition: transform 0.3s var(--ease-out-cubic), opacity 0.3s var(--ease-out-cubic);
+        transition: transform 0.3s var(--ease-out-back), opacity 0.3s var(--ease-out-back);
         pointer-events: none;
     }
     #fabContainer.open .fab-menu-item {
@@ -374,6 +374,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .fab-menu-item:hover .fab-tooltip {
         opacity: 1;
         transform: translateY(-50%) translateX(-10px);
+    }
+    /* IMPROVEMENT: FAB Overlay */
+    #fab-overlay {
+        transition: opacity 0.3s var(--ease-apple);
+    }
+    #fabContainer.open + #fab-overlay {
+        opacity: 1;
+        pointer-events: auto;
     }
 
 </style>
@@ -451,7 +459,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<!-- NEW: Floating Action Button (FAB) Navigation -->
+<!-- Floating Action Button (FAB) Navigation -->
 <div id="fabContainer">
     <div id="fabMenu">
         <button data-view="home" class="fab-menu-item">
@@ -471,6 +479,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
     </button>
 </div>
+<!-- IMPROVEMENT: Added overlay div -->
+<div id="fab-overlay" class="fixed inset-0 bg-black/20 z-40 opacity-0 pointer-events-none"></div>
+
 
 <!-- SCRIPT IMPORTS -->
 <script type="module" src="app.js"></script>
