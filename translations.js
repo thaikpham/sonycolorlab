@@ -1,9 +1,10 @@
 export const translations = {
     headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
+    navHome: {vi: "Trang chủ", en: "Home"},
     navRecipeFormulas: {vi:"Công thức màu", en:"Color Recipes"},
     landingTitle: {vi:"Tìm kiếm phong cách của bạn", en:"Find Your Signature Style"},
     landingSubtitle: {vi: "Khám phá và tạo ra công thức màu độc đáo cho máy ảnh Sony Alpha của bạn, với sự hỗ trợ từ AI.", en: "Discover and create unique color recipes for your Sony Alpha camera, powered by AI."},
-    startExploringBtn: {vi:"Khám phá tất cả", en:"Explore All Recipes"},
+    enterLabBtn: {vi: "Tiến vào Color Lab", en: "Enter Color Lab"},
     findMyColorBtn: {vi: "Tìm màu cho bạn", en: "Find My Color"},
     quizTitle: {vi: "Trắc nghiệm Tìm màu", en: "Color Finder Quiz"},
     quizResultTitle: {vi: "Gợi ý cho bạn!", en: "Our Suggestion For You!"},
