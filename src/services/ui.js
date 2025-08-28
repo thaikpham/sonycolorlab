@@ -21,17 +21,15 @@
 import { state } from './state.js';
 import { getCurrentLanguage, t, applyTranslations } from './language.js';
 import { parameterExplanations } from './translations.js';
-import recipesData from './recipes-core.js';
-import recipeImages from './recipes-images.js';
+import recipesData from './recipes.js';
+import recipeImages from '../assets/recipe-images.js';
 import { isAIEnabled } from './state.js';
 import { fetchTrendingRecipeIds } from './api.js';
 
 
-const mainContentEl = document.getElementById('mainContent');
-
 // --- HELPER FUNCTIONS ---
 
-function formatRecipeName(name) {
+export function formatRecipeName(name) {
     if (!name) return '';
     return name.replace(/(SCL|PROCOLOR)-0+/, '$1-');
 }
@@ -81,10 +79,49 @@ export function closeModal(modalId) {
     }, { once: true });
 }
 
+export function toggleUltimateActionsMenu(forceClose = false) {
+    const menu = document.getElementById('ultimateActionsMenu');
+    const icon = document.getElementById('ultimateCtaIcon');
+    if (!menu || !icon) return;
+
+    const actionButtons = menu.querySelectorAll('.ultimate-action-btn');
+    const isOpen = menu.classList.contains('menu-open');
+
+    if (forceClose || isOpen) {
+        menu.classList.remove('menu-open');
+        icon.style.transform = 'rotate(0deg)';
+        actionButtons.forEach(btn => {
+            btn.classList.remove('visible');
+            btn.style.transform = `scale(0.5)`;
+        });
+    } else {
+        menu.classList.add('menu-open');
+        icon.style.transform = 'rotate(135deg)';
+
+        const radius = 130;
+        const startAngle = 167;
+        const endAngle = 283;
+
+        const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
+
+        actionButtons.forEach((btn, index) => {
+            const angle = startAngle + (angleStep * index);
+            const angleRad = angle * (Math.PI / 180);
+
+            const x = radius * Math.cos(angleRad);
+            const y = radius * Math.sin(angleRad);
+
+            btn.style.transitionDelay = `${index * 40}ms`;
+            btn.classList.add('visible');
+            btn.style.transform = `translate(${x}px, ${y}px) scale(1)`;
+        });
+    }
+}
+
 
 // --- HTML TEMPLATE GENERATORS ---
 
-function createSaveGuideHTML() {
+export function createSaveGuideHTML() {
     const guideContent = {
         vi: `
             <p class="mb-4">Trên các máy ảnh Sony Alpha thế hệ mới (như α7 IV, α7R V, α1, ZV-E1), bạn có thể lưu được <strong>3 preset trên thân máy</strong> (vị trí 1, 2, 3 trên vòng xoay) và <strong>4 preset trên thẻ nhớ</strong> (M1, M2, M3, M4).</p>
@@ -148,7 +185,7 @@ function createSaveGuideHTML() {
     `;
 }
 
-function createFullRecipeHTML(recipe) {
+export function createFullRecipeHTML(recipe) {
     const demoImages = recipeImages[recipe.id] || [];
     
     const createCollageHTML = (images) => {
@@ -208,44 +245,6 @@ function createFullRecipeHTML(recipe) {
         ${createSaveGuideHTML()}
     `;
 }
-
-const viewTemplates = {
-    home: () => `
-        <div id="homeView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 p-4 md:p-8">
-            <div class="text-center">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;" data-translate-key="landingTitle"></h1>
-                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
-            </div>
-            <div id="homeColorMapContainer" class="w-full max-w-4xl flex-grow my-8 cursor-pointer"></div>
-        </div>`,
-    recipeFormulas: () => `
-        <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
-            <aside id="recipeListPanel" class="h-full w-full md:w-auto md:flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
-                <div class="relative mb-4 flex-shrink-0">
-                    <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
-                </div>
-                <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
-            </aside>
-            <main id="recipeMainPanel" class="h-full flex-grow hidden md:flex flex-col min-h-0">
-                <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
-                    <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
-                        <div id="welcomeText" class="text-center">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
-                            <p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
-                        </div>
-                        <div id="colorMapContainer" class="flex-grow w-full mt-8"></div>
-                    </div>
-                    <div id="recipeContent" class="hidden"></div>
-                </div>
-            </main>
-            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] overflow-y-auto hidden sleek-scrollbar">
-                <div class="p-4">
-                    <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
-                    <div id="recipeContentMobile"></div>
-                </div>
-            </div>
-        </div>`,
-};
 
 // --- CORE UI RENDERING LOGIC ---
 
@@ -324,7 +323,7 @@ export function renderUltimateButton() {
 
     const mainButtonHTML = `
         <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 80px; height: 80px; padding: 16px; border-radius: 32px;">
-             <img id="ultimateCtaIcon" src="Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
+             <img id="ultimateCtaIcon" src="/assets/Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
         </button>
     `;
 
@@ -363,53 +362,6 @@ export function renderUltimateButton() {
     applyTranslations();
 }
 
-
-export function renderView(viewName, selectedId = null, attachViewEventListeners) {
-    state.currentView = viewName;
-    if (selectedId) { state.selectedRecipeId = selectedId; }
-
-    const blobContainer = document.getElementById('blobContainer');
-    const ultimateButtonContainer = document.getElementById('ultimateButtonContainer');
-
-    if (viewName !== 'home') {
-        document.body.style.overflowY = 'auto';
-        if (state.animation.blobAnimationFrameId) {
-            cancelAnimationFrame(state.animation.blobAnimationFrameId);
-            state.animation.blobAnimationFrameId = null;
-        }
-        if(blobContainer) {
-            blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
-        }
-    } else {
-        document.body.style.overflowY = 'hidden';
-        if (!state.animation.blobAnimationFrameId) {
-            initializeBackgroundBlobs();
-        }
-    }
-
-    ultimateButtonContainer.classList.toggle('hidden', viewName !== 'home' && viewName !== 'recipeFormulas');
-
-    return new Promise(resolve => {
-        const currentContent = mainContentEl.children[0];
-        if (currentContent) {
-            currentContent.classList.add('view-transition-out');
-            currentContent.addEventListener('animationend', () => {
-                mainContentEl.innerHTML = viewTemplates[viewName]();
-                if (attachViewEventListeners) attachViewEventListeners(viewName);
-                renderUltimateButton();
-                applyTranslations();
-                resolve();
-            }, { once: true });
-        } else {
-            mainContentEl.innerHTML = viewTemplates[viewName]();
-            if (attachViewEventListeners) attachViewEventListeners(viewName);
-            renderUltimateButton();
-            applyTranslations();
-            resolve();
-        }
-    });
-}
-
 export function updateListSelectionAndScroll(id) {
     const listContainer = document.getElementById('recipeListContainer');
     if (!listContainer) return;
@@ -435,249 +387,4 @@ export function updateListSelectionAndScroll(id) {
     }
 }
 
-export async function renderLibraryList() {
-    const container = document.getElementById('recipeListContainer');
-    if (!container) return;
-    const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-    const trendingIds = await fetchTrendingRecipeIds();
-    
-    const recipesToRender = recipesData.filter(r => 
-        r.name[getCurrentLanguage()].toLowerCase().includes(searchTerm) || 
-        r.description[getCurrentLanguage()].toLowerCase().includes(searchTerm)
-    );
-    
-    container.innerHTML = recipesToRender.map((recipe, index) => {
-        const isSelected = recipe.id === state.selectedRecipeId;
-        const isTrending = trendingIds.includes(recipe.id);
-        const hasImages = recipeImages[recipe.id] && recipeImages[recipe.id].length > 0 && recipeImages[recipe.id].some(url => !url.includes('placehold.co'));
-        const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
-        const animationStyle = `animation-delay: ${index * 30}ms;`;
-        
-        const imageIconHTML = hasImages 
-            ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image text-teal-500 flex-shrink-0"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`
-            : '';
 
-        const trendingIconHTML = isTrending 
-            ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-yellow-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` 
-            : '';
-
-        return `<div class="recipe-item p-4 rounded-lg cursor-pointer ${isSelected ? 'selected' : ''} recipe-item-stagger" 
-                     data-recipe-id="${recipe.id}" 
-                     style="${glowStyle} ${animationStyle}">
-            <div class="flex justify-between items-start">
-                <span class="font-semibold text-primary pr-2">${formatRecipeName(recipe.name[getCurrentLanguage()])}</span>
-                <div class="flex items-center gap-2 pt-1">
-                    ${imageIconHTML}
-                    ${trendingIconHTML}
-                </div>
-            </div>
-            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[getCurrentLanguage()]}</p>
-        </div>`;
-    }).join('');
-}
-
-export function renderLibraryDetails() {
-    const isMobile = window.innerWidth < 768;
-    const recipeListPanel = document.getElementById('recipeListPanel');
-    const recipeMainPanel = document.getElementById('recipeMainPanel');
-    const recipeDetailPanelMobile = document.getElementById('recipeDetailPanelMobile');
-
-    if (isMobile) {
-        recipeListPanel.classList.toggle('hidden', state.isMobileDetailActive);
-        if (state.isMobileDetailActive) {
-            recipeDetailPanelMobile.classList.remove('hidden');
-            setTimeout(() => recipeDetailPanelMobile.classList.add('visible'), 10);
-        } else {
-            recipeDetailPanelMobile.classList.remove('visible');
-            recipeDetailPanelMobile.addEventListener('transitionend', () => {
-                if (!recipeDetailPanelMobile.classList.contains('visible')) {
-                    recipeDetailPanelMobile.classList.add('hidden');
-                }
-            }, { once: true });
-        }
-    } else {
-        recipeListPanel?.classList.remove('hidden');
-        recipeDetailPanelMobile?.classList.add('hidden');
-        recipeDetailPanelMobile?.classList.remove('visible');
-    }
-
-    const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
-    let recipeContentContainer = isMobile && state.isMobileDetailActive 
-        ? document.getElementById('recipeContentMobile') 
-        : document.getElementById('recipeContent');
-    let welcomeAndChartContainer = document.getElementById('welcomeAndChartContainer');
-    
-    if (!recipeContentContainer) return;
-
-    if (!recipe) {
-        if (welcomeAndChartContainer) welcomeAndChartContainer.classList.remove('hidden');
-        recipeContentContainer.classList.add('hidden');
-        if(!isMobile) recipeMainPanel?.classList.remove('hidden');
-        return;
-    }
-    
-    if (welcomeAndChartContainer) welcomeAndChartContainer.classList.add('hidden');
-    recipeContentContainer.classList.remove('hidden');
-    if(!isMobile) recipeMainPanel?.classList.remove('hidden');
-
-    recipeContentContainer.innerHTML = `
-        <div class="mb-4 hidden md:block">
-            <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
-        </div>
-        <div>
-            <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name[getCurrentLanguage()])}</h3>
-            <p class="text-lg text-neutral-600 mt-1">"${recipe.description[getCurrentLanguage()]}"</p>
-        </div>
-        <div class="mt-8">${createFullRecipeHTML(recipe)}</div>
-    `;
-    applyTranslations();
-}
-
-
-// --- NEW: QUIZ ONE-PAGE UI RENDERING ---
-
-/**
- * Renders the entire one-page quiz layout.
- * @param {Array<object>} questions - The array of question data from quiz.js.
- */
-export function renderOnePageQuizLayout(questions) {
-    const quizContent = document.getElementById('quizContent');
-    if (!quizContent) return;
-
-    const gridAreas = ["1", "2", "3", "4", "5", "6"];
-
-    const questionsHTML = questions.map((q, index) => {
-        if (q.type === 'ai_prompt') {
-            // AI Prompt Island
-            return `
-                <div class="quiz-island" data-question-index="${index}" data-grid-area="6" style="transition-delay: ${index * 100}ms;">
-                    <h3 class="text-xl font-bold text-center mb-2">${q.question[getCurrentLanguage()]}</h3>
-                    <p class="text-gray-600 text-center text-sm mb-4">${q.description[getCurrentLanguage()]}</p>
-                    <textarea id="aiQuizPrompt" class="w-full p-3 rounded-xl bg-white/60 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all min-h-[100px]" placeholder="${t('aiQuizPromptPlaceholder')}"></textarea>
-                </div>`;
-        } else {
-            // Standard Question Island
-            const optionsHTML = q.options.map(opt => `
-                <button class="quiz-option w-full text-left p-4 flex items-center gap-4" data-tags="${opt.tags.join(',')}" data-question-index="${index}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-8 h-8 flex-shrink-0 text-gray-500 transition-colors">${opt.icon}</svg>
-                    <span class="font-semibold text-base md:text-lg">${opt.text[getCurrentLanguage()]}</span>
-                </button>`).join('');
-            
-            return `
-                <div class="quiz-island" data-question-index="${index}" data-grid-area="${gridAreas[index] || ''}" style="transition-delay: ${index * 100}ms;">
-                    <h3 class="text-xl font-bold text-center mb-4">${q.question[getCurrentLanguage()]}</h3>
-                    <div class="space-y-3">${optionsHTML}</div>
-                </div>`;
-        }
-    }).join('');
-
-    const submitHTML = `
-        <div id="quizSubmitIsland" class="quiz-island p-6 flex flex-col items-center justify-center text-center" style="transition-delay: ${questions.length * 100}ms;">
-             <p class="text-gray-600 mb-4 text-sm" data-translate-key="quizSubmitInfo"></p>
-             <button id="submitQuizBtn" class="btn btn-pastel-submit w-full max-w-xs py-4 text-lg" disabled>
-                <span data-translate-key="quizSubmitBtn"></span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-        </div>
-    `;
-
-    quizContent.innerHTML = `<div class="quiz-one-page-layout">${questionsHTML}${submitHTML}</div>`;
-
-    // Trigger activation animation
-    setTimeout(() => {
-        document.querySelectorAll('.quiz-island').forEach(island => {
-            island.classList.add('active');
-        });
-    }, 100);
-}
-
-
-/**
- * Renders the standard quiz result by replacing the quiz layout.
- * @param {object} bestMatch - The recipe object that best matches the answers.
- */
-export function renderQuizResult(bestMatch) {
-    const quizContent = document.getElementById('quizContent');
-    quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-2xl mx-auto py-8">
-            <h3 class="text-3xl font-bold" data-translate-key="quizResultTitle"></h3>
-            <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
-            <div class="my-8 p-6 bg-white/80 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
-                <img src="${recipeImages[bestMatch.id][0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview">
-                <div class="text-left">
-                    <h4 class="text-xl font-bold">${bestMatch.name[getCurrentLanguage()]}</h4>
-                    <p class="text-gray-600 mt-1">${bestMatch.description[getCurrentLanguage()]}</p>
-                </div>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base">
-                    <span data-translate-key="viewRecipeBtn"></span>
-                </button>
-                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                    <span data-translate-key="retakeQuizBtn"></span>
-                </button>
-            </div>
-        </div>`;
-}
-
-/**
- * Renders the AI-generated recipe result by replacing the quiz layout.
- * @param {object} recipe - The AI-generated recipe object.
- */
-export function renderQuizAIResult(recipe) {
-    const quizContent = document.getElementById('quizContent');
-    const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
-        <div class="flex flex-col p-3 rounded-lg bg-white/70">
-            <span class="text-sm text-gray-500 font-medium">${key}</span>
-            <span class="font-semibold text-lg text-gray-800">${value}</span>
-        </div>`).join('');
-
-    quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-3xl mx-auto py-8">
-            <h3 class="text-3xl font-bold" data-translate-key="aiQuizResultTitle"></h3>
-            <p class="mt-2 text-gray-600" data-translate-key="aiQuizResultDescription"></p>
-            <div class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
-                <h4 class="text-2xl font-bold text-center">${recipe.name[getCurrentLanguage()]}</h4>
-                <p class="text-gray-600 mt-1 text-center italic">"${recipe.description[getCurrentLanguage()]}"</p>
-                
-                <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
-                <div class="p-3 bg-white/70 rounded-lg font-semibold">${recipe.whiteBalance}</div>
-
-                <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.settings)}</div>
-                
-                ${recipe.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(recipe.colorDepth)}</div>` : ''}
-                ${recipe.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.detailSettings)}</div>` : ''}
-            </div>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                    <span data-translate-key="retakeQuizBtn"></span>
-                </button>
-            </div>
-        </div>`;
-}
-
-/**
- * Renders a loading spinner by replacing the quiz layout.
- */
-export function renderQuizLoading() {
-    const quizContent = document.getElementById('quizContent');
-    quizContent.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="loader-dark"></div><p class="mt-4 text-gray-600" data-translate-key="aiQuizGenerating"></p></div>`;
-}
-
-/**
- * Renders an error message by replacing the quiz layout.
- */
-export function renderQuizError() {
-    const quizContent = document.getElementById('quizContent');
-    quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-lg mx-auto py-8">
-            <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
-                <p class="mt-2 text-red-700" data-translate-key="aiErrorText"></p>
-                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base mt-4">
-                    <span data-translate-key="retakeQuizBtn"></span>
-                </button>
-            </div>
-        </div>`;
-}

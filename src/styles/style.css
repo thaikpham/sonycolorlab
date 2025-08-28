@@ -1,0 +1,442 @@
+/* General Styles */
+html { scroll-behavior: smooth; }
+:root {
+    --primary-accent: #007AFF;
+    --primary-accent-darker: #0056B3;
+    --background-light: #F0F2F5;
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
+    --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1);
+}
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-primary);
+    position: relative;
+    overflow-x: hidden;
+}
+.bg-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 1.5s var(--ease-out-back);
+    will-change: transform;
+}
+.bg-blob.visible {
+    opacity: 0.15;
+}
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border-radius: 20px;
+    transition: all 0.4s var(--ease-apple);
+}
+@media (min-width: 768px) {
+    .glass-panel {
+        border-radius: 28px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+    }
+}
+
+.recipe-item {
+    border-left: 4px solid transparent;
+    transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple), box-shadow 0.4s var(--ease-apple), border-color 0.3s var(--ease-apple);
+    will-change: transform, box-shadow, border-color;
+}
+.recipe-item.selected {
+    background-color: white;
+    transform: translateX(4px) scale(1.02);
+    border-left-color: var(--glow-color, var(--primary-accent));
+    box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+}
+.recipe-item:hover:not(.selected) {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: translateX(2px);
+}
+
+.btn {
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: transform 0.25s var(--ease-apple), background-color 0.25s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transform: scale(1);
+    will-change: transform, box-shadow;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.3); }
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--primary-accent-darker);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 25px rgba(0, 118, 255, 0.4);
+}
+.btn:active:not(:disabled) { transform: translateY(0px) scale(0.97); }
+
+.view-transition, .view-transition-out {
+    will-change: transform, opacity, filter;
+}
+.view-transition {
+    animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+.view-transition-out {
+    animation: fadeOutScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    position: absolute;
+}
+@keyframes zoomInFade {
+    from { opacity: 0; transform: scale(0.95); filter: blur(8px); }
+    to { opacity: 1; transform: scale(1); filter: blur(0px); }
+}
+@keyframes fadeOutScale {
+    from { opacity: 1; transform: scale(1); filter: blur(0px); }
+    to { opacity: 0; transform: scale(0.95); filter: blur(8px); }
+}
+
+.recipe-item-stagger {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: listItemFadeIn 0.5s var(--ease-out-back) forwards;
+}
+@keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
+
+.sleek-scrollbar { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.sleek-scrollbar::-webkit-scrollbar { display: none; }
+
+.modal.hidden { display: none; }
+.modal {
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-apple);
+}
+.modal.visible {
+    opacity: 1;
+}
+.modal-panel {
+    background: #ffffff;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    border: 1px solid #e5e7eb;
+    transform: scale(0.95) translateY(15px);
+    opacity: 0;
+    transition: transform 0.35s var(--ease-apple), opacity 0.35s var(--ease-apple);
+    will-change: transform, opacity;
+}
+.modal.visible .modal-panel {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+#recipeDetailPanelMobile {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple), visibility 0.4s;
+    pointer-events: none;
+    visibility: hidden;
+    will-change: transform, opacity;
+}
+#recipeDetailPanelMobile.visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    visibility: visible;
+}
+
+.parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
+#infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
+#infoTooltip.visible { opacity: 1; transform: translateY(0); }
+.loader { width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; }
+.loader-dark { width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.2); border-top: 3px solid #333; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.photo-collage {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(3, 1fr);
+}
+@media (min-width: 640px) {
+    .photo-collage {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+    }
+}
+.collage-item {
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s var(--ease-apple), transform 0.3s var(--ease-apple);
+    background-color: #e2e8f0;
+    aspect-ratio: 1 / 1;
+}
+.collage-item:hover {
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+.collage-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transition: transform 0.4s var(--ease-apple);
+}
+.collage-item:hover img { transform: scale(1.08); }
+
+#lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s var(--ease-apple); pointer-events: none; }
+#lightbox.visible { opacity: 1; pointer-events: auto; }
+#lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s var(--ease-apple), opacity 0.3s ease; opacity: 1; object-fit: contain; }
+#lightbox.visible img { transform: scale(1); }
+.lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
+.lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
+#lightboxPrev { left: 1rem; }
+#lightboxNext { right: 1rem; }
+#lightboxClose { position: absolute; top: 1rem; right: 1rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
+#lightboxClose:hover { transform: scale(1.1); }
+#lightboxCounter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; }
+
+#colorMapContainer, #homeColorMapContainer { width: 100%; height: 100%; min-height: 450px; position: relative; }
+#colorMapContainer svg, #homeColorMapContainer svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; }
+.color-map-node-group { cursor: pointer; }
+.color-map-node-aura { transition: all 0.3s var(--ease-apple); }
+.color-map-node-core { transition: all 0.3s var(--ease-apple); }
+.color-map-node-group:hover .color-map-node-aura { opacity: 0.5; transform: scale(1.8); }
+.color-map-node-group:hover .color-map-node-core { transform: scale(1.2); }
+.color-map-node-group.selected .color-map-node-core { stroke: white; stroke-width: 3px; transform: scale(1.3); }
+.color-map-node-group.selected .color-map-node-aura { opacity: 0.6; transform: scale(2); }
+.color-map-node-label { font-size: 12px; font-weight: 600; fill: #334155; pointer-events: none; transition: opacity 0.3s ease; text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white; opacity: 0; }
+.color-map-node-group:hover .color-map-node-label { opacity: 1; }
+.axis-label { font-size: 0.75rem; font-weight: 600; fill: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+.quadrant-label { font-size: 1.8rem; font-weight: 800; fill: rgba(203, 213, 225, 0.5); text-anchor: middle; pointer-events: none; opacity: 0; animation: text-fade-in 1s ease-out 0.5s forwards; }
+
+@media (min-width: 1024px) {
+    #recipeFormulasView { gap: 1rem; }
+    #recipeListPanel, #recipeMainPanel {
+        transition: flex-basis 0.5s var(--stage-manager-ease),
+                    transform 0.5s var(--stage-manager-ease),
+                    opacity 0.5s var(--stage-manager-ease);
+        will-change: flex-basis, transform, opacity;
+    }
+    #recipeListPanel { flex-basis: 25%; transform: translateX(0%); }
+    #recipeMainPanel { flex-basis: 75%; }
+    #recipeFormulasView.stage-inactive #recipeListPanel {
+        flex-basis: 10%;
+        transform: translateX(-50%);
+        opacity: 0.6;
+    }
+    #recipeFormulasView.stage-inactive #recipeMainPanel {
+        flex-basis: 90%;
+        margin-left: -6%;
+    }
+}
+
+#ultimateButtonContainer {
+    position: fixed;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    z-index: 50;
+}
+#ultimateButtonWrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+#ultimateActionsMenu {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.ultimate-action-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 56px;
+    height: 56px;
+    margin-left: -28px;
+    margin-top: -28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transform-origin: center;
+    transition: transform 0.3s var(--ease-out-back), opacity 0.3s ease, background-color 0.2s ease;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    transform: scale(0.5);
+}
+.ultimate-action-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.ultimate-action-btn .ultimate-tooltip {
+    position: absolute;
+    right: 120%;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+    background-color: rgba(29, 29, 31, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+.ultimate-action-btn:hover .ultimate-tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+#ultimateCtaBtn {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+}
+
+.liquid-glass-button {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    transition: all 0.4s var(--ease-apple);
+}
+.liquid-glass-button:hover {
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+    transform: scale(1.1);
+}
+
+.btn-pastel-cyan { background-color: rgba(26, 188, 156, 0.8); }
+.btn-pastel-magenta { background-color: rgba(155, 89, 182, 0.8); }
+.btn-pastel-yellow { background-color: rgba(241, 196, 15, 0.8); }
+.btn-pastel-red { background-color: rgba(231, 76, 60, 0.8); }
+.btn-pastel-blue { background-color: rgba(52, 152, 219, 0.8); }
+
+.btn-pastel-cyan:hover { background-color: rgba(26, 188, 156, 1); }
+.btn-pastel-magenta:hover { background-color: rgba(155, 89, 182, 1); }
+.btn-pastel-yellow:hover { background-color: rgba(241, 196, 15, 1); }
+.btn-pastel-red:hover { background-color: rgba(231, 76, 60, 1); }
+.btn-pastel-blue:hover { background-color: rgba(52, 152, 219, 1); }
+
+/* --- NEW QUIZ SUBMIT BUTTON STYLE --- */
+.btn-pastel-submit {
+    background-image: linear-gradient(45deg, #C797EB, #73A4D4);
+    color: white;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 4px 20px rgba(115, 164, 212, 0.3);
+    transition: all 0.3s var(--ease-apple);
+}
+.btn-pastel-submit:hover:not(:disabled) {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(115, 164, 212, 0.5);
+}
+.btn-pastel-submit:disabled {
+    background: #e0e0e0;
+    box-shadow: none;
+    color: #9e9e9e;
+}
+
+/* --- REWORKED QUIZ STYLES --- */
+#quizContent {
+    --island-gap: 1.5rem;
+    --island-padding: 1.75rem;
+}
+.quiz-island {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 24px;
+    padding: var(--island-padding);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s var(--ease-apple), transform 0.5s var(--ease-apple);
+    will-change: opacity, transform;
+    display: flex;
+    flex-direction: column;
+}
+.quiz-island.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+.quiz-option {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    transition: all 0.3s var(--ease-apple);
+}
+.quiz-option:hover {
+    transform: scale(1.03);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.quiz-option.selected {
+    background: white;
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+    box-shadow: 0 5px 20px rgba(0, 122, 255, 0.2);
+    transform: scale(1.05);
+}
+.quiz-option.selected svg {
+    stroke: var(--primary-accent);
+}
+
+/* Mobile layout: single column scroll */
+@media (max-width: 1023px) {
+    .quiz-one-page-layout {
+        display: flex;
+        flex-direction: column;
+        gap: var(--island-gap);
+    }
+}
+
+/* Desktop layout: Masonry-style Grid */
+@media (min-width: 1024px) {
+    #quizContent {
+        height: 100%; /* Ensure content area can be used for grid height */
+    }
+    .quiz-one-page-layout {
+        display: grid;
+        height: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: auto auto 1fr; /* Allow rows to size by content */
+        gap: var(--island-gap);
+        grid-template-areas:
+            "q0 q1 q2"
+            "q0 q5 q5"
+            "q3 q5 q5"
+            "q4 sub sub";
+    }
+
+    /* Assigning each question block to its named grid area */
+    .quiz-island[data-question-index="0"] { grid-area: q0; }
+    .quiz-island[data-question-index="1"] { grid-area: q1; }
+    .quiz-island[data-question-index="2"] { grid-area: q2; }
+    .quiz-island[data-question-index="3"] { grid-area: q3; }
+    .quiz-island[data-question-index="4"] { grid-area: q4; }
+    .quiz-island[data-question-index="5"] { grid-area: q5; }
+    #quizSubmitIsland { grid-area: sub; }
+
+    /* Make AI prompt area fill its available space */
+    .quiz-island[data-question-index="5"], #aiQuizPrompt {
+        flex-grow: 1;
+    }
+    /* Push the submit button to the bottom of its area for a clean look */
+    #quizSubmitIsland {
+        justify-content: flex-end;
+    }
+}
+
+.quiz-result-view {
+    animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}

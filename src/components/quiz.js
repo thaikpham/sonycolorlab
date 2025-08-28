@@ -68,18 +68,43 @@ export const quizQuestions = [
     }
 ];
 
+import { renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError } from './quiz-ui.js';
+import { callGeminiAPI } from '../services/api.js';
+import { getCurrentLanguage } from '../services/language.js';
+import { state } from '../services/state.js';
+
+export async function handleQuizAIGeneration(userInput, answers) {
+    const { instance } = state.quiz;
+    if (!instance) return;
+
+    renderQuizLoading();
+    instance.applyTranslations();
+
+    const preferences = Object.values(answers).flat().join(', ');
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the user's preferences from a quiz: "${preferences}". Now, consider the user's creative prompt: "${userInput}". Your task is to generate a completely new, creative, and fully detailed JSON object representing a unique color recipe that matches this inspiration. The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
+
+    try {
+        const generatedRecipe = await callGeminiAPI(expertPrompt, null);
+        renderQuizAIResult(generatedRecipe);
+    } catch (error) {
+        console.error("Quiz Gemini API call failed:", error);
+        renderQuizError();
+    } finally {
+        instance.applyTranslations();
+    }
+}
+
 export class Quiz {
     constructor(dependencies) {
         this.state = dependencies.state;
         this.recipesData = dependencies.recipesData;
-        this.ui = dependencies.ui;
         this.applyTranslations = dependencies.applyTranslations;
         this.handleQuizAIGeneration = dependencies.handleQuizAIGeneration;
     }
 
     start() {
         this.state.quiz.answers = {}; // Use an object to store answers by index
-        this.ui.renderOnePageQuizLayout(quizQuestions);
+        renderOnePageQuizLayout(quizQuestions);
         this.applyTranslations();
     }
 
@@ -159,7 +184,7 @@ export class Quiz {
         scores.sort((a, b) => b.score - a.score);
         const bestMatch = this.recipesData.find(r => r.id === scores[0].id);
 
-        this.ui.renderQuizResult(bestMatch);
+        renderQuizResult(bestMatch);
         this.applyTranslations();
     }
 }
