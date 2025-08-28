@@ -57,7 +57,10 @@ export const translations = {
     aiQuizSkipBtn: { vi: "Bỏ qua & Xem gợi ý", en: "Skip & Get Suggestion" },
     aiQuizGenerating: { vi: "Gemini đang sáng tạo...", en: "Gemini is creating..." },
     aiQuizResultTitle: { vi: "Công thức Sáng tạo từ Gemini!", en: "Creative Recipe from Gemini!" },
-    aiQuizResultDescription: { vi: "Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:", en: "Here is the unique recipe created based on your inspiration:" }
+    aiQuizResultDescription: { vi: "Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:", en: "Here is the unique recipe created based on your inspiration:" },
+    // --- UPDATED QUIZ SUBMIT BUTTON ---
+    quizSubmitBtn: { vi: "Hé lộ Phong cách của bạn", en: "Reveal Your Style" },
+    quizSubmitInfo: { vi: "Chạm để khám phá công thức màu dành riêng cho bạn.", en: "Tap to discover the color recipe made just for you." }
 };
 
 export const parameterExplanations = {
