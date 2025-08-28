@@ -1,6 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { firebaseConfig } from './firebase-config';
+
+// IMPORTANT: Replace this with your actual Firebase configuration
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
 let app;
 let db;
@@ -63,12 +72,12 @@ export const getQuizQuestions = async () => {
  * @returns {Promise<string>} A promise that resolves to the AI's text response.
  */
 export const callGeminiApi = async (prompt) => {
-  // Use the environment variable for the API URL.
-  // Fallback to a default for safety, though the .env.local should provide it.
   const apiUrl = import.meta.env.VITE_GEMINI_API_URL;
 
   if (!apiUrl) {
-    throw new Error("VITE_GEMINI_API_URL is not defined in your environment variables.");
+    const errorMessage = "The API URL is not configured. Please set VITE_GEMINI_API_URL in your .env.local file.";
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
   try {
@@ -81,17 +90,17 @@ export const callGeminiApi = async (prompt) => {
     });
 
     if (!response.ok) {
-      // Get more detailed error message from the backend response body
       const errorBody = await response.text();
-      console.error(`API call failed with status ${response.status}:`, errorBody);
-      throw new Error(`API call failed: ${errorBody}`);
+      const errorMessage = `API call failed with status ${response.status}: ${errorBody}`;
+      console.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
-    // The backend now sends plain text, so we use response.text()
-    return await response.text();
+    const data = await response.json();
+    return data.text;
   } catch (error) {
-    console.error('Error calling Gemini API:', error);
-    // Re-throw the error to be caught by the calling component
-    throw error;
+    const errorMessage = `Failed to call Gemini API: ${error.message}`;
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 };

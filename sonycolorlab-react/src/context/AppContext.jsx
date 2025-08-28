@@ -1,10 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-
-// --- Configuration Constants ---
-// In a real-world scenario, these would be loaded from environment variables
-export const API_KEY = "YOUR_API_KEY_HERE"; // Placeholder
-export const isAIEnabled = API_KEY && API_KEY !== 'YOUR_API_KEY_HERE';
-export const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-preview-0514:generateContent?key=${API_KEY}`;
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getRecipes, getQuizQuestions } from '../services/api';
 
 // Create the context
 const AppContext = createContext();
@@ -15,6 +10,8 @@ export const useAppContext = () => useContext(AppContext);
 // Create the provider component
 export const AppProvider = ({ children }) => {
     // --- Central Application State ---
+    const [recipes, setRecipes] = useState([]);
+    const [quizQuestions, setQuizQuestions] = useState([]);
     const [currentView, setCurrentView] = useState('home');
     const [selectedRecipeId, setSelectedRecipeId] = useState(null);
     const [isMobileDetailActive, setIsMobileDetailActive] = useState(false);
@@ -41,14 +38,15 @@ export const AppProvider = ({ children }) => {
     });
 
     const [quiz, setQuiz] = useState({
-    const [isQuizOpen, setIsQuizOpen] = useState(false);
-    const [quizResult, setQuizResult] = useState(null);
-    const [isAILabOpen, setIsAILabOpen] = useState(false);
-    const [isContribNoteOpen, setIsContribNoteOpen] = useState(false);
         instance: null,
         currentQuestionIndex: 0,
         answers: [],
     });
+
+    const [isQuizOpen, setIsQuizOpen] = useState(false);
+    const [quizResult, setQuizResult] = useState(null);
+    const [isAILabOpen, setIsAILabOpen] = useState(false);
+    const [isContribNoteOpen, setIsContribNoteOpen] = useState(false);
 
     const [firebase, setFirebase] = useState({ db: null });
 
@@ -66,8 +64,28 @@ export const AppProvider = ({ children }) => {
         html2canvas: false,
     });
 
+    // Fetch initial data when the provider mounts
+    useEffect(() => {
+        const fetchInitialData = async () => {
+            try {
+                const [recipesData, quizData] = await Promise.all([
+                    getRecipes(),
+                    getQuizQuestions(),
+                ]);
+                setRecipes(recipesData);
+                setQuizQuestions(quizData);
+            } catch (error) {
+                console.error("Error fetching initial data:", error);
+            }
+        };
+
+        fetchInitialData();
+    }, []); // Empty dependency array ensures this runs only once
+
     const value = {
         // State values
+        recipes,
+        quizQuestions,
         currentView,
         selectedRecipeId,
         isMobileDetailActive,
@@ -85,6 +103,8 @@ export const AppProvider = ({ children }) => {
         scripts,
 
         // State setters
+        setRecipes,
+        setQuizQuestions,
         setCurrentView,
         setSelectedRecipeId,
         setIsMobileDetailActive,
@@ -100,11 +120,6 @@ export const AppProvider = ({ children }) => {
         setLightbox,
         setAnimation,
         setScripts,
-
-        // Constants
-        isAIEnabled,
-        API_URL,
-        API_KEY
     };
 
     return (

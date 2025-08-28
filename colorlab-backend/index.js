@@ -53,10 +53,10 @@ exports.askGemini = onRequest({cors: true}, async (req, res) => {
       const resp = await generativeModel.generateContent(request);
       
       // Correctly extract the response text
-      if (resp.response && resp.response.candidates && resp.response.candidates.length > 0 && resp.response.candidates[0].content && resp.response.candidates[0].content.parts && resp.response.candidates[0].content.parts.length > 0) {
-        const text = resp.response.candidates[0].content.parts[0].text;
+      if (resp && resp.candidates && resp.candidates.length > 0 && resp.candidates[0].content && resp.candidates[0].content.parts && resp.candidates[0].content.parts.length > 0) {
+        const text = resp.candidates[0].content.parts[0].text;
         logger.info("Successfully received response from Gemini.");
-        res.status(200).send(text);
+        res.status(200).send({ text });
       } else {
         logger.error("Invalid response structure from Gemini API:", {structuredData: true, response: resp});
         res.status(500).send('Failed to get a valid response from the model.');
