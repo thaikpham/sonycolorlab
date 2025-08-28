@@ -1,171 +1,34 @@
-// --- Local Module Imports ---
-import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
-import { parameterExplanations } from './translations.js';
-import { Quiz, quizQuestions } from './quiz.js';
-import recipesData from './recipes-core.js';
-import recipeImages from './recipes-images.js';
 import { state } from './state.js';
-import { initializeFirebase } from './api.js';
-// Import UI functions for the quiz
-import { 
-    renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, 
-    initializeBackgroundBlobs, openModal, closeModal, renderUltimateButton,
-    renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError
-} from './ui.js';
-// Import Feature functions for the quiz and others
-import {
-    openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
-    openLightbox,
-    generateRecipePdf,
-    shareRecipe,
-    renderColorMapChart,
-    updateChartSelection,
-    handleQuizAIGeneration
-} from './features.js';
+import { openModal, closeModal, toggleUltimateActionsMenu } from './ui.js';
+import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
+import { setLanguage, updateLangSlider, applyTranslations } from './language.js';
+import { renderColorMapChart, openLightbox, generateRecipePdf, shareRecipe } from './features.js';
+import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
+import { renderView, attachViewEventListeners } from './view-manager.js';
+import { parameterExplanations } from './translations.js';
+import recipesData from './recipes.js';
 
-// --- CORE APP LOGIC ---
-
-function handleRecipeSelection(id) {
-    state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
-    state.isMobileDetailActive = !!state.selectedRecipeId;
-
-    updateListSelectionAndScroll(state.selectedRecipeId);
-    renderLibraryDetails();
-    updateChartSelection();
-
-    if (state.selectedRecipeId) {
-        const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
-        if (recipe) {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'view_recipe',
-                recipe_id: recipe.id,
-                recipe_name: recipe.name.en,
-                recipe_name_vi: recipe.name.vi
-            });
-        }
-    }
-}
-
-function resetToChartView() {
-    state.selectedRecipeId = null;
-    state.isMobileDetailActive = false;
-    updateListSelectionAndScroll(null);
-    renderLibraryDetails();
-    updateChartSelection();
-}
-
-function attachViewEventListeners(viewName) {
-    if (viewName === 'home') {
-        initializeBackgroundBlobs();
-        const homeChartContainer = document.getElementById('homeColorMapContainer');
-        if (homeChartContainer) {
-            const resizeObserver = new ResizeObserver(entries => {
-                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#homeColorMapContainer', recipesData);
-                     resizeObserver.unobserve(homeChartContainer);
-                }
-            });
-            resizeObserver.observe(homeChartContainer);
-        }
-    }
-    if (viewName === 'recipeFormulas') {
-        renderLibraryList();
-        renderLibraryDetails();
-
-        const view = document.getElementById('recipeFormulasView');
-        const listPanel = document.getElementById('recipeListPanel');
-        const mainPanel = document.getElementById('recipeMainPanel');
-
-        if (view && listPanel && mainPanel && window.innerWidth >= 1024) {
-            const setStageActive = () => view.classList.remove('stage-inactive');
-            const setStageInactive = () => view.classList.add('stage-inactive');
-
-            setTimeout(setStageInactive, 500);
-
-            listPanel.addEventListener('mouseenter', setStageActive);
-            mainPanel.addEventListener('mouseenter', setStageInactive);
-        }
-
-        const chartContainer = document.getElementById('colorMapContainer');
-        if (chartContainer) {
-            const resizeObserver = new ResizeObserver(entries => {
-                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#colorMapContainer', recipesData);
-                     resizeObserver.unobserve(chartContainer);
-                }
-            });
-            resizeObserver.observe(chartContainer);
-        }
-        updateLangSlider();
-    }
-}
-
-function toggleUltimateActionsMenu(forceClose = false) {
-    const menu = document.getElementById('ultimateActionsMenu');
-    const icon = document.getElementById('ultimateCtaIcon');
-    if (!menu || !icon) return;
-
-    const actionButtons = menu.querySelectorAll('.ultimate-action-btn');
-    const isOpen = menu.classList.contains('menu-open');
-
-    if (forceClose || isOpen) {
-        menu.classList.remove('menu-open');
-        icon.style.transform = 'rotate(0deg)';
-        actionButtons.forEach(btn => {
-            btn.classList.remove('visible');
-            btn.style.transform = `scale(0.5)`;
-        });
-    } else {
-        menu.classList.add('menu-open');
-        icon.style.transform = 'rotate(135deg)';
-        
-        const radius = 130; 
-        const startAngle = 167;
-        const endAngle = 283;
-        
-        const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
-
-        actionButtons.forEach((btn, index) => {
-            const angle = startAngle + (angleStep * index);
-            const angleRad = angle * (Math.PI / 180);
-
-            const x = radius * Math.cos(angleRad);
-            const y = radius * Math.sin(angleRad);
-            
-            btn.style.transitionDelay = `${index * 40}ms`;
-            btn.classList.add('visible');
-            btn.style.transform = `translate(${x}px, ${y}px) scale(1)`;
+async function initializeAndStartQuiz() {
+    if (!state.quiz.instance) {
+        const { Quiz, handleQuizAIGeneration } = await import('../components/quiz.js');
+        state.quiz.instance = new Quiz({
+            state,
+            recipesData,
+            applyTranslations,
+            handleQuizAIGeneration,
         });
     }
+    state.quiz.instance.start();
 }
 
-
-async function init() {
-    initLanguage();
-
-    state.quiz.instance = new Quiz({
-        state,
-        recipesData,
-        applyTranslations,
-        handleQuizAIGeneration,
-        ui: {
-            renderOnePageQuizLayout,
-            renderQuizResult,
-            renderQuizAIResult,
-            renderQuizLoading,
-            renderQuizError
-        }
-    });
-
-    // --- GLOBAL EVENT LISTENERS (EVENT DELEGATION) ---
+export function initEventListeners() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
         // --- Ultimate Button Logic ---
         if (target.closest('#ultimateCtaBtn')) {
             if (state.currentView === 'home') {
-                await renderView('recipeFormulas', null, attachViewEventListeners);
+                await renderView('recipeFormulas');
             } else if (state.currentView === 'recipeFormulas') {
                 toggleUltimateActionsMenu();
             }
@@ -176,7 +39,7 @@ async function init() {
         if (target.closest('#ultimateQuizBtn')) {
             toggleUltimateActionsMenu(true);
             openModal('quizModal');
-            state.quiz.instance.start();
+            initializeAndStartQuiz();
             return;
         }
         if (target.closest('#ultimateContributeBtn')) {
@@ -196,19 +59,19 @@ async function init() {
         if (d3Node) {
             if (state.currentView === 'home') {
                 const recipeId = d3.select(d3Node).datum().id;
-                await renderView('recipeFormulas', recipeId, attachViewEventListeners);
+                await renderView('recipeFormulas', recipeId);
             } else {
                 handleRecipeSelection(d3.select(d3Node).datum().id);
             }
             return;
         }
         
-        if (target.closest('#homeBtn')) { await renderView('home', null, attachViewEventListeners); return; }
+        if (target.closest('#homeBtn')) { await renderView('home'); return; }
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
         
         if (target.closest('#quizShortcutBtn')) {
             openModal('quizModal');
-            state.quiz.instance.start();
+            initializeAndStartQuiz();
             return;
         }
 
@@ -232,7 +95,11 @@ async function init() {
 
         if (target.closest('#downloadPdfBtn')) { generateRecipePdf(target.closest('#downloadPdfBtn').dataset.recipeId); return; }
         if (target.closest('#shareRecipeBtn')) { shareRecipe(target.closest('#shareRecipeBtn').dataset.recipeId); return; }
-        if (target.closest('#tweakWithAIBtn')) { openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId); return; }
+        if (target.closest('#tweakWithAIBtn')) {
+            const { openAILab } = await import('../components/ai-lab/ai-lab.js');
+            openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId);
+            return;
+        }
 
         if (target.closest('#toggleSaveGuideBtn')) {
             const btn = target.closest('#toggleSaveGuideBtn');
@@ -258,7 +125,7 @@ async function init() {
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
                 closeModal('quizModal');
-                await renderView('recipeFormulas', recipeId, attachViewEventListeners);
+                await renderView('recipeFormulas', recipeId);
                 return;
             }
             if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
@@ -277,6 +144,9 @@ async function init() {
         }
 
         if (target.closest('#aiLabModal')) {
+            const { closeAILab, handleAIGeneration, confirmAndCallAI } = await import('../components/ai-lab/ai-lab.js');
+            const { renderAILab } = await import('../components/ai-lab/ai-lab-ui.js');
+
             if (target.closest('#closeAILabBtn')) { closeAILab(); return; }
             if (target.closest('#cancelAIBtn')) { state.ai.userPrompt = ''; state.ai.generatedRecipe = null; renderAILab(); return; }
             if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
@@ -314,11 +184,4 @@ async function init() {
     document.addEventListener('input', e => {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
-
-    await renderView('home', null, attachViewEventListeners);
-    updateLangSlider();
-
-    initializeFirebase();
 }
-
-document.addEventListener("DOMContentLoaded", init);
