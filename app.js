@@ -179,9 +179,9 @@ async function init() {
             state.quiz.instance.start();
             return;
         }
-        if (target.closest('#ultimateHomeBtn')) {
+        if (target.closest('#ultimateContributeBtn')) {
             toggleUltimateActionsMenu(true);
-            await renderView('home', null, attachViewEventListeners);
+            openModal('contributionNoteModal');
             return;
         }
         if (!target.closest('#ultimateButtonWrapper')) {
@@ -263,6 +263,17 @@ async function init() {
             }
             if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
             if (target.closest('#submitQuizBtn')) { state.quiz.instance.submitQuiz(); return; }
+        }
+
+        if (target.closest('#contributionNoteModal')) {
+            if (target.closest('#closeContributionNoteBtn') || target.closest('#closeContributionNoteBtn2')) {
+                closeModal('contributionNoteModal');
+                return;
+            }
+            if (target.closest('#proceedToGooglePhotosBtn')) {
+                setTimeout(() => closeModal('contributionNoteModal'), 300);
+                return;
+            }
         }
 
         if (target.closest('#aiLabModal')) {
