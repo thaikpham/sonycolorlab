@@ -1,20 +1,26 @@
-
 // --- Local Module Imports ---
 import { t, applyTranslations, updateLangSlider, initLanguage, setLanguage, getCurrentLanguage } from './language.js';
 import { parameterExplanations } from './translations.js';
-import { Quiz } from './quiz.js';
+import { Quiz, quizQuestions } from './quiz.js';
 import recipesData from './recipes-core.js';
 import recipeImages from './recipes-images.js';
 import { state } from './state.js';
 import { initializeFirebase } from './api.js';
-import { renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, initializeBackgroundBlobs, openModal, closeModal, renderUltimateButton } from './ui.js';
+// Import UI functions for the quiz
+import { 
+    renderView, updateListSelectionAndScroll, renderLibraryDetails, renderLibraryList, 
+    initializeBackgroundBlobs, openModal, closeModal, renderUltimateButton,
+    renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError
+} from './ui.js';
+// Import Feature functions for the quiz and others
 import {
     openAILab, closeAILab, handleAIGeneration, confirmAndCallAI, renderAILab,
     openLightbox,
     generateRecipePdf,
     shareRecipe,
     renderColorMapChart,
-    updateChartSelection
+    updateChartSelection,
+    handleQuizAIGeneration
 } from './features.js';
 
 // --- CORE APP LOGIC ---
@@ -104,7 +110,6 @@ function toggleUltimateActionsMenu(forceClose = false) {
     const isOpen = menu.classList.contains('menu-open');
 
     if (forceClose || isOpen) {
-        // Close animation
         menu.classList.remove('menu-open');
         icon.style.transform = 'rotate(0deg)';
         actionButtons.forEach(btn => {
@@ -112,14 +117,12 @@ function toggleUltimateActionsMenu(forceClose = false) {
             btn.style.transform = `scale(0.5)`;
         });
     } else {
-        // Open animation
         menu.classList.add('menu-open');
         icon.style.transform = 'rotate(135deg)';
         
-        // --- UPDATED: Widened the arc by 10 degrees on each side ---
         const radius = 130; 
-        const startAngle = 167; // Starts from 180 - 10
-        const endAngle = 283;   // Ends at 270 + 10, creating a wider 110-degree fan
+        const startAngle = 167;
+        const endAngle = 283;
         
         const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
 
@@ -143,11 +146,16 @@ async function init() {
 
     state.quiz.instance = new Quiz({
         state,
-        getCurrentLanguage,
         recipesData,
-        recipeImages,
         applyTranslations,
-        renderView: (view, id) => renderView(view, id, attachViewEventListeners)
+        handleQuizAIGeneration,
+        ui: {
+            renderOnePageQuizLayout,
+            renderQuizResult,
+            renderQuizAIResult,
+            renderQuizLoading,
+            renderQuizError
+        }
     });
 
     // --- GLOBAL EVENT LISTENERS (EVENT DELEGATION) ---
@@ -171,12 +179,11 @@ async function init() {
             state.quiz.instance.start();
             return;
         }
-        if (target.closest('#ultimateHomeBtn')) {
+        if (target.closest('#ultimateContributeBtn')) {
             toggleUltimateActionsMenu(true);
-            await renderView('home', null, attachViewEventListeners);
+            openModal('contributionNoteModal');
             return;
         }
-        // Close menu if clicking outside the container
         if (!target.closest('#ultimateButtonWrapper')) {
             toggleUltimateActionsMenu(true);
         }
@@ -255,6 +262,18 @@ async function init() {
                 return;
             }
             if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
+            if (target.closest('#submitQuizBtn')) { state.quiz.instance.submitQuiz(); return; }
+        }
+
+        if (target.closest('#contributionNoteModal')) {
+            if (target.closest('#closeContributionNoteBtn') || target.closest('#closeContributionNoteBtn2')) {
+                closeModal('contributionNoteModal');
+                return;
+            }
+            if (target.closest('#proceedToGooglePhotosBtn')) {
+                setTimeout(() => closeModal('contributionNoteModal'), 300);
+                return;
+            }
         }
 
         if (target.closest('#aiLabModal')) {

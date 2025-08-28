@@ -31,6 +31,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     
 <style>
+    /* General Styles */
     html { scroll-behavior: smooth; }
     :root {
         --primary-accent: #007AFF;
@@ -179,21 +180,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         transform: translateX(0);
         pointer-events: auto;
         visibility: visible;
-    }
-
-    .quiz-question-container {
-        animation: quizFadeIn 0.4s var(--ease-apple) forwards;
-    }
-    .quiz-question-container.exiting {
-        animation: quizFadeOut 0.3s var(--ease-apple) forwards;
-    }
-    @keyframes quizFadeIn {
-        from { opacity: 0; transform: translateY(15px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes quizFadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(-15px); }
     }
 
     .parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
@@ -374,6 +360,120 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .btn-pastel-red:hover { background-color: rgba(231, 76, 60, 1); }
     .btn-pastel-blue:hover { background-color: rgba(52, 152, 219, 1); }
 
+    /* --- NEW QUIZ SUBMIT BUTTON STYLE --- */
+    .btn-pastel-submit {
+        background-image: linear-gradient(45deg, #C797EB, #73A4D4);
+        color: white;
+        font-weight: 700;
+        border: none;
+        box-shadow: 0 4px 20px rgba(115, 164, 212, 0.3);
+        transition: all 0.3s var(--ease-apple);
+    }
+    .btn-pastel-submit:hover:not(:disabled) {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 8px 30px rgba(115, 164, 212, 0.5);
+    }
+    .btn-pastel-submit:disabled {
+        background: #e0e0e0;
+        box-shadow: none;
+        color: #9e9e9e;
+    }
+
+    /* --- REWORKED QUIZ STYLES --- */
+    #quizContent {
+        --island-gap: 1.5rem;
+        --island-padding: 1.75rem;
+    }
+    .quiz-island {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 24px;
+        padding: var(--island-padding);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s var(--ease-apple), transform 0.5s var(--ease-apple);
+        will-change: opacity, transform;
+        display: flex;
+        flex-direction: column;
+    }
+    .quiz-island.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .quiz-option {
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 16px;
+        transition: all 0.3s var(--ease-apple);
+    }
+    .quiz-option:hover {
+        transform: scale(1.03);
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .quiz-option.selected {
+        background: white;
+        border-color: var(--primary-accent);
+        color: var(--primary-accent);
+        box-shadow: 0 5px 20px rgba(0, 122, 255, 0.2);
+        transform: scale(1.05);
+    }
+    .quiz-option.selected svg {
+        stroke: var(--primary-accent);
+    }
+    
+    /* Mobile layout: single column scroll */
+    @media (max-width: 1023px) {
+        .quiz-one-page-layout {
+            display: flex;
+            flex-direction: column;
+            gap: var(--island-gap);
+        }
+    }
+
+    /* Desktop layout: Masonry-style Grid */
+    @media (min-width: 1024px) {
+        #quizContent {
+            height: 100%; /* Ensure content area can be used for grid height */
+        }
+        .quiz-one-page-layout {
+            display: grid;
+            height: 100%;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto 1fr; /* Allow rows to size by content */
+            gap: var(--island-gap);
+            grid-template-areas:
+                "q0 q1 q2"
+                "q0 q5 q5"
+                "q3 q5 q5"
+                "q4 sub sub";
+        }
+
+        /* Assigning each question block to its named grid area */
+        .quiz-island[data-question-index="0"] { grid-area: q0; }
+        .quiz-island[data-question-index="1"] { grid-area: q1; }
+        .quiz-island[data-question-index="2"] { grid-area: q2; }
+        .quiz-island[data-question-index="3"] { grid-area: q3; }
+        .quiz-island[data-question-index="4"] { grid-area: q4; }
+        .quiz-island[data-question-index="5"] { grid-area: q5; }
+        #quizSubmitIsland { grid-area: sub; }
+
+        /* Make AI prompt area fill its available space */
+        .quiz-island[data-question-index="5"], #aiQuizPrompt {
+            flex-grow: 1; 
+        }
+        /* Push the submit button to the bottom of its area for a clean look */
+        #quizSubmitIsland {
+            justify-content: flex-end; 
+        }
+    }
+
+    .quiz-result-view {
+        animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    }
+
 </style>
 </head>
 <body class="antialiased">
@@ -415,18 +515,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="lightboxCounter"></div>
 </div>
 
-<div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div id="quizPanel" class="modal-panel w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl">
-        <div class="flex justify-between items-center p-5 flex-shrink-0">
-            <h2 class="text-xl font-bold" data-translate-key="quizTitle"></h2>
-            <button id="closeQuizBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
-        </div>
-        <div id="quizContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar"></div>
-        <div class="p-5 flex-shrink-0">
-            <div class="w-full bg-gray-200 rounded-full h-2">
-                <div id="quizProgressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-        </div>
+<div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4 md:pr-[160px]">
+    <div id="quizPanel" class="modal-panel w-full max-w-7xl max-h-[90vh] flex flex-col rounded-2xl md:rounded-3xl !bg-gray-100/70 relative">
+        <button id="closeQuizBtn" class="absolute top-4 right-5 text-3xl font-light text-gray-400 hover:text-black z-10">&times;</button>
+        <!-- The quiz content will be dynamically rendered here by ui.js -->
+        <!-- The new CSS rules will automatically apply the grid layout on desktop -->
+        <div id="quizContent" class="p-4 md:p-6 flex-grow overflow-y-auto sleek-scrollbar"></div>
     </div>
 </div>
 
@@ -442,6 +536,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <button id="closeAILabBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
         </div>
         <div id="aiLabContent" class="p-6 md:p-8 flex-grow overflow-y-auto sleek-scrollbar">
+        </div>
+    </div>
+</div>
+
+<div id="contributionNoteModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div id="contributionNotePanel" class="modal-panel w-full max-w-lg flex flex-col rounded-2xl">
+        <div class="flex justify-between items-center p-5 border-b border-gray-200">
+            <h2 class="text-xl font-bold" data-translate-key="contributeNoteTitle"></h2>
+            <button id="closeContributionNoteBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
+        </div>
+        <div class="p-6 md:p-8">
+            <p class="text-gray-600 leading-relaxed" data-translate-key="contributeNoteText"></p>
+        </div>
+        <div class="p-5 bg-gray-50 border-t border-gray-200 rounded-b-2xl flex flex-col sm:flex-row justify-end gap-3">
+             <button id="closeContributionNoteBtn2" class="btn bg-gray-200 text-gray-800 py-2 px-6" data-translate-key="aiCancelBtn"></button>
+             <a href="https://photos.app.goo.gl/hRPGc9Ch6XmskEdLA" target="_blank" rel="noopener noreferrer" id="proceedToGooglePhotosBtn" class="btn btn-primary py-2 px-6">
+                <span data-translate-key="contributeNoteProceedBtn"></span>
+             </a>
         </div>
     </div>
 </div>

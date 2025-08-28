@@ -1,24 +1,32 @@
 /**
  * quiz.js
- * This module encapsulates all logic and data related to the "Find My Color" quiz.
+ * This module encapsulates the core logic and data for the "Find My Color" quiz.
+ * It manages the quiz flow, state, and answer processing, but delegates
+ * rendering and complex features to other modules.
  * * ==============================================
- * CẬP NHẬT CUỐI CÙNG - NGÀY 27/08/2025
+ * REFACTOR & TÁI CẤU TRÚC - NGÀY 28/08/2025
  * ==============================================
- * - Đã gỡ bỏ hoàn toàn bước phân tích ảnh bằng AI.
- * - Thêm câu hỏi lựa chọn "Ảnh màu" và "Trắng & Đen".
- * - Giữ lại toàn bộ icon màu sắc để giao diện sinh động.
- * - Loại bỏ nền màu của các nút lựa chọn để giao diện thoáng hơn.
+ * - Chuyển sang mô hình "One Page Quiz".
+ * - `start()`: Gọi hàm render layout một lần duy nhất.
+ * - `handleAnswer()`: Chỉ xử lý logic chọn/bỏ chọn và cập nhật state, không render lại toàn bộ.
+ * - Thêm `submitQuiz()` để xử lý logic khi người dùng bấm nút hoàn thành.
+ * - Loại bỏ logic render khỏi file này, chỉ còn gọi các hàm từ `ui.js`.
+ * * ==============================================
+ * CẬP NHẬT ICON - NGÀY 28/08/2025
+ * ==============================================
+ * - Đồng bộ tất cả icon trong quiz sang thư viện Lucide và áp dụng màu sắc
+ * để phù hợp với giao diện chung của website.
  */
 
 // --- QUIZ DATA ---
-const quizQuestions = [
+export const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
         options: [
-            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: '<circle cx="12" cy="8" r="5" stroke="#f43f5e" /><path d="M20 21a8 8 0 0 0-16 0" stroke="#f43f5e" />' },
+            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: '<circle cx="12" cy="7" r="4" stroke="#f43f5e"/><path d="M5.5 21v-2a4 4 0 0 1 4-4h5a4 4 0 0 1 4 4v2" stroke="#f43f5e"/>' },
             { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: { vi: 'Phong cảnh', en: 'Landscape' }, icon: '<path d="m8 3 4 8 5-5 5 15H2L8 3z" stroke="#22c55e"/>' },
-            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" stroke="#6366f1"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" stroke="#6366f1"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" stroke="#6366f1"/><path d="M10 6h4" stroke="#a78bfa"/><path d="M10 10h4" stroke="#a78bfa"/><path d="M10 14h4" stroke="#a78bfa"/><path d="M10 18h4" stroke="#a78bfa"/>' },
-            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: '<path d="M17 8h-7a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4h7a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4Z" stroke="#f97316"/><path d="M17 18v2a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2" stroke="#f97316"/><path d="M20 8v8" stroke="#f97316"/>' }
+            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: '<rect width="16" height="20" x="4" y="2" rx="2" stroke="#6366f1"/><path d="M9 22v-4h6v4" stroke="#6366f1"/><path d="M8 6h.01" stroke="#a78bfa"/><path d="M16 6h.01" stroke="#a78bfa"/><path d="M12 6h.01" stroke="#a78bfa"/><path d="M12 10h.01" stroke="#a78bfa"/><path d="M12 14h.01" stroke="#a78bfa"/><path d="M16 10h.01" stroke="#a78bfa"/><path d="M8 10h.01" stroke="#a78bfa"/><path d="M8 14h.01" stroke="#a78bfa"/><path d="M16 14h.01" stroke="#a78bfa"/>' },
+            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: '<rect width="20" height="20" x="2" y="2" rx="2" ry="2" stroke="#f97316"/><path d="M7 2v20" stroke="#f97316"/><path d="M17 2v20" stroke="#f97316"/><path d="M2 12h20" stroke="#f97316"/><path d="M2 7h5" stroke="#f97316"/><path d="M2 17h5" stroke="#f97316"/><path d="M17 17h5" stroke="#f97316"/><path d="M17 7h5" stroke="#f97316"/>' }
         ]
     },
     {
@@ -40,35 +48,39 @@ const quizQuestions = [
     {
         question: { vi: "Bạn thích ảnh màu hay ảnh trắng đen?", en: "Do you prefer color or black & white?" },
         options: [
-            { tags: ['color'], text: { vi: 'Ảnh màu', en: 'Color' }, icon: '<circle cx="12" cy="12" r="10" stroke="#3b82f6"/><path d="m2 12 2 2 4-4" stroke="#84cc16"/><path d="m14 7 2 2 4-4" stroke="#f97316"/><path d="M12 22 7.5 12" stroke="#ef4444"/>' },
+            { tags: ['color'], text: { vi: 'Ảnh màu', en: 'Color' }, icon: '<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#3b82f6"/><path d="m2 12 5 5" stroke="#ef4444"/><path d="m7 17 5-10" stroke="#f97316"/><path d="m12 7 5 10" stroke="#84cc16"/><path d="m17 17 5-5" stroke="#3b82f6"/>' },
             { tags: ['bw'], text: { vi: 'Trắng & Đen', en: 'Black & White' }, icon: '<circle cx="12" cy="12" r="10" stroke="#52525b"/><path d="M12 2a10 10 0 0 0-10 10h20a10 10 0 0 0-10-10z" fill="#71717a"/>' }
         ]
     },
     {
         type: 'conditional_saturation',
-        question: { vi: "Độ bão hòa màu sắc?", en: "And saturation?" },
+        question: { vi: "Bạn thích độ bão hòa màu như thế nào?", en: "How do you like your color saturation?" },
         options: [
             { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: { vi: 'Đậm', en: 'Rich' }, icon: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.7-3.29C8.2 7.95 7 6.46 7 5.06V3" stroke="#e11d48"/><path d="M14 3v2.06c0 1.4-.93 2.89-2.3 3.9-1.13 1.03-1.7 2.13-1.7 3.29 0 2.22 1.8 4.05 4 4.05Z" stroke="#f43f5e"/>' },
-            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Trung tính', en: 'Natural' }, icon: '<circle cx="12" cy="12" r="10" stroke="#71717a"/><circle cx="12" cy="12" r="4" fill="#a1a1aa"/>' },
-            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Nhạt', en: 'Muted' }, icon: '<circle cx="12" cy="12" r="10" stroke="#a1a1aa"/><path d="M22 2 2 22" stroke="#d4d4d8"/>' },
+            { tags: ['normal', 'moderate', 'natural'], text: { vi: 'Vừa phải', en: 'Natural' }, icon: '<circle cx="12" cy="12" r="10" stroke="#71717a"/><circle cx="12" cy="12" r="4" fill="#a1a1aa"/>' },
+            { tags: ['low-saturation', 'muted', 'faded'], text: { vi: 'Hơi nhạt', en: 'Muted' }, icon: '<circle cx="12" cy="12" r="10" stroke="#a1a1aa"/><path d="M22 2 2 22" stroke="#d4d4d8"/>' },
         ]
+    },
+    {
+        type: 'ai_prompt',
+        question: { vi: "Sáng tạo màu sắc theo cảm hứng của bạn", en: "Create a color recipe from your inspiration" },
+        description: { vi: "Hãy miêu tả bối cảnh, cảm xúc, hoặc phong cách bạn muốn. Gemini sẽ cố gắng tạo ra một công thức màu độc đáo cho bạn. (Không bắt buộc)", en: "Describe the context, mood, or style you want. Gemini will try to create a unique color recipe for you. (Optional)" }
     }
 ];
 
 export class Quiz {
     constructor(dependencies) {
         this.state = dependencies.state;
-        this.getCurrentLanguage = dependencies.getCurrentLanguage;
         this.recipesData = dependencies.recipesData;
-        this.recipeImages = dependencies.recipeImages;
+        this.ui = dependencies.ui;
         this.applyTranslations = dependencies.applyTranslations;
-        this.renderView = dependencies.renderView;
+        this.handleQuizAIGeneration = dependencies.handleQuizAIGeneration;
     }
 
     start() {
-        this.state.quiz.currentQuestionIndex = 0;
-        this.state.quiz.answers = [];
-        this.renderQuestion();
+        this.state.quiz.answers = {}; // Use an object to store answers by index
+        this.ui.renderOnePageQuizLayout(quizQuestions);
+        this.applyTranslations();
     }
 
     close() {
@@ -79,100 +91,75 @@ export class Quiz {
         const selectedOption = e.target.closest('.quiz-option');
         if (!selectedOption) return;
 
-        document.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
+        const questionIndex = selectedOption.dataset.questionIndex;
+        const tags = selectedOption.dataset.tags.split(',');
+        
+        // Store answer
+        this.state.quiz.answers[questionIndex] = tags;
+
+        // Update UI for the specific question island
+        const island = selectedOption.closest('.quiz-island');
+        island.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
         selectedOption.classList.add('selected');
 
-        const tags = selectedOption.dataset.tags.split(',');
-        this.state.quiz.answers.push(...tags);
-
-        setTimeout(() => {
-            const currentQuestion = quizQuestions[this.state.quiz.currentQuestionIndex];
-            if (tags.includes('bw') && currentQuestion.options.some(o => o.tags.includes('bw'))) {
-                 this.state.quiz.currentQuestionIndex += 2; // Skip saturation question
+        // Special handling for B&W choice
+        const bwIsland = document.querySelector('.quiz-island[data-question-index="4"]');
+        if(questionIndex === '3') { // If "Color vs B&W" is answered
+            if(tags.includes('bw')) {
+                bwIsland?.classList.add('hidden');
+                delete this.state.quiz.answers['4']; // Remove saturation answer if it exists
             } else {
-                 this.state.quiz.currentQuestionIndex++;
+                bwIsland?.classList.remove('hidden');
             }
-            this.renderQuestion();
-        }, 300);
+        }
+        
+        this.checkCompletion();
+    }
+    
+    checkCompletion() {
+        const requiredQuestions = quizQuestions.filter(q => q.type !== 'ai_prompt' && q.type !== 'conditional_saturation');
+        const answeredCount = Object.keys(this.state.quiz.answers).filter(key => {
+            const q = quizQuestions[key];
+            return q && q.type !== 'ai_prompt' && q.type !== 'conditional_saturation';
+        }).length;
+
+        const isBwSelected = this.state.quiz.answers['3']?.includes('bw');
+        let allAnswered = answeredCount >= requiredQuestions.length;
+
+        // If color is selected, saturation is also required
+        if (!isBwSelected && !this.state.quiz.answers['4']) {
+            allAnswered = false;
+        }
+
+        const submitBtn = document.getElementById('submitQuizBtn');
+        if (submitBtn) {
+            submitBtn.disabled = !allAnswered;
+        }
     }
 
-    renderQuestion() {
-        const quizContent = document.getElementById('quizContent');
-        const progressBar = document.getElementById('quizProgressBar');
-        let qIndex = this.state.quiz.currentQuestionIndex;
-        
-        const renderNewContent = () => {
-            if (qIndex >= quizQuestions.length) {
-                this.calculateAndShowResult();
-                return;
-            }
-
-            const questionData = quizQuestions[qIndex];
-            const gridClass = `grid gap-4 ${questionData.options.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
-
-            quizContent.innerHTML = `
-                <div class="quiz-question-container">
-                    <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8">${questionData.question[this.getCurrentLanguage()]}</h3>
-                    <div class="${gridClass}">
-                        ${questionData.options.map(opt => `
-                            <button class="quiz-option w-full text-left p-4 rounded-2xl flex items-center gap-4 border-2 border-gray-300 bg-transparent hover:bg-gray-100 transition-all duration-200" data-tags="${opt.tags.join(',')}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-6 h-6 flex-shrink-0">
-                                    ${opt.icon}
-                                </svg>
-                                <span class="font-semibold text-lg">${opt.text[this.getCurrentLanguage()]}</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>`;
-            
-            progressBar.style.width = `${((qIndex) / (quizQuestions.length)) * 100}%`;
-        };
-
-        const currentContainer = quizContent.querySelector('.quiz-question-container');
-        if (currentContainer) {
-            currentContainer.classList.add('exiting');
-            currentContainer.addEventListener('animationend', renderNewContent, { once: true });
+    submitQuiz() {
+        const aiPrompt = document.getElementById('aiQuizPrompt')?.value.trim();
+        if (aiPrompt) {
+            this.handleQuizAIGeneration(aiPrompt, this.state.quiz.answers);
         } else {
-            renderNewContent();
+            this.calculateAndShowResult();
         }
     }
 
     calculateAndShowResult() {
-        const isBW = this.state.quiz.answers.includes('bw');
+        const allAnswers = Object.values(this.state.quiz.answers).flat();
+        const isBW = allAnswers.includes('bw');
         const availableRecipes = this.recipesData.filter(r => isBW ? r.type === 'bw' : r.type === 'color');
 
         const scores = availableRecipes.map(recipe => {
-            let score = recipe.tags.reduce((acc, tag) => acc + (this.state.quiz.answers.includes(tag) ? 1 : 0), 0);
+            let score = recipe.tags.reduce((acc, tag) => acc + (allAnswers.includes(tag) ? 1 : 0), 0);
             return { id: recipe.id, score: score };
         });
 
         scores.sort((a, b) => b.score - a.score);
         const bestMatch = this.recipesData.find(r => r.id === scores[0].id);
-        
-        const quizContent = document.getElementById('quizContent');
-        document.getElementById('quizProgressBar').style.width = '100%';
 
-        quizContent.innerHTML = `
-            <div class="text-center view-transition">
-                <h3 class="text-2xl font-bold" data-translate-key="quizResultTitle"></h3>
-                <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
-                <div class="my-8 p-6 bg-gray-100 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
-                    <img src="${this.recipeImages[bestMatch.id][0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview">
-                    <div class="text-left">
-                        <h4 class="text-xl font-bold">${bestMatch.name[this.getCurrentLanguage()]}</h4>
-                        <p class="text-gray-600 mt-1">${bestMatch.description[this.getCurrentLanguage()]}</p>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base">
-                        <span data-translate-key="viewRecipeBtn"></span>
-                    </button>
-                    <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                        <span data-translate-key="retakeQuizBtn"></span>
-                    </button>
-                </div>
-            </div>`;
-            
+        this.ui.renderQuizResult(bestMatch);
         this.applyTranslations();
     }
 }

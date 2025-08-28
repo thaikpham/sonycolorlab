@@ -20,13 +20,13 @@ export const translations = {
     recipeSettingsTitle: {vi: "Cài đặt Chính", en: "Main Settings"},
     colorDepthTitle: {vi: "Độ sâu màu", en: "Color Depth"},
     detailTitle: {vi: "Chi tiết", en: "Detail"},
-    sonyGuideBtn: {vi: "Xem tài liệu gốc từ Sony", en: "View Official Sony Guide"},
+    sonyGuideBtn: {vi: "Tài liệu Picture Profile", en: "Picture Profile Guide"},
     backToChartBtn: {vi: "← Quay lại Bản đồ màu", en: "← Back to Color Map"},
     backToListBtn: {vi: "← Quay lại danh sách", en: "← Back to list"},
     ctaTitle: {vi: "Chia sẻ tác phẩm của bạn!", en: "Share Your Creations!"},
     ctaText: {vi: "Yêu thích công thức này? Hãy chia sẻ ảnh của bạn lên group Facebook <b>Sony Alpha Vietnam | Official</b> với hashtag <b>#sonycolorlab</b> và {recipeHashtag} để có cơ hội được giới thiệu!", en: "Love this recipe? Share your photos on the <b>Sony Alpha Vietnam | Official</b> Facebook group with hashtags <b>#sonycolorlab</b> and {recipeHashtag} for a chance to be featured!"},
     ctaButton: {vi: "Tham gia Nhóm", en: "Join The Group"},
-    contributeRecipeBtn: { vi: "Đóng góp công thức mới", en: "Contribute New Recipe" },
+    contributeRecipeBtn: { vi: "Đóng góp công thức", en: "Contribute Recipe" },
     trendingTitle: {vi: "Công thức thịnh hành", en: "Trending Recipes"},
     trendingLoading: {vi: "Đang tải công thức thịnh hành...", en: "Loading trending recipes..."},
     aiLabTitle: {vi: "Gemini AI Colorist", en: "Gemini AI Colorist"},
@@ -50,7 +50,22 @@ export const translations = {
     saveGuideTitle: { vi: "Lưu công thức vào máy ảnh", en: "Save Recipe to Camera" },
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
-    hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" }
+    hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" },
+    // --- NEW QUIZ AI TRANSLATIONS ---
+    aiQuizPromptPlaceholder: { vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt, tông màu cine, hơi buồn...", en: "e.g., a sunset afternoon in Dalat, cinematic tone, a bit melancholic..." },
+    aiQuizGenerateBtn: { vi: "Sáng tạo với AI", en: "Generate with AI" },
+    aiQuizSkipBtn: { vi: "Bỏ qua & Xem gợi ý", en: "Skip & Get Suggestion" },
+    aiQuizGenerating: { vi: "Gemini đang sáng tạo...", en: "Gemini is creating..." },
+    aiQuizResultTitle: { vi: "Công thức Sáng tạo từ Gemini!", en: "Creative Recipe from Gemini!" },
+    aiQuizResultDescription: { vi: "Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:", en: "Here is the unique recipe created based on your inspiration:" },
+    // --- UPDATED QUIZ SUBMIT BUTTON ---
+    quizSubmitBtn: { vi: "Hé lộ Phong cách của bạn", en: "Reveal Your Style" },
+    quizSubmitInfo: { vi: "Chạm để khám phá công thức màu dành riêng cho bạn.", en: "Tap to discover the color recipe made just for you." },
+    // --- NEW CONTRIBUTION BUTTON & MODAL ---
+    contributePhotosBtn: { vi: "Đóng góp ảnh Demo", en: "Contribute Demo Photos" },
+    contributeNoteTitle: { vi: "Hướng dẫn Đóng góp Ảnh", en: "Photo Contribution Guide" },
+    contributeNoteText: { vi: "Để ảnh của bạn được chọn làm demo cho công thức, vui lòng:<br>1. Chụp theo đúng thông số của công thức gốc.<br>2. Tải ảnh lên album và bình luận mã số màu (VD: SCL-001) vào ảnh của bạn.", en: "To have your photo featured as a recipe demo, please:<br>1. Shoot using the exact parameters of the original recipe.<br>2. Upload to the album and comment with the color code (e.g., SCL-001) on your photo." },
+    contributeNoteProceedBtn: { vi: "Đã hiểu & Tải ảnh lên", en: "Got it & Upload Photo" }
 };
 
 export const parameterExplanations = {
