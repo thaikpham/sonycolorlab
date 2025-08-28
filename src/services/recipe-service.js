@@ -1,5 +1,6 @@
 import { state } from './state.js';
-import { updateListSelectionAndScroll, renderLibraryDetails } from './ui.js';
+import { updateListSelectionAndScroll } from './ui.js';
+import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { updateChartSelection } from './features.js';
 import recipesData from './recipes.js';
 
