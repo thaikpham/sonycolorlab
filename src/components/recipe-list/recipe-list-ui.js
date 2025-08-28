@@ -2,7 +2,7 @@ import { state } from '../../services/state.js';
 import { getCurrentLanguage, applyTranslations } from '../../services/language.js';
 import { fetchTrendingRecipeIds } from '../../services/api.js';
 import recipesData from '../../services/recipes.js';
-import recipeImages from '../../assets/recipe-images.js';
+import recipeImages from '../../services/recipe-images.js';
 import { createFullRecipeHTML, formatRecipeName } from '../../services/ui.js';
 
 export async function renderLibraryList() {

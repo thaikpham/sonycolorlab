@@ -22,7 +22,7 @@ import { state } from './state.js';
 import { getCurrentLanguage, t, applyTranslations } from './language.js';
 import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
-import recipeImages from '../assets/recipe-images.js';
+import recipeImages from './recipe-images.js';
 import { isAIEnabled } from './state.js';
 import { fetchTrendingRecipeIds } from './api.js';
 
