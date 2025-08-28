@@ -515,12 +515,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="lightboxCounter"></div>
 </div>
 
-<div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div id="quizPanel" class="modal-panel w-full max-w-7xl max-h-[90vh] flex flex-col rounded-2xl md:rounded-3xl !bg-gray-100/70">
-        <div class="flex justify-between items-center p-5 flex-shrink-0">
-            <h2 class="text-xl font-bold" data-translate-key="quizTitle"></h2>
-            <button id="closeQuizBtn" class="text-3xl font-light text-gray-400 hover:text-black">&times;</button>
-        </div>
+<div id="quizModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-start py-4 pl-8 pr-4">
+    <div id="quizPanel" class="modal-panel w-full max-w-7xl max-h-[90vh] flex flex-col rounded-2xl md:rounded-3xl !bg-gray-100/70 relative">
+        <button id="closeQuizBtn" class="absolute top-4 right-5 text-3xl font-light text-gray-400 hover:text-black z-10">&times;</button>
         <!-- The quiz content will be dynamically rendered here by ui.js -->
         <!-- The new CSS rules will automatically apply the grid layout on desktop -->
         <div id="quizContent" class="p-4 md:p-6 flex-grow overflow-y-auto sleek-scrollbar"></div>
