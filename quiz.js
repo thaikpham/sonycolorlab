@@ -11,6 +11,11 @@
  * - `handleAnswer()`: Chỉ xử lý logic chọn/bỏ chọn và cập nhật state, không render lại toàn bộ.
  * - Thêm `submitQuiz()` để xử lý logic khi người dùng bấm nút hoàn thành.
  * - Loại bỏ logic render khỏi file này, chỉ còn gọi các hàm từ `ui.js`.
+ * * ==============================================
+ * CẬP NHẬT ICON - NGÀY 28/08/2025
+ * ==============================================
+ * - Đồng bộ tất cả icon trong quiz sang thư viện Lucide và áp dụng màu sắc
+ * để phù hợp với giao diện chung của website.
  */
 
 // --- QUIZ DATA ---
@@ -18,10 +23,10 @@ export const quizQuestions = [
     {
         question: { vi: "Bạn sẽ chụp gì hôm nay?", en: "What will you be shooting today?" },
         options: [
-            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: '<circle cx="12" cy="8" r="5" stroke="#f43f5e" /><path d="M20 21a8 8 0 0 0-16 0" stroke="#f43f5e" />' },
+            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: { vi: 'Chân dung', en: 'Portraits' }, icon: '<circle cx="12" cy="7" r="4" stroke="#f43f5e"/><path d="M5.5 21v-2a4 4 0 0 1 4-4h5a4 4 0 0 1 4 4v2" stroke="#f43f5e"/>' },
             { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: { vi: 'Phong cảnh', en: 'Landscape' }, icon: '<path d="m8 3 4 8 5-5 5 15H2L8 3z" stroke="#22c55e"/>' },
-            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" stroke="#6366f1"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" stroke="#6366f1"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" stroke="#6366f1"/><path d="M10 6h4" stroke="#a78bfa"/><path d="M10 10h4" stroke="#a78bfa"/><path d="M10 14h4" stroke="#a78bfa"/><path d="M10 18h4" stroke="#a78bfa"/>' },
-            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: '<path d="M17 8h-7a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4h7a4 4 0 0 0 4-4v-2a4 4 0 0 0-4-4Z" stroke="#f97316"/><path d="M17 18v2a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2" stroke="#f97316"/><path d="M20 8v8" stroke="#f97316"/>' }
+            { tags: ['urban-night', 'street-photography', 'city-lights'], text: { vi: 'Đô thị', en: 'Urban' }, icon: '<rect width="16" height="20" x="4" y="2" rx="2" stroke="#6366f1"/><path d="M9 22v-4h6v4" stroke="#6366f1"/><path d="M8 6h.01" stroke="#a78bfa"/><path d="M16 6h.01" stroke="#a78bfa"/><path d="M12 6h.01" stroke="#a78bfa"/><path d="M12 10h.01" stroke="#a78bfa"/><path d="M12 14h.01" stroke="#a78bfa"/><path d="M16 10h.01" stroke="#a78bfa"/><path d="M8 10h.01" stroke="#a78bfa"/><path d="M8 14h.01" stroke="#a78bfa"/><path d="M16 14h.01" stroke="#a78bfa"/>' },
+            { tags: ['lifestyle', 'everyday', 'family-photos'], text: { vi: 'Đời thường', en: 'Lifestyle' }, icon: '<rect width="20" height="20" x="2" y="2" rx="2" ry="2" stroke="#f97316"/><path d="M7 2v20" stroke="#f97316"/><path d="M17 2v20" stroke="#f97316"/><path d="M2 12h20" stroke="#f97316"/><path d="M2 7h5" stroke="#f97316"/><path d="M2 17h5" stroke="#f97316"/><path d="M17 17h5" stroke="#f97316"/><path d="M17 7h5" stroke="#f97316"/>' }
         ]
     },
     {
@@ -43,7 +48,7 @@ export const quizQuestions = [
     {
         question: { vi: "Bạn thích ảnh màu hay ảnh trắng đen?", en: "Do you prefer color or black & white?" },
         options: [
-            { tags: ['color'], text: { vi: 'Ảnh màu', en: 'Color' }, icon: '<circle cx="12" cy="12" r="10" stroke="#3b82f6"/><path d="m2 12 2 2 4-4" stroke="#84cc16"/><path d="m14 7 2 2 4-4" stroke="#f97316"/><path d="M12 22 7.5 12" stroke="#ef4444"/>' },
+            { tags: ['color'], text: { vi: 'Ảnh màu', en: 'Color' }, icon: '<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#3b82f6"/><path d="m2 12 5 5" stroke="#ef4444"/><path d="m7 17 5-10" stroke="#f97316"/><path d="m12 7 5 10" stroke="#84cc16"/><path d="m17 17 5-5" stroke="#3b82f6"/>' },
             { tags: ['bw'], text: { vi: 'Trắng & Đen', en: 'Black & White' }, icon: '<circle cx="12" cy="12" r="10" stroke="#52525b"/><path d="M12 2a10 10 0 0 0-10 10h20a10 10 0 0 0-10-10z" fill="#71717a"/>' }
         ]
     },
