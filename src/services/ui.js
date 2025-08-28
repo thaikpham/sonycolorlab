@@ -22,7 +22,7 @@ import { state } from './state.js';
 import { getCurrentLanguage, t, applyTranslations } from './language.js';
 import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
-import recipeImages from '../assets/recipe-images.js';
+import recipeImages from './recipe-images.js';
 import { isAIEnabled } from './state.js';
 import { fetchTrendingRecipeIds } from './api.js';
 
@@ -323,7 +323,7 @@ export function renderUltimateButton() {
 
     const mainButtonHTML = `
         <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 80px; height: 80px; padding: 16px; border-radius: 32px;">
-             <img id="ultimateCtaIcon" src="/src/assets/Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
+             <img id="ultimateCtaIcon" src="/assets/Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
         </button>
     `;
 
