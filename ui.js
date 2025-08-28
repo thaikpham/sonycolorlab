@@ -10,6 +10,11 @@
  * cho desktop và layout cuộn cho mobile.
  * - Cập nhật các hàm render kết quả để thay thế layout quiz thay vì chỉ một câu hỏi.
  * - Áp dụng phong cách "Liquid Glass" cho các thành phần UI của quiz.
+ * * ==============================================
+ * CẬP NHẬT NÚT SUBMIT QUIZ - NGÀY 28/08/2025
+ * ==============================================
+ * - Thay đổi class của nút submit thành `btn-pastel-submit` để có giao diện mới.
+ * - Cập nhật `data-translate-key` cho nút và phụ đề để hiển thị nội dung mời gọi hơn.
  */
 
 // --- Local Module Imports ---
@@ -567,10 +572,11 @@ export function renderOnePageQuizLayout(questions) {
     }).join('');
 
     const submitHTML = `
-        <div id="quizSubmitIsland" class="quiz-island" data-grid-area="submit" style="transition-delay: ${questions.length * 100}ms;">
-             <p class="text-center text-gray-600 mb-4" data-translate-key="quizSubmitInfo"></p>
-             <button id="submitQuizBtn" class="btn btn-primary w-full py-4 text-lg" disabled>
+        <div id="quizSubmitIsland" class="quiz-island p-6 flex flex-col items-center justify-center text-center" style="transition-delay: ${questions.length * 100}ms;">
+             <p class="text-gray-600 mb-4 text-sm" data-translate-key="quizSubmitInfo"></p>
+             <button id="submitQuizBtn" class="btn btn-pastel-submit w-full max-w-xs py-4 text-lg" disabled>
                 <span data-translate-key="quizSubmitBtn"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
         </div>
     `;
