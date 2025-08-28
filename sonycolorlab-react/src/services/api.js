@@ -1,106 +1,97 @@
-/**
- * api.js (React Version)
- * This module handles all interactions with external services, refactored for a React environment.
- */
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { firebaseConfig } from './firebase-config';
 
-// --- Firebase SDK Imports ---
-// Using the npm package instead of CDN imports
-import { initializeApp } from "firebase/app";
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+let app;
+let db;
 
 /**
- * Initializes the Firebase application, signs in the user anonymously,
- * and returns the Firestore database instance via a state setter.
- * @param {string} firebaseConfigString - The JSON string for Firebase config.
- * @param {function} setFirebase - The state setter function for Firebase state.
+ * Initializes the Firebase application and Firestore database.
+ * This function should be called once when the application starts.
  */
-export async function initializeFirebase(firebaseConfigString, setFirebase) {
-    if (typeof firebaseConfigString === 'undefined' || firebaseConfigString.startsWith("%%") || firebaseConfigString === 'undefined') {
-        console.warn("Firebase config not found. Features requiring Firebase will be disabled.");
-        setFirebase({ db: null }); // Update state to reflect no DB connection
-        return;
+export const initializeFirebase = () => {
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    console.log("Firebase initialized successfully.");
+  } catch (error) {
+    console.error("Error initializing Firebase:", error);
+  }
+};
+
+/**
+ * Fetches the list of recipes from the Firestore database.
+ * @returns {Promise<Array>} A promise that resolves to an array of recipe objects.
+ */
+export const getRecipes = async () => {
+  if (!db) {
+    console.error("Firestore is not initialized. Call initializeFirebase first.");
+    return [];
+  }
+  try {
+    const querySnapshot = await getDocs(collection(db, 'recipes'));
+    const recipes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return recipes;
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    return [];
+  }
+};
+
+/**
+ * Fetches quiz questions from the Firestore database.
+ * @returns {Promise<Array>} A promise that resolves to an array of quiz questions.
+ */
+export const getQuizQuestions = async () => {
+    if (!db) {
+        console.error("Firestore is not initialized. Call initializeFirebase first.");
+        return [];
     }
     try {
-        const firebaseConfig = JSON.parse(firebaseConfigString);
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        await signInAnonymously(auth);
-        console.log("Firebase initialized and user signed in anonymously.");
-
-        setFirebase({ db }); // Set the DB instance in context state
+        const querySnapshot = await getDocs(collection(db, 'quiz'));
+        const questions = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return questions;
     } catch (error) {
-        console.error("Firebase initialization failed:", error);
-        setFirebase({ db: null }); // Ensure db is null on error
+        console.error("Error fetching quiz questions:", error);
+        return [];
     }
-}
+};
 
 /**
- * Fetches the latest trending recipe IDs from Firestore.
- * @param {object} db - The Firestore database instance.
- * @param {string} appId - The application ID for the Firestore path.
- * @returns {Promise<string[]>} A promise that resolves to an array of recipe IDs.
+ * Calls the Gemini API backend to get a response for a given prompt.
+ * @param {string} prompt - The user's message to send to the AI.
+ * @returns {Promise<string>} A promise that resolves to the AI's text response.
  */
-export async function fetchTrendingRecipeIds(db, appId) {
-    const fallbackIDs = ["scl-001", "scl-007", "scl-008", "scl-015", "scl-027"];
-    if (!db || !appId) {
-        return fallbackIDs;
-    }
-    try {
-        const docRef = doc(db, `artifacts/${appId}/public/data/trending/latest`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
-            return docSnap.data().ids;
-        } else {
-            return fallbackIDs;
-        }
-    } catch (error) {
-        console.error("Error fetching trending data:", error);
-        return fallbackIDs;
-    }
-}
+export const callGeminiApi = async (prompt) => {
+  // Use the environment variable for the API URL.
+  // Fallback to a default for safety, though the .env.local should provide it.
+  const apiUrl = import.meta.env.VITE_GEMINI_API_URL;
 
-/**
- * Makes a POST request to the Gemini API to generate content.
- * @param {string} apiKey - The Gemini API key.
- * @param {string} apiUrl - The full URL for the API endpoint.
- * @param {string} prompt - The complete prompt to send to the API.
- *param {AbortSignal} signal - An AbortSignal to allow for request cancellation.
- * @returns {Promise<object>} A promise that resolves to the parsed JSON response from the API.
- */
-export async function callGeminiAPI(apiKey, apiUrl, prompt, signal) {
-    if (!apiKey || apiKey.startsWith("YOUR_")) {
-        throw new Error("API key not configured.");
-    }
+  if (!apiUrl) {
+    throw new Error("VITE_GEMINI_API_URL is not defined in your environment variables.");
+  }
 
-    const payload = {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-            responseMimeType: "application/json",
-        }
-    };
-
+  try {
     const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: signal
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API Error: ${response.status} ${errorText}`);
+      // Get more detailed error message from the backend response body
+      const errorBody = await response.text();
+      console.error(`API call failed with status ${response.status}:`, errorBody);
+      throw new Error(`API call failed: ${errorBody}`);
     }
 
-    const result = await response.json();
-
-    if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
-        console.error("Invalid API response structure:", result);
-        throw new Error("Invalid API response structure.");
-    }
-
-    // The API returns a JSON string, so we need to parse it.
-    return JSON.parse(result.candidates[0].content.parts[0].text);
-}
+    // The backend now sends plain text, so we use response.text()
+    return await response.text();
+  } catch (error) {
+    console.error('Error calling Gemini API:', error);
+    // Re-throw the error to be caught by the calling component
+    throw error;
+  }
+};
