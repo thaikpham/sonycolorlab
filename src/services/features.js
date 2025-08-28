@@ -16,7 +16,7 @@ import { state } from './state.js';
 import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, getCurrentLanguage, applyTranslations } from './language.js';
 import recipesData from './recipes.js';
-import recipeImages from '../assets/recipe-images.js';
+import recipeImages from './recipe-images.js';
 import { showToast, openModal, closeModal } from './ui.js';
 
 // --- CDN URLs for external libraries ---

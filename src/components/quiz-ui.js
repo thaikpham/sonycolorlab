@@ -1,5 +1,5 @@
 import { getCurrentLanguage, t } from '../services/language.js';
-import recipeImages from '../assets/recipe-images.js';
+import recipeImages from '../services/recipe-images.js';
 
 /**
  * Renders the entire one-page quiz layout.
