@@ -5,9 +5,11 @@
   "main": "index.js",
   "dependencies": {
     "@google-analytics/data": "^4.2.0",
-    "firebase-admin": "^12.0.0"
+    "firebase-admin": "^12.0.0",
+    "jose": "^5.2.4"
   },
   "engines": {
     "node": "18"
   }
 }
+
