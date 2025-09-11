@@ -17,7 +17,7 @@ export const __firebase_config = (() => {
 export const __app_id = import.meta.env.VITE_APP_ID || 'default-app-id';
 
 // A computed flag to easily check if the AI features should be enabled.
-export const isAIEnabled = API_KEY && API_KEY !== '';
+export const isAIEnabled = import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== '';
 
 // The full URL for the Gemini API endpoint.
 export const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
