@@ -1,23 +1,21 @@
 import './styles/style.css';
 // --- Local Module Imports ---
 import { initLanguage, updateLangSlider } from './services/language.js';
-import { state,API_KEY } from './services/state.js';
 import { initializeFirebase } from './services/api.js';
 import { initEventListeners } from './services/event-listeners.js';
-import { renderView, attachViewEventListeners } from './services/view-manager.js';
-import recipesData from './services/recipes.js';
-import { applyTranslations } from './services/language.js';
+import { renderView } from './services/view-manager.js';
+import { initConfig } from './services/state.js';
 
 
 async function init() {
-    initLanguage();
+  initLanguage();
+  await initConfig()
+  initEventListeners();
 
-    initEventListeners();
+  await renderView('home');
+  updateLangSlider();
 
-    await renderView('home');
-    updateLangSlider();
-
-    initializeFirebase();
+  initializeFirebase();
 }
 
 document.addEventListener("DOMContentLoaded", init);
