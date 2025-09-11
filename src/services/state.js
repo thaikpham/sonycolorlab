@@ -6,9 +6,15 @@
 
 // --- CONFIGURATION CONSTANTS ---
 // These values are replaced by the build script (`build.js`).
-export const API_KEY = "%%GEMINI_API_KEY%%";
-export const __firebase_config = "%%FIREBASE_CONFIG%%";
-export const __app_id = "%%APP_ID%%";
+export const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+export const __firebase_config = (() => {
+  try {
+    return JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG || '{}');
+  } catch {
+    return {};
+  }
+})();
+export const __app_id = import.meta.env.VITE_APP_ID || 'default-app-id';
 
 // A computed flag to easily check if the AI features should be enabled.
 export const isAIEnabled = API_KEY && API_KEY !== '%%GEMINI_API_KEY%%';
