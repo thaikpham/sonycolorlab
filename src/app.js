@@ -1,7 +1,7 @@
 import './styles/style.css';
 // --- Local Module Imports ---
 import { initLanguage, updateLangSlider } from './services/language.js';
-import { state } from './services/state.js';
+import { state,API_KEY } from './services/state.js';
 import { initializeFirebase } from './services/api.js';
 import { initEventListeners } from './services/event-listeners.js';
 import { renderView, attachViewEventListeners } from './services/view-manager.js';
@@ -10,6 +10,7 @@ import { applyTranslations } from './services/language.js';
 
 
 async function init() {
+        console.log('API_KEY:', API_KEY);
     initLanguage();
 
     initEventListeners();
