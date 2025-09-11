@@ -3,7 +3,6 @@
  * This module centralizes the entire application's state and configuration constants.
  * By keeping state in one place, it's easier to manage, debug, and understand data flow.
  */
-
 // --- CONFIGURATION CONSTANTS ---
 // These values are replaced by the build script (`build.js`).
 export const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
