@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 
-export default defineConfig({
-  build: {
-    outDir: 'dist',
-  }
-});
+export default defineConfig(const env = loadEnv(mode, process.cwd(), 'VITE_');
+  console.log('VITE env variables:', env);
+
+  return defineConfig({}););
