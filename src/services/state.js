@@ -3,15 +3,20 @@
  * This module centralizes the entire application's state and configuration constants.
  * By keeping state in one place, it's easier to manage, debug, and understand data flow.
  */
-
 // --- CONFIGURATION CONSTANTS ---
 // These values are replaced by the build script (`build.js`).
-export const API_KEY = "%%GEMINI_API_KEY%%";
-export const __firebase_config = "%%FIREBASE_CONFIG%%";
-export const __app_id = "%%APP_ID%%";
+export const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+export const __firebase_config = (() => {
+  try {
+    return JSON.stringify(import.meta.env.VITE_FIREBASE_CONFIG || '{}');
+  } catch {
+    return '';
+  }
+})();
+export const __app_id = import.meta.env.VITE_APP_ID || 'default-app-id';
 
 // A computed flag to easily check if the AI features should be enabled.
-export const isAIEnabled = API_KEY && API_KEY !== '%%GEMINI_API_KEY%%';
+export const isAIEnabled = import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== '';
 
 // The full URL for the Gemini API endpoint.
 export const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;

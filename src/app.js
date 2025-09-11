@@ -10,7 +10,6 @@ import { applyTranslations } from './services/language.js';
 
 
 async function init() {
-        console.log('API_KEY:', API_KEY);
     initLanguage();
 
     initEventListeners();
