@@ -5,15 +5,9 @@
  */
 // --- CONFIGURATION CONSTANTS ---
 // These values are replaced by the build script (`build.js`).
-export let API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
-export let __firebase_config = (() => {
-  try {
-    return JSON.stringify(import.meta.env.VITE_FIREBASE_CONFIG || '{}');
-  } catch {
-    return '';
-  }
-})();
-export let __app_id = import.meta.env.VITE_APP_ID || 'default-app-id';
+export let API_KEY = '';
+export let __firebase_config = '';
+export let __app_id = '';
 
 export async function initConfig() {
   try {
