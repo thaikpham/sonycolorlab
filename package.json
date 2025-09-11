@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild":"node build.js",
-    "build": "vite build && "
+    "build": "vite build"
     "preview": "vite preview"
   },
   "devDependencies": {
