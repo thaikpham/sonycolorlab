@@ -1,6 +1,9 @@
 import { defineConfig } from "vite";
-import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
-  plugins: [cloudflare()],
+  plugins: [],
+  // Optional: Configure environment variables for development
+  define: {
+    // This ensures environment variables work in both dev and production
+  }
 });
