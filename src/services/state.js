@@ -9,9 +9,9 @@
 export const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 export const __firebase_config = (() => {
   try {
-    return JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG || '{}');
+    return JSON.stringify(import.meta.env.VITE_FIREBASE_CONFIG || '{}');
   } catch {
-    return {};
+    return '';
   }
 })();
 export const __app_id = import.meta.env.VITE_APP_ID || 'default-app-id';
