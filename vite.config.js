@@ -1,5 +1,8 @@
-export default {
-  define: {
-    __MY_ENV__: JSON.stringify(process.env.MY_ENV_VAR)
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  build: {
+    outDir: 'dist',
+    emptyOutDir: false // prevent Vite from deleting files your build.js puts in dist/
   }
-}
+});
