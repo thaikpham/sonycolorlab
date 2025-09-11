@@ -5,8 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node build.js",
-    "build": "vite build",
+    "build": "vite build && node build.js",
     "preview": "vite preview"
   },
   "devDependencies": {
