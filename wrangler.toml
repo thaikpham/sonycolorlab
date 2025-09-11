@@ -1,4 +1,9 @@
 name = "sonycolorlab"
-main = "src/index.js" # your entry point, adjust as needed
-compatibility_date = "2025-09-11" # today's date or your targeted date
-type = "javascript" # or "webpack" or "rust" depending on your project
+type = "pages"
+
+# Optional fields:
+account_id = "your-account-id"  # Optional if deploying from Cloudflare UI
+project_name = "sonycolorlab"
+
+# Where Vite outputs the built site
+pages_build_output_dir = "dist"
