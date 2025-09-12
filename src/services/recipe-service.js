@@ -1,3 +1,4 @@
+// File Path: src/services/recipe-service.js
 import { state } from './state.js';
 import { updateListSelectionAndScroll, renderComments } from './ui.js';
 import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';

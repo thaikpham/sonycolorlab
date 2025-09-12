@@ -532,3 +532,27 @@ body {
     }
 }
 
+/* Profile Page Styles */
+.tab-btn {
+    padding: 0.5rem 0.25rem;
+    border-bottom: 2px solid transparent;
+    font-weight: 600;
+    color: #6b7280; /* text-gray-500 */
+    transition: all 0.2s ease;
+}
+.tab-btn:hover {
+    color: #111827; /* text-gray-900 */
+}
+.tab-btn.active {
+    color: var(--primary-accent);
+    border-bottom-color: var(--primary-accent);
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

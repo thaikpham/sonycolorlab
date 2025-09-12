@@ -1,3 +1,4 @@
+// File Path: src/services/view-manager.js
 import { state } from './state.js';
 import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
 import { applyTranslations, updateLangSlider } from './language.js';
@@ -152,4 +153,3 @@ export function renderView(viewName, selectedId = null) {
         }
     });
 }
-
