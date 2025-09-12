@@ -349,19 +349,27 @@ export function renderHeader() {
     const { isLoggedIn, user } = state.auth;
 
     const authSectionHTML = isLoggedIn ? `
-        <div class="flex items-center gap-3">
-            <button id="myLabBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 py-2 px-4 text-sm font-semibold flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-heart w-4 h-4"><path d="M11 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v1.5"/><path d="M21.28 16.2a2.7 2.7 0 0 0-3.82-3.82 2.7 2.7 0 0 0-3.82 3.82l3.82 3.82 3.82-3.82z"/></svg>
-                <span data-translate-key="myLab"></span>
-            </button>
-            <div class="relative group">
-                <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer">
-                <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto z-30">
-                     <div class="px-2 py-1.5 text-sm text-gray-700 font-semibold truncate">${user.displayName || 'User'}</div>
-                     <div class="my-1 h-px bg-gray-100"></div>
-                     <button id="myProfileBtn" class="w-full text-left px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100" data-translate-key="myProfile"></button>
-                     <button id="signOutBtn" class="w-full text-left px-2 py-1.5 text-sm text-red-600 rounded-md hover:bg-red-50" data-translate-key="signOutBtn"></button>
-                </div>
+        <div class="relative group">
+            <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer">
+            <div class="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto z-30">
+                 <div class="px-3 py-2">
+                    <p class="text-sm font-semibold text-gray-800 truncate">${user.displayName || 'User'}</p>
+                    <p class="text-xs text-gray-500 truncate">${user.email || ''}</p>
+                 </div>
+                 <div class="my-1 h-px bg-gray-100"></div>
+                 <button id="myLabBtn" class="w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-heart w-5 h-5"><path d="M11 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v1.5"/><path d="M21.28 16.2a2.7 2.7 0 0 0-3.82-3.82 2.7 2.7 0 0 0-3.82 3.82l3.82 3.82 3.82-3.82z"/></svg>
+                    <span data-translate-key="myLab"></span>
+                 </button>
+                 <button id="myProfileBtn" class="w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle w-5 h-5"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
+                    <span data-translate-key="myProfile"></span>
+                 </button>
+                 <div class="my-1 h-px bg-gray-100"></div>
+                 <button id="signOutBtn" class="w-full text-left px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-5 h-5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                    <span data-translate-key="signOutBtn"></span>
+                 </button>
             </div>
         </div>
     ` : `
@@ -394,4 +402,3 @@ export function renderHeader() {
     `;
     applyTranslations();
 }
-
