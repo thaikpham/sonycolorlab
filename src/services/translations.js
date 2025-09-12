@@ -1,3 +1,4 @@
+// File Path: src/services/translations.js
 export const translations = {
     headerTitle: {vi: "Alpha AI Color Lab", en: "Alpha AI Color Lab"},
     navHome: {vi: "Trang chủ", en: "Home"},
@@ -74,9 +75,16 @@ export const translations = {
     commentPlaceholder: { vi: "Viết cảm nghĩ của bạn...", en: "Write your thoughts..." },
     submitCommentBtn: { vi: "Gửi", en: "Submit" },
     logInToComment: { vi: "Đăng nhập để để lại bình luận.", en: "Log in to leave a comment." },
+    logInToSave: { vi: "Bạn cần đăng nhập để lưu công thức.", en: "You need to log in to save recipes." },
+    logInToViewFavorites: { vi: "Vui lòng đăng nhập để xem các công thức đã lưu.", en: "Please log in to see your saved recipes." },
+    noFavoritesYet: {vi: "Bạn chưa lưu công thức nào. Hãy khám phá và lưu lại những màu bạn yêu thích!", en: "You haven't saved any recipes yet. Explore and save the colors you love!"},
     noCommentsYet: { vi: "Chưa có bình luận nào. Hãy là người đầu tiên!", en: "No comments yet. Be the first!" },
     favoriteBtn: { vi: "Lưu vào Lab", en: "Save to Lab" },
     favoritedBtn: { vi: "Đã lưu", en: "Saved" },
+    recipeSavedToLab: { vi: "Đã lưu công thức vào Lab của bạn!", en: "Recipe saved to your Lab!" },
+    recipeRemovedFromLab: { vi: "Đã xóa công thức khỏi Lab của bạn.", en: "Recipe removed from your Lab." },
+    couldNotUpdateFavorites: { vi: "Không thể cập nhật danh sách yêu thích.", en: "Could not update favorites." },
+    couldNotPostComment: { vi: "Không thể gửi bình luận.", en: "Could not post comment." },
     // New Profile Page Translations
     myProfile: { vi: "Hồ sơ của tôi", en: "My Profile" },
     editProfile: { vi: "Chỉnh sửa hồ sơ", en: "Edit Profile" },
@@ -92,6 +100,11 @@ export const translations = {
     noDemoPhotos: { vi: "Bạn chưa đăng ảnh demo nào.", en: "You haven't uploaded any demo photos yet." },
     uploadPhoto: { vi: "Tải ảnh lên", en: "Upload Photo" },
     saveAIGeneratedRecipe: { vi: "Lưu vào Hồ sơ", en: "Save to Profile" },
+    // Auth error messages
+    authInitFailed: { vi: "Xác thực chưa sẵn sàng.", en: "Auth is not initialized." },
+    signInCancelled: { vi: "Bạn đã hủy đăng nhập.", en: "You cancelled the sign-in." },
+    accountExists: { vi: "Tài khoản đã tồn tại với một thông tin đăng nhập khác.", en: "An account already exists with a different credential." },
+    signInFailed: { vi: "Đăng nhập thất bại. Vui lòng thử lại.", en: "Sign in failed. Please try again." },
 };
 
 export const parameterExplanations = {
