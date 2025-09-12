@@ -17,7 +17,7 @@ function createFilterHTML() {
         { key: 'trending', nameKey: 'trendingTitle' },
     ];
     if (isLoggedIn) {
-        filters.push({ key: 'favorites', nameKey: 'myLab' });
+        filters.push({ key: 'favorites', nameKey: 'favoritesBtn' });
     }
 
     const filterButtons = filters.map(f => `
