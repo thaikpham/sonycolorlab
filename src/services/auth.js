@@ -26,8 +26,9 @@ export function initAuth(app) {
             // User is signed in, fetch their favorites and cache them
             state.auth.favorites = await getFavoriteRecipes(user.uid);
         } else {
-            // User is signed out, clear favorites
+            // User is signed out, clear favorites and access token
             state.auth.favorites = [];
+            state.auth.googleAccessToken = null;
         }
         
         console.log("Auth state changed: ", user ? `Logged in as ${user.displayName}`: 'Logged out');
@@ -53,7 +54,13 @@ async function handleSignIn(provider) {
         return;
     }
     try {
-        await signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, provider);
+        // Get OAuth access token for Google APIs
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        if (credential) {
+            state.auth.googleAccessToken = credential.accessToken;
+            console.log("Google Drive access token obtained.");
+        }
     } catch (error) {
         // Log the full error object for detailed debugging in the developer console
         console.error("Firebase SignIn Error:", error);
@@ -71,6 +78,8 @@ async function handleSignIn(provider) {
 
 export function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
+    // Request scope to create files in the user's Google Drive
+    provider.addScope('https://www.googleapis.com/auth/drive.file');
     handleSignIn(provider);
 }
 
@@ -78,4 +87,3 @@ export function handleSignOut() {
     if (!auth) return;
     signOut(auth);
 }
-
