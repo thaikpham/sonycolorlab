@@ -77,6 +77,21 @@ export const translations = {
     noCommentsYet: { vi: "Chưa có bình luận nào. Hãy là người đầu tiên!", en: "No comments yet. Be the first!" },
     favoriteBtn: { vi: "Lưu vào Lab", en: "Save to Lab" },
     favoritedBtn: { vi: "Đã lưu", en: "Saved" },
+    // New Profile Page Translations
+    myProfile: { vi: "Hồ sơ của tôi", en: "My Profile" },
+    editProfile: { vi: "Chỉnh sửa hồ sơ", en: "Edit Profile" },
+    socialLinks: { vi: "Liên kết mạng xã hội", en: "Social Links" },
+    website: { vi: "Trang web", en: "Website" },
+    facebook: { vi: "Facebook", en: "Facebook" },
+    instagram: { vi: "Instagram", en: "Instagram" },
+    threads: { vi: "Threads", en: "Threads" },
+    saveChanges: { vi: "Lưu thay đổi", en: "Save Changes" },
+    generatedByAI: { vi: "Công thức AI của bạn", en: "Your AI Recipes" },
+    myDemoPhotos: { vi: "Ảnh demo của bạn", en: "Your Demo Photos" },
+    noGeneratedRecipes: { vi: "Bạn chưa tạo công thức nào với AI.", en: "You haven't generated any recipes with AI yet." },
+    noDemoPhotos: { vi: "Bạn chưa đăng ảnh demo nào.", en: "You haven't uploaded any demo photos yet." },
+    uploadPhoto: { vi: "Tải ảnh lên", en: "Upload Photo" },
+    saveAIGeneratedRecipe: { vi: "Lưu vào Hồ sơ", en: "Save to Profile" },
 };
 
 export const parameterExplanations = {
@@ -97,3 +112,4 @@ export const parameterExplanations = {
     'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
     'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
 };
+
