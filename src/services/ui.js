@@ -173,66 +173,32 @@ export function createSaveGuideHTML() {
     `;
 }
 
-export function createFullRecipeHTML(recipe) {
-    const demoImages = recipeImages[recipe.id] || [];
-    
-    const createCollageHTML = (images) => {
-        if (!images || images.length === 0) return '';
-        const count = Math.min(images.length, 8);
+/**
+ * Renders the list of comments into its container.
+ * @param {Array<object>} comments - An array of comment objects from Firestore.
+ */
+export function renderComments(comments) {
+    const container = document.getElementById('commentsListContainer');
+    if (!container) return;
 
-        const imageElements = images.slice(0, count).map((imgUrl, index) => `
-            <div class="collage-item" data-recipe-id="${recipe.id}" data-index="${index}">
-                <img 
-                    src="${imgUrl}" 
-                    loading="lazy" 
-                    decoding="async"
-                    alt="Demo image ${index + 1} for ${formatRecipeName(recipe.name[getCurrentLanguage()])}"
-                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Image failed to load</div>';"
-                >
-            </div>`).join('');
+    if (comments.length === 0) {
+        container.innerHTML = `<p class="text-gray-500 itaic" data-translate-key="noCommentsYet"></p>`;
+        applyTranslations();
+        return;
+    }
 
-        return `<div class="photo-collage">${imageElements}</div>`;
-    };
-
-    const createSettingsGrid = (settings) => {
-        if (!settings) return '';
-        return Object.entries(settings).map(([key, value]) => {
-            const explanationKey = Object.keys(parameterExplanations).find(k => k.toLowerCase() === key.toLowerCase().trim());
-            return `<div class="flex flex-col p-4 bg-white/50 rounded-xl"><div class="flex items-center gap-1.5"><span class="parameter-title text-sm text-gray-500 font-medium" data-param-key="${explanationKey || ''}">${key}</span></div><span class="font-semibold text-xl text-gray-800 mt-1">${value}</span></div>`;
-        }).join('');
-    };
-
-    const sections = [
-        { titleKey: 'whiteBalanceTitle', content: `<div class="p-4 bg-white/50 rounded-xl"><p class="font-semibold text-xl text-gray-800">${recipe.whiteBalance || ''}</p></div>` },
-        { titleKey: 'recipeSettingsTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.settings)}</div>` },
-        recipe.colorDepth ? { titleKey: 'colorDepthTitle', content: `<div class="grid grid-cols-3 md:grid-cols-6 gap-3">${createSettingsGrid(recipe.colorDepth)}</div>` } : null,
-        recipe.detailSettings ? { titleKey: 'detailTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.detailSettings)}</div>` } : null
-    ].filter(Boolean);
-
-    const aiDisabledAttr = !isAIEnabled ? `disabled title="${t('aiKeyNotConfigured')}"` : '';
-
-    return `
-        ${createCollageHTML(demoImages)}
-        <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
-            <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-                <span data-translate-key="tweakWithAI"></span>
-            </button>
-            <button class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30" id="downloadPngBtn" data-recipe-id="${recipe.id}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image h-5 w-5"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                <span data-translate-key="downloadPNG"></span>
-            </button>
-             <button id="shareRecipeBtn" data-recipe-id="${recipe.id}" class="btn bg-green-500 hover:bg-green-600 text-white py-2.5 px-6 shadow-lg shadow-green-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2 h-5 w-5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
-                <span data-translate-key="shareRecipeBtn"></span>
-            </button>
+    container.innerHTML = comments.map(comment => `
+        <div class="flex items-start gap-4 animate-fade-in">
+            <img src="${comment.userAvatar || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="${comment.userName}" class="w-10 h-10 rounded-full">
+            <div class="flex-grow bg-gray-100 rounded-lg p-3">
+                <p class="font-semibold text-sm">${comment.userName}</p>
+                <p class="text-gray-700 whitespace-pre-wrap mt-1">${comment.text}</p>
+                <p class="text-xs text-gray-400 mt-2 text-right">${comment.timestamp ? new Date(comment.timestamp.seconds * 1000).toLocaleString() : ''}</p>
+            </div>
         </div>
-        <div class="space-y-8 mt-8">
-            ${sections.map(section => `<div><h4 class="text-xl font-bold mb-3 text-gray-700" data-translate-key="${section.titleKey}"></h4><div class="p-4 bg-gray-500/5 rounded-2xl">${section.content}</div></div>`).join('')}
-        </div>
-        ${createSaveGuideHTML()}
-    `;
+    `).join('');
 }
+
 
 // --- CORE UI RENDERING LOGIC ---
 
@@ -271,7 +237,7 @@ export function initializeBackgroundBlobs() {
     });
 
     function animate() {
-        if (state.currentView !== 'home') {
+        if (state.ui.currentView !== 'home') {
             cancelAnimationFrame(state.animation.blobAnimationFrameId);
             state.animation.blobAnimationFrameId = null;
             return;
@@ -315,9 +281,9 @@ export function renderUltimateButton() {
         </button>
     `;
 
-    if (state.currentView === 'home') {
+    if (state.ui.currentView === 'home') {
         wrapper.innerHTML = mainButtonHTML;
-    } else if (state.currentView === 'recipeFormulas') {
+    } else if (state.ui.currentView === 'recipeFormulas') {
         const icons = {
             contributePhotosBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><line x1="16" x2="22" y1="5" y2="5"/><line x1="19" x2="19" y1="2" y2="8"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`,
             findMyColorBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flask-round"><path d="M10 2v7.31"/><path d="M14 9.31V2"/><path d="M12 12.31v4"/><path d="M10 16.31h4"/><path d="M12 22a7 7 0 0 0 7-7c0-3.87-3.13-7-7-7s-7 3.13-7 7a7 7 0 0 0 7 7z"/></svg>`,
@@ -383,10 +349,20 @@ export function renderHeader() {
     const { isLoggedIn, user } = state.auth;
 
     const authSectionHTML = isLoggedIn ? `
-        <div class="flex items-center gap-2">
-            <span class="font-semibold text-sm hidden sm:inline">${user.displayName || 'User'}</span>
-            <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
-            <button id="signOutBtn" class="btn bg-gray-200 text-gray-700 hover:bg-gray-300 py-2 px-4 text-sm" data-translate-key="signOutBtn"></button>
+        <div class="flex items-center gap-3">
+            <button id="myLabBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 py-2 px-4 text-sm font-semibold flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-heart w-4 h-4"><path d="M11 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v1.5"/><path d="M21.28 16.2a2.7 2.7 0 0 0-3.82-3.82 2.7 2.7 0 0 0-3.82 3.82l3.82 3.82 3.82-3.82z"/></svg>
+                <span data-translate-key="myLab"></span>
+            </button>
+            <div class="relative group">
+                <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer">
+                <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto z-30">
+                     <div class="px-2 py-1.5 text-sm text-gray-700 font-semibold truncate">${user.displayName || 'User'}</div>
+                     <div class="my-1 h-px bg-gray-100"></div>
+                     <button id="myProfileBtn" class="w-full text-left px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100" data-translate-key="myProfile"></button>
+                     <button id="signOutBtn" class="w-full text-left px-2 py-1.5 text-sm text-red-600 rounded-md hover:bg-red-50" data-translate-key="signOutBtn"></button>
+                </div>
+            </div>
         </div>
     ` : `
         <div class="flex items-center gap-2">
@@ -395,7 +371,8 @@ export function renderHeader() {
                 <span class="hidden sm:inline" data-translate-key="signInBtn"></span>
             </button>
              <button id="signInFacebookBtn" class="btn bg-blue-600 hover:bg-blue-700 text-white py-2 px-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.04c-5.52 0-10 4.48-10 10s4.48 10 10 10s10-4.48 10-10s-4.48-10-10-10zm2.25 10.28h-1.68v4.64h-2.1v-4.64h-1.12v-1.87h1.12v-1.26c0-1.2.56-1.87 1.87-1.87h1.4v1.87h-.84c-.35 0-.42.18-.42.42v.84h1.26l-.14 1.87z"/></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.04c-5.52 0-10 4.48-10 10s4.48 10 10 10s10-4.48 10-10s-4.48-10-10-10zm2.25 10.28h-1.68v4.64h-2.1v-4.64h-1.12v-1.87h1.12v-1.26c0-1.2.56-1.87 1.87-1.87h1.4v1.87h-.84c-.35 0-.42.18-.42.42v.84h1.26l-.14 1.87z"></path></svg>
+                 <span class="hidden sm:inline" data-translate-key="signInMeta"></span>
             </button>
         </div>
     `;

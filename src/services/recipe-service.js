@@ -1,19 +1,36 @@
 import { state } from './state.js';
-import { updateListSelectionAndScroll } from './ui.js';
+import { updateListSelectionAndScroll, renderComments } from './ui.js';
 import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { updateChartSelection } from './features.js';
 import recipesData from './recipes.js';
+import { onCommentsSnapshot } from './firestore.js';
+
+let unsubscribeComments = null;
 
 export function handleRecipeSelection(id) {
-    state.selectedRecipeId = (state.selectedRecipeId === id) ? null : id;
-    state.isMobileDetailActive = !!state.selectedRecipeId;
+    // Unsubscribe from previous listener if it exists
+    if (unsubscribeComments) {
+        unsubscribeComments();
+        unsubscribeComments = null;
+    }
 
-    updateListSelectionAndScroll(state.selectedRecipeId);
-    renderLibraryDetails();
+    state.ui.selectedRecipeId = (state.ui.selectedRecipeId === id) ? null : id;
+    state.ui.isMobileDetailActive = !!state.ui.selectedRecipeId;
+
+    updateListSelectionAndScroll(state.ui.selectedRecipeId);
+    renderLibraryDetails(); // This now includes the comment section structure
     updateChartSelection();
 
-    if (state.selectedRecipeId) {
-        const recipe = recipesData.find(r => r.id === state.selectedRecipeId);
+    if (state.ui.selectedRecipeId) {
+        // Subscribe to new comments in real-time
+        unsubscribeComments = onCommentsSnapshot(state.ui.selectedRecipeId, (comments) => {
+            // Ensure the detail view is still visible for this recipe before rendering
+            if (state.ui.selectedRecipeId === id) {
+                renderComments(comments);
+            }
+        });
+
+        const recipe = recipesData.find(r => r.id === state.ui.selectedRecipeId);
         if (recipe) {
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
@@ -27,8 +44,14 @@ export function handleRecipeSelection(id) {
 }
 
 export function resetToChartView() {
-    state.selectedRecipeId = null;
-    state.isMobileDetailActive = false;
+    // Unsubscribe from comment listener when leaving detail view
+    if (unsubscribeComments) {
+        unsubscribeComments();
+        unsubscribeComments = null;
+    }
+
+    state.ui.selectedRecipeId = null;
+    state.ui.isMobileDetailActive = false;
     updateListSelectionAndScroll(null);
     renderLibraryDetails();
     updateChartSelection();

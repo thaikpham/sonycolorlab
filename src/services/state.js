@@ -50,14 +50,18 @@ export let API_URL = `https://generativelanguage.googleapis.com/v1beta/models/ge
 // Each property represents a different "slice" of the application's state.
 export const state = {
   // General UI state
-  currentView: 'home',
-  selectedRecipeId: null,
-  isMobileDetailActive: false,
+  ui: {
+    currentView: 'home',
+    selectedRecipeId: null,
+    isMobileDetailActive: false,
+    filter: 'all', // 'all', 'trending', 'favorites'
+  },
 
   // Authentication state
   auth: {
     isLoggedIn: false,
     user: null, // Will hold the Firebase user object
+    favorites: [], // Cache for user's favorite recipe IDs
   },
 
   // D3 Chart state
@@ -110,4 +114,3 @@ export const state = {
     html2canvas: false,
   }
 };
-

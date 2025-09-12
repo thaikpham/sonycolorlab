@@ -51,21 +51,47 @@ export const translations = {
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
     hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" },
-    // --- NEW QUIZ AI TRANSLATIONS ---
     aiQuizPromptPlaceholder: { vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt, tông màu cine, hơi buồn...", en: "e.g., a sunset afternoon in Dalat, cinematic tone, a bit melancholic..." },
     aiQuizGenerateBtn: { vi: "Sáng tạo với AI", en: "Generate with AI" },
     aiQuizSkipBtn: { vi: "Bỏ qua & Xem gợi ý", en: "Skip & Get Suggestion" },
     aiQuizGenerating: { vi: "Gemini đang sáng tạo...", en: "Gemini is creating..." },
     aiQuizResultTitle: { vi: "Công thức Sáng tạo từ Gemini!", en: "Creative Recipe from Gemini!" },
     aiQuizResultDescription: { vi: "Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:", en: "Here is the unique recipe created based on your inspiration:" },
-    // --- UPDATED QUIZ SUBMIT BUTTON ---
     quizSubmitBtn: { vi: "Hé lộ Phong cách của bạn", en: "Reveal Your Style" },
     quizSubmitInfo: { vi: "Chạm để khám phá công thức màu dành riêng cho bạn.", en: "Tap to discover the color recipe made just for you." },
-    // --- NEW CONTRIBUTION BUTTON & MODAL ---
     contributePhotosBtn: { vi: "Đóng góp ảnh Demo", en: "Contribute Demo Photos" },
     contributeNoteTitle: { vi: "Hướng dẫn Đóng góp Ảnh", en: "Photo Contribution Guide" },
     contributeNoteText: { vi: "Để ảnh của bạn được chọn làm demo cho công thức, vui lòng:<br>1. Chụp theo đúng thông số của công thức gốc.<br>2. Tải ảnh lên album và bình luận mã số màu (VD: SCL-001) vào ảnh của bạn.", en: "To have your photo featured as a recipe demo, please:<br>1. Shoot using the exact parameters of the original recipe.<br>2. Upload to the album and comment with the color code (e.g., SCL-001) on your photo." },
-    contributeNoteProceedBtn: { vi: "Đã hiểu & Tải ảnh lên", en: "Got it & Upload Photo" }
+    contributeNoteProceedBtn: { vi: "Đã hiểu & Tải ảnh lên", en: "Got it & Upload Photo" },
+    // User Profile Features
+    signInBtn: { vi: "Đăng nhập", en: "Sign In" },
+    signInMeta: { vi: "Đăng nhập với Meta", en: "Sign in with Meta" },
+    signOutBtn: { vi: "Đăng xuất", en: "Sign Out" },
+    myLab: { vi: "Lab của tôi", en: "My Lab" },
+    allRecipes: { vi: "Tất cả", en: "All" },
+    filterBy: { vi: "Lọc theo:", en: "Filter by:" },
+    commentsTitle: { vi: "Bình luận", en: "Comments" },
+    commentPlaceholder: { vi: "Viết cảm nghĩ của bạn...", en: "Write your thoughts..." },
+    submitCommentBtn: { vi: "Gửi", en: "Submit" },
+    logInToComment: { vi: "Đăng nhập để để lại bình luận.", en: "Log in to leave a comment." },
+    noCommentsYet: { vi: "Chưa có bình luận nào. Hãy là người đầu tiên!", en: "No comments yet. Be the first!" },
+    favoriteBtn: { vi: "Lưu vào Lab", en: "Save to Lab" },
+    favoritedBtn: { vi: "Đã lưu", en: "Saved" },
+    // New Profile Page Translations
+    myProfile: { vi: "Hồ sơ của tôi", en: "My Profile" },
+    editProfile: { vi: "Chỉnh sửa hồ sơ", en: "Edit Profile" },
+    socialLinks: { vi: "Liên kết mạng xã hội", en: "Social Links" },
+    website: { vi: "Trang web", en: "Website" },
+    facebook: { vi: "Facebook", en: "Facebook" },
+    instagram: { vi: "Instagram", en: "Instagram" },
+    threads: { vi: "Threads", en: "Threads" },
+    saveChanges: { vi: "Lưu thay đổi", en: "Save Changes" },
+    generatedByAI: { vi: "Công thức AI của bạn", en: "Your AI Recipes" },
+    myDemoPhotos: { vi: "Ảnh demo của bạn", en: "Your Demo Photos" },
+    noGeneratedRecipes: { vi: "Bạn chưa tạo công thức nào với AI.", en: "You haven't generated any recipes with AI yet." },
+    noDemoPhotos: { vi: "Bạn chưa đăng ảnh demo nào.", en: "You haven't uploaded any demo photos yet." },
+    uploadPhoto: { vi: "Tải ảnh lên", en: "Upload Photo" },
+    saveAIGeneratedRecipe: { vi: "Lưu vào Hồ sơ", en: "Save to Profile" },
 };
 
 export const parameterExplanations = {
