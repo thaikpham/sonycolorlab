@@ -50,10 +50,8 @@ export async function renderUserProfilePage(userId) {
             const recipeName = recipe.name[getCurrentLanguage()] || recipe.name['en'];
             const recipeDesc = recipe.description[getCurrentLanguage()] || recipe.description['en'];
             const recipeJsonString = JSON.stringify(recipe);
-            // Encode to Base64 to prevent issues with special characters in the data attribute
-            const recipeB64 = btoa(unescape(encodeURIComponent(recipeJsonString)));
             return `
-            <button class="generated-recipe-card w-full text-left bg-white p-4 rounded-lg border border-gray-200/80 hover:shadow-md hover:border-blue-500 transition-all duration-300" data-recipe-b64="${recipeB64}">
+            <button class="generated-recipe-card w-full text-left bg-white p-4 rounded-lg border border-gray-200/80 hover:shadow-md hover:border-blue-500 transition-all duration-300" data-recipe='${recipeJsonString}'>
                 <div class="flex justify-between items-start">
                     <h4 class="font-bold text-lg text-blue-600">${recipeName}</h4>
                     <span class="text-xs font-medium bg-blue-100 text-blue-700 py-1 px-2 rounded-full" data-translate-key="editRecipeBtn"></span>
@@ -250,4 +248,5 @@ export function openDemoPhotoSubmitModal() {
 export function closeDemoPhotoSubmitModal() {
     closeModal('demoPhotoSubmitModal');
 }
+
 
