@@ -11,6 +11,50 @@ import recipesData from './recipes.js';
 import { signInWithGoogle, handleSignOut } from './auth.js';
 import { addComment, toggleFavorite, getFavoriteRecipes, saveGeneratedRecipe, updateUserProfile } from './firestore.js';
 
+// Helper function to read recipe data from an editable form
+function getRecipeDataFromForm(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return null;
+
+    const lang = getCurrentLanguage();
+    // Determine which editable recipe to use as the source
+    const sourceRecipe = state.ai.editableRecipe || state.quiz.editableRecipe;
+    if (!sourceRecipe) {
+        console.error("No editable recipe found in state.");
+        return null;
+    }
+
+    // Create a deep copy to avoid mutating the state directly
+    const recipe = JSON.parse(JSON.stringify(sourceRecipe));
+
+    // Update fields from the form
+    recipe.name[lang] = form.querySelector('#recipeName').value;
+    recipe.description[lang] = form.querySelector('#recipeDescription').value;
+    recipe.whiteBalance = form.querySelector('#whiteBalance').value;
+    recipe.notes = form.querySelector('#recipeNotes')?.value || "";
+
+    form.querySelectorAll('#main-settings-grid input').forEach(input => {
+        if (!recipe.settings) recipe.settings = {};
+        recipe.settings[input.dataset.key] = input.value;
+    });
+    form.querySelectorAll('#color-depth-grid input')?.forEach(input => {
+        if (!recipe.colorDepth) recipe.colorDepth = {};
+        recipe.colorDepth[input.dataset.key] = input.value;
+    });
+    form.querySelectorAll('#detail-settings-grid input')?.forEach(input => {
+        if (!recipe.detailSettings) recipe.detailSettings = {};
+        recipe.detailSettings[input.dataset.key] = input.value;
+    });
+
+    // Ensure the other language's fields are not lost
+    const otherLang = lang === 'en' ? 'vi' : 'en';
+    if (!recipe.name[otherLang]) recipe.name[otherLang] = sourceRecipe.name[otherLang];
+    if (!recipe.description[otherLang]) recipe.description[otherLang] = sourceRecipe.description[otherLang];
+
+    return recipe;
+}
+
+
 async function initializeAndStartQuiz() {
     if (!state.quiz.instance) {
         const { Quiz } = await import('../components/quiz.js');
@@ -147,10 +191,25 @@ export function initEventListeners() {
         }
 
         if (target.closest('#saveAIGeneratedRecipeBtn')) {
-            if (state.auth.user && state.ai.generatedRecipe) {
-                await saveGeneratedRecipe(state.auth.user.uid, state.ai.generatedRecipe);
-                target.closest('#saveAIGeneratedRecipeBtn').textContent = 'Saved!';
-                target.closest('#saveAIGeneratedRecipeBtn').disabled = true;
+             if (!state.auth.isLoggedIn) {
+                showToast(t('logInToSave'), true);
+                return;
+            }
+            const recipeData = getRecipeDataFromForm('aiRecipeForm');
+            if (recipeData) {
+                await saveGeneratedRecipe(state.auth.user.uid, recipeData);
+                const btn = target.closest('#saveAIGeneratedRecipeBtn');
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-5 w-5"></svg><span>${t('favoritedBtn')}</span>`;
+                btn.disabled = true;
+            }
+            return;
+        }
+
+        if (target.closest('#saveToDriveBtn')) {
+            const { saveRecipeToGoogleDrive } = await import('./features.js');
+            const recipeData = getRecipeDataFromForm('aiRecipeForm');
+            if(recipeData) {
+                await saveRecipeToGoogleDrive(recipeData);
             }
             return;
         }
