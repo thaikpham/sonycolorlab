@@ -6,7 +6,11 @@ export function renderAILab() {
     if (!contentEl) return;
 
     if (state.ai.isGenerating) {
-        contentEl.innerHTML = `<div class="flex flex-col items-center justify-center h-64"><div class="loader-dark"></div><p class="mt-4 text-gray-600">Gemini is thinking...</p></div>`;
+        contentEl.innerHTML = `
+        <div class="ai-loading-container">
+            <img src="/assets/Logo.png" alt="Loading..." class="ai-loading-logo">
+            <p class="mt-4 text-gray-600">Gemini is thinking...</p>
+        </div>`;
         return;
     }
     if (state.ai.generatedRecipe) {
