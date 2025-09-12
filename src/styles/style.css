@@ -440,3 +440,37 @@ body {
 .quiz-result-view {
     animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
+
+/* --- NEW AI Loading Animation --- */
+.ai-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 256px;
+}
+
+.ai-loading-logo {
+    width: 80px;
+    height: 80px;
+    animation: logo-bounce-spin 2s ease-in-out infinite;
+}
+
+@keyframes logo-bounce-spin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(90deg) scale(1.2);
+    }
+    50% {
+        transform: rotate(180deg) scale(0.9);
+    }
+    75% {
+        transform: rotate(270deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}

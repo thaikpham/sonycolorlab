@@ -127,7 +127,11 @@ export function renderQuizAIResult(recipe) {
  */
 export function renderQuizLoading() {
     const quizContent = document.getElementById('quizContent');
-    quizContent.innerHTML = `<div class="flex flex-col items-center justify-center h-full"><div class="loader-dark"></div><p class="mt-4 text-gray-600" data-translate-key="aiQuizGenerating"></p></div>`;
+    quizContent.innerHTML = `
+        <div class="ai-loading-container">
+            <img src="/assets/Logo.png" alt="Loading..." class="ai-loading-logo">
+            <p class="mt-4 text-gray-600" data-translate-key="aiQuizGenerating"></p>
+        </div>`;
 }
 
 /**
@@ -146,3 +150,4 @@ export function renderQuizError() {
             </div>
         </div>`;
 }
+
