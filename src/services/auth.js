@@ -6,7 +6,7 @@ import {
     GoogleAuthProvider, 
     FacebookAuthProvider,
     signOut
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { state } from './state.js';
 import { renderHeader } from './ui.js';
 import { getFavoriteRecipes } from './firestore.js';
@@ -71,5 +71,4 @@ export function handleSignOut() {
     if (!auth) return;
     signOut(auth);
 }
-
 
