@@ -2,7 +2,7 @@
 import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import { setLanguage, updateLangSlider, applyTranslations, getCurrentLanguage } from './language.js';
+import { setLanguage, updateLangSlider, applyTranslations, getCurrentLanguage, t } from './language.js';
 import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
@@ -74,7 +74,6 @@ export function initEventListeners() {
         if (target.closest('#signInGoogleBtn')) { signInWithGoogle(); return; }
         if (target.closest('#signOutBtn')) { handleSignOut(); return; }
         if (target.closest('#myProfileBtn')) { await renderView('userProfile'); return; }
-        if (target.closest('#myLabBtn')) { await renderView('userProfile'); return; }
 
         
         // Toggle user dropdown
@@ -283,8 +282,13 @@ export function initEventListeners() {
             }
             const recipeCard = target.closest('.generated-recipe-card');
             if (recipeCard) {
-                const recipeData = JSON.parse(recipeCard.dataset.recipe);
-                openAILabWithExistingRecipe(recipeData);
+                try {
+                    const recipeData = JSON.parse(recipeCard.dataset.recipe);
+                    openAILabWithExistingRecipe(recipeData);
+                } catch (error) {
+                    console.error("Failed to parse recipe data:", error, recipeCard.dataset.recipe);
+                    showToast(t('genericError'), true);
+                }
                 return;
             }
         }
@@ -363,4 +367,3 @@ export function initEventListeners() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 }
-
