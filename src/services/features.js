@@ -250,6 +250,51 @@ document.addEventListener('keydown', (e) => {
 
 // --- PDF & SHARE FUNCTIONS ---
 
+export async function generateRecipePng(elementId, recipeName) {
+    const elementToCapture = document.getElementById(elementId);
+    if (!elementToCapture) {
+        console.error(`Element with ID "${elementId}" not found for PNG generation.`);
+        showToast("Sorry, there was an error creating the image.", true);
+        return;
+    }
+
+    const btn = document.querySelector(`button[data-element-id="${elementId}"]`);
+    const originalBtnContent = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = `<div class="loader-dark"></div> ${t('aiQuizGenerating')}`;
+        btn.disabled = true;
+    }
+
+    try {
+        await loadScript(HTML2CANVAS_URL, 'html2canvas');
+        const html2canvas = window.html2canvas;
+
+        const canvas = await html2canvas(elementToCapture, {
+            scale: 2.5,
+            useCORS: true,
+            backgroundColor: '#F9FAFB' 
+        });
+
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        const safeFileName = recipeName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        link.download = `SonyColorLab-${safeFileName}.png`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+    } catch (error) {
+        console.error("Failed to generate PNG:", error);
+        showToast("Sorry, there was an error creating the image.", true);
+    } finally {
+        if (btn) {
+            btn.innerHTML = originalBtnContent;
+            btn.disabled = false;
+        }
+    }
+}
+
 export async function generateRecipePdf(recipeId, generatedRecipeData = null) {
     const originalRecipe = recipesData.find(r => r.id === recipeId);
     if (!originalRecipe) return;
@@ -380,3 +425,4 @@ export async function shareRecipe(recipeId) {
         }
     }
 }
+
