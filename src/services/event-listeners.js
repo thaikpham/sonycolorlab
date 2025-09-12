@@ -9,7 +9,7 @@ import { renderView } from './view-manager.js';
 import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
 import { signInWithGoogle, signInWithFacebook, handleSignOut } from './auth.js';
-import { addComment, toggleFavorite, getFavoriteRecipes } from './firestore.js';
+import { addComment, toggleFavorite, getFavoriteRecipes, saveGeneratedRecipe, updateUserProfile } from './firestore.js';
 
 async function initializeAndStartQuiz() {
     if (!state.quiz.instance) {
@@ -31,6 +31,7 @@ export function initEventListeners() {
         if (target.closest('#signInGoogleBtn')) { signInWithGoogle(); return; }
         if (target.closest('#signInFacebookBtn')) { signInWithFacebook(); return; }
         if (target.closest('#signOutBtn')) { handleSignOut(); return; }
+        if (target.closest('#myProfileBtn')) { await renderView('userProfile'); return; }
 
         // --- Ultimate Button Logic ---
         if (target.closest('#ultimateCtaBtn')) {
@@ -146,6 +147,15 @@ export function initEventListeners() {
              return;
         }
 
+        if (target.closest('#saveAIGeneratedRecipeBtn')) {
+            if (state.auth.user && state.ai.generatedRecipe) {
+                await saveGeneratedRecipe(state.auth.user.uid, state.ai.generatedRecipe);
+                target.closest('#saveAIGeneratedRecipeBtn').textContent = 'Saved!';
+                target.closest('#saveAIGeneratedRecipeBtn').disabled = true;
+            }
+            return;
+        }
+
 
         if (target.closest('#toggleSaveGuideBtn')) {
             const btn = target.closest('#toggleSaveGuideBtn');
@@ -203,6 +213,15 @@ export function initEventListeners() {
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
             if (target.closest('#downloadAIPngBtn')) { generateRecipeCardPng(target.closest('#downloadAIPngBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
         }
+
+        // Profile Page specific listeners
+        if (state.ui.currentView === 'userProfile') {
+            const { openEditProfileModal } = await import('../components/profile-ui.js');
+            if (target.closest('#editProfileBtn')) {
+                openEditProfileModal();
+                return;
+            }
+        }
     });
     
     document.body.addEventListener('submit', async (e) => {
@@ -217,6 +236,20 @@ export function initEventListeners() {
                 await addComment(recipeId, state.auth.user, text);
                 input.value = ''; // Clear input on success
             }
+        }
+        if (e.target.id === 'editProfileForm') {
+            e.preventDefault();
+            const { closeEditProfileModal } = await import('../components/profile-ui.js');
+            const formData = new FormData(e.target);
+            const socialData = {
+                facebook: formData.get('facebook'),
+                instagram: formData.get('instagram'),
+                threads: formData.get('threads'),
+                website: formData.get('website'),
+            };
+            await updateUserProfile(state.auth.user.uid, socialData);
+            closeEditProfileModal();
+            renderView('userProfile'); // Re-render to show changes
         }
     });
 
@@ -250,3 +283,4 @@ export function initEventListeners() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 }
+
