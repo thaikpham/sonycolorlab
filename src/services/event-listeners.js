@@ -9,7 +9,7 @@ import { renderView } from './view-manager.js';
 import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
 import { signInWithGoogle, handleSignOut } from './auth.js';
-import { addComment, toggleFavorite, getFavoriteRecipes, saveGeneratedRecipe, updateUserProfile } from './firestore.js';
+import { addComment, toggleFavorite, getFavoriteRecipes, saveGeneratedRecipe, updateUserProfile, submitDemoPhoto } from './firestore.js';
 
 // Helper function to read recipe data from an editable form
 function getRecipeDataFromForm(formId) {
@@ -54,7 +54,6 @@ function getRecipeDataFromForm(formId) {
     return recipe;
 }
 
-
 async function initializeAndStartQuiz() {
     if (!state.quiz.instance) {
         const { Quiz } = await import('../components/quiz.js');
@@ -71,10 +70,25 @@ export function initEventListeners() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
-        // --- Authentication ---
+        // --- Authentication & User Dropdown ---
         if (target.closest('#signInGoogleBtn')) { signInWithGoogle(); return; }
         if (target.closest('#signOutBtn')) { handleSignOut(); return; }
         if (target.closest('#myProfileBtn')) { await renderView('userProfile'); return; }
+        
+        // Toggle user dropdown
+        const avatarBtn = target.closest('#avatarBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        if (avatarBtn) {
+            userDropdown?.classList.toggle('invisible');
+            userDropdown?.classList.toggle('opacity-0');
+            userDropdown?.classList.toggle('-translate-y-2');
+            userDropdown?.classList.toggle('pointer-events-none');
+            return;
+        }
+        // Close dropdown if clicking outside
+        if (userDropdown && !userDropdown.classList.contains('invisible') && !target.closest('#userDropdown')) {
+             userDropdown.classList.add('invisible', 'opacity-0', '-translate-y-2', 'pointer-events-none');
+        }
 
         // --- Ultimate Button Logic ---
         if (target.closest('#ultimateCtaBtn')) {
@@ -205,16 +219,6 @@ export function initEventListeners() {
             return;
         }
 
-        if (target.closest('#saveToDriveBtn')) {
-            const { saveRecipeToGoogleDrive } = await import('./features.js');
-            const recipeData = getRecipeDataFromForm('aiRecipeForm');
-            if(recipeData) {
-                await saveRecipeToGoogleDrive(recipeData);
-            }
-            return;
-        }
-
-
         if (target.closest('#toggleSaveGuideBtn')) {
             const btn = target.closest('#toggleSaveGuideBtn');
             const content = btn.parentElement.querySelector('#saveGuideContent');
@@ -315,7 +319,6 @@ export function initEventListeners() {
         if (e.target.id === 'demoPhotoSubmitForm') {
             e.preventDefault();
             const { closeDemoPhotoSubmitModal } = await import('../components/profile-ui.js');
-            const { submitDemoPhoto } = await import('./firestore.js');
             const formData = new FormData(e.target);
             const photoData = {
                 photoURL: formData.get('photoURL'),
