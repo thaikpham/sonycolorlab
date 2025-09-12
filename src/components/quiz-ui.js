@@ -1,3 +1,4 @@
+// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/components/quiz-ui.js
 import { getCurrentLanguage, t } from '../services/language.js';
 import recipeImages from '../services/recipe-images.js';
 
@@ -178,3 +179,35 @@ export function renderQuizError() {
             </div>
         </div>`;
 }
+
+/**
+ * Renders the AI clarification question step in the quiz.
+ * @param {string} question The clarification question from the AI.
+ * @param {Array<string>} options The answer options from the AI.
+ */
+export function renderAIClarification(question, options) {
+    const quizContent = document.getElementById('quizContent');
+    if (!quizContent) return;
+
+    const optionsHTML = options.map(option => `
+        <button class="quiz-clarification-option btn bg-white hover:bg-gray-100 text-gray-800 py-3 px-6 border border-gray-300">
+            ${option}
+        </button>
+    `).join('');
+
+    quizContent.innerHTML = `
+        <div class="quiz-result-view text-center max-w-2xl mx-auto py-8">
+            <div class="flex justify-center items-center gap-3 mb-4">
+                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0-1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold" data-translate-key="aiClarificationTitle"></h3>
+            </div>
+            <p class="mt-2 text-lg text-gray-700">${question}</p>
+            <div class="mt-6 flex flex-wrap justify-center gap-4">
+                ${optionsHTML}
+            </div>
+        </div>
+    `;
+}
+
