@@ -215,9 +215,13 @@ export function initEventListeners() {
 
         // Profile Page specific listeners
         if (state.ui.currentView === 'userProfile') {
-            const { openEditProfileModal } = await import('../components/profile-ui.js');
+            const { openEditProfileModal, openDemoPhotoSubmitModal } = await import('../components/profile-ui.js');
             if (target.closest('#editProfileBtn')) {
                 openEditProfileModal();
+                return;
+            }
+            if (target.closest('#openDemoPhotoModalBtn')) {
+                openDemoPhotoSubmitModal();
                 return;
             }
         }
@@ -248,6 +252,22 @@ export function initEventListeners() {
             await updateUserProfile(state.auth.user.uid, socialData);
             closeEditProfileModal();
             renderView('userProfile'); // Re-render to show changes
+        }
+        if (e.target.id === 'demoPhotoSubmitForm') {
+            e.preventDefault();
+            const { closeDemoPhotoSubmitModal } = await import('../components/profile-ui.js');
+            const { submitDemoPhoto } = await import('./firestore.js');
+            const formData = new FormData(e.target);
+            const photoData = {
+                photoURL: formData.get('photoURL'),
+                recipeId: formData.get('recipeId'),
+                caption: formData.get('caption'),
+                description: formData.get('description'),
+            };
+            await submitDemoPhoto(state.auth.user.uid, photoData);
+            closeDemoPhotoSubmitModal();
+            // Optionally, re-render the profile view to show the new submission
+            renderView('userProfile');
         }
     });
 
