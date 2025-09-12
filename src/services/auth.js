@@ -1,4 +1,4 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/auth.js
+// File Path: src/services/auth.js
 import { 
     getAuth, 
     onAuthStateChanged, 
@@ -72,6 +72,3 @@ export function handleSignOut() {
     if (!auth) return;
     signOut(auth);
 }
-
-
-
