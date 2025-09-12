@@ -46,7 +46,7 @@ export const translations = {
     tweakWithAI: {vi: "Tinh chỉnh với Gemini AI", en: "Tweak with Gemini AI"},
     aiKeyNotConfigured: { vi: "Chưa cấu hình Gemini API Key", en: "Gemini API Key not configured" },
     shareRecipeBtn: {vi: "Chia sẻ Công thức", en: "Share Recipe"},
-    downloadPDFBtn: {vi: "Tải PDF", en: "Download PDF"},
+    downloadPNG: {vi: "Lưu thẻ công thức", en: "Lưu thẻ công thức"},
     saveGuideTitle: { vi: "Lưu công thức vào máy ảnh", en: "Save Recipe to Camera" },
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
@@ -86,3 +86,4 @@ export const parameterExplanations = {
     'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
     'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
 };
+
