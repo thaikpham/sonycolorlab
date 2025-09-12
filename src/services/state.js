@@ -45,6 +45,7 @@ export const state = {
     originalRecipe: null,
     userPrompt: '',
     generatedRecipe: null,
+    editableRecipe: null, // Holds the state of the recipe being edited in the UI
     abortController: null,
   },
   
@@ -84,3 +85,4 @@ export const state = {
     html2canvas: false,
   }
 };
+
