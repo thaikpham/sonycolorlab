@@ -63,20 +63,43 @@ export function renderOnePageQuizLayout(questions) {
  */
 export function renderQuizResult(bestMatch) {
     const quizContent = document.getElementById('quizContent');
+    const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
+        <div class="flex flex-col p-3 rounded-lg bg-white/70">
+            <span class="text-sm text-gray-500 font-medium">${key}</span>
+            <span class="font-semibold text-lg text-gray-800">${value}</span>
+        </div>`).join('');
+
     quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-2xl mx-auto py-8">
+        <div class="quiz-result-view text-center max-w-3xl mx-auto py-8">
             <h3 class="text-3xl font-bold" data-translate-key="quizResultTitle"></h3>
             <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
-            <div class="my-8 p-6 bg-white/80 rounded-2xl border flex flex-col sm:flex-row items-center gap-6">
-                <img src="${recipeImages[bestMatch.id][0]}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview">
-                <div class="text-left">
-                    <h4 class="text-xl font-bold">${bestMatch.name[getCurrentLanguage()]}</h4>
-                    <p class="text-gray-600 mt-1">${bestMatch.description[getCurrentLanguage()]}</p>
+            
+            <div id="quiz-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
+                <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
+                    <img src="${recipeImages[bestMatch.id]?.[0] || 'https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image'}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview" onerror="this.onerror=null;this.src='https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image';">
+                    <div class="text-center sm:text-left">
+                        <h4 class="text-2xl font-bold">${bestMatch.name[getCurrentLanguage()]}</h4>
+                        <p class="text-gray-600 mt-1 italic">"${bestMatch.description[getCurrentLanguage()]}"</p>
+                    </div>
                 </div>
+
+                <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
+                <div class="p-3 bg-white/70 rounded-lg font-semibold">${bestMatch.whiteBalance}</div>
+
+                <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(bestMatch.settings)}</div>
+
+                ${bestMatch.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(bestMatch.colorDepth)}</div>` : ''}
+                ${bestMatch.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(bestMatch.detailSettings)}</div>` : ''}
             </div>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <div class="flex flex-wrap gap-4 justify-center">
                 <button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base">
                     <span data-translate-key="viewRecipeBtn"></span>
+                </button>
+                <button id="downloadQuizResultPngBtn" data-element-id="quiz-result-card" data-recipe-name="${bestMatch.name.en}" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image h-5 w-5"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    <span data-translate-key="downloadPNG"></span>
                 </button>
                 <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
                     <span data-translate-key="retakeQuizBtn"></span>
@@ -84,6 +107,7 @@ export function renderQuizResult(bestMatch) {
             </div>
         </div>`;
 }
+
 
 /**
  * Renders the AI-generated recipe result by replacing the quiz layout.
@@ -101,7 +125,7 @@ export function renderQuizAIResult(recipe) {
         <div class="quiz-result-view text-center max-w-3xl mx-auto py-8">
             <h3 class="text-3xl font-bold" data-translate-key="aiQuizResultTitle"></h3>
             <p class="mt-2 text-gray-600" data-translate-key="aiQuizResultDescription"></p>
-            <div class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
+            <div id="quiz-ai-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
                 <h4 class="text-2xl font-bold text-center">${recipe.name[getCurrentLanguage()]}</h4>
                 <p class="text-gray-600 mt-1 text-center italic">"${recipe.description[getCurrentLanguage()]}"</p>
 
@@ -114,7 +138,11 @@ export function renderQuizAIResult(recipe) {
                 ${recipe.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(recipe.colorDepth)}</div>` : ''}
                 ${recipe.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.detailSettings)}</div>` : ''}
             </div>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <div class="flex flex-wrap gap-4 justify-center">
+                 <button id="downloadQuizResultPngBtn" data-element-id="quiz-ai-result-card" data-recipe-name="${recipe.name.en}" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image h-5 w-5"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    <span data-translate-key="downloadPNG"></span>
+                </button>
                 <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
                     <span data-translate-key="retakeQuizBtn"></span>
                 </button>
@@ -150,4 +178,3 @@ export function renderQuizError() {
             </div>
         </div>`;
 }
-
