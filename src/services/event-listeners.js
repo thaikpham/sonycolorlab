@@ -1,21 +1,22 @@
+// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/event-listeners.js
 import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { setLanguage, updateLangSlider, applyTranslations } from './language.js';
 import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
-import { renderView, attachViewEventListeners } from './view-manager.js';
+import { renderView } from './view-manager.js';
 import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
+import { signInWithGoogle, signInWithFacebook, handleSignOut } from './auth.js';
 
 async function initializeAndStartQuiz() {
     if (!state.quiz.instance) {
-        const { Quiz, handleQuizAIGeneration } = await import('../components/quiz.js');
+        const { Quiz } = await import('../components/quiz.js');
         state.quiz.instance = new Quiz({
             state,
             recipesData,
             applyTranslations,
-            handleQuizAIGeneration,
         });
     }
     state.quiz.instance.start();
@@ -25,6 +26,11 @@ export function initEventListeners() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
+        // --- Authentication ---
+        if (target.closest('#signInGoogleBtn')) { signInWithGoogle(); return; }
+        if (target.closest('#signInFacebookBtn')) { signInWithFacebook(); return; }
+        if (target.closest('#signOutBtn')) { handleSignOut(); return; }
+
         // --- Ultimate Button Logic ---
         if (target.closest('#ultimateCtaBtn')) {
             if (state.currentView === 'home') {
@@ -129,16 +135,20 @@ export function initEventListeners() {
         }
 
         if (target.closest('#quizModal')) {
-            if (target.closest('#closeQuizBtn')) { closeModal('quizModal'); state.quiz.instance.close(); return; }
-            if (target.closest('#retakeQuizBtn')) { state.quiz.instance.start(); return; }
+            if (target.closest('#closeQuizBtn')) { closeModal('quizModal'); state.quiz.instance?.close(); return; }
+            if (target.closest('#retakeQuizBtn')) { state.quiz.instance?.start(); return; }
             if (target.closest('#viewResultBtn')) {
                 const recipeId = target.closest('#viewResultBtn').dataset.recipeId;
                 closeModal('quizModal');
                 await renderView('recipeFormulas', recipeId);
                 return;
             }
-            if (target.closest('.quiz-option')) { state.quiz.instance.handleAnswer(e); return; }
-            if (target.closest('#submitQuizBtn')) { state.quiz.instance.submitQuiz(); return; }
+            if (target.closest('.quiz-option')) { state.quiz.instance?.handleAnswer(e); return; }
+            if (target.closest('#submitQuizBtn')) { state.quiz.instance?.submitQuiz(); return; }
+            if (target.closest('.quiz-clarification-option')) {
+                state.quiz.instance?.handleClarification(target.textContent.trim());
+                return;
+            }
         }
 
         if (target.closest('#contributionNoteModal')) {

@@ -1,21 +1,7 @@
+// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/components/quiz.js
 /**
  * quiz.js
  * This module encapsulates the core logic and data for the "Find My Color" quiz.
- * It manages the quiz flow, state, and answer processing, but delegates
- * rendering and complex features to other modules.
- * * ==============================================
- * REFACTOR & TÁI CẤU TRÚC - NGÀY 28/08/2025
- * ==============================================
- * - Chuyển sang mô hình "One Page Quiz".
- * - `start()`: Gọi hàm render layout một lần duy nhất.
- * - `handleAnswer()`: Chỉ xử lý logic chọn/bỏ chọn và cập nhật state, không render lại toàn bộ.
- * - Thêm `submitQuiz()` để xử lý logic khi người dùng bấm nút hoàn thành.
- * - Loại bỏ logic render khỏi file này, chỉ còn gọi các hàm từ `ui.js`.
- * * ==============================================
- * CẬP NHẬT ICON - NGÀY 28/08/2025
- * ==============================================
- * - Đồng bộ tất cả icon trong quiz sang thư viện Lucide và áp dụng màu sắc
- * để phù hợp với giao diện chung của website.
  */
 
 // --- QUIZ DATA ---
@@ -68,20 +54,36 @@ export const quizQuestions = [
     }
 ];
 
-import { renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError } from './quiz-ui.js';
+import { renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError, renderAIClarification } from './quiz-ui.js';
 import { callGeminiAPI } from '../services/api.js';
 import { getCurrentLanguage } from '../services/language.js';
 import { state } from '../services/state.js';
 
-export async function handleQuizAIGeneration(userInput, answers) {
+async function getAIClarification(userInput, answers) {
+    const preferences = Object.values(answers).flat().join(', ');
+    const clarificationPrompt = `Based on the user's quiz answers "${preferences}" and their initial prompt "${userInput}", generate one single, concise, multiple-choice question to clarify their creative intent. The question must be in ${getCurrentLanguage()}. Respond ONLY with a valid JSON object in the format: {"question": "...", "options": ["...", "..."]}. For example: {"question": "Do you prefer a fiery sunset with vibrant reds, or a soft, pastel-toned sunset?", "options": ["Fiery and vibrant", "Soft and pastel"]}`;
+
+    try {
+        const response = await callGeminiAPI(clarificationPrompt, null);
+        // Basic validation
+        if (response.question && Array.isArray(response.options) && response.options.length > 0) {
+            return response;
+        }
+        return null;
+    } catch (error) {
+        console.error("Failed to get AI clarification:", error);
+        return null;
+    }
+}
+
+export async function handleQuizAIGeneration(finalPrompt) {
     const { instance } = state.quiz;
     if (!instance) return;
 
     renderQuizLoading();
     instance.applyTranslations();
 
-    const preferences = Object.values(answers).flat().join(', ');
-    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the user's preferences from a quiz: "${preferences}". Now, consider the user's creative prompt: "${userInput}". Your task is to generate a completely new, creative, and fully detailed JSON object representing a unique color recipe that matches this inspiration. The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, create a completely new, creative, and fully detailed JSON object for a unique color recipe. The recipe must be inspired by this user prompt: "${finalPrompt}". The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
 
     try {
         const generatedRecipe = await callGeminiAPI(expertPrompt, null);
@@ -99,17 +101,23 @@ export class Quiz {
         this.state = dependencies.state;
         this.recipesData = dependencies.recipesData;
         this.applyTranslations = dependencies.applyTranslations;
-        this.handleQuizAIGeneration = dependencies.handleQuizAIGeneration;
     }
 
     start() {
-        this.state.quiz.answers = {}; // Use an object to store answers by index
+        // Reset quiz state
+        this.state.quiz.answers = {};
+        this.state.quiz.aiContext = {
+            initialPrompt: "",
+            clarificationQuestion: "",
+            userClarification: "",
+            isAsking: false,
+        };
         renderOnePageQuizLayout(quizQuestions);
         this.applyTranslations();
     }
 
     close() {
-        // Visibility is handled by the caller in app.js.
+        // Visibility is handled by the caller.
     }
 
     handleAnswer(e) {
@@ -119,20 +127,17 @@ export class Quiz {
         const questionIndex = selectedOption.dataset.questionIndex;
         const tags = selectedOption.dataset.tags.split(',');
         
-        // Store answer
         this.state.quiz.answers[questionIndex] = tags;
 
-        // Update UI for the specific question island
         const island = selectedOption.closest('.quiz-island');
         island.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
         selectedOption.classList.add('selected');
 
-        // Special handling for B&W choice
         const bwIsland = document.querySelector('.quiz-island[data-question-index="4"]');
-        if(questionIndex === '3') { // If "Color vs B&W" is answered
+        if(questionIndex === '3') {
             if(tags.includes('bw')) {
                 bwIsland?.classList.add('hidden');
-                delete this.state.quiz.answers['4']; // Remove saturation answer if it exists
+                delete this.state.quiz.answers['4'];
             } else {
                 bwIsland?.classList.remove('hidden');
             }
@@ -151,7 +156,6 @@ export class Quiz {
         const isBwSelected = this.state.quiz.answers['3']?.includes('bw');
         let allAnswered = answeredCount >= requiredQuestions.length;
 
-        // If color is selected, saturation is also required
         if (!isBwSelected && !this.state.quiz.answers['4']) {
             allAnswered = false;
         }
@@ -162,13 +166,37 @@ export class Quiz {
         }
     }
 
-    submitQuiz() {
-        const aiPrompt = document.getElementById('aiQuizPrompt')?.value.trim();
-        if (aiPrompt) {
-            this.handleQuizAIGeneration(aiPrompt, this.state.quiz.answers);
+    async submitQuiz() {
+        const aiPromptInput = document.getElementById('aiQuizPrompt');
+        const initialPrompt = aiPromptInput?.value.trim();
+
+        if (initialPrompt) {
+            state.quiz.aiContext.initialPrompt = initialPrompt;
+            renderQuizLoading();
+            this.applyTranslations();
+
+            const clarification = await getAIClarification(initialPrompt, this.state.quiz.answers);
+            if (clarification) {
+                state.quiz.aiContext.isAsking = true;
+                state.quiz.aiContext.clarificationQuestion = clarification.question;
+                renderAIClarification(clarification.question, clarification.options);
+                this.applyTranslations();
+            } else {
+                // If clarification fails, proceed directly
+                const finalPrompt = `Preferences: ${Object.values(this.state.quiz.answers).flat().join(', ')}. Creative Idea: ${initialPrompt}`;
+                handleQuizAIGeneration(finalPrompt);
+            }
         } else {
             this.calculateAndShowResult();
         }
+    }
+
+    handleClarification(answer) {
+        state.quiz.aiContext.userClarification = answer;
+        state.quiz.aiContext.isAsking = false;
+        
+        const finalPrompt = `Preferences: ${Object.values(this.state.quiz.answers).flat().join(', ')}. Creative Idea: ${state.quiz.aiContext.initialPrompt}. Further Clarification: ${answer}`;
+        handleQuizAIGeneration(finalPrompt);
     }
 
     calculateAndShowResult() {
@@ -188,3 +216,5 @@ export class Quiz {
         this.applyTranslations();
     }
 }
+
+

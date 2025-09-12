@@ -1,48 +1,39 @@
+// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/api.js
 /**
  * api.js
  * This module handles all interactions with external services.
- * * ==============================================
- * GỠ BỎ TÍNH NĂNG AI - CẬP NHẬT NGÀY 25/08/2025
- * ==============================================
- * - Đã gỡ bỏ logic xử lý hình ảnh và model Vision.
- * - Hàm `callGeminiAPI` giờ chỉ xử lý yêu cầu dạng văn bản.
- * * ==============================================
- * SỬA LỖI KHỞI TẠO FIREBASE - CẬP NHẬT NGÀY 27/08/2025
- * ==============================================
- * - Thêm logic để xử lý an toàn trường hợp cấu hình Firebase không tồn tại
- * hoặc không hợp lệ, ngăn ứng dụng bị lỗi và cho phép các tính năng
- * không phụ thuộc Firebase tiếp tục hoạt động.
  */
 
 // --- Firebase SDK Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Local Module Imports ---
 import { state, __firebase_config, __app_id, isAIEnabled, API_KEY } from './state.js';
 
 /**
- * Initializes the Firebase application, signs in the user anonymously,
- * and sets the Firestore database instance in the global state.
+ * Initializes the Firebase application and returns the app instance.
+ * @returns {object|null} The Firebase app instance or null if initialization fails.
  */
-export async function initializeFirebase() {
-    // If config is not defined, is the placeholder, or is the literal string "undefined", skip.
-    if (typeof __firebase_config === 'undefined' || __firebase_config.startsWith("%%") || __firebase_config === 'undefined') {
+export function initializeFirebase() {
+    if (typeof __firebase_config === 'undefined' || __firebase_config.startsWith("%%") || __firebase_config === 'undefined' || __firebase_config === '{}') {
         console.warn("Firebase config not found. Features requiring Firebase will be disabled.");
-        state.firebase.db = null; // Ensure db is null
-        return;
+        state.firebase.db = null;
+        return null;
     }
     try {
         const firebaseConfig = JSON.parse(__firebase_config);
+        if (!firebaseConfig.projectId) {
+             console.error("Firebase config is missing projectId. Initialization aborted.");
+             return null;
+        }
         const app = initializeApp(firebaseConfig);
-        state.firebase.db = getFirestore(app);
-        const auth = getAuth(app);
-        await signInAnonymously(auth);
-        console.log("Firebase initialized and user signed in anonymously.");
+        console.log("Firebase app initialized.");
+        return app;
     } catch (error) {
         console.error("Firebase initialization failed:", error);
-        state.firebase.db = null; // Ensure db is null on error
+        state.firebase.db = null;
+        return null;
     }
 }
 
