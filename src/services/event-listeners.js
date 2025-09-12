@@ -1,4 +1,4 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/event-listeners.js
+// File Path: src/services/event-listeners.js
 import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
@@ -283,4 +283,3 @@ export function initEventListeners() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 }
-
