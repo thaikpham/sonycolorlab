@@ -1,6 +1,6 @@
 // File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/components/profile-ui.js
 import { state } from '../services/state.js';
-import { getGeneratedRecipes, getFavoriteRecipes } from '../services/firestore.js';
+import { getUserProfile, getGeneratedRecipes, getFavoriteRecipes } from '../services/firestore.js';
 import { applyTranslations, getCurrentLanguage, t } from '../services/language.js';
 import { openModal, closeModal, formatRecipeName } from '../services/ui.js';
 import recipesData from '../services/recipes.js';
