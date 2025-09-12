@@ -8,7 +8,7 @@ import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
 import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
-import { signInWithGoogle, signInWithFacebook, handleSignOut } from './auth.js';
+import { signInWithGoogle, handleSignOut } from './auth.js';
 import { addComment, toggleFavorite, getFavoriteRecipes, saveGeneratedRecipe, updateUserProfile } from './firestore.js';
 
 async function initializeAndStartQuiz() {
@@ -29,7 +29,6 @@ export function initEventListeners() {
         
         // --- Authentication ---
         if (target.closest('#signInGoogleBtn')) { signInWithGoogle(); return; }
-        if (target.closest('#signInFacebookBtn')) { signInWithFacebook(); return; }
         if (target.closest('#signOutBtn')) { handleSignOut(); return; }
         if (target.closest('#myProfileBtn')) { await renderView('userProfile'); return; }
 
@@ -242,7 +241,6 @@ export function initEventListeners() {
             const { closeEditProfileModal } = await import('../components/profile-ui.js');
             const formData = new FormData(e.target);
             const socialData = {
-                facebook: formData.get('facebook'),
                 instagram: formData.get('instagram'),
                 threads: formData.get('threads'),
                 website: formData.get('website'),
@@ -283,3 +281,4 @@ export function initEventListeners() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 }
+
