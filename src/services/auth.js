@@ -8,8 +8,10 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { state } from './state.js';
-import { renderHeader } from './ui.js';
+import { renderHeader, showToast } from './ui.js';
 import { getFavoriteRecipes, createUserProfileIfNeeded } from './firestore.js';
+import { t } from './language.js';
+
 
 let auth;
 
@@ -48,13 +50,22 @@ export function initAuth(app) {
 async function handleSignIn(provider) {
     if (!auth) {
         console.error("Auth is not initialized.");
+        showToast(t('authInitFailed'), true);
         return;
     }
     try {
         await signInWithPopup(auth, provider);
     } catch (error) {
-        console.error(`Sign in failed: ${error.message}`);
-        // Handle specific errors like popup blocked
+        console.error(`Sign in failed: ${error.code} - ${error.message}`);
+        
+        // Provide user-friendly error messages
+        if (error.code === 'auth/popup-closed-by-user') {
+            showToast(t('signInCancelled'), true);
+        } else if (error.code === 'auth/account-exists-with-different-credential') {
+            showToast(t('accountExists'), true);
+        } else {
+            showToast(t('signInFailed'), true);
+        }
     }
 }
 
@@ -72,3 +83,5 @@ export function handleSignOut() {
     if (!auth) return;
     signOut(auth);
 }
+
+
