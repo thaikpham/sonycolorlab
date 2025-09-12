@@ -790,7 +790,7 @@ const recipesData = [
         "contrast": "high",
         "saturation": "high",
         "tags": ["stylized", "atmospheric", "yellow-green-cast", "surreal", "vintage", "dystopian", "artistic"],
-        "whiteBalance": "8000K, A7-G0.5",
+        "whiteBalance": "8000K, B7-G0.5",
         "settings": { "Black level": "-11", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+12", "Color Phase": "-1" },
         "colorDepth": { "R": "-2", "G": "+4", "B": "+4", "C": "+5", "M": "-2", "Y": "-3" },
         "detailSettings": { "Level": "0" },
