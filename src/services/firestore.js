@@ -12,7 +12,8 @@ import {
     query,
     orderBy,
     onSnapshot,
-    serverTimestamp
+    serverTimestamp,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { state } from './state.js';
 import { showToast } from './ui.js';
@@ -23,6 +24,92 @@ export function initFirestore(app) {
     if (!app) return;
     db = getFirestore(app);
     state.firebase.db = db;
+}
+
+export async function createUserProfileIfNeeded(user) {
+    if (!user || !db) return;
+    const userDocRef = doc(db, "users", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+    if (!userDocSnap.exists()) {
+        try {
+            await setDoc(userDocRef, {
+                name: user.displayName,
+                email: user.email,
+                avatar: user.photoURL,
+                createdAt: serverTimestamp(),
+                socials: {
+                    facebook: '',
+                    instagram: '',
+                    threads: '',
+                    website: ''
+                }
+            });
+        } catch (error) {
+            console.error("Error creating user profile:", error);
+        }
+    }
+}
+
+export async function getUserProfile(userId) {
+    if (!userId || !db) return null;
+    try {
+        const userDocRef = doc(db, "users", userId);
+        const userDocSnap = await getDoc(userDocRef);
+        return userDocSnap.exists() ? userDocSnap.data() : null;
+    } catch (error) {
+        console.error("Error getting user profile:", error);
+        return null;
+    }
+}
+
+export async function updateUserProfile(userId, data) {
+    if (!userId || !db) {
+        showToast("You must be logged in.", true);
+        return;
+    }
+    const userDocRef = doc(db, "users", userId);
+    try {
+        await updateDoc(userDocRef, { socials: data });
+        showToast("Profile updated successfully!");
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        showToast("Failed to update profile.", true);
+    }
+}
+
+export async function saveGeneratedRecipe(userId, recipeData) {
+    if (!userId || !db) {
+        showToast("You must be logged in to save recipes.", true);
+        return;
+    }
+    try {
+        const recipesColRef = collection(db, "users", userId, "generatedRecipes");
+        await addDoc(recipesColRef, {
+            ...recipeData,
+            savedAt: serverTimestamp()
+        });
+        showToast("AI Recipe saved to your profile!");
+    } catch (error) {
+        console.error("Error saving generated recipe:", error);
+        showToast("Could not save the recipe.", true);
+    }
+}
+
+export async function getGeneratedRecipes(userId) {
+    if (!userId || !db) return [];
+    try {
+        const recipes = [];
+        const recipesColRef = collection(db, "users", userId, "generatedRecipes");
+        const q = query(recipesColRef, orderBy("savedAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            recipes.push({ id: doc.id, ...doc.data() });
+        });
+        return recipes;
+    } catch (error) {
+        console.error("Error fetching generated recipes:", error);
+        return [];
+    }
 }
 
 export async function isRecipeFavorited(userId, recipeId) {
