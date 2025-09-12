@@ -356,10 +356,6 @@ export function renderHeader() {
                     <p class="text-xs text-gray-500 truncate">${user.email || ''}</p>
                  </div>
                  <div class="my-1 h-px bg-gray-100"></div>
-                 <button id="myLabBtn" class="w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-heart w-5 h-5"><path d="M11 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v1.5"/><path d="M21.28 16.2a2.7 2.7 0 0 0-3.82-3.82 2.7 2.7 0 0 0-3.82 3.82l3.82 3.82 3.82-3.82z"/></svg>
-                    <span data-translate-key="myLab"></span>
-                 </button>
                  <button id="myProfileBtn" class="w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 flex items-center gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle w-5 h-5"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
                     <span data-translate-key="myProfile"></span>
@@ -401,4 +397,3 @@ export function renderHeader() {
     `;
     applyTranslations();
 }
-
