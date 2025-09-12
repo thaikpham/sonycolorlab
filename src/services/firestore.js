@@ -1,4 +1,4 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/firestore.js
+// File Path: src/services/firestore.js
 import { 
     getFirestore, 
     doc, 
@@ -13,10 +13,12 @@ import {
     orderBy,
     onSnapshot,
     serverTimestamp,
-    getDocs
+    getDocs,
+    where
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { state } from './state.js';
 import { showToast } from './ui.js';
+import { t } from './language.js';
 
 let db;
 
@@ -70,7 +72,7 @@ export async function updateUserProfile(userId, data) {
     const userDocRef = doc(db, "users", userId);
     try {
         await updateDoc(userDocRef, { socials: data });
-        showToast("Profile updated successfully!");
+        showToast(t('saveChanges'));
     } catch (error) {
         console.error("Error updating profile:", error);
         showToast("Failed to update profile.", true);
@@ -79,21 +81,31 @@ export async function updateUserProfile(userId, data) {
 
 export async function saveGeneratedRecipe(userId, recipeData) {
     if (!userId || !db) {
-        showToast("You must be logged in to save recipes.", true);
+        showToast(t('logInToSave'), true);
         return;
     }
     try {
         const recipesColRef = collection(db, "users", userId, "generatedRecipes");
+        // Check if a recipe with the same name already exists to avoid duplicates
+        const q = query(recipesColRef, where("name.en", "==", recipeData.name.en));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+            showToast("You have already saved this recipe.", true);
+            return;
+        }
+
         await addDoc(recipesColRef, {
             ...recipeData,
             savedAt: serverTimestamp()
         });
-        showToast("AI Recipe saved to your profile!");
+        showToast(t('recipeSavedToLab'));
     } catch (error) {
         console.error("Error saving generated recipe:", error);
         showToast("Could not save the recipe.", true);
     }
 }
+
 
 export async function getGeneratedRecipes(userId) {
     if (!userId || !db) return [];
@@ -112,16 +124,9 @@ export async function getGeneratedRecipes(userId) {
     }
 }
 
-export async function isRecipeFavorited(userId, recipeId) {
-    if (!userId || !db) return false;
-    const userDocRef = doc(db, "users", userId);
-    const userDocSnap = await getDoc(userDocRef);
-    return userDocSnap.exists() && userDocSnap.data().favorites?.includes(recipeId);
-}
-
 export async function toggleFavorite(userId, recipeId) {
     if (!userId || !db) {
-        showToast("You need to be logged in to save recipes.", true);
+        showToast(t('logInToSave'), true);
         return;
     }
 
@@ -131,55 +136,35 @@ export async function toggleFavorite(userId, recipeId) {
         const userDocSnap = await getDoc(userDocRef);
         
         if (userDocSnap.exists() && userDocSnap.data().favorites?.includes(recipeId)) {
-            // Recipe is already favorited, so remove it
-            await updateDoc(userDocRef, {
-                favorites: arrayRemove(recipeId)
-            });
-            showToast("Recipe removed from My Lab");
+            await updateDoc(userDocRef, { favorites: arrayRemove(recipeId) });
+            showToast(t('recipeRemovedFromLab'));
         } else {
-            // Recipe is not favorited, so add it
-            await setDoc(userDocRef, { 
-                favorites: arrayUnion(recipeId) 
-            }, { merge: true });
-            showToast("Recipe saved to My Lab!");
+            await setDoc(userDocRef, { favorites: arrayUnion(recipeId) }, { merge: true });
+            showToast(t('recipeSavedToLab'));
         }
     } catch (error) {
         console.error("Error toggling favorite:", error);
-        showToast("Could not update favorites. Please try again.", true);
+        showToast(t('couldNotUpdateFavorites'), true);
     }
 }
 
 export async function getFavoriteRecipes(userId) {
     if (!userId || !db) return [];
-
     try {
         const userDocRef = doc(db, "users", userId);
         const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-            return userDocSnap.data().favorites || [];
-        }
-        return [];
+        return userDocSnap.exists() ? (userDocSnap.data().favorites || []) : [];
     } catch (error) {
         console.error("Error fetching favorites:", error);
         return [];
     }
 }
 
-
-// === COMMENTS ===
-
-/**
- * Adds a new comment to a recipe.
- * @param {string} recipeId - The ID of the recipe being commented on.
- * @param {object} user - The authenticated user object from Firebase Auth.
- * @param {string} text - The comment text.
- */
 export async function addComment(recipeId, user, text) {
     if (!user || !db || !text.trim()) {
-        showToast("You must be logged in to comment.", true);
+        showToast(t('logInToComment'), true);
         return;
     }
-
     try {
         const commentsColRef = collection(db, "recipes", recipeId, "comments");
         await addDoc(commentsColRef, {
@@ -191,16 +176,10 @@ export async function addComment(recipeId, user, text) {
         });
     } catch (error) {
         console.error("Error adding comment: ", error);
-        showToast("Could not post comment. Please try again.", true);
+        showToast(t('couldNotPostComment'), true);
     }
 }
 
-/**
- * Listens for real-time updates to a recipe's comments.
- * @param {string} recipeId - The ID of the recipe.
- * @param {function} callback - The function to call with the comments array.
- * @returns {function} An unsubscribe function for the listener.
- */
 export function onCommentsSnapshot(recipeId, callback) {
     if (!db) return () => {};
 
@@ -215,9 +194,8 @@ export function onCommentsSnapshot(recipeId, callback) {
         callback(comments);
     }, (error) => {
         console.error("Error fetching comments: ", error);
-        callback([]); // Return empty array on error
+        callback([]);
     });
 
     return unsubscribe;
 }
-
