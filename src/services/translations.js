@@ -46,7 +46,7 @@ export const translations = {
     tweakWithAI: {vi: "Tinh chỉnh với Gemini AI", en: "Tweak with Gemini AI"},
     aiKeyNotConfigured: { vi: "Chưa cấu hình Gemini API Key", en: "Gemini API Key not configured" },
     shareRecipeBtn: {vi: "Chia sẻ Công thức", en: "Share Recipe"},
-    downloadPNG: {vi: "Lưu thẻ công thức", en: "Lưu thẻ công thức"},
+    downloadPNG: {vi: "Lưu thẻ công thức", en: "Save Recipe Card"},
     saveGuideTitle: { vi: "Lưu công thức vào máy ảnh", en: "Save Recipe to Camera" },
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
