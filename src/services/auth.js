@@ -9,7 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { state } from './state.js';
 import { renderHeader } from './ui.js';
-import { getFavoriteRecipes } from './firestore.js';
+import { getFavoriteRecipes, createUserProfileIfNeeded } from './firestore.js';
 
 let auth;
 
@@ -21,6 +21,7 @@ export function initAuth(app) {
         state.auth.isLoggedIn = !!user;
         
         if (user) {
+            await createUserProfileIfNeeded(user);
             // User is signed in, fetch their favorites and cache them
             state.auth.favorites = await getFavoriteRecipes(user.uid);
         } else {
@@ -71,4 +72,6 @@ export function handleSignOut() {
     if (!auth) return;
     signOut(auth);
 }
+
+
 
