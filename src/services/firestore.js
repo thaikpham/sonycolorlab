@@ -13,7 +13,7 @@ import {
     orderBy,
     onSnapshot,
     serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { state } from './state.js';
 import { showToast } from './ui.js';
 
@@ -133,3 +133,4 @@ export function onCommentsSnapshot(recipeId, callback) {
 
     return unsubscribe;
 }
+
