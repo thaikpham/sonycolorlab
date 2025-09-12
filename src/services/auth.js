@@ -87,3 +87,4 @@ export function handleSignOut() {
     if (!auth) return;
     signOut(auth);
 }
+
