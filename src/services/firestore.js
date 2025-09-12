@@ -124,6 +124,45 @@ export async function getGeneratedRecipes(userId) {
     }
 }
 
+export async function submitDemoPhoto(userId, data) {
+    if (!userId || !db) {
+        showToast('You must be logged in to submit a photo.', true);
+        return;
+    }
+    try {
+        const submissionsColRef = collection(db, "demoSubmissions");
+        await addDoc(submissionsColRef, {
+            ...data,
+            userId: userId,
+            userName: state.auth.user.displayName,
+            userAvatar: state.auth.user.photoURL,
+            submittedAt: serverTimestamp(),
+            status: 'pending' // for future moderation
+        });
+        showToast(t('submissionSuccess'));
+    } catch (error) {
+        console.error("Error submitting demo photo:", error);
+        showToast(t('submissionError'), true);
+    }
+}
+
+export async function getUserDemoPhotos(userId) {
+    if (!userId || !db) return [];
+    try {
+        const photos = [];
+        const submissionsColRef = collection(db, "demoSubmissions");
+        const q = query(submissionsColRef, where("userId", "==", userId), orderBy("submittedAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            photos.push({ id: doc.id, ...doc.data() });
+        });
+        return photos;
+    } catch (error) {
+        console.error("Error fetching user demo photos:", error);
+        return [];
+    }
+}
+
 export async function toggleFavorite(userId, recipeId) {
     if (!userId || !db) {
         showToast(t('logInToSave'), true);
@@ -199,3 +238,4 @@ export function onCommentsSnapshot(recipeId, callback) {
 
     return unsubscribe;
 }
+
