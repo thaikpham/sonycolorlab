@@ -5,7 +5,7 @@ import {
     signInWithPopup, 
     GoogleAuthProvider,
     signOut
-} from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js)";
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { state } from './state.js';
 import { renderHeader, showToast } from './ui.js';
 import { getFavoriteRecipes, createUserProfileIfNeeded } from './firestore.js';
