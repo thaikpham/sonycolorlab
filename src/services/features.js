@@ -20,7 +20,6 @@ import recipeImages from './recipe-images.js';
 import { showToast, openModal, closeModal } from './ui.js';
 
 // --- CDN URLs for external libraries ---
-const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
 
 // --- UTILITY ---
@@ -244,15 +243,59 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// --- PNG & SHARE FUNCTIONS ---
 
+export async function generateRecipePng(elementId, recipeName) {
+    const elementToCapture = document.getElementById(elementId);
+    if (!elementToCapture) {
+        console.error(`Element with ID "${elementId}" not found for PNG generation.`);
+        showToast("Sorry, there was an error creating the image.", true);
+        return;
+    }
 
+    const btn = document.querySelector(`button[data-element-id="${elementId}"]`);
+    const originalBtnContent = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = `<div class="loader-dark"></div> ${t('aiQuizGenerating')}`;
+        btn.disabled = true;
+    }
 
+    try {
+        await loadScript(HTML2CANVAS_URL, 'html2canvas');
+        const html2canvas = window.html2canvas;
 
-// --- PDF & SHARE FUNCTIONS ---
+        const canvas = await html2canvas(elementToCapture, {
+            scale: 2.5,
+            useCORS: true,
+            backgroundColor: '#F9FAFB' 
+        });
 
-export async function generateRecipePdf(recipeId, generatedRecipeData = null) {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        const safeFileName = recipeName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        link.download = `SonyColorLab-${safeFileName}.png`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+    } catch (error) {
+        console.error("Failed to generate PNG:", error);
+        showToast("Sorry, there was an error creating the image.", true);
+    } finally {
+        if (btn) {
+            btn.innerHTML = originalBtnContent;
+            btn.disabled = false;
+        }
+    }
+}
+
+export async function generateRecipeCardPng(recipeId, generatedRecipeData = null) {
     const originalRecipe = recipesData.find(r => r.id === recipeId);
-    if (!originalRecipe) return;
+    if (!originalRecipe && !generatedRecipeData) return;
+
+    const recipeToRender = generatedRecipeData || originalRecipe;
+    const recipeName = recipeToRender.name.en;
 
     const btn = document.activeElement;
     const originalBtnContent = btn.innerHTML;
@@ -260,95 +303,79 @@ export async function generateRecipePdf(recipeId, generatedRecipeData = null) {
     btn.disabled = true;
 
     try {
-        await Promise.all([
-            loadScript(JSPDF_URL, 'jspdf'),
-            loadScript(HTML2CANVAS_URL, 'html2canvas')
-        ]);
+        await loadScript(HTML2CANVAS_URL, 'html2canvas');
+        const { html2canvas } = window;
 
-        const { jsPDF } = window.jspdf;
-        const html2canvas = window.html2canvas;
-
-        const pdfContentEl = document.createElement('div');
-        pdfContentEl.id = 'pdf-content-wrapper';
-        Object.assign(pdfContentEl.style, {
-            position: 'absolute', left: '-9999px', top: '0',
-            width: '210mm', padding: '20mm', backgroundColor: 'white',
-            fontFamily: "'Be Vietnam Pro', sans-serif", color: '#1d1d1f',
+        const pngContentEl = document.createElement('div');
+        pngContentEl.id = 'png-card-wrapper';
+        Object.assign(pngContentEl.style, {
+            position: 'absolute',
+            left: '-9999px',
+            top: '0',
+            width: '1200px',
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            color: '#111827',
+            backgroundColor: '#f0f2f5',
+            overflow: 'hidden',
             boxSizing: 'border-box'
         });
 
-        const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
-            <div style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; text-align: center;">
-                <div style="font-size: 12px; color: #6e6e73; margin-bottom: 4px;">${key}</div>
-                <div style="font-size: 18px; font-weight: 600;">${value}</div>
-            </div>`).join('');
-        
-        const createComparisonSettingsHTML = (originalSettings, generatedSettings) => {
-             const allKeys = Object.keys(originalSettings || {});
-             return allKeys.map(key => {
-                const originalValue = originalSettings[key];
-                const generatedValue = generatedSettings[key];
-                const isChanged = originalValue !== generatedValue;
-                return `
-                <div style="background-color: ${isChanged ? '#e6f2ff' : '#f8f9fa'}; border-radius: 8px; padding: 12px; text-align: center;">
-                    <div style="font-size: 12px; color: #6e6e73; margin-bottom: 4px;">${key}</div>
-                    <div style="font-size: 18px; font-weight: 600; color: ${isChanged ? '#0056B3' : 'inherit'};">${generatedValue}</div>
-                    ${isChanged ? `<div style="font-size: 11px; text-decoration: line-through; color: #6e6e73;">${originalValue}</div>` : ''}
-                </div>`;
-             }).join('');
+        const createSettingsHTML = (settings) => {
+            if (!settings) return '';
+            return Object.entries(settings).map(([key, value]) => `
+                <div style="background: rgba(255, 255, 255, 0.6); border-radius: 16px; padding: 20px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <div style="font-size: 20px; color: #4b5563; margin-bottom: 8px; font-weight: 500;">${key}</div>
+                    <div style="font-size: 36px; font-weight: 800;">${value}</div>
+                </div>`).join('');
         };
-
-        let contentHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px;">
-                <h1 style="font-size: 24px; font-weight: 800; margin: 0;">Alpha AI Color Lab</h1>
-            </div>
-            <h2 style="font-size: 32px; font-weight: 700; margin: 24px 0 8px 0;">${generatedRecipeData ? generatedRecipeData.name[getCurrentLanguage()] : originalRecipe.name[getCurrentLanguage()]}</h2>
-            <p style="font-size: 14px; color: #6e6e73; margin: 0 0 24px 0; font-style: italic;">"${generatedRecipeData ? generatedRecipeData.description[getCurrentLanguage()] : originalRecipe.description[getCurrentLanguage()]}"</p>
-        `;
-
-        if (generatedRecipeData) {
-            contentHTML += `
-                <div style="border: 2px solid #007AFF; border-radius: 12px; padding: 24px; background-color: #f0f7ff;">
-                    <h3 style="font-size: 20px; font-weight: 700; margin-top: 0;">AI Generated Recipe</h3>
-                    <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                        ${createComparisonSettingsHTML(originalRecipe.settings, generatedRecipeData.settings)}
+        
+        const contentHTML = `
+            <div style="width: 100%; height: 100%; position: relative; background-image: radial-gradient(circle at 10% 20%, rgb(137, 210, 255) 0%, rgb(153, 153, 255) 50%, rgb(229, 153, 255) 100%);">
+                <div style="position: absolute; inset: 0; background: rgba(240, 242, 245, 0.7); backdrop-filter: blur(150px); -webkit-backdrop-filter: blur(150px);"></div>
+                <div style="position: relative; padding: 80px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 32px;">
+                        <img src="/assets/logo_black.png" style="height: 80px; width: auto;" alt="Logo">
+                        <p style="font-size: 24px; font-weight: 600; color: #6b7280;">sonycolorlab.app</p>
                     </div>
-                    ${originalRecipe.colorDepth ? `<h4 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Color Depth</h4><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;">${createComparisonSettingsHTML(originalRecipe.colorDepth, generatedRecipeData.colorDepth)}</div>` : ''}
+                    <h2 style="font-size: 80px; font-weight: 800; margin: 56px 0 16px 0; line-height: 1.1; letter-spacing: -2px;">${recipeToRender.name[getCurrentLanguage()]}</h2>
+                    <p style="font-size: 28px; color: #4b5563; margin: 0 0 56px 0; font-style: italic; max-width: 90%;">"${recipeToRender.description[getCurrentLanguage()]}"</p>
+                    
+                    <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">White Balance</h3>
+                    <div style="background: rgba(255, 255, 255, 0.6); border-radius: 16px; padding: 24px; font-size: 32px; font-weight: 600; border: 1px solid rgba(0,0,0,0.05);">${recipeToRender.whiteBalance}</div>
+
+                    <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">Main Settings</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.settings)}</div>
+                    
+                    ${recipeToRender.colorDepth ? `<h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">Color Depth</h3><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.colorDepth)}</div>` : ''}
+                    
+                    ${recipeToRender.detailSettings ? `<h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">Detail</h3><div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.detailSettings)}</div>` : ''}
                 </div>
-                 <p style="font-size: 12px; color: #6e6e73; text-align: center; margin-top: 16px;">Based on original recipe: ${originalRecipe.name[getCurrentLanguage()]}</p>
-            `;
-        } else {
-             contentHTML += `
-                <h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">White Balance</h3>
-                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 600;">${originalRecipe.whiteBalance}</div>
-                <h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Main Settings</h3>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">${createSettingsHTML(originalRecipe.settings)}</div>
-                ${originalRecipe.colorDepth ? `<h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Color Depth</h3><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;">${createSettingsHTML(originalRecipe.colorDepth)}</div>` : ''}
-                ${originalRecipe.detailSettings ? `<h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px 0;">Detail</h3><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">${createSettingsHTML(originalRecipe.detailSettings)}</div>` : ''}
-             `;
-        }
+            </div>
+        `;
         
-        contentHTML += `<p style="text-align: center; margin-top: 40px; font-size: 12px; color: #9ca3af;">Generated from sonycolorlab.app</p>`;
+        pngContentEl.innerHTML = contentHTML;
+        document.body.appendChild(pngContentEl);
 
-        pdfContentEl.innerHTML = contentHTML;
-        document.body.appendChild(pdfContentEl);
-
-        const canvas = await html2canvas(pdfContentEl, { scale: 2 });
-        const imgData = canvas.toDataURL('image/png');
-        document.body.removeChild(pdfContentEl);
-
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        const canvas = await html2canvas(pngContentEl, {
+            scale: 1,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: null
+        });
         
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        const fileName = `SonyColorLab-${generatedRecipeData ? generatedRecipeData.name.en : originalRecipe.name.en}.pdf`;
-        pdf.save(fileName.replace(/[^a-z0-9]/gi, '-').toLowerCase());
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        const safeFileName = recipeName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        link.download = `SonyColorLab-${safeFileName}.png`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        document.body.removeChild(pngContentEl);
 
     } catch (error) {
-        console.error("Failed to generate PDF:", error);
-        showToast("Sorry, there was an error creating the PDF.", true);
+        console.error("Failed to generate PNG:", error);
+        showToast("Sorry, there was an error creating the image.", true);
     } finally {
         btn.innerHTML = originalBtnContent;
         btn.disabled = false;
@@ -380,3 +407,4 @@ export async function shareRecipe(recipeId) {
         }
     }
 }
+
