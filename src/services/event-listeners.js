@@ -74,6 +74,8 @@ export function initEventListeners() {
         if (target.closest('#signInGoogleBtn')) { signInWithGoogle(); return; }
         if (target.closest('#signOutBtn')) { handleSignOut(); return; }
         if (target.closest('#myProfileBtn')) { await renderView('userProfile'); return; }
+        if (target.closest('#myLabBtn')) { await renderView('userProfile'); return; }
+
         
         // Toggle user dropdown
         const avatarBtn = target.closest('#avatarBtn');
@@ -195,15 +197,6 @@ export function initEventListeners() {
             return;
         }
 
-        if(target.closest('#myLabBtn')) {
-             if (state.ui.currentView !== 'recipeFormulas') {
-                 await renderView('recipeFormulas');
-             }
-             state.ui.filter = 'favorites';
-             renderLibraryList();
-             return;
-        }
-
         if (target.closest('#saveAIGeneratedRecipeBtn')) {
              if (!state.auth.isLoggedIn) {
                 showToast(t('logInToSave'), true);
@@ -279,12 +272,19 @@ export function initEventListeners() {
         // Profile Page specific listeners
         if (state.ui.currentView === 'userProfile') {
             const { openEditProfileModal, openDemoPhotoSubmitModal } = await import('../components/profile-ui.js');
+            const { openAILabWithExistingRecipe } = await import('../components/ai-lab/ai-lab.js');
             if (target.closest('#editProfileBtn')) {
                 openEditProfileModal();
                 return;
             }
             if (target.closest('#openDemoPhotoModalBtn')) {
                 openDemoPhotoSubmitModal();
+                return;
+            }
+            const recipeCard = target.closest('.generated-recipe-card');
+            if (recipeCard) {
+                const recipeData = JSON.parse(recipeCard.dataset.recipe);
+                openAILabWithExistingRecipe(recipeData);
                 return;
             }
         }
@@ -363,4 +363,6 @@ export function initEventListeners() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 }
+
+
 
