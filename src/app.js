@@ -1,4 +1,4 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/app.js
+// File Path: src/app.js
 import './styles/style.css';
 // --- Local Module Imports ---
 import { initLanguage, updateLangSlider } from './services/language.js';
@@ -30,4 +30,3 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
