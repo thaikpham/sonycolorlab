@@ -22,6 +22,7 @@ const viewTemplates = {
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                 </div>
+                <div id="recipeListFilter"></div>
                 <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
             </aside>
             <main id="recipeMainPanel" class="h-full flex-grow hidden md:flex flex-col min-h-0">
@@ -92,8 +93,8 @@ export function attachViewEventListeners(viewName) {
 }
 
 export function renderView(viewName, selectedId = null) {
-    state.currentView = viewName;
-    if (selectedId) { state.selectedRecipeId = selectedId; }
+    state.ui.currentView = viewName;
+    if (selectedId) { state.ui.selectedRecipeId = selectedId; }
 
     const blobContainer = document.getElementById('blobContainer');
     const ultimateButtonContainer = document.getElementById('ultimateButtonContainer');
