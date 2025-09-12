@@ -1,6 +1,7 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/components/quiz-ui.js
+// File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/components/quiz-ui.js
 import { getCurrentLanguage, t } from '../services/language.js';
 import recipeImages from '../services/recipe-images.js';
+import { state } from '../services/state.js';
 
 /**
  * Renders the entire one-page quiz layout.
@@ -111,43 +112,66 @@ export function renderQuizResult(bestMatch) {
 
 
 /**
- * Renders the AI-generated recipe result by replacing the quiz layout.
+ * Renders the AI-generated recipe result as an editable form.
  * @param {object} recipe - The AI-generated recipe object.
  */
 export function renderQuizAIResult(recipe) {
+    state.quiz.editableRecipe = JSON.parse(JSON.stringify(recipe)); // Deep copy to avoid state mutation
     const quizContent = document.getElementById('quizContent');
-    const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
+
+    const createSettingsHTML = (settings, section) => Object.entries(settings || {}).map(([key, value]) => `
         <div class="flex flex-col p-3 rounded-lg bg-white/70">
-            <span class="text-sm text-gray-500 font-medium">${key}</span>
-            <span class="font-semibold text-lg text-gray-800">${value}</span>
+            <label for="${section}-${key.replace(/\s+/g, '-')}" class="text-sm text-gray-500 font-medium">${key}</label>
+            <input type="text" id="${section}-${key.replace(/\s+/g, '-')}" data-section="${section}" data-key="${key}" class="font-semibold text-lg text-gray-800 bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none p-1" value="${value}">
         </div>`).join('');
 
     quizContent.innerHTML = `
         <div class="quiz-result-view text-center max-w-3xl mx-auto py-8">
             <h3 class="text-3xl font-bold" data-translate-key="aiQuizResultTitle"></h3>
             <p class="mt-2 text-gray-600" data-translate-key="aiQuizResultDescription"></p>
-            <div id="quiz-ai-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
-                <h4 class="text-2xl font-bold text-center">${recipe.name[getCurrentLanguage()]}</h4>
-                <p class="text-gray-600 mt-1 text-center italic">"${recipe.description[getCurrentLanguage()]}"</p>
+            <form id="aiRecipeForm">
+                <div id="quiz-ai-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left space-y-4">
+                    <div>
+                        <label for="recipeName" class="text-base font-bold mb-2 block" data-translate-key="recipeNameLabel"></label>
+                        <input type="text" id="recipeName" class="w-full text-2xl font-bold text-center p-2 border-b-2" value="${recipe.name[getCurrentLanguage()]}">
+                    </div>
+                    <div>
+                         <label for="recipeDescription" class="text-base font-bold mb-2 block" data-translate-key="recipeDescriptionLabel"></label>
+                        <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 text-center italic p-2 border-b-2">${recipe.description[getCurrentLanguage()]}</textarea>
+                    </div>
 
-                <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
-                <div class="p-3 bg-white/70 rounded-lg font-semibold">${recipe.whiteBalance}</div>
+                    <div>
+                        <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
+                        <input type="text" id="whiteBalance" class="w-full p-3 bg-white/70 rounded-lg font-semibold border-b-2" value="${recipe.whiteBalance}">
+                    </div>
 
-                <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.settings)}</div>
+                    <div>
+                        <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="main-settings-grid">${createSettingsHTML(recipe.settings, 'settings')}</div>
+                    </div>
 
-                ${recipe.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(recipe.colorDepth)}</div>` : ''}
-                ${recipe.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(recipe.detailSettings)}</div>` : ''}
-            </div>
-            <div class="flex flex-wrap gap-4 justify-center">
-                 <button id="downloadQuizResultPngBtn" data-element-id="quiz-ai-result-card" data-recipe-name="${recipe.name.en}" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image h-5 w-5"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                    <span data-translate-key="downloadPNG"></span>
-                </button>
-                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                    <span data-translate-key="retakeQuizBtn"></span>
-                </button>
-            </div>
+                    ${recipe.colorDepth ? `<div><h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2" id="color-depth-grid">${createSettingsHTML(recipe.colorDepth, 'colorDepth')}</div></div>` : ''}
+                    ${recipe.detailSettings ? `<div><h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="detail-settings-grid">${createSettingsHTML(recipe.detailSettings, 'detailSettings')}</div></div>` : ''}
+
+                     <div>
+                        <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="notesLabel"></h5>
+                        <textarea id="recipeNotes" class="w-full p-3 rounded-lg bg-white/70 border-2 border-gray-200" rows="4" placeholder="${t('notesPlaceholder')}"></textarea>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <button id="saveAIGeneratedRecipeBtn" type="button" class="btn btn-primary py-3 px-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save h-5 w-5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        <span data-translate-key="saveAIGeneratedRecipe"></span>
+                    </button>
+                    <button id="saveToDriveBtn" type="button" class="btn bg-green-500 hover:bg-green-600 text-white py-3 px-6 shadow-lg shadow-green-500/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-5 h-5"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M11.5 12.5 13 14l-2.5 2.5"/><path d="m10 16.5 1.5-1.5"/></svg>
+                        <span data-translate-key="saveToDriveBtn"></span>
+                    </button>
+                    <button id="retakeQuizBtn" type="button" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
+                        <span data-translate-key="retakeQuizBtn"></span>
+                    </button>
+                </div>
+            </form>
         </div>`;
 }
 
@@ -210,6 +234,4 @@ export function renderAIClarification(question, options) {
         </div>
     `;
 }
-
-
 
