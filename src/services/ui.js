@@ -1,4 +1,4 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/ui.js
+// File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/services/ui.js
 /**
  * ui.js
  * This module is responsible for all DOM manipulations and HTML generation.
@@ -8,11 +8,8 @@
 // --- Local Module Imports ---
 import { state } from './state.js';
 import { getCurrentLanguage, t, applyTranslations } from './language.js';
-import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
-import { isAIEnabled } from './state.js';
-import { fetchTrendingRecipeIds } from './api.js';
 
 
 // --- HELPER FUNCTIONS ---
@@ -349,9 +346,11 @@ export function renderHeader() {
     const { isLoggedIn, user } = state.auth;
 
     const authSectionHTML = isLoggedIn ? `
-        <div class="relative group">
-            <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer">
-            <div class="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto z-30">
+        <div class="relative">
+            <button id="avatarBtn" class="flex items-center gap-3">
+                <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer">
+            </button>
+            <div id="userDropdown" class="absolute top-full right-0 mt-3 w-56 bg-white rounded-xl shadow-xl p-2 transition-all duration-200 opacity-0 invisible -translate-y-2 pointer-events-none z-30">
                  <div class="px-3 py-2">
                     <p class="text-sm font-semibold text-gray-800 truncate">${user.displayName || 'User'}</p>
                     <p class="text-xs text-gray-500 truncate">${user.email || ''}</p>
@@ -402,3 +401,4 @@ export function renderHeader() {
     `;
     applyTranslations();
 }
+
