@@ -1,14 +1,15 @@
 // File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/event-listeners.js
 import { state } from './state.js';
-import { openModal, closeModal, toggleUltimateActionsMenu } from './ui.js';
+import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import { setLanguage, updateLangSlider, applyTranslations } from './language.js';
+import { setLanguage, updateLangSlider, applyTranslations, getCurrentLanguage } from './language.js';
 import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
 import { parameterExplanations } from './translations.js';
 import recipesData from './recipes.js';
 import { signInWithGoogle, signInWithFacebook, handleSignOut } from './auth.js';
+import { addComment, toggleFavorite, getFavoriteRecipes } from './firestore.js';
 
 async function initializeAndStartQuiz() {
     if (!state.quiz.instance) {
@@ -33,9 +34,9 @@ export function initEventListeners() {
 
         // --- Ultimate Button Logic ---
         if (target.closest('#ultimateCtaBtn')) {
-            if (state.currentView === 'home') {
+            if (state.ui.currentView === 'home') {
                 await renderView('recipeFormulas');
-            } else if (state.currentView === 'recipeFormulas') {
+            } else if (state.ui.currentView === 'recipeFormulas') {
                 toggleUltimateActionsMenu();
             }
             return;
@@ -63,7 +64,7 @@ export function initEventListeners() {
         const d3Node = target.closest('.color-map-node-group');
 
         if (d3Node) {
-            if (state.currentView === 'home') {
+            if (state.ui.currentView === 'home') {
                 const recipeId = d3.select(d3Node).datum().id;
                 await renderView('recipeFormulas', recipeId);
             } else {
@@ -86,11 +87,11 @@ export function initEventListeners() {
             setLanguage(newLang);
             updateLangSlider();
             applyTranslations();
-            if (state.currentView === 'recipeFormulas') {
+            if (state.ui.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 renderLibraryDetails();
                 renderColorMapChart('#colorMapContainer', recipesData);
-            } else if (state.currentView === 'home') {
+            } else if (state.ui.currentView === 'home') {
                 renderColorMapChart('#homeColorMapContainer', recipesData);
             }
             return;
@@ -115,6 +116,36 @@ export function initEventListeners() {
             openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId);
             return;
         }
+        
+        if (target.closest('#favoriteBtn')) {
+            if (!state.auth.isLoggedIn) {
+                showToast("Please log in to save recipes.", true);
+                return;
+            }
+            const recipeId = target.closest('#favoriteBtn').dataset.recipeId;
+            await toggleFavorite(state.auth.user.uid, recipeId);
+            state.auth.favorites = await getFavoriteRecipes(state.auth.user.uid);
+            renderLibraryDetails();
+            renderLibraryList();
+            return;
+        }
+        
+        if(target.closest('.filter-btn')) {
+            const filter = target.closest('.filter-btn').dataset.filter;
+            state.ui.filter = filter;
+            renderLibraryList();
+            return;
+        }
+
+        if(target.closest('#myLabBtn')) {
+             if (state.ui.currentView !== 'recipeFormulas') {
+                 await renderView('recipeFormulas');
+             }
+             state.ui.filter = 'favorites';
+             renderLibraryList();
+             return;
+        }
+
 
         if (target.closest('#toggleSaveGuideBtn')) {
             const btn = target.closest('#toggleSaveGuideBtn');
@@ -173,6 +204,21 @@ export function initEventListeners() {
             if (target.closest('#downloadAIPngBtn')) { generateRecipeCardPng(target.closest('#downloadAIPngBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
         }
     });
+    
+    document.body.addEventListener('submit', async (e) => {
+        if (e.target.id === 'commentForm') {
+            e.preventDefault();
+            const form = e.target;
+            const recipeId = form.dataset.recipeId;
+            const input = form.querySelector('#commentInput');
+            const text = input.value;
+            
+            if (text.trim() && state.auth.user) {
+                await addComment(recipeId, state.auth.user, text);
+                input.value = ''; // Clear input on success
+            }
+        }
+    });
 
     document.body.addEventListener('mouseover', (e) => {
         const title = e.target.closest('.parameter-title');
@@ -204,4 +250,3 @@ export function initEventListeners() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 }
-
