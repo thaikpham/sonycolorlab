@@ -2,7 +2,7 @@ import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { setLanguage, updateLangSlider, applyTranslations } from './language.js';
-import { renderColorMapChart, openLightbox, generateRecipePdf, shareRecipe } from './features.js';
+import { renderColorMapChart, openLightbox, generateRecipePdf, shareRecipe, generateRecipePng } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView, attachViewEventListeners } from './view-manager.js';
 import { parameterExplanations } from './translations.js';
@@ -94,6 +94,15 @@ export function initEventListeners() {
         if (collageItem) { openLightbox(collageItem.dataset.recipeId, collageItem.dataset.index); return; }
 
         if (target.closest('#downloadPdfBtn')) { generateRecipePdf(target.closest('#downloadPdfBtn').dataset.recipeId); return; }
+        
+        if (target.closest('#downloadQuizResultPngBtn')) {
+            const button = target.closest('#downloadQuizResultPngBtn');
+            const elementId = button.dataset.elementId;
+            const recipeName = button.dataset.recipeName;
+            generateRecipePng(elementId, recipeName);
+            return;
+        }
+
         if (target.closest('#shareRecipeBtn')) { shareRecipe(target.closest('#shareRecipeBtn').dataset.recipeId); return; }
         if (target.closest('#tweakWithAIBtn')) {
             const { openAILab } = await import('../components/ai-lab/ai-lab.js');
