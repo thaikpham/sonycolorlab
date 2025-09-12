@@ -68,7 +68,7 @@ export const translations = {
     signInBtn: { vi: "Đăng nhập", en: "Sign In" },
     signInMeta: { vi: "Đăng nhập với Meta", en: "Sign in with Meta" },
     signOutBtn: { vi: "Đăng xuất", en: "Sign Out" },
-    myLab: { vi: "Lab của tôi", en: "My Lab" },
+    favoritesBtn: { vi: "Đã lưu", en: "Favorites" },
     allRecipes: { vi: "Tất cả", en: "All" },
     filterBy: { vi: "Lọc theo:", en: "Filter by:" },
     commentsTitle: { vi: "Bình luận", en: "Comments" },
@@ -94,7 +94,7 @@ export const translations = {
     instagram: { vi: "Instagram", en: "Instagram" },
     threads: { vi: "Threads", en: "Threads" },
     saveChanges: { vi: "Lưu thay đổi", en: "Save Changes" },
-    myRecipeLab: { vi: "Lab Công thức của tôi", en: "My Recipe Lab" },
+    myRecipeLab: { vi: "Công thức của tôi", en: "My Recipes" },
     generatedRecipesSectionTitle: { vi: "Công thức do AI tạo", en: "AI-Generated Recipes" },
     favoritedRecipesSectionTitle: { vi: "Công thức đã lưu", en: "Favorited Recipes" },
     editRecipeBtn: { vi: "Xem & Chỉnh sửa", en: "View & Edit" },
@@ -133,6 +133,7 @@ export const translations = {
     signInCancelled: { vi: "Bạn đã hủy đăng nhập.", en: "You cancelled the sign-in." },
     accountExists: { vi: "Tài khoản đã tồn tại với một thông tin đăng nhập khác.", en: "An account already exists with a different credential." },
     signInFailed: { vi: "Đăng nhập thất bại. Vui lòng thử lại.", en: "Sign in failed. Please try again." },
+    genericError: { vi: "Đã có lỗi xảy ra. Vui lòng thử lại.", en: "An error occurred. Please try again." },
 };
 
 export const parameterExplanations = {
@@ -153,4 +154,3 @@ export const parameterExplanations = {
     'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
     'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
 };
-
