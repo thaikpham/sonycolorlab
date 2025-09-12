@@ -271,7 +271,7 @@ export function initEventListeners() {
         // Profile Page specific listeners
         if (state.ui.currentView === 'userProfile') {
             const { openEditProfileModal, openDemoPhotoSubmitModal } = await import('../components/profile-ui.js');
-            const { openAILabWithExistingRecipe } = await import('../components/ai-lab/ai-lab.js');
+            
             if (target.closest('#editProfileBtn')) {
                 openEditProfileModal();
                 return;
@@ -282,12 +282,15 @@ export function initEventListeners() {
             }
             const recipeCard = target.closest('.generated-recipe-card');
             if (recipeCard) {
-                try {
-                    const recipeData = JSON.parse(recipeCard.dataset.recipe);
-                    openAILabWithExistingRecipe(recipeData);
-                } catch (error) {
-                    console.error("Failed to parse recipe data:", error, recipeCard.dataset.recipe);
-                    showToast(t('genericError'), true);
+                 if (recipeCard.dataset.recipe) {
+                    try {
+                        const recipeData = JSON.parse(recipeCard.dataset.recipe);
+                        const { openAILabWithExistingRecipe } = await import('../components/ai-lab/ai-lab.js');
+                        openAILabWithExistingRecipe(recipeData);
+                    } catch (error) {
+                        console.error("Failed to parse recipe data:", error, recipeCard.dataset.recipe);
+                        showToast(t('genericError'), true);
+                    }
                 }
                 return;
             }
@@ -367,3 +370,5 @@ export function initEventListeners() {
         if(e.target.id === 'searchInput') renderLibraryList();
     });
 }
+
+
