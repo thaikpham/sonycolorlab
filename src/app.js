@@ -7,13 +7,13 @@ import { initAuth } from './services/auth.js';
 import { initFirestore } from './services/firestore.js';
 import { initEventListeners } from './services/event-listeners.js';
 import { renderView } from './services/view-manager.js';
-import { initConfig, state } from './services/state.js';
+import { state } from './services/state.js';
 import { renderHeader } from './services/ui.js';
 
 
 async function init() {
   initLanguage();
-  await initConfig();
+  // The initConfig() call has been removed as configuration is handled by Vite environment variables.
   
   const app = initializeFirebase();
   if (app) {
@@ -30,3 +30,4 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
