@@ -359,6 +359,7 @@ export function renderHeader() {
                 <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto z-30">
                      <div class="px-2 py-1.5 text-sm text-gray-700 font-semibold truncate">${user.displayName || 'User'}</div>
                      <div class="my-1 h-px bg-gray-100"></div>
+                     <button id="myProfileBtn" class="w-full text-left px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100" data-translate-key="myProfile"></button>
                      <button id="signOutBtn" class="w-full text-left px-2 py-1.5 text-sm text-red-600 rounded-md hover:bg-red-50" data-translate-key="signOutBtn"></button>
                 </div>
             </div>
@@ -397,3 +398,4 @@ export function renderHeader() {
     `;
     applyTranslations();
 }
+
