@@ -1,3 +1,4 @@
+// File Path: thaikpham/sonycolorlab/sonycolorlab-new-features/src/services/state.js
 /**
  * state.js
  * This module centralizes the entire application's state and configuration constants.
@@ -51,7 +52,13 @@ export const state = {
   // General UI state
   currentView: 'home',
   selectedRecipeId: null,
-  isMobileDetailActive: false, // For handling mobile-specific layout changes
+  isMobileDetailActive: false,
+
+  // Authentication state
+  auth: {
+    isLoggedIn: false,
+    user: null, // Will hold the Firebase user object
+  },
 
   // D3 Chart state
   chart: {
@@ -65,28 +72,25 @@ export const state = {
     originalRecipe: null,
     userPrompt: '',
     generatedRecipe: null,
-    abortController: null, // To cancel in-flight API requests
-  },
-
-  // Gemini AI Caption feature state
-  captionAI: {
-    isGenerating: false,
-    recipe: null,
-    userPrompt: '',
     abortController: null,
-    result: null,
   },
-
+  
   // Quiz feature state
   quiz: {
-    instance: null, // A property to hold the Quiz class instance
-    currentQuestionIndex: 0,
-    answers: [],
+    instance: null,
+    answers: {},
+    aiContext: { // For the new AI Contextual Assistant
+      initialPrompt: "",
+      clarificationQuestion: "",
+      userClarification: "",
+      isAsking: false,
+    }
   },
 
   // Firebase state
   firebase: {
-    db: null, // Holds the Firestore database instance
+    db: null,
+    app: null,
   },
 
   // Image Lightbox state
@@ -97,12 +101,13 @@ export const state = {
 
   // Animation state
   animation: {
-    blobAnimationFrameId: null, // ID for the home screen blob animation
+    blobAnimationFrameId: null,
   },
 
-  // Tracks dynamically loaded scripts to avoid re-loading
+  // Tracks dynamically loaded scripts
   scripts: {
     jspdf: false,
     html2canvas: false,
   }
 };
+
