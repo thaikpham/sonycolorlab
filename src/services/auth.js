@@ -3,10 +3,9 @@ import {
     getAuth, 
     onAuthStateChanged, 
     signInWithPopup, 
-    GoogleAuthProvider, 
-    FacebookAuthProvider,
+    GoogleAuthProvider,
     signOut
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+} from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js)";
 import { state } from './state.js';
 import { renderHeader, showToast } from './ui.js';
 import { getFavoriteRecipes, createUserProfileIfNeeded } from './firestore.js';
@@ -56,9 +55,10 @@ async function handleSignIn(provider) {
     try {
         await signInWithPopup(auth, provider);
     } catch (error) {
-        console.error(`Sign in failed: ${error.code} - ${error.message}`);
+        // Log the full error object for detailed debugging in the developer console
+        console.error("Firebase SignIn Error:", error);
         
-        // Provide user-friendly error messages
+        // Provide user-friendly error messages via toasts
         if (error.code === 'auth/popup-closed-by-user') {
             showToast(t('signInCancelled'), true);
         } else if (error.code === 'auth/account-exists-with-different-credential') {
@@ -74,14 +74,8 @@ export function signInWithGoogle() {
     handleSignIn(provider);
 }
 
-export function signInWithFacebook() {
-    const provider = new FacebookAuthProvider();
-    handleSignIn(provider);
-}
-
 export function handleSignOut() {
     if (!auth) return;
     signOut(auth);
 }
-
 
