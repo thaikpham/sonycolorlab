@@ -51,21 +51,32 @@ export const translations = {
     saveGuideSubtitle: { vi: "Sử dụng tính năng Camera Setting Memory trên các dòng máy Alpha có menu mới.", en: "Using the Camera Setting Memory feature on Alpha cameras with the new menu." },
     showGuideBtn: { vi: "Xem Hướng Dẫn Chi Tiết", en: "View Full Guide" },
     hideGuideBtn: { vi: "Ẩn Hướng Dẫn", en: "Hide Guide" },
-    // --- NEW QUIZ AI TRANSLATIONS ---
     aiQuizPromptPlaceholder: { vi: "VD: một buổi chiều hoàng hôn ở Đà Lạt, tông màu cine, hơi buồn...", en: "e.g., a sunset afternoon in Dalat, cinematic tone, a bit melancholic..." },
     aiQuizGenerateBtn: { vi: "Sáng tạo với AI", en: "Generate with AI" },
     aiQuizSkipBtn: { vi: "Bỏ qua & Xem gợi ý", en: "Skip & Get Suggestion" },
     aiQuizGenerating: { vi: "Gemini đang sáng tạo...", en: "Gemini is creating..." },
     aiQuizResultTitle: { vi: "Công thức Sáng tạo từ Gemini!", en: "Creative Recipe from Gemini!" },
     aiQuizResultDescription: { vi: "Đây là công thức độc đáo được tạo ra dựa trên cảm hứng của bạn:", en: "Here is the unique recipe created based on your inspiration:" },
-    // --- UPDATED QUIZ SUBMIT BUTTON ---
     quizSubmitBtn: { vi: "Hé lộ Phong cách của bạn", en: "Reveal Your Style" },
     quizSubmitInfo: { vi: "Chạm để khám phá công thức màu dành riêng cho bạn.", en: "Tap to discover the color recipe made just for you." },
-    // --- NEW CONTRIBUTION BUTTON & MODAL ---
     contributePhotosBtn: { vi: "Đóng góp ảnh Demo", en: "Contribute Demo Photos" },
     contributeNoteTitle: { vi: "Hướng dẫn Đóng góp Ảnh", en: "Photo Contribution Guide" },
     contributeNoteText: { vi: "Để ảnh của bạn được chọn làm demo cho công thức, vui lòng:<br>1. Chụp theo đúng thông số của công thức gốc.<br>2. Tải ảnh lên album và bình luận mã số màu (VD: SCL-001) vào ảnh của bạn.", en: "To have your photo featured as a recipe demo, please:<br>1. Shoot using the exact parameters of the original recipe.<br>2. Upload to the album and comment with the color code (e.g., SCL-001) on your photo." },
-    contributeNoteProceedBtn: { vi: "Đã hiểu & Tải ảnh lên", en: "Got it & Upload Photo" }
+    contributeNoteProceedBtn: { vi: "Đã hiểu & Tải ảnh lên", en: "Got it & Upload Photo" },
+    // User Profile Features
+    signInBtn: { vi: "Đăng nhập", en: "Sign In" },
+    signInMeta: { vi: "Đăng nhập với Meta", en: "Sign in with Meta" },
+    signOutBtn: { vi: "Đăng xuất", en: "Sign Out" },
+    myLab: { vi: "Lab của tôi", en: "My Lab" },
+    allRecipes: { vi: "Tất cả", en: "All" },
+    filterBy: { vi: "Lọc theo:", en: "Filter by:" },
+    commentsTitle: { vi: "Bình luận", en: "Comments" },
+    commentPlaceholder: { vi: "Viết cảm nghĩ của bạn...", en: "Write your thoughts..." },
+    submitCommentBtn: { vi: "Gửi", en: "Submit" },
+    logInToComment: { vi: "Đăng nhập để để lại bình luận.", en: "Log in to leave a comment." },
+    noCommentsYet: { vi: "Chưa có bình luận nào. Hãy là người đầu tiên!", en: "No comments yet. Be the first!" },
+    favoriteBtn: { vi: "Lưu vào Lab", en: "Save to Lab" },
+    favoritedBtn: { vi: "Đã lưu", en: "Saved" },
 };
 
 export const parameterExplanations = {
@@ -86,4 +97,3 @@ export const parameterExplanations = {
     'Detail': { vi: "Kiểm soát độ sắc nét của hình ảnh. Giảm mạnh (ví dụ: -7) để có 'look' mềm mại, giống phim. Tăng để có hình ảnh sắc nét, hiện đại.", en: "Controls image sharpening. Decrease significantly (e.g., -7) for a soft, filmic look. Increase for a crisp, modern image." },
     'Level': { vi: "Điều chỉnh mức độ sắc nét tổng thể. Máy ảnh Sony vốn đã rất nét. Giảm để ảnh mềm mại hơn (-7 để giả lập chất ảnh phim), hoặc tăng để nét hơn nữa.", en: "Adjusts the overall sharpening level. Sony cameras are inherently sharp. Decrease for a softer look (-7 mimics film), or increase for even more sharpness."}
 };
-
