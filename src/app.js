@@ -20,6 +20,8 @@ async function init() {
     initAuth(app);
     initFirestore(app);
     state.firebase.app = app;
+  } else {
+    console.error("Firebase App failed to initialize. Authentication and Firestore functionalities will be unavailable.");
   }
 
   renderHeader();
@@ -30,4 +32,3 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
