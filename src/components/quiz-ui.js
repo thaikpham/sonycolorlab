@@ -163,10 +163,6 @@ export function renderQuizAIResult(recipe) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save h-5 w-5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         <span data-translate-key="saveAIGeneratedRecipe"></span>
                     </button>
-                    <button id="saveToDriveBtn" type="button" class="btn bg-green-500 hover:bg-green-600 text-white py-3 px-6 shadow-lg shadow-green-500/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-5 h-5"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M11.5 12.5 13 14l-2.5 2.5"/><path d="m10 16.5 1.5-1.5"/></svg>
-                        <span data-translate-key="saveToDriveBtn"></span>
-                    </button>
                     <button id="retakeQuizBtn" type="button" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
                         <span data-translate-key="retakeQuizBtn"></span>
                     </button>
