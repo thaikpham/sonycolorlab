@@ -44,9 +44,13 @@ const viewTemplates = {
                 </div>
             </div>
         </div>`,
+    userProfile: () => `
+        <div id="userProfileViewContainer" class="w-full h-full max-w-7xl mx-auto view-transition">
+            <!-- Profile content will be rendered by profile-ui.js -->
+        </div>`
 };
 
-export function attachViewEventListeners(viewName) {
+export async function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
         initializeBackgroundBlobs();
         const homeChartContainer = document.getElementById('homeColorMapContainer');
@@ -90,6 +94,17 @@ export function attachViewEventListeners(viewName) {
         }
         updateLangSlider();
     }
+    if (viewName === 'userProfile') {
+        const { renderUserProfilePage } = await import('../components/profile-ui.js');
+        if (state.auth.user) {
+            renderUserProfilePage(state.auth.user.uid);
+        } else {
+            const container = document.getElementById('userProfileViewContainer');
+            if (container) {
+                 container.innerHTML = `<div class="text-center mt-20"><p class="text-xl">Please log in to view your profile.</p></div>`;
+            }
+        }
+    }
 }
 
 export function renderView(viewName, selectedId = null) {
@@ -121,9 +136,9 @@ export function renderView(viewName, selectedId = null) {
         const currentContent = mainContentEl.children[0];
         if (currentContent) {
             currentContent.classList.add('view-transition-out');
-            currentContent.addEventListener('animationend', () => {
+            currentContent.addEventListener('animationend', async () => {
                 mainContentEl.innerHTML = viewTemplates[viewName]();
-                attachViewEventListeners(viewName);
+                await attachViewEventListeners(viewName);
                 renderUltimateButton();
                 applyTranslations();
                 resolve();
@@ -137,3 +152,4 @@ export function renderView(viewName, selectedId = null) {
         }
     });
 }
+
