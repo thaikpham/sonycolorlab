@@ -29,6 +29,7 @@ export const state = {
   auth: {
     isLoggedIn: false,
     user: null, // Will hold the Firebase user object
+    googleAccessToken: null, // For Google Drive API access
     favorites: [], // Cache for user's favorite recipe IDs
   },
 
@@ -51,6 +52,7 @@ export const state = {
   quiz: {
     instance: null,
     answers: {},
+    editableRecipe: null, // Holds the state of the recipe being edited in the UI
     aiContext: { // For the new AI Contextual Assistant
       initialPrompt: "",
       clarificationQuestion: "",
