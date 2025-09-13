@@ -1,4 +1,4 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/components/profile-ui.js
+// File Path: src/components/profile-ui.js
 import { state } from '../services/state.js';
 import { getUserProfile, getGeneratedRecipes, getFavoriteRecipes } from '../services/firestore.js';
 import { applyTranslations, getCurrentLanguage, t } from '../services/language.js';
@@ -49,9 +49,10 @@ export async function renderUserProfilePage(userId) {
         ? `<div class="space-y-4">${generatedRecipes.map(recipe => {
             const recipeName = recipe.name[getCurrentLanguage()] || recipe.name['en'];
             const recipeDesc = recipe.description[getCurrentLanguage()] || recipe.description['en'];
-            const recipeJsonString = JSON.stringify(recipe);
+            // FIX: Escape double quotes in the JSON string to ensure the data attribute is valid HTML.
+            const recipeJsonString = JSON.stringify(recipe).replace(/"/g, '&quot;');
             return `
-            <button class="generated-recipe-card w-full text-left bg-white p-4 rounded-lg border border-gray-200/80 hover:shadow-md hover:border-blue-500 transition-all duration-300" data-recipe='${recipeJsonString}'>
+            <button class="generated-recipe-card w-full text-left bg-white p-4 rounded-lg border border-gray-200/80 hover:shadow-md hover:border-blue-500 transition-all duration-300" data-recipe="${recipeJsonString}">
                 <div class="flex justify-between items-start">
                     <h4 class="font-bold text-lg text-blue-600">${recipeName}</h4>
                     <span class="text-xs font-medium bg-blue-100 text-blue-700 py-1 px-2 rounded-full" data-translate-key="editRecipeBtn"></span>
@@ -248,5 +249,3 @@ export function openDemoPhotoSubmitModal() {
 export function closeDemoPhotoSubmitModal() {
     closeModal('demoPhotoSubmitModal');
 }
-
-
