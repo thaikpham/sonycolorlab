@@ -14,6 +14,21 @@ function createSocialIcon(platform) {
     return icons[platform] || icons.website;
 }
 
+function createStarRatingHTML(rating = 0, recipeId) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        const isFilled = i <= rating;
+        stars += `
+            <button type="button" class="star-rating-btn p-1 transition-transform duration-150 hover:scale-125 active:scale-100" data-recipe-id="${recipeId}" data-rating-value="${i}" title="${i} star${i > 1 ? 's' : ''}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="${isFilled ? '#f59e0b' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star ${isFilled ? 'text-yellow-500' : 'text-gray-300 hover:text-yellow-400'}">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+            </button>
+        `;
+    }
+    return `<div class="flex items-center">${stars}</div>`;
+}
+
 export async function renderUserProfilePage(userId) {
     const container = document.getElementById('userProfileViewContainer');
     if (!container) return;
@@ -26,7 +41,9 @@ export async function renderUserProfilePage(userId) {
         getFavoriteRecipes(userId)
     ]);
     
-    const favoriteRecipes = recipesData.filter(r => favoriteRecipeIds.includes(r.id));
+    // For demonstration, using favorites as a stand-in for "recently selected".
+    // A proper implementation would track viewed recipes in localStorage or Firestore.
+    const recentlySelectedRecipes = recipesData.filter(r => favoriteRecipeIds.slice(0, 4).includes(r.id));
 
     if (!profileData) {
         container.innerHTML = `<p class="text-center mt-20">Could not load user profile.</p>`;
@@ -49,22 +66,30 @@ export async function renderUserProfilePage(userId) {
         ? `<div class="space-y-4">${generatedRecipes.map(recipe => {
             const recipeName = recipe.name[getCurrentLanguage()] || recipe.name['en'];
             const recipeDesc = recipe.description[getCurrentLanguage()] || recipe.description['en'];
-            // FIX: Escape double quotes in the JSON string to ensure the data attribute is valid HTML.
             const recipeJsonString = JSON.stringify(recipe).replace(/"/g, '&quot;');
+            
             return `
-            <button class="generated-recipe-card w-full text-left bg-white p-4 rounded-lg border border-gray-200/80 hover:shadow-md hover:border-blue-500 transition-all duration-300" data-recipe="${recipeJsonString}">
-                <div class="flex justify-between items-start">
-                    <h4 class="font-bold text-lg text-blue-600">${recipeName}</h4>
-                    <span class="text-xs font-medium bg-blue-100 text-blue-700 py-1 px-2 rounded-full" data-translate-key="editRecipeBtn"></span>
+            <div class="generated-recipe-card-wrapper bg-white p-4 rounded-lg border border-gray-200/80 transition-shadow duration-300 hover:shadow-md">
+                <button class="w-full text-left" data-recipe='${recipeJsonString}'>
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold text-lg text-blue-600">${recipeName}</h4>
+                        <span class="text-xs font-medium bg-blue-100 text-blue-700 py-1 px-2 rounded-full" data-translate-key="editRecipeBtn"></span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1 italic">"${recipeDesc}"</p>
+                    ${recipe.notes ? `<p class="text-sm text-gray-800 mt-3 p-3 bg-gray-50 rounded-md border-l-4 border-gray-300"><strong>Notes:</strong> ${recipe.notes}</p>` : ''}
+                </button>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+                    ${createStarRatingHTML(recipe.rating, recipe.id)}
+                    <button type="button" class="delete-recipe-btn text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50" data-recipe-id="${recipe.id}" title="${t('deleteRecipeBtn')}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    </button>
                 </div>
-                <p class="text-sm text-gray-500 mt-1 italic">"${recipeDesc}"</p>
-                ${recipe.notes ? `<p class="text-sm text-gray-800 mt-3 p-3 bg-gray-50 rounded-md border-l-4 border-gray-300"><strong>Notes:</strong> ${recipe.notes}</p>` : ''}
-            </button>
+            </div>
         `}).join('')}</div>`
         : `<div class="text-center py-8"><p class="text-gray-500" data-translate-key="noGeneratedRecipes"></p></div>`;
 
-    const favoritedRecipesHTML = favoriteRecipes.length > 0
-        ? `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${favoriteRecipes.map(recipe => {
+    const recentlySelectedHTML = recentlySelectedRecipes.length > 0
+        ? `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${recentlySelectedRecipes.map(recipe => {
             const recipeName = recipe.name[getCurrentLanguage()] || recipe.name['en'];
             const recipeDesc = recipe.description[getCurrentLanguage()] || recipe.description['en'];
             return `
@@ -73,7 +98,7 @@ export async function renderUserProfilePage(userId) {
                 <p class="text-sm text-gray-500 mt-1 italic">"${recipeDesc}"</p>
             </div>
         `}).join('')}</div>`
-        : `<div class="text-center py-8"><p class="text-gray-500" data-translate-key="noFavoritesYet"></p></div>`;
+        : `<div class="text-center py-8"><p class="text-gray-500" data-translate-key="noRecentlySelected"></p></div>`;
 
     const demoPhotosHTML = `<div class="text-center py-12 bg-gray-50 rounded-lg"><p class="text-gray-500" data-translate-key="noDemoPhotos"></p><button id="openDemoPhotoModalBtn" class="btn btn-primary mt-4"><span data-translate-key="submitYourPhoto"></span></button></div>`;
 
@@ -104,8 +129,8 @@ export async function renderUserProfilePage(userId) {
                             ${generatedRecipesHTML}
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold mb-4" data-translate-key="favoritedRecipesSectionTitle"></h3>
-                            ${favoritedRecipesHTML}
+                            <h3 class="text-xl font-bold mb-4" data-translate-key="recentlySelectedSectionTitle"></h3>
+                            ${recentlySelectedHTML}
                         </div>
                     </div>
                     <div id="myDemoPhotosContent" class="tab-content hidden">${demoPhotosHTML}</div>
@@ -249,3 +274,4 @@ export function openDemoPhotoSubmitModal() {
 export function closeDemoPhotoSubmitModal() {
     closeModal('demoPhotoSubmitModal');
 }
+
