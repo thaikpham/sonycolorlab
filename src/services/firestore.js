@@ -79,30 +79,47 @@ export async function updateUserProfile(userId, data) {
     }
 }
 
-export async function saveGeneratedRecipe(userId, recipeData) {
+export async function saveOrUpdateGeneratedRecipe(userId, recipeData) {
     if (!userId || !db) {
         showToast(t('logInToSave'), true);
-        return;
+        return null;
     }
-    try {
-        const recipesColRef = collection(db, "users", userId, "generatedRecipes");
-        // Check if a recipe with the same name already exists to avoid duplicates
-        const q = query(recipesColRef, where("name.en", "==", recipeData.name.en));
-        const querySnapshot = await getDocs(q);
-        
-        if (!querySnapshot.empty) {
-            showToast("You have already saved this recipe.", true);
-            return;
-        }
 
-        await addDoc(recipesColRef, {
-            ...recipeData,
-            savedAt: serverTimestamp()
-        });
-        showToast(t('recipeSavedToLab'));
-    } catch (error) {
-        console.error("Error saving generated recipe:", error);
-        showToast("Could not save the recipe.", true);
+    // UPDATE existing recipe if it has a real Firestore document ID
+    if (recipeData.id && !recipeData.id.startsWith('SCL-AI-')) {
+        try {
+            const recipeDocRef = doc(db, "users", userId, "generatedRecipes", recipeData.id);
+            const dataToUpdate = { ...recipeData };
+            delete dataToUpdate.id; // Don't save the ID inside the document
+            
+            await setDoc(recipeDocRef, dataToUpdate, { merge: true });
+            showToast(t('recipeUpdatedInLab'));
+            return recipeData.id;
+        } catch (error) {
+            console.error("Error updating generated recipe:", error);
+            showToast("Could not update the recipe.", true);
+            return null;
+        }
+    } 
+    // ADD new recipe
+    else {
+        try {
+            // Remove any temporary ID before saving as a new document
+            const dataToSave = { ...recipeData };
+            delete dataToSave.id;
+
+            const recipesColRef = collection(db, "users", userId, "generatedRecipes");
+            const docRef = await addDoc(recipesColRef, {
+                ...dataToSave,
+                savedAt: serverTimestamp()
+            });
+            showToast(t('recipeSavedToLab'));
+            return docRef.id;
+        } catch (error) {
+            console.error("Error saving new generated recipe:", error);
+            showToast("Could not save the recipe.", true);
+            return null;
+        }
     }
 }
 
@@ -238,4 +255,3 @@ export function onCommentsSnapshot(recipeId, callback) {
 
     return unsubscribe;
 }
-
