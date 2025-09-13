@@ -1,15 +1,9 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/components/ai-lab/ai-lab-ui.js
+// File Path: src/components/ai-lab/ai-lab-ui.js
 import { state } from '../../services/state.js';
 import { t, applyTranslations, getCurrentLanguage } from '../../services/language.js';
 
-export function renderAILab() {
-// ... existing code ...
-    renderAIPromptInput(contentEl);
-    applyTranslations();
-}
-
 function renderAIPromptInput(container) {
-// ... existing code ...
+    const recipeName = state.ai.originalRecipe.name[getCurrentLanguage()];
     container.innerHTML = `
         <p class="text-lg text-gray-600 text-center">${t('aiLabDescription').replace('{recipeName}', `<b>${recipeName}</b>`)}</p>
         <textarea id="aiPromptInput" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${t('aiPromptPlaceholder')}"></textarea>
@@ -17,6 +11,15 @@ function renderAIPromptInput(container) {
             <button id="generateAIBtn" class="btn btn-primary py-3 px-8 text-lg">
                 <span data-translate-key="aiGenerateBtn"></span>
             </button>
+        </div>
+    `;
+}
+
+function renderAILoading(container) {
+    container.innerHTML = `
+        <div class="ai-loading-container">
+            <img src="/assets/Logo.png" alt="Loading..." class="ai-loading-logo">
+            <p class="mt-4 text-gray-600">${t('aiQuizGenerating')}</p>
         </div>
     `;
 }
@@ -34,7 +37,7 @@ function renderAIComparison(container) {
         if (!settings) return '';
         const gridItems = Object.entries(settings).map(([key, value]) => {
             const originalValue = original?.settings?.[key] ?? original?.colorDepth?.[key] ?? original?.detailSettings?.[key];
-            const isChanged = original && originalValue !== undefined && originalValue !== value;
+            const isChanged = original && originalValue !== undefined && String(originalValue) !== String(value);
             return `
                 <div class="flex flex-col p-3 rounded-lg ${isChanged ? 'bg-blue-100/50 border border-blue-200' : 'bg-gray-100/70'}">
                     <label for="ai-${section}-${key.replace(/\s+/g, '-')}" class="text-sm text-gray-500 font-medium">${key}</label>
@@ -58,7 +61,7 @@ function renderAIComparison(container) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="recipeName" class="text-base font-bold mb-2 block" data-translate-key="recipeNameLabel"></label>
-                        <input type="text" id="recipeName" class="w-full text-xl font-bold p-2 border-b-2" value="${escapeBackticks(generated.name[getCurrentLanguage()])}">
+                        <input type="text" id="recipeName" class="w-full text-xl font-bold p-2 border-b-2" value="${escapeBackticks(generated.name[getCurrentLanguage()] || generated.name['en'])}">
                     </div>
                      <div>
                         <h5 class="text-base font-bold mb-2" data-translate-key="whiteBalanceTitle"></h5>
@@ -67,7 +70,7 @@ function renderAIComparison(container) {
                 </div>
                 <div>
                      <label for="recipeDescription" class="text-base font-bold mb-2 block" data-translate-key="recipeDescriptionLabel"></label>
-                    <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 italic p-2 border-b-2">${escapeBackticks(generated.description[getCurrentLanguage()])}</textarea>
+                    <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 italic p-2 border-b-2">${escapeBackticks(generated.description[getCurrentLanguage()] || generated.description['en'])}</textarea>
                 </div>
             </div>
 
@@ -77,7 +80,7 @@ function renderAIComparison(container) {
                 ${generated.detailSettings ? createEditableGrid('detailTitle', generated.detailSettings, 'detailSettings') : ''}
                 <div>
                     <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="notesLabel"></h5>
-                    <textarea id="recipeNotes" class="w-full p-3 rounded-lg bg-white/70 border-2 border-gray-200" rows="4" placeholder="${t('notesPlaceholder')}"></textarea>
+                    <textarea id="recipeNotes" class="w-full p-3 rounded-lg bg-white/70 border-2 border-gray-200" rows="4" placeholder="${t('notesPlaceholder')}">${escapeBackticks(generated.notes || '')}</textarea>
                 </div>
             </div>
         </form>
@@ -96,4 +99,29 @@ function renderAIComparison(container) {
 }
 
 export function renderAIError(container) {
+    if (!container) return;
+    container.innerHTML = `
+        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
+            <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
+            <p class="mt-2 text-red-700" data-translate-key="aiErrorText"></p>
+            <button id="cancelAIBtn" class="btn bg-gray-200 text-gray-800 py-2 px-6 mt-4">
+                <span data-translate-key="aiCancelBtn"></span>
+            </button>
+        </div>
+    `;
+    applyTranslations();
+}
 
+export function renderAILab() {
+    const contentEl = document.getElementById('aiLabContent');
+    if (!contentEl) return;
+
+    if (state.ai.isGenerating) {
+        renderAILoading(contentEl);
+    } else if (state.ai.generatedRecipe) {
+        renderAIComparison(contentEl);
+    } else {
+        renderAIPromptInput(contentEl);
+    }
+    applyTranslations();
+}
