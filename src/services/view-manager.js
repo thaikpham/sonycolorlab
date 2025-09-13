@@ -10,12 +10,24 @@ const mainContentEl = document.getElementById('mainContent');
 
 const viewTemplates = {
     home: () => `
-        <div id="homeView" class="w-full h-full flex flex-col items-center justify-center absolute inset-0 p-4 md:p-8">
-            <div class="text-center">
+        <div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 p-6 md:p-8">
+            <div class="max-w-3xl">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;" data-translate-key="landingTitle"></h1>
                 <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
             </div>
-            <div id="homeColorMapContainer" class="w-full max-w-4xl flex-grow my-8 cursor-pointer"></div>
+
+            <!-- Color Map for Desktop -->
+            <div id="homeColorMapContainer" class="w-full max-w-4xl flex-grow my-8 cursor-pointer hidden md:block"></div>
+
+            <!-- Action Buttons for Mobile -->
+            <div class="md:hidden mt-12 w-full max-w-sm space-y-4">
+                 <button id="enterLabBtn" class="btn btn-primary w-full py-4 text-lg">
+                    <span data-translate-key="enterLabBtn"></span>
+                 </button>
+                 <button id="findMyColorBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 hover:bg-white/90 w-full py-4 text-lg">
+                    <span data-translate-key="findMyColorBtn"></span>
+                 </button>
+            </div>
         </div>`,
     recipeFormulas: () => `
         <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
@@ -55,7 +67,7 @@ export async function attachViewEventListeners(viewName) {
     if (viewName === 'home') {
         initializeBackgroundBlobs();
         const homeChartContainer = document.getElementById('homeColorMapContainer');
-        if (homeChartContainer) {
+        if (homeChartContainer && window.innerWidth >= 768) { // Only observe if on desktop
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
                      renderColorMapChart('#homeColorMapContainer', recipesData);
