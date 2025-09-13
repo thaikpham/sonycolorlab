@@ -91,6 +91,17 @@ export function initEventListeners() {
              userDropdown.classList.add('invisible', 'opacity-0', '-translate-y-2', 'pointer-events-none');
         }
 
+        // --- Landing Page Mobile Buttons ---
+        if (target.closest('#enterLabBtn')) {
+            await renderView('recipeFormulas');
+            return;
+        }
+        if (target.closest('#findMyColorBtn')) {
+            openModal('quizModal');
+            initializeAndStartQuiz();
+            return;
+        }
+        
         // --- Ultimate Button Logic ---
         if (target.closest('#ultimateCtaBtn')) {
             if (state.ui.currentView === 'home') {
