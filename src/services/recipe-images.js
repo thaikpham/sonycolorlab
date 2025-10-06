@@ -138,9 +138,9 @@ const recipeImages = {
         "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+3"
     ],
     "scl-027": [
-        "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+1",
-        "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+2",
-        "https://placehold.co/800x600/F0E68C/ffffff?text=Daylight+Cinema+3"
+        "https://photos.fife.usercontent.google.com/pw/AP1GczOFzfaVy_31N2R_oOeUw3LPuiC1zlDJfCLErHfqEQYSJjXT0kl0xbqPEw=w745-h1077-s-no?authuser=0",
+        "https://photos.fife.usercontent.google.com/pw/AP1GczNVghtopHKzoC4kKBSiJ4RUL-HsoZ750iTbXrAGG2kIIAZmiGPS15sM5A=w718-h1077-s-no?authuser=0",
+        "https://photos.fife.usercontent.google.com/pw/AP1GczMTi-Ji6eJxFHodNaaUlRckye77sGl1weJ8sghx1APhsrJsAsCPtel2yA=w726-h1077-s-no?authuser=0"
     ],
     "scl-028": [
         "https://placehold.co/800x600/FF4500/ffffff?text=Phoenix+Fire+1",
