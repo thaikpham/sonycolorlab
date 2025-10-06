@@ -138,7 +138,7 @@ const recipeImages = {
         "https://placehold.co/800x600/FF4500/ffffff?text=HDR+Cinema+3"
     ],
     "scl-027": [
-        "https://photos.app.goo.gl/FzKaA66JYpfXt3E66",
+        "https://lh3.googleusercontent.com/pw/AP1GczO2Zg9sIDNNb_6VjMP87b8-ADz04gPG7sMtACcq_icK4VBnyfX9HqCuj_KINNrJsAB9vtZWX-PWQlJWvD5UwVIsgqDz599aVKQWPdi7K_MeSKuWCSwe9paPaQ9AF7EWHRtg3y6xo_4YRiXkXAxfIxvpag=w745-h1077-s-no?authuser=0",
         "https://lh3.googleusercontent.com/pw/AP1GczOnrW6HdG4jtEA_qoxJz25-5LUNZfJj4lk2Re-mDcRf5N0oXBSuI2nPnDSJeCS5hOl4A8nrjHromBkarVpKdh8f7PXeNxRvH4Vq_6ATKGo1KAGs68xM66zMriiWDgmmMn4xLjhZn2WsAwQK4jsGFQp6qQ=w718-h1077-s-no?authuser=0",
         "https://lh3.googleusercontent.com/pw/AP1GczOC-qpjrL5DZLDDthLjrZKkl33JawDpyrBkMpIb-DjDkRIIu-ckWc__TVlzpOWZDarQTeZabCeaBAOtGnAM3L-AbrvBOFO1W5UIZh_jIZzuZdjsaNKKErVQOy7Mj8U4GoY86tFCRvoCEa4LeDMwH4VHxw=w726-h1077-s-no?authuser=0"
     ],
