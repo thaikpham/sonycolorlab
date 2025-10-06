@@ -506,7 +506,7 @@ const recipesData = [
         "saturation": "high",
         "tags": ["modern-cinematic", "clean", "s-cinetone", "daylight", "beautiful-skin-tones", "high-saturation", "professional", "polished", "straight-out-of-camera"],
         "whiteBalance": "3700K, A5-M1.5",
-        "settings": { "Black level": "+9", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone", "Saturation": "+25", "Color Phase": "0" },
+        "settings": { "Black level": "-9", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone", "Saturation": "+25", "Color Phase": "0" },
         "colorDepth": { "R": "-1", "G": "+3", "B": "+2", "C": "+2", "M": "-3", "Y": "-3" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#F0E68C",
