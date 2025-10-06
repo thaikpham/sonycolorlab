@@ -11,9 +11,9 @@ const recipesData = [
         "contrast": "normal",
         "saturation": "high",
         "tags": ["nostalgic", "sun-drenched", "warm", "travel", "lifestyle", "summer", "golden-hour"],
-        "whiteBalance": "8300K, B3-M1.5",
-        "settings": { "Black level": "-7", "Gamma": "Cine1", "Black Gamma": "Wide +5", "Knee": "Manual 85% +2", "Color Mode": "S-Gamut3", "Saturation": "+25", "Color Phase": "+4" },
-        "colorDepth": { "R": "-1", "G": "+1", "B": "+5", "C": "+4", "M": "0", "Y": "+5" },
+        "whiteBalance": "7000K, B3-M1.5",
+        "settings": { "Black level": "-7", "Gamma": "Cine1", "Black Gamma": "Wide +5", "Knee": "Manual 75% +2", "Color Mode": "S-Gamut3", "Saturation": "+25", "Color Phase": "+1" },
+        "colorDepth": { "R": "-1", "G": "+1", "B": "+5", "C": "+4", "M": "-2", "Y": "+2" },
         "detailSettings": { "Level": "0" },
         "personalityColor": "#FFD700",
         "coords": { "x": 6, "y": 7 }
