@@ -228,7 +228,7 @@ const recipeImages = {
     ],
     "PROCOLOR-003": [
         "https://lh3.googleusercontent.com/pw/AP1GczPr5IM9fb8Mxygh4GGj44LBb0b4IXpdKOoRm_nPd8RtU1mbQONyQ36KZZs7PQImtpbA3xhWKp7S3AO534tRrgbssXY_dp3SBgQ7Y0hQPY7wymdLYCrTIp3KqeJb2RJcBjuPfNSmP3hXUgkHHujBcKZE4g=w442-h957-s-no?authuser=0",
-        "https://photos.fife.usercontent.google.com/pw/AP1GczMb8sY025vkVZCCYTYbEZcjUH8Hd0zpYARcManj3kBj0EwggaJCAWlfVA=w498-h1077-s-no?authuser=0"
+        "https://lh3.googleusercontent.com/pw/AP1GczNXJ3OUJXOjfZecO5mRrXBLNn9NHaMQRWGogsmBvvljqWBBWC1uvoZIlPz2uCko7DwCFPd2ruZIq3GDEipf_IjZtuxW5pBUAS18z8egEqZDxqoebuIsw7FO18Zlp9EUO01P0wAbKuS4Hx3mKN1YSEe5Rg=w498-h1077-s-no?authuser=0"
     ]
 };
 export default recipeImages;
