@@ -227,7 +227,8 @@ const recipeImages = {
         "https://lh3.googleusercontent.com/pw/AP1GczOiKfRCji6HVmrDbEjGkPSMq2AhbTcb_yrVtbh_jB_sdosTRQqgZrQNpi10frovhZfIOQiaTkwpM297DcA1cLf5VtZLYh6MjOXRd1itNsZZF5BJlJ4_CloE9YdOIF9ceLzlVymOP55hTkYJQ4_D3edM-Q=w484-h1048-s-no?authuser=0"
     ],
     "PROCOLOR-003": [
-        "https://lh3.googleusercontent.com/pw/AP1GczPr5IM9fb8Mxygh4GGj44LBb0b4IXpdKOoRm_nPd8RtU1mbQONyQ36KZZs7PQImtpbA3xhWKp7S3AO534tRrgbssXY_dp3SBgQ7Y0hQPY7wymdLYCrTIp3KqeJb2RJcBjuPfNSmP3hXUgkHHujBcKZE4g=w442-h957-s-no?authuser=0"
+        "https://lh3.googleusercontent.com/pw/AP1GczPr5IM9fb8Mxygh4GGj44LBb0b4IXpdKOoRm_nPd8RtU1mbQONyQ36KZZs7PQImtpbA3xhWKp7S3AO534tRrgbssXY_dp3SBgQ7Y0hQPY7wymdLYCrTIp3KqeJb2RJcBjuPfNSmP3hXUgkHHujBcKZE4g=w442-h957-s-no?authuser=0",
+        "https://photos.fife.usercontent.google.com/pw/AP1GczMb8sY025vkVZCCYTYbEZcjUH8Hd0zpYARcManj3kBj0EwggaJCAWlfVA=w498-h1077-s-no?authuser=0"
     ]
 };
 export default recipeImages;
