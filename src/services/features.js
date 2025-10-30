@@ -6,6 +6,10 @@
 
 // --- Local Module Imports ---
 import { state } from './state.js';
+import { select } from 'd3-selection';
+import { scaleLinear, scaleSqrt } from 'd3-scale';
+import { axisBottom, axisLeft } from 'd3-axis';
+import { forceSimulation, forceCollide, forceX, forceY } from 'd3-force';
 import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, getCurrentLanguage, applyTranslations } from './language.js';
 import recipesData from './recipes.js';
@@ -14,6 +18,18 @@ import { showToast, openModal, closeModal } from './ui.js';
 
 // --- CDN URLs for external libraries ---
 const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+
+const d3 = {
+    select,
+    scaleLinear,
+    scaleSqrt,
+    axisBottom,
+    axisLeft,
+    forceSimulation,
+    forceCollide,
+    forceX,
+    forceY
+};
 
 // --- UTILITY ---
 
