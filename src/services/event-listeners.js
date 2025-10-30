@@ -1,4 +1,5 @@
 // File Path: src/services/event-listeners.js
+import { select } from 'd3-selection';
 import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
@@ -135,10 +136,10 @@ export function initEventListeners() {
 
         if (d3Node) {
             if (state.ui.currentView === 'home') {
-                const recipeId = d3.select(d3Node).datum().id;
+                const recipeId = select(d3Node).datum().id;
                 await renderView('recipeFormulas', recipeId);
             } else {
-                handleRecipeSelection(d3.select(d3Node).datum().id);
+                handleRecipeSelection(select(d3Node).datum().id);
             }
             return;
         }
