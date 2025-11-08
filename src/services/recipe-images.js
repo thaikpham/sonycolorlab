@@ -219,6 +219,11 @@ const recipeImages = {
         "https://lh3.googleusercontent.com/pw/AP1GczPYNhuf8JhXK_59Ft8JP8xvM_860GEtE-XYgoWRS76TZBzgtkXTqkuGiUAff-4DXvnnI9jlsYU7k_VzS3Sbp0jwSHkeZwOha9c9EJfeb3bdW7nONFTlNYcHEs_W8nfsOIyV7ui9dvweleL_E6jdKCVJhg=w1571-h1048-s-no?authuser=0",
         "https://lh3.googleusercontent.com/pw/AP1GczOWhh97lEdBo31q9wITtjA8_semXxcoxG_JFDiLqTRQwrofviEe928cRUX01zoWqELi8ACvZ1Qfk3sUIrfyP9cJs1rSeSRPg9LMPTvfKnZihHtZNBedcROI4P4e0quaPZFGDnogY3EBWnCEPnoY-O-qcQ=w1571-h1048-s-no?authuser=0"
     ],
+    "scl-043": [
+        "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+1",
+        "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+2",
+        "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+3"
+    ],
     "PROCOLOR-001": [
         "https://lh3.googleusercontent.com/pw/AP1GczPxaOjzhD4jE_WqMK3d_-E0xMbf62ixSg0ccUYS51nYXHOk-y4HJ3wwq3F3Hmd51W_jjYo0JWWCTMLQ1vhmOTCV7YXO6eBW1_CmzD0bRY9Iv2u24oYSctIa0TolR1beQFo7sFoE5UaWCoN4rpl50GwnUw=w481-h1048-s-no?authuser=0",
         "https://lh3.googleusercontent.com/pw/AP1GczOukBYkXG6Tx4wyZVr6SG-4KO7SDu_hOHlqqWH7lXECgaSQd-E1Y5Gei5OM7tpYtdqJPG3T3GviII7Lbq3ytJpFe5hn2j2eZmQYOkyhIVlronmdHn2p-i_Ikfg4JQNMCa7GOALUFPOTUSVGW1MTgVr5bA=w484-h1048-s-no?authuser=0"
