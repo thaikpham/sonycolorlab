@@ -1134,6 +1134,33 @@ const recipesData = [
         "coords": { "x": 0, "y": -2 }
     },
     {
+        "id": "scl-043",
+        "name": { "vi": "SCL-43: Macro shooting for Tran Anh Tuan", "en": "SCL-43: Macro shooting for Tran Anh Tuan" },
+        "formattedName": "SCL-43: Macro shooting for Tran Anh Tuan",
+        "description": {
+            "en": "A color recipe with natural and vivid colors, suitable for Macro photography in the style of Photographer Tran Anh Tuan.",
+            "vi": "Một công thức màu với màu sắc tự nhiên và sinh động, phù hợp cho việc chụp ảnh Macro theo phong cách của Nhiếp ảnh gia Trần Anh Tuấn"
+        },
+        "type": "color",
+        "contrast": "high",
+        "saturation": "high",
+        "tags": ["stylized", "atmospheric", "macro", "surreal", "contemporary", "artistic"],
+        "whiteBalance": "AWB, B1-G0.5",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "+2", "G": "+2", "B": "+2", "C": "0", "M": "0", "Y": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
+        "personalityColor": "#CDDC39",
+        "coords": { "x": 0, "y": -1 }
+    },
+    {
         "id": "PROCOLOR-001",
         "name": { "vi": "PROCOLOR-001: ClearCast Pro", "en": "PRO-SCL-001: ClearCast Pro" },
         "formattedName": "PRO-SCL-001: ClearCast Pro",
