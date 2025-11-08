@@ -14,7 +14,15 @@ const recipesData = [
         "whiteBalance": "7000K, B3-M1.5",
         "settings": { "Black level": "-7", "Gamma": "Cine1", "Black Gamma": "Wide +5", "Knee": "Manual 75% +2", "Color Mode": "S-Gamut3", "Saturation": "+25", "Color Phase": "+1" },
         "colorDepth": { "R": "-1", "G": "+1", "B": "+5", "C": "+4", "M": "-2", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#FFD700",
         "coords": { "x": 6, "y": 7 }
     },
@@ -33,7 +41,15 @@ const recipesData = [
         "whiteBalance": "3700K, A7-M0.5",
         "settings": { "Black level": "0", "Gamma": "Cine1", "Black Gamma": "Wide +7", "Knee": "Manual 80% +3", "Color Mode": "Pro", "Saturation": "+12", "Color Phase": "-4" },
         "colorDepth": { "R": "-4", "G": "+7", "B": "-2", "C": "-2", "M": "-5", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#66CDAA",
         "coords": { "x": -4, "y": 3 }
     },
@@ -52,7 +68,15 @@ const recipesData = [
         "whiteBalance": "8000K, B2-M2",
         "settings": { "Black level": "-15", "Gamma": "Cine4", "Black Gamma": "Middle +4", "Knee": "Manual 85% +4", "Color Mode": "S-Gamut3.Cine", "Saturation": "+22", "Color Phase": "+7" },
         "colorDepth": { "R": "0", "G": "-2", "B": "+4", "C": "+5", "M": "+5", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#4682B4",
         "coords": { "x": -8, "y": 5 }
     },
@@ -71,7 +95,15 @@ const recipesData = [
         "whiteBalance": "4700K, A2-M0.5",
         "settings": { "Black level": "+2", "Gamma": "S-Cinetone", "Black Gamma": "Wide -5", "Knee": "Auto", "Color Mode": "S-Gamut3.Cine", "Saturation": "+25", "Color Phase": "+3" },
         "colorDepth": { "R": "-2", "G": "+6", "B": "+4", "C": "+5", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#CD853F",
         "coords": { "x": 7, "y": 8 }
     },
@@ -90,7 +122,15 @@ const recipesData = [
         "whiteBalance": "4200K, A6-M2",
         "settings": { "Black level": "-8", "Gamma": "Cine1", "Black Gamma": "Middle -5", "Knee": "Manual 90% +1", "Color Mode": "Pro", "Saturation": "+8", "Color Phase": "+3" },
         "colorDepth": { "R": "-3", "G": "+6", "B": "-2", "C": "-3", "M": "-4", "Y": "+4" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#B0E0E6",
         "coords": { "x": -2, "y": -5 }
     },
@@ -109,7 +149,15 @@ const recipesData = [
         "whiteBalance": "3600K, A6-M1.5",
         "settings": { "Black level": "+15", "Gamma": "Cine1", "Black Gamma": "Narrow +7", "Knee": "Manual 90% -2", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-4" },
         "colorDepth": { "R": "-2", "G": "+5", "B": "-3", "C": "+3", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "-7" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#D2B48C",
         "coords": { "x": 0, "y": -7 }
     },
@@ -128,7 +176,15 @@ const recipesData = [
         "whiteBalance": "4700K, A7-G0.5",
         "settings": { "Black level": "-15", "Gamma": "S-Cinetone", "Black Gamma": "Wide -7", "Knee": "Auto", "Color Mode": "Pro", "Saturation": "+15", "Color Phase": "+2" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "-7", "C": "-6", "M": "+3", "Y": "+3" },
-        "detailSettings": { "Level": "+2" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#8B0000",
         "coords": { "x": -8, "y": 2 }
     },
@@ -147,7 +203,15 @@ const recipesData = [
         "whiteBalance": "4000K, A7-M2",
         "settings": { "Black level": "+2", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+16", "Color Phase": "-3" },
         "colorDepth": { "R": "0", "G": "+6", "B": "+4", "C": "-2", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#4682B4",
         "coords": { "x": 0, "y": 4 }
     },
@@ -166,7 +230,15 @@ const recipesData = [
         "whiteBalance": "4000K, A7-M0.5",
         "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 80% +2", "Color Mode": "Still", "Saturation": "-2", "Color Phase": "+2" },
         "colorDepth": { "R": "-5", "G": "+6", "B": "+3", "C": "+4", "M": "-6", "Y": "-1" },
-        "detailSettings": { "Level": "-7" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#008080",
         "coords": { "x": -5, "y": -3 }
     },
@@ -185,7 +257,15 @@ const recipesData = [
         "whiteBalance": "4000K, A7-M0.25",
         "settings": { "Black level": "+5", "Gamma": "Cine1", "Black Gamma": "Wide -4", "Knee": "Manual 85% +2", "Color Mode": "Pro", "Saturation": "-7", "Color Phase": "+1" },
         "colorDepth": { "R": "-3", "G": "+7", "B": "-2", "C": "+5", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#3CB371",
         "coords": { "x": 2, "y": -6 }
     },
@@ -204,7 +284,15 @@ const recipesData = [
         "whiteBalance": "2700K, A7-M1.25",
         "settings": { "Black level": "-2", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Manual 90% +3", "Color Mode": "Still", "Saturation": "+5", "Color Phase": "+5" },
         "colorDepth": { "R": "-5", "G": "-7", "B": "-6", "C": "+4", "M": "-7", "Y": "-5" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#4169E1",
         "coords": { "x": -7, "y": 0 }
     },
@@ -223,7 +311,15 @@ const recipesData = [
         "whiteBalance": "4300K, A7-M0.25",
         "settings": { "Black level": "0", "Gamma": "S-Cinetone", "Black Gamma": "Middle +2", "Knee": "Auto", "Color Mode": "Pro", "Saturation": "+5", "Color Phase": "+1" },
         "colorDepth": { "R": "+2", "G": "+5", "B": "+1", "C": "+2", "M": "+4", "Y": "+3" },
-        "detailSettings": { "Level": "-7" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#FFBF00",
         "coords": { "x": 4, "y": -2 }
     },
@@ -242,7 +338,15 @@ const recipesData = [
         "whiteBalance": "4500K, A7-M1",
         "settings": { "Black level": "-15", "Gamma": "S-Log2", "Black Gamma": "Middle -7", "Knee": "Manual 75% +5", "Color Mode": "S-Gamut3", "Saturation": "+22", "Color Phase": "+3" },
         "colorDepth": { "R": "+3", "G": "+5", "B": "+5", "C": "+7", "M": "+7", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#A9A9A9",
         "coords": { "x": -5, "y": 0 }
     },
@@ -261,7 +365,15 @@ const recipesData = [
         "whiteBalance": "3900K, A7-M0.25",
         "settings": { "Black level": "-8", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 80% +4", "Color Mode": "Pro", "Saturation": "+12", "Color Phase": "-1" },
         "colorDepth": { "R": "+3", "G": "+7", "B": "+1", "C": "+2", "M": "-7", "Y": "0" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#FF00FF",
         "coords": { "x": 3, "y": 6 }
     },
@@ -280,7 +392,15 @@ const recipesData = [
         "whiteBalance": "3600K, A7-M1",
         "settings": { "Black level": "-2", "Gamma": "Cine1", "Black Gamma": "Middle -7", "Knee": "Manual 80% +4", "Color Mode": "Pro", "Saturation": "+10", "Color Phase": "-1" },
         "colorDepth": { "R": "+3", "G": "+5", "B": "-4", "C": "+2", "M": "+6", "Y": "+5" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#BC8F8F",
         "coords": { "x": 1, "y": -4 }
     },
@@ -299,7 +419,15 @@ const recipesData = [
         "whiteBalance": "3900K, A7",
         "settings": { "Black level": "0", "Gamma": "S-Cinetone", "Black Gamma": "Wide +2", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+12", "Color Phase": "-1" },
         "colorDepth": { "R": "-1", "G": "+5", "B": "+3", "C": "+2", "M": "-3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#8FBC8F",
         "coords": { "x": 0, "y": 0 }
     },
@@ -318,7 +446,15 @@ const recipesData = [
         "whiteBalance": "4100K, A7-M0.25",
         "settings": { "Black level": "-7", "Gamma": "S-Cinetone", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Pro", "Saturation": "+7", "Color Phase": "0" },
         "colorDepth": { "R": "0", "G": "+2", "B": "+3", "C": "+2", "M": "-6", "Y": "0" },
-        "detailSettings": { "Level": "-2" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#DB7093",
         "coords": { "x": -3, "y": -1 }
     },
@@ -337,7 +473,15 @@ const recipesData = [
         "whiteBalance": "4000K, A5-M0.5",
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 92.5% +5", "Color Mode": "S-Gamut3.Cine", "Saturation": "+30", "Color Phase": "+6" },
         "colorDepth": { "R": "+5", "G": "+7", "B": "+5", "C": "+5", "M": "+2", "Y": "+1" },
-        "detailSettings": { "Level": "+4" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#8A2BE2",
         "coords": { "x": 8, "y": 9 }
     },
@@ -356,7 +500,15 @@ const recipesData = [
         "whiteBalance": "3700K, A5-M1",
         "settings": { "Black level": "0", "Gamma": "Still", "Black Gamma": "Middle +7", "Knee": "Manual 85% +3", "Color Mode": "S-Gamut3", "Saturation": "+28", "Color Phase": "-1" },
         "colorDepth": { "R": "+3", "G": "+7", "B": "+7", "C": "+7", "M": "+7", "Y": "+5" },
-        "detailSettings": { "Level": "+2" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#FF69B4",
         "coords": { "x": 8, "y": 6 }
     },
@@ -375,7 +527,15 @@ const recipesData = [
         "whiteBalance": "4600K, A7-G1.25",
         "settings": { "Black level": "+2", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+20", "Color Phase": "+5" },
         "colorDepth": { "R": "+3", "G": "-4", "B": "-5", "C": "-3", "M": "+3", "Y": "-1" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#D2B48C",
         "coords": { "x": 5, "y": -1 }
     },
@@ -394,7 +554,15 @@ const recipesData = [
         "whiteBalance": "4500K, A7-M0.75",
         "settings": { "Black level": "+2", "Gamma": "Cine1", "Black Gamma": "Wide -7", "Knee": "Manual 85% +1", "Color Mode": "Pro", "Saturation": "+8", "Color Phase": "-1" },
         "colorDepth": { "R": "-4", "G": "+7", "B": "-3", "C": "-5", "M": "+5", "Y": "+4" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#ADD8E6",
         "coords": { "x": -1, "y": -3 }
     },
@@ -413,7 +581,15 @@ const recipesData = [
         "whiteBalance": "4000K, A7-M0.25",
         "settings": { "Black level": "0", "Gamma": "S-Cinetone", "Black Gamma": "Wide -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+2", "Color Phase": "+1" },
         "colorDepth": { "R": "+1", "G": "+7", "B": "0", "C": "+3", "M": "+2", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#D3D3D3",
         "coords": { "x": 0, "y": -1 }
     },
@@ -432,7 +608,15 @@ const recipesData = [
         "whiteBalance": "7000K, B5-M0.25",
         "settings": { "Black level": "-9", "Gamma": "S-Cinetone", "Black Gamma": "Middle +7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+8", "Color Phase": "+2" },
         "colorDepth": { "R": "+3", "G": "+7", "B": "+3", "C": "-5", "M": "+3", "Y": "-2" },
-        "detailSettings": { "Level": "+2" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#4682B4",
         "coords": { "x": -6, "y": 3 }
     },
@@ -451,7 +635,15 @@ const recipesData = [
         "whiteBalance": "9900K, B6-M0.5",
         "settings": { "Black level": "+4", "Gamma": "S-Cinetone", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+8", "Color Phase": "+1" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "-4", "C": "-4", "M": "-5", "Y": "+3" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#00CED1",
         "coords": { "x": -9, "y": 1 }
     },
@@ -470,7 +662,15 @@ const recipesData = [
         "whiteBalance": "4000K, A7-M1",
         "settings": { "Black level": "-5", "Gamma": "Cine4", "Black Gamma": "Wide -5", "Knee": "Manual 87.5% +3", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+6" },
         "colorDepth": { "R": "-3", "G": "-2", "B": "+3", "C": "+7", "M": "-3", "Y": "-2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#8B0000",
         "coords": { "x": 7, "y": 5 }
     },
@@ -489,7 +689,15 @@ const recipesData = [
         "whiteBalance": "3500K, A7",
         "settings": { "Black level": "-15", "Gamma": "HLG3", "Black Gamma": "Wide 0", "Knee": "Auto", "Color Mode": "BT.2020", "Saturation": "+32", "Color Phase": "+7" },
         "colorDepth": { "R": "-4", "G": "-1", "B": "+7", "C": "+6", "M": "+5", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#FF4500",
         "coords": { "x": 9, "y": 6 }
     },
@@ -508,7 +716,15 @@ const recipesData = [
         "whiteBalance": "3700K, A5-M1.5",
         "settings": { "Black level": "-9", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +5", "Color Mode": "S-Cinetone", "Saturation": "+25", "Color Phase": "0" },
         "colorDepth": { "R": "-1", "G": "+3", "B": "+2", "C": "+2", "M": "-3", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#F0E68C",
         "coords": { "x": 5, "y": 4 }
     },
@@ -527,7 +743,15 @@ const recipesData = [
         "whiteBalance": "8500K, B3.5-G1",
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 105% +5", "Color Mode": "S-Cinetone", "Saturation": "+32", "Color Phase": "+1" },
         "colorDepth": { "R": "+5", "G": "+7", "B": "+2", "C": "+5", "M": "+5", "Y": "+5" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#FF4500",
         "coords": { "x": 9, "y": 9 }
     },
@@ -546,7 +770,15 @@ const recipesData = [
         "whiteBalance": "8200K, B4.5-G1.75",
         "settings": { "Black level": "-10", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+16", "Color Phase": "+2" },
         "colorDepth": { "R": "+5", "G": "+7", "B": "-6", "C": "-5", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#6495ED",
         "coords": { "x": -8, "y": 0 }
     },
@@ -565,7 +797,15 @@ const recipesData = [
         "whiteBalance": "AWB (Ưu tiên trắng)",
         "settings": { "Black level": "-11", "Gamma": "Still", "Black Gamma": "Middle -3", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "-1", "G": "+1", "B": "-1", "C": "+3", "M": "-3", "Y": "-1" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#555555",
         "coords": { "x": 0, "y": 0 }
     },
@@ -584,7 +824,15 @@ const recipesData = [
         "whiteBalance": "AWB (Ưu tiên trắng)",
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 85% +5", "Color Mode": "Black & White", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "+2", "G": "-4", "B": "-1", "C": "+2", "M": "-1", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#333333",
         "coords": { "x": 8, "y": 5 }
     },
@@ -603,7 +851,15 @@ const recipesData = [
         "whiteBalance": "5500K, A3-G2",
         "settings": { "Black level": "+5", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 77.5% +2", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
         "colorDepth": { "R": "-4", "G": "-1", "B": "+6", "C": "+5", "M": "-3", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#777777",
         "coords": { "x": 6, "y": -2 }
     },
@@ -622,7 +878,15 @@ const recipesData = [
         "whiteBalance": "5500K, A3-G2",
         "settings": { "Black level": "+3", "Gamma": "Cine1", "Black Gamma": "Narrow +5", "Knee": "Manual 75% +3", "Color Mode": "Black & White", "Saturation": "+24", "Color Phase": "0" },
         "colorDepth": { "R": "+3", "G": "+3", "B": "+3", "C": "+2", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#AAAAAA",
         "coords": { "x": -5, "y": -5 }
     },
@@ -641,7 +905,15 @@ const recipesData = [
         "whiteBalance": "AWB, B3-G0.25",
         "settings": { "Black level": "-12", "Gamma": "Still", "Black Gamma": "Middle -7", "Knee": "Manual 82% +5", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
         "colorDepth": { "R": "-1", "G": "-7", "B": "+7", "C": "+7", "M": "+7", "Y": "-4" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#BBBBBB",
         "coords": { "x": 3, "y": 7 }
     },
@@ -660,7 +932,15 @@ const recipesData = [
         "whiteBalance": "AWB, A3",
         "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Middle -5", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "0" },
         "colorDepth": { "R": "0", "G": "+3", "B": "0", "C": "+2", "M": "+3", "Y": "0" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#888888",
         "coords": { "x": -2, "y": 2 }
     },
@@ -679,7 +959,15 @@ const recipesData = [
         "whiteBalance": "5500K",
         "settings": { "Black level": "-15", "Gamma": "Still", "Black Gamma": "Wide -7", "Knee": "Manual 75% +4", "Color Mode": "Black & White", "Saturation": "+32", "Color Phase": "0" },
         "colorDepth": { "R": "+2", "G": "+7", "B": "+1", "C": "+2", "M": "+7", "Y": "+1" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#222222",
         "coords": { "x": 9, "y": 9 }
     },
@@ -698,7 +986,15 @@ const recipesData = [
         "whiteBalance": "AWB (Ưu tiên trắng)",
         "settings": { "Black level": "-11", "Gamma": "Cine4", "Black Gamma": "Wide +7", "Knee": "Manual 82.5% +0", "Color Mode": "Black & White", "Saturation": "0", "Color Phase": "-2" },
         "colorDepth": { "R": "+3", "G": "+2", "B": "+7", "C": "+7", "M": "+4", "Y": "-5" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#666666",
         "coords": { "x": -4, "y": -7 }
     },
@@ -717,7 +1013,15 @@ const recipesData = [
         "whiteBalance": "5500K",
         "settings": { "Black level": "-15", "Gamma": "S-Cinetone", "Black Gamma": "Narrow -7", "Knee": "Manual 75% +2", "Color Mode": "Black & White", "Saturation": "+28", "Color Phase": "0" },
         "colorDepth": { "R": "-3", "G": "+4", "B": "+3", "C": "+3", "M": "+3", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#444444",
         "coords": { "x": 5, "y": 4 }
     },
@@ -736,7 +1040,15 @@ const recipesData = [
         "whiteBalance": "AWB, A3-M2.75",
         "settings": { "Black level": "-12", "Gamma": "Movie", "Black Gamma": "Narrow -7", "Knee": "Manual 105% +5", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "+7", "G": "+7", "B": "-7", "C": "-7", "M": "+7", "Y": "+7" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#708090",
         "coords": { "x": -6, "y": -8 }
     },
@@ -755,7 +1067,15 @@ const recipesData = [
         "whiteBalance": "AWB, A5-G0.5",
         "settings": { "Black level": "-7", "Gamma": "Cine3", "Black Gamma": "Narrow -7", "Knee": "Manual 95% +4", "Color Mode": "Still", "Saturation": "+15", "Color Phase": "+2" },
         "colorDepth": { "R": "+3", "G": "+7", "B": "-5", "C": "-5", "M": "+4", "Y": "+4" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#E53935",
         "coords": { "x": 2, "y": 3 }
     },
@@ -774,7 +1094,15 @@ const recipesData = [
         "whiteBalance": "8000K, A7-G5.5",
         "settings": { "Black level": "-12", "Gamma": "Cine4", "Black Gamma": "Middle -7", "Knee": "Manual 75% +4", "Color Mode": "S-Gamut3", "Saturation": "+32", "Color Phase": "+7" },
         "colorDepth": { "R": "+4", "G": "+5", "B": "0", "C": "0", "M": "-3", "Y": "+7" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#CDDC39",
         "coords": { "x": 8, "y": 7 }
     },
@@ -793,9 +1121,44 @@ const recipesData = [
         "whiteBalance": "8000K, B7-G0.5",
         "settings": { "Black level": "-11", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+12", "Color Phase": "-1" },
         "colorDepth": { "R": "-2", "G": "+4", "B": "+4", "C": "+5", "M": "-2", "Y": "-3" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#CDDC39",
         "coords": { "x": 0, "y": -2 }
+    },
+    {
+        "id": "scl-043",
+        "name": { "vi": "SCL-43: Macro shooting for Tran Anh Tuan", "en": "SCL-43: Macro shooting for Tran Anh Tuan" },
+        "formattedName": "SCL-43: Macro shooting for Tran Anh Tuan",
+        "description": {
+            "en": "A color recipe with natural and vivid colors, suitable for Macro photography in the style of Photographer Tran Anh Tuan.",
+            "vi": "Một công thức màu với màu sắc tự nhiên và sinh động, phù hợp cho việc chụp ảnh Macro theo phong cách của Nhiếp ảnh gia Trần Anh Tuấn"
+        },
+        "type": "color",
+        "contrast": "high",
+        "saturation": "high",
+        "tags": ["stylized", "atmospheric", "macro", "surreal", "contemporary", "artistic"],
+        "whiteBalance": "AWB, B1-G0.5",
+        "settings": { "Black level": "-5", "Gamma": "Movie", "Black Gamma": "Middle -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+10", "Color Phase": "-1" },
+        "colorDepth": { "R": "+2", "G": "+2", "B": "+2", "C": "0", "M": "0", "Y": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
+        "personalityColor": "#CDDC39",
+        "coords": { "x": 0, "y": -1 }
     },
     {
         "id": "PROCOLOR-001",
@@ -812,7 +1175,15 @@ const recipesData = [
         "whiteBalance": "AWB, B1-M0.75",
         "settings": { "Black level": "-5", "Gamma": "S-Cinetone", "Black Gamma": "Wide -7", "Knee": "Auto", "Color Mode": "S-Cinetone", "Saturation": "+8", "Color Phase": "0" },
         "colorDepth": { "R": "-1", "G": "-1", "B": "+1", "C": "+1", "M": "+1", "Y": "-1" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#708090",
         "coords": { "x": 1, "y": 1 }
     },
@@ -831,7 +1202,15 @@ const recipesData = [
         "whiteBalance": "AWB, B1-M0.75",
         "settings": { "Black level": "-3", "Gamma": "Movie", "Black Gamma": "Wide -7", "Knee": "Auto", "Color Mode": "Still", "Saturation": "+8", "Color Phase": "0" },
         "colorDepth": { "R": "-1", "G": "-1", "B": "+1", "C": "+1", "M": "+1", "Y": "-1" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#708090",
         "coords": { "x": 1, "y": 1 }
     },
@@ -850,12 +1229,18 @@ const recipesData = [
         "whiteBalance": "AWB, B1-M0.75",
         "settings": { "Black level": "-3", "Gamma": "Cine1", "Black Gamma": "Wide -7", "Knee": "Manual 105% +2", "Color Mode": "Movie", "Saturation": "+15", "Color Phase": "0" },
         "colorDepth": { "R": "-2", "G": "-5", "B": "+3", "C": "+3", "M": "-4", "Y": "+2" },
-        "detailSettings": { "Level": "0" },
+        "detailSettings": {
+            level: 0,
+            mode: "Manual",
+            vhBalance: "+2",
+            bwBalance: "Type 3",
+            limit: 3,
+            crispening: 7,
+            hiLightDetail: 4
+        },
         "personalityColor": "#708090",
         "coords": { "x": 1, "y": 1 }
           }
 ];
 
 export default recipesData;
-
-
