@@ -220,9 +220,9 @@ const recipeImages = {
         "https://lh3.googleusercontent.com/pw/AP1GczOWhh97lEdBo31q9wITtjA8_semXxcoxG_JFDiLqTRQwrofviEe928cRUX01zoWqELi8ACvZ1Qfk3sUIrfyP9cJs1rSeSRPg9LMPTvfKnZihHtZNBedcROI4P4e0quaPZFGDnogY3EBWnCEPnoY-O-qcQ=w1571-h1048-s-no?authuser=0"
     ],
     "scl-043": [
-        "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+1",
-        "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+2",
-        "https://placehold.co/800x600/CDDC39/ffffff?text=Ayon+200+3"
+        "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+1",
+        "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+2",
+        "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+3"
     ],
     "PROCOLOR-001": [
         "https://lh3.googleusercontent.com/pw/AP1GczPxaOjzhD4jE_WqMK3d_-E0xMbf62ixSg0ccUYS51nYXHOk-y4HJ3wwq3F3Hmd51W_jjYo0JWWCTMLQ1vhmOTCV7YXO6eBW1_CmzD0bRY9Iv2u24oYSctIa0TolR1beQFo7sFoE5UaWCoN4rpl50GwnUw=w481-h1048-s-no?authuser=0",
