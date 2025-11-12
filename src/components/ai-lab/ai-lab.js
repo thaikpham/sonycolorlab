@@ -3,7 +3,6 @@ import { state } from '../../services/state.js';
 import { openModal, closeModal } from '../../services/ui.js';
 import { renderAILab, renderAIError } from './ai-lab-ui.js';
 import { callGeminiAPI } from '../../services/api.js';
-import { getCurrentLanguage } from '../../services/language.js';
 import recipesData from '../../services/recipes.js';
 
 /**
@@ -69,7 +68,7 @@ export async function confirmAndCallAI() {
     state.ai.abortController = new AbortController();
     renderAILab(); // Show loading state
 
-    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${state.ai.userPrompt}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, analyze the following JSON object which represents an existing color recipe. Your task is to generate a new, modified JSON object based on the user's request: "${state.ai.userPrompt}". The new JSON must be a complete, valid recipe object. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated recipe name and description must be in the same language as the user's prompt (${state.language}). Original recipe: ${JSON.stringify(state.ai.originalRecipe)}`;
 
     try {
         const generatedRecipe = await callGeminiAPI(expertPrompt, state.ai.abortController.signal);

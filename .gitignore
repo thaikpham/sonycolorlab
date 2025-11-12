@@ -3,3 +3,4 @@ dist
 .DS_Store
 dist/wrangler.json
 .wrangler/
+npm_output.log

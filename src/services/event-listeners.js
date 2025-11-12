@@ -3,11 +3,11 @@ import { select } from 'd3-selection';
 import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import { setLanguage, updateLangSlider, applyTranslations, getCurrentLanguage, t } from './language.js';
+import { setLanguage, updateLangSlider, applyTranslations, t } from './language.js';
 import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
-import { parameterExplanations } from './translations.js';
+import { parameterExplanations } from './parameterExplanations.js';
 import recipesData from './recipes.js';
 import { signInWithGoogle, handleSignOut } from './auth.js';
 import { addComment, toggleFavorite, getFavoriteRecipes, saveOrUpdateGeneratedRecipe, updateUserProfile, submitDemoPhoto } from './firestore.js';
@@ -17,7 +17,7 @@ function getRecipeDataFromForm(formId) {
     const form = document.getElementById(formId);
     if (!form) return null;
 
-    const lang = getCurrentLanguage();
+    const lang = state.language;
     // Determine which editable recipe to use as the source
     const sourceRecipe = state.ai.editableRecipe || state.quiz.editableRecipe;
     if (!sourceRecipe) {
@@ -371,7 +371,7 @@ export function initEventListeners() {
         const tooltipEl = document.getElementById('infoTooltip');
         if (title && tooltipEl) {
             const key = title.dataset.paramKey;
-            const explanation = parameterExplanations[key]?.[getCurrentLanguage()];
+            const explanation = parameterExplanations[key]?.[state.language];
             if (explanation) {
                 tooltipEl.innerHTML = explanation;
                 const titleRect = title.getBoundingClientRect();

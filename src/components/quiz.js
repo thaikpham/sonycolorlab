@@ -56,12 +56,11 @@ export const quizQuestions = [
 
 import { renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError, renderAIClarification } from './quiz-ui.js';
 import { callGeminiAPI } from '../services/api.js';
-import { getCurrentLanguage } from '../services/language.js';
 import { state } from '../services/state.js';
 
 async function getAIClarification(userInput, answers) {
     const preferences = Object.values(answers).flat().join(', ');
-    const clarificationPrompt = `Based on the user's quiz answers "${preferences}" and their initial prompt "${userInput}", generate one single, concise, multiple-choice question to clarify their creative intent. The question must be in ${getCurrentLanguage()}. Respond ONLY with a valid JSON object in the format: {"question": "...", "options": ["...", "..."]}. For example: {"question": "Do you prefer a fiery sunset with vibrant reds, or a soft, pastel-toned sunset?", "options": ["Fiery and vibrant", "Soft and pastel"]}`;
+    const clarificationPrompt = `Based on the user's quiz answers "${preferences}" and their initial prompt "${userInput}", generate one single, concise, multiple-choice question to clarify their creative intent. The question must be in ${state.language}. Respond ONLY with a valid JSON object in the format: {"question": "...", "options": ["...", "..."]}. For example: {"question": "Do you prefer a fiery sunset with vibrant reds, or a soft, pastel-toned sunset?", "options": ["Fiery and vibrant", "Soft and pastel"]}`;
 
     try {
         const response = await callGeminiAPI(clarificationPrompt, null);
@@ -83,7 +82,7 @@ export async function handleQuizAIGeneration(finalPrompt) {
     renderQuizLoading();
     instance.applyTranslations();
 
-    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, create a completely new, creative, and fully detailed JSON object for a unique color recipe. The recipe must be inspired by this user prompt: "${finalPrompt}". The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in the same language as the user's prompt (${getCurrentLanguage()}). The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, create a completely new, creative, and fully detailed JSON object for a unique color recipe. The recipe must be inspired by this user prompt: "${finalPrompt}". The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": { "vi": "...", "en": "..." }, "description": { "vi": "...", "en": "..." }, "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 }, "personalityColor": "#...", "coords": { "x": 0, "y": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in the same language as the user's prompt (${state.language}). The 'coords' should be your estimation of where this recipe would fit on a color map from -10 to 10.`;
 
     try {
         const generatedRecipe = await callGeminiAPI(expertPrompt, null);
