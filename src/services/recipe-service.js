@@ -1,59 +1,100 @@
-// File Path: src/services/recipe-service.js
+import { getAllRecipes } from './recipes.js';
 import { state } from './state.js';
-import { updateListSelectionAndScroll, renderComments } from './ui.js';
-import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
+// SỬA LỖI BUILD: Chuyển renderLibraryDetails sang import từ ui.js
+import { updateListSelectionAndScroll, renderComments, renderLibraryDetails } from './ui.js';
+// GỠ BỎ: Dòng import sai trỏ đến recipe-list-ui.js
+// import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { updateChartSelection } from './features.js';
 import recipesData from './recipes.js';
-import { onCommentsSnapshot } from './firestore.js';
+import { getRecipeImages } from './recipe-images.js';
+import { db } from './firestore.js';
+import { auth } from './auth.js';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
-let unsubscribeComments = null;
+/**
+ * Selects a recipe, updates the UI, and fetches its details.
+ * @param {string} recipeId - The ID of the recipe to select.
+ */
+export async function selectRecipe(recipeId) {
+    if (!recipeId) return;
 
-export function handleRecipeSelection(id) {
-    // Unsubscribe from previous listener if it exists
-    if (unsubscribeComments) {
-        unsubscribeComments();
-        unsubscribeComments = null;
+    const recipe = getAllRecipes().find(r => r.id === recipeId);
+    if (!recipe) {
+        console.error('Selected recipe not found:', recipeId);
+        return;
     }
 
-    state.ui.selectedRecipeId = (state.ui.selectedRecipeId === id) ? null : id;
-    state.ui.isMobileDetailActive = !!state.ui.selectedRecipeId;
+    state.selectedRecipe = recipe;
+    state.selectedRecipeId = recipeId;
 
-    updateListSelectionAndScroll(state.ui.selectedRecipeId);
-    renderLibraryDetails(); // This now includes the comment section structure
-    updateChartSelection();
+    // Update UI
+    updateListSelectionAndScroll(recipeId);
+    renderLibraryDetails(recipe); // Hàm này bây giờ được import đúng từ ui.js
+    renderComments(recipe.comments || []);
 
-    if (state.ui.selectedRecipeId) {
-        // Subscribe to new comments in real-time
-        unsubscribeComments = onCommentsSnapshot(state.ui.selectedRecipeId, (comments) => {
-            // Ensure the detail view is still visible for this recipe before rendering
-            if (state.ui.selectedRecipeId === id) {
-                renderComments(comments);
-            }
-        });
+    // Update chart
+    updateChartSelection(recipe.id);
 
-        const recipe = recipesData.find(r => r.id === state.ui.selectedRecipeId);
-        if (recipe) {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'view_recipe',
-                recipe_id: recipe.id,
-                recipe_name: recipe.name.en,
-                recipe_name_vi: recipe.name.vi
-            });
-        }
+    // Fetch images if they haven't been fetched
+    if (!recipe.imageUrls) {
+        await getRecipeImages(recipe);
+        // Re-render details if images were fetched
+        renderLibraryDetails(recipe);
     }
 }
 
-export function resetToChartView() {
-    // Unsubscribe from comment listener when leaving detail view
-    if (unsubscribeComments) {
-        unsubscribeComments();
-        unsubscribeComments = null;
+/**
+ * Toggles the favorite status of a recipe.
+ * @param {string} recipeId - The ID of the recipe.
+ */
+export async function toggleFavorite(recipeId) {
+    if (!auth.currentUser) {
+        console.error("User not authenticated to toggle favorite.");
+        return;
     }
+    const userId = auth.currentUser.uid;
+    // Giả sử 'users' là collection của bạn
+    const userDocRef = doc(db, 'users', userId); 
 
-    state.ui.selectedRecipeId = null;
-    state.ui.isMobileDetailActive = false;
-    updateListSelectionAndScroll(null);
-    renderLibraryDetails();
-    updateChartSelection();
+    let isFavorite = false;
+
+    try {
+        const userDoc = await getDoc(userDocRef);
+        
+        // Kiểm tra xem người dùng đã tồn tại và đã favorited công thức này chưa
+        if (userDoc.exists() && userDoc.data().favorites && userDoc.data().favorites.includes(recipeId)) {
+            // Remove from favorites
+            await updateDoc(userDocRef, {
+                favorites: arrayRemove(recipeId)
+            });
+            state.userFavorites = state.userFavorites.filter(id => id !== recipeId);
+            isFavorite = false;
+        } else {
+            // Add to favorites
+            // Sử dụng { merge: true } để tạo document nếu chưa tồn tại, hoặc thêm field 'favorites'
+            await updateDoc(userDocRef, {
+                favorites: arrayUnion(recipeId)
+            }, { merge: true });
+            
+            if (!state.userFavorites.includes(recipeId)) {
+                state.userFavorites.push(recipeId);
+            }
+            isFavorite = true;
+        }
+        
+        // Update UI (e.g., the star icon)
+        const recipeItem = document.getElementById(`recipe-item-${recipeId}`);
+        if (recipeItem) {
+            const starIcon = recipeItem.querySelector('.lucide-star, .text-yellow-400');
+            if (starIcon) {
+                if (isFavorite) {
+                    starIcon.outerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                } else {
+                    starIcon.outerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-gray-400 flex-shrink-0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Error toggling favorite: ", error);
+    }
 }
