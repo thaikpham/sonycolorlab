@@ -174,7 +174,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.1))
         .stop();
 
-    for (let i = 0; i < 120; ++i) state.chart.simulation.tick();
+    for (let i = 0; i < 30; ++i) state.chart.simulation.tick();
 
     state.chart.nodes
         .attr("transform", d => `translate(${d.x}, ${d.y})`);
