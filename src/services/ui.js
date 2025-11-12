@@ -7,12 +7,30 @@
 
 // --- Local Module Imports ---
 import { state } from './state.js';
-import { getCurrentLanguage, t, applyTranslations } from './language.js';
+import { t, applyTranslations } from './language.js';
 import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
 
 
 // --- HELPER FUNCTIONS ---
+
+export function showLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) {
+    overlay.classList.remove('hidden');
+    overlay.style.opacity = '1';
+  }
+}
+
+export function hideLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) {
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+    }, 300);
+  }
+}
 
 export function formatRecipeName(name) {
     if (!name) return '';
@@ -164,7 +182,7 @@ export function createSaveGuideHTML() {
                 </button>
             </div>
             <div id="saveGuideContent" class="mt-4 text-sm md:text-base overflow-hidden max-h-0 transition-all duration-700 ease-in-out">
-                ${guideContent[getCurrentLanguage()]}
+                ${guideContent[state.language]}
             </div>
         </div>
     `;

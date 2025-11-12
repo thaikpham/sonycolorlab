@@ -1,9 +1,9 @@
 // File Path: src/components/ai-lab/ai-lab-ui.js
 import { state } from '../../services/state.js';
-import { t, applyTranslations, getCurrentLanguage } from '../../services/language.js';
+import { t, applyTranslations } from '../../services/language.js';
 
 function renderAIPromptInput(container) {
-    const recipeName = state.ai.originalRecipe.name[getCurrentLanguage()];
+    const recipeName = state.ai.originalRecipe.name[state.language];
     container.innerHTML = `
         <p class="text-lg text-gray-600 text-center">${t('aiLabDescription').replace('{recipeName}', `<b>${recipeName}</b>`)}</p>
         <textarea id="aiPromptInput" class="w-full mt-4 p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all min-h-[100px]" placeholder="${t('aiPromptPlaceholder')}"></textarea>
@@ -61,7 +61,7 @@ function renderAIComparison(container) {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="recipeName" class="text-base font-bold mb-2 block" data-translate-key="recipeNameLabel"></label>
-                        <input type="text" id="recipeName" class="w-full text-xl font-bold p-2 border-b-2" value="${escapeBackticks(generated.name[getCurrentLanguage()] || generated.name['en'])}">
+                        <input type="text" id="recipeName" class="w-full text-xl font-bold p-2 border-b-2" value="${escapeBackticks(generated.name[state.language] || generated.name['en'])}">
                     </div>
                      <div>
                         <h5 class="text-base font-bold mb-2" data-translate-key="whiteBalanceTitle"></h5>
@@ -70,7 +70,7 @@ function renderAIComparison(container) {
                 </div>
                 <div>
                      <label for="recipeDescription" class="text-base font-bold mb-2 block" data-translate-key="recipeDescriptionLabel"></label>
-                    <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 italic p-2 border-b-2">${escapeBackticks(generated.description[getCurrentLanguage()] || generated.description['en'])}</textarea>
+                    <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 italic p-2 border-b-2">${escapeBackticks(generated.description[state.language] || generated.description['en'])}</textarea>
                 </div>
             </div>
 

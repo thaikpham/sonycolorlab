@@ -1,5 +1,5 @@
 // File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/components/quiz-ui.js
-import { getCurrentLanguage, t } from '../services/language.js';
+import { t } from '../services/language.js';
 import recipeImages from '../services/recipe-images.js';
 import { state } from '../services/state.js';
 
@@ -18,8 +18,8 @@ export function renderOnePageQuizLayout(questions) {
             // AI Prompt Island
             return `
                 <div class="quiz-island" data-question-index="${index}" data-grid-area="6" style="transition-delay: ${index * 100}ms;">
-                    <h3 class="text-xl font-bold text-center mb-2">${q.question[getCurrentLanguage()]}</h3>
-                    <p class="text-gray-600 text-center text-sm mb-4">${q.description[getCurrentLanguage()]}</p>
+                    <h3 class="text-xl font-bold text-center mb-2">${q.question[state.language]}</h3>
+                    <p class="text-gray-600 text-center text-sm mb-4">${q.description[state.language]}</p>
                     <textarea id="aiQuizPrompt" class="w-full p-3 rounded-xl bg-white/60 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all min-h-[100px]" placeholder="${t('aiQuizPromptPlaceholder')}"></textarea>
                 </div>`;
         } else {
@@ -27,12 +27,12 @@ export function renderOnePageQuizLayout(questions) {
             const optionsHTML = q.options.map(opt => `
                 <button class="quiz-option w-full text-left p-4 flex items-center gap-4" data-tags="${opt.tags.join(',')}" data-question-index="${index}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-8 h-8 flex-shrink-0 text-gray-500 transition-colors">${opt.icon}</svg>
-                    <span class="font-semibold text-base md:text-lg">${opt.text[getCurrentLanguage()]}</span>
+                    <span class="font-semibold text-base md:text-lg">${opt.text[state.language]}</span>
                 </button>`).join('');
 
             return `
                 <div class="quiz-island" data-question-index="${index}" data-grid-area="${gridAreas[index] || ''}" style="transition-delay: ${index * 100}ms;">
-                    <h3 class="text-xl font-bold text-center mb-4">${q.question[getCurrentLanguage()]}</h3>
+                    <h3 class="text-xl font-bold text-center mb-4">${q.question[state.language]}</h3>
                     <div class="space-y-3">${optionsHTML}</div>
                 </div>`;
         }
@@ -80,8 +80,8 @@ export function renderQuizResult(bestMatch) {
                 <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
                     <img src="${recipeImages[bestMatch.id]?.[0] || 'https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image'}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview" onerror="this.onerror=null;this.src='https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image';">
                     <div class="text-center sm:text-left">
-                        <h4 class="text-2xl font-bold">${bestMatch.name[getCurrentLanguage()]}</h4>
-                        <p class="text-gray-600 mt-1 italic">"${bestMatch.description[getCurrentLanguage()]}"</p>
+                        <h4 class="text-2xl font-bold">${bestMatch.name[state.language]}</h4>
+                        <p class="text-gray-600 mt-1 italic">"${bestMatch.description[state.language]}"</p>
                     </div>
                 </div>
 
@@ -133,11 +133,11 @@ export function renderQuizAIResult(recipe) {
                 <div id="quiz-ai-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left space-y-4">
                     <div>
                         <label for="recipeName" class="text-base font-bold mb-2 block" data-translate-key="recipeNameLabel"></label>
-                        <input type="text" id="recipeName" class="w-full text-2xl font-bold text-center p-2 border-b-2" value="${recipe.name[getCurrentLanguage()]}">
+                        <input type="text" id="recipeName" class="w-full text-2xl font-bold text-center p-2 border-b-2" value="${recipe.name[state.language]}">
                     </div>
                     <div>
                          <label for="recipeDescription" class="text-base font-bold mb-2 block" data-translate-key="recipeDescriptionLabel"></label>
-                        <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 text-center italic p-2 border-b-2">${recipe.description[getCurrentLanguage()]}</textarea>
+                        <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 text-center italic p-2 border-b-2">${recipe.description[state.language]}</textarea>
                     </div>
 
                     <div>

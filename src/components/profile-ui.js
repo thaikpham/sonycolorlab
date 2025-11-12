@@ -1,7 +1,7 @@
 // File Path: src/components/profile-ui.js
 import { state } from '../services/state.js';
 import { getUserProfile, getGeneratedRecipes, getFavoriteRecipes } from '../services/firestore.js';
-import { applyTranslations, getCurrentLanguage, t } from '../services/language.js';
+import { applyTranslations, t } from '../services/language.js';
 import { openModal, closeModal, formatRecipeName } from '../services/ui.js';
 import recipesData from '../services/recipes.js';
 
@@ -64,8 +64,8 @@ export async function renderUserProfilePage(userId) {
 
     const generatedRecipesHTML = generatedRecipes.length > 0
         ? `<div class="space-y-4">${generatedRecipes.map(recipe => {
-            const recipeName = recipe.name[getCurrentLanguage()] || recipe.name['en'];
-            const recipeDesc = recipe.description[getCurrentLanguage()] || recipe.description['en'];
+            const recipeName = recipe.name[state.language] || recipe.name['en'];
+            const recipeDesc = recipe.description[state.language] || recipe.description['en'];
             const recipeJsonString = JSON.stringify(recipe).replace(/"/g, '&quot;');
             
             return `
@@ -90,8 +90,8 @@ export async function renderUserProfilePage(userId) {
 
     const recentlySelectedHTML = recentlySelectedRecipes.length > 0
         ? `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${recentlySelectedRecipes.map(recipe => {
-            const recipeName = recipe.name[getCurrentLanguage()] || recipe.name['en'];
-            const recipeDesc = recipe.description[getCurrentLanguage()] || recipe.description['en'];
+            const recipeName = recipe.name[state.language] || recipe.name['en'];
+            const recipeDesc = recipe.description[state.language] || recipe.description['en'];
             return `
             <div class="bg-white p-4 rounded-lg border border-gray-200/80">
                 <h4 class="font-bold text-lg">${formatRecipeName(recipeName)}</h4>
@@ -210,7 +210,7 @@ export function closeEditProfileModal() {
 
 
 function createDemoPhotoSubmitModal() {
-    const recipeOptions = recipesData.map(r => `<option value="${r.id}">${formatRecipeName(r.name[getCurrentLanguage()])}</option>`).join('');
+    const recipeOptions = recipesData.map(r => `<option value="${r.id}">${formatRecipeName(r.name[state.language])}</option>`).join('');
 
     return `
     <div id="demoPhotoSubmitModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">

@@ -1,11 +1,11 @@
 import { state } from '../../services/state.js';
-import { getCurrentLanguage, applyTranslations, t } from '../../services/language.js';
+import { applyTranslations, t } from '../../services/language.js';
 import { fetchTrendingRecipeIds } from '../../services/api.js';
 import recipesData from '../../services/recipes.js';
 import recipeImages from '../../services/recipe-images.js';
 import { createSaveGuideHTML, formatRecipeName } from '../../services/ui.js';
 import { isAIEnabled } from '../../services/state.js';
-import { parameterExplanations } from '../../services/translations.js';
+import { parameterExplanations } from '../../services/parameterExplanations.js';
 
 
 function createFilterHTML() {
@@ -67,8 +67,8 @@ export async function renderLibraryList() {
     // Apply search
     if (searchTerm) {
         recipesToRender = recipesToRender.filter(r =>
-            r.name[getCurrentLanguage()].toLowerCase().includes(searchTerm) ||
-            r.description[getCurrentLanguage()].toLowerCase().includes(searchTerm) ||
+            r.name[state.language].toLowerCase().includes(searchTerm) ||
+            r.description[state.language].toLowerCase().includes(searchTerm) ||
             r.tags.some(tag => tag.toLowerCase().includes(searchTerm))
         );
     }
@@ -94,13 +94,13 @@ export async function renderLibraryList() {
                      data-recipe-id="${recipe.id}"
                      style="${glowStyle} ${animationStyle}">
             <div class="flex justify-between items-start">
-                <span class="font-semibold text-primary pr-2">${formatRecipeName(recipe.name[getCurrentLanguage()])}</span>
+                <span class="font-semibold text-primary pr-2">${formatRecipeName(recipe.name[state.language])}</span>
                 <div class="flex items-center gap-2 pt-1">
                     ${imageIconHTML}
                     ${trendingIconHTML}
                 </div>
             </div>
-            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[getCurrentLanguage()]}</p>
+            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.language]}</p>
         </div>`;
     }).join('');
 }
@@ -151,7 +151,7 @@ function createRecipeDetailHTML(recipe) {
                     src="${imgUrl}" 
                     loading="lazy" 
                     decoding="async"
-                    alt="Demo image ${index + 1} for ${formatRecipeName(recipe.name[getCurrentLanguage()])}"
+                    alt="Demo image ${index + 1} for ${formatRecipeName(recipe.name[state.language])}"
                     onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Image failed to load</div>';"
                 >
             </div>`).join('');
@@ -188,8 +188,8 @@ function createRecipeDetailHTML(recipe) {
 
         <div class="mt-6 flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
-                <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name[getCurrentLanguage()])}</h3>
-                <p class="text-lg text-neutral-600 mt-1">"${recipe.description[getCurrentLanguage()]}"</p>
+                <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name[state.language])}</h3>
+                <p class="text-lg text-neutral-600 mt-1">"${recipe.description[state.language]}"</p>
             </div>
             <div class="flex-shrink-0 mt-2 sm:mt-0">
                 ${favoriteButtonHTML}

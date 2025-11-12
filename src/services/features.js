@@ -11,7 +11,7 @@ import { scaleLinear, scaleSqrt } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { forceSimulation, forceCollide, forceX, forceY } from 'd3-force';
 import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
-import { t, getCurrentLanguage, applyTranslations } from './language.js';
+import { t, applyTranslations } from './language.js';
 import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
 import { showToast, openModal, closeModal } from './ui.js';
@@ -115,7 +115,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .attr("x", d => d.x)
         .attr("y", d => d.y)
         .attr("dy", "0.35em")
-        .text(d => d.text[getCurrentLanguage()]);
+        .text(d => d.text[state.language]);
 
     svg.append("g").attr("class", "grid")
         .call(d3.axisBottom(xScale).ticks(10).tickSize(height).tickFormat(""))
@@ -126,10 +126,10 @@ export async function renderColorMapChart(containerSelector, data) {
 
     svg.selectAll(".domain").remove();
 
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(getCurrentLanguage() === 'vi' ? '← Lạnh' : '← Cool');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(getCurrentLanguage() === 'vi' ? 'Ấm →' : 'Warm →');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(getCurrentLanguage() === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(getCurrentLanguage() === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(state.language === 'vi' ? '← Lạnh' : '← Cool');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(state.language === 'vi' ? 'Ấm →' : 'Warm →');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(state.language === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(state.language === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
 
     const nodesData = data.filter(d => d.coords).map(d => ({...d, isTrending: trendingIds.includes(d.id)}));
 
@@ -155,7 +155,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .attr("class", "color-map-node-label")
         .attr("x", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 6)
         .attr("dy", "0.35em")
-        .text(d => d.name[getCurrentLanguage()]);
+        .text(d => d.name[state.language]);
 
     const starNodes = state.chart.nodes.filter(d => d.isTrending);
     
@@ -174,7 +174,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.1))
         .stop();
 
-    for (let i = 0; i < 120; ++i) state.chart.simulation.tick();
+    for (let i = 0; i < 30; ++i) state.chart.simulation.tick();
 
     state.chart.nodes
         .attr("transform", d => `translate(${d.x}, ${d.y})`);
@@ -346,8 +346,8 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
                         <img src="/assets/logo_black.png" style="height: 80px; width: auto;" alt="Logo">
                         <p style="font-size: 24px; font-weight: 600; color: #6b7280;">sonycolorlab.app</p>
                     </div>
-                    <h2 style="font-size: 80px; font-weight: 800; margin: 56px 0 16px 0; line-height: 1.1; letter-spacing: -2px;">${recipeToRender.name[getCurrentLanguage()]}</h2>
-                    <p style="font-size: 28px; color: #4b5563; margin: 0 0 56px 0; font-style: italic; max-width: 90%;">"${recipeToRender.description[getCurrentLanguage()]}"</p>
+                    <h2 style="font-size: 80px; font-weight: 800; margin: 56px 0 16px 0; line-height: 1.1; letter-spacing: -2px;">${recipeToRender.name[state.language]}</h2>
+                    <p style="font-size: 28px; color: #4b5563; margin: 0 0 56px 0; font-style: italic; max-width: 90%;">"${recipeToRender.description[state.language]}"</p>
                     
                     <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">White Balance</h3>
                     <div style="background: rgba(255, 255, 255, 0.6); border-radius: 16px; padding: 24px; font-size: 32px; font-weight: 600; border: 1px solid rgba(0,0,0,0.05);">${recipeToRender.whiteBalance}</div>
@@ -396,8 +396,8 @@ export async function shareRecipe(recipeId) {
     if (!recipe) return;
 
     const shareData = {
-        title: `Sony Color Lab: ${recipe.name[getCurrentLanguage()]}`,
-        text: `Check out this Sony Alpha color recipe: "${recipe.name[getCurrentLanguage()]}".\n${recipe.description[getCurrentLanguage()]}`,
+        title: `Sony Color Lab: ${recipe.name[state.language]}`,
+        text: `Check out this Sony Alpha color recipe: "${recipe.name[state.language]}".\n${recipe.description[state.language]}`,
         url: window.location.href
     };
     
@@ -433,7 +433,7 @@ export async function saveRecipeToGoogleDrive(recipeData) {
     btn.disabled = true;
 
     // Format the recipe content for the file
-    const lang = getCurrentLanguage();
+    const lang = state.language;
     let fileContent = `Sony Color Lab Recipe: ${recipeData.name[lang] || recipeData.name.en}\n`;
     fileContent += `==============================================\n\n`;
     fileContent += `Description: ${recipeData.description[lang] || recipeData.description.en}\n\n`;
