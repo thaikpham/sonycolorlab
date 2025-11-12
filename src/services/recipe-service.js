@@ -7,9 +7,11 @@ import { updateListSelectionAndScroll, renderComments, renderLibraryDetails } fr
 import { updateChartSelection } from './features.js';
 import recipesData from './recipes.js';
 import { getRecipeImages } from './recipe-images.js';
-import { db } from './firestore.js';
+// SỬA LỖI BUILD (FIREBASE): Import db và các hàm (doc, getDoc...) từ cùng file wrapper './firestore.js'
+import { db, doc, getDoc, updateDoc, arrayUnion, arrayRemove } from './firestore.js';
 import { auth } from './auth.js';
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+// GỠ BỎ: Dòng import trực tiếp 'firebase/firestore' đã gây lỗi build
+// import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 /**
  * Selects a recipe, updates the UI, and fetches its details.
