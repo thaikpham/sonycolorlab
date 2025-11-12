@@ -1,6 +1,35 @@
-import { getLang } from '../../services/language.js';
-import { getRecipeTitle, getRecipeDescription } from '../../services/recipes.js';
+// GỠ BỎ import getLang và getRecipeTitle để phá vỡ lỗi import vòng (circular dependency)
+// import { getLang } from '../../services/language.js';
+// import { getRecipeTitle, getRecipeDescription } from '../../services/recipes.js';
 import { state } from '../../services/state.js';
+
+// --- Bắt đầu logic sao chép từ file recipes.js ---
+// Chúng ta sao chép logic vào đây để tránh import file recipes.js,
+// việc này sẽ phá vỡ vòng lặp import đã gây ra lỗi build.
+
+function getLocalRecipeTitle(recipe) {
+    if (!recipe) return '';
+    const lang = state.currentLanguage || 'en';
+    // Kiểm tra nếu tiêu đề là object để dịch
+    if (typeof recipe.title === 'object' && recipe.title !== null) {
+        return recipe.title[lang] || recipe.title['en'] || '';
+    }
+    // Fallback nếu tiêu đề là chuỗi đơn
+    return recipe.title || '';
+}
+
+function getLocalRecipeDescription(recipe) {
+    if (!recipe || !recipe.description) return '';
+    const lang = state.currentLanguage || 'en';
+    // Kiểm tra nếu mô tả là object để dịch
+    if (typeof recipe.description === 'object' && recipe.description !== null) {
+        return recipe.description[lang] || recipe.description['en'] || '';
+    }
+    // Fallback nếu mô tả là chuỗi đơn
+    return recipe.description || '';
+}
+// --- Kết thúc logic sao chép ---
+
 
 /**
  * Creates the HTML markup for the recipe list.
@@ -9,7 +38,11 @@ import { state } from '../../services/state.js';
  */
 export function createRecipeListHTML(recipes) {
     if (!recipes || recipes.length === 0) {
-        return `<p class="text-gray-500">${getLang('no_recipes_found')}</p>`;
+        // Vì không thể import getLang, chúng ta xử lý dịch chuỗi này tại đây
+        const noRecipesText = state.currentLanguage === 'vi' 
+            ? 'Không tìm thấy công thức.' 
+            : 'No recipes found.';
+        return `<p class="text-gray-500">${noRecipesText}</p>`;
     }
 
     const listItems = recipes.map(recipe => createRecipeListItemHTML(recipe)).join('');
@@ -22,10 +55,9 @@ export function createRecipeListHTML(recipes) {
  * @returns {string} The HTML string for the recipe list item.
  */
 export function createRecipeListItemHTML(recipe) {
-    // SỬA LỖI LOGIC: Sử dụng getRecipeTitle và getRecipeDescription
-    // để lấy tên và mô tả theo đúng ngôn ngữ.
-    const title = getRecipeTitle(recipe);
-    const description = getRecipeDescription(recipe);
+    // SỬA LỖI LOGIC: Sử dụng các hàm local đã sao chép ở trên
+    const title = getLocalRecipeTitle(recipe);
+    const description = getLocalRecipeDescription(recipe);
 
     const isFavorite = state.userFavorites.includes(recipe.id);
     const hasImage = recipe.hasImage || false;
