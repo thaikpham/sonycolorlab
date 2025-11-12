@@ -1,4 +1,4 @@
-import { getLang } from '../../services/language.js';
+import getLang from '../../services/language.js'; // SỬA LỖI BUILD: Import default (bỏ {})
 import { getRecipeTitle, getRecipeDescription } from '../../services/recipes.js';
 import { state } from '../../services/state.js';
 
@@ -9,6 +9,7 @@ import { state } from '../../services/state.js';
  */
 export function createRecipeListHTML(recipes) {
     if (!recipes || recipes.length === 0) {
+        // Hàm getLang vẫn được sử dụng ở đây
         return `<p class="text-gray-500">${getLang('no_recipes_found')}</p>`;
     }
 
@@ -22,11 +23,8 @@ export function createRecipeListHTML(recipes) {
  * @returns {string} The HTML string for the recipe list item.
  */
 export function createRecipeListItemHTML(recipe) {
-    // SỬA LỖI: Sử dụng getRecipeTitle(recipe) thay vì getLang(recipe.title)
-    // Hàm getRecipeTitle đã xử lý logic để lấy đúng tiêu đề theo ngôn ngữ hiện tại.
+    // SỬA LỖI LOGIC (GIỮ NGUYÊN): Sử dụng getRecipeTitle và getRecipeDescription
     const title = getRecipeTitle(recipe);
-    
-    // SỬA LỖI: Tương tự, sử dụng getRecipeDescription(recipe)
     const description = getRecipeDescription(recipe);
 
     const isFavorite = state.userFavorites.includes(recipe.id);
