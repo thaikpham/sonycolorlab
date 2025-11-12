@@ -312,7 +312,7 @@ export function renderUltimateButton() {
              { id: 'ultimateQuizBtn', key: 'findMyColorBtn', colorClass: 'btn-pastel-red', icon: icons.findMyColorBtn },
              { key: 'sonyGuideBtn', href: 'https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html', colorClass: 'btn-pastel-yellow', icon: icons.sonyGuideBtn },
              { key: 'contributeRecipeBtn', href: 'https://forms.gle/your-form-id', colorClass: 'btn-pastel-magenta', icon: icons.contributeRecipeBtn },
-             { key: 'ctaButton', href: 'https://www.facebook.com/groups/sonyalphavietnamoffical', colorClass: 'btn-pastel-cyan', icon: icons.ctaButton }
+             { key: 'ctaButton', href: 'https://www.facebook.com/groups/sonycolorlab', colorClass: 'btn-pastel-cyan', icon: icons.ctaButton }
         ];
 
         const menuHTML = `<div id="ultimateActionsMenu">` + menuActions.reverse().map(action => {
