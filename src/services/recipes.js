@@ -1,7 +1,7 @@
 const recipesData = [
     {
         "id": "scl-001",
-        "name": { "vi": "SCL-001: Mojave Sun", "en": "SCL-001: Mojave Sun" },
+        "name": "SCL-001: Mojave Sun",
         "formattedName": "SCL-001-Mojave Sun***",
         "description": {
             "en": "A nostalgic, sun-drenched style that bathes scenes in the warm glow of golden hour.\nPerfect for travel and lifestyle, it recreates rich yellows and deep blues, evoking the feeling of an endless summer road trip.",
@@ -28,7 +28,7 @@ const recipesData = [
     },
     {
         "id": "scl-002",
-        "name": { "vi": "SCL-002: Kyoto Jade", "en": "SCL-002: Kyoto Jade" },
+        "name": "SCL-002: Kyoto Jade",
         "formattedName": "SCL-002-Kyoto Jade",
         "description": {
             "en": "A serene and subtle palette defined by rich jade tones and gentle skin colors.\nIdeal for contemplative portraits, street photography, and landscapes, creating a peaceful, painterly atmosphere.",
@@ -55,7 +55,7 @@ const recipesData = [
     },
     {
         "id": "scl-003",
-        "name": { "vi": "SCL-003: Caspian Blue", "en": "SCL-003: Caspian Blue" },
+        "name": "SCL-003: Caspian Blue",
         "formattedName": "SCL-003-Caspian Blue",
         "description": {
             "en": "A warm tone, cinematic profile with distinctive deep blues and rich, crushed blacks.\nIt lends a moody, atmospheric quality to images, perfect for urban nightscapes, dramatic portraits, and storytelling.",
@@ -82,7 +82,7 @@ const recipesData = [
     },
     {
         "id": "scl-004",
-        "name": { "vi": "SCL-004: Tuscan Ochre", "en": "SCL-004: Tuscan Ochre" },
+        "name": "SCL-004: Tuscan Ochre",
         "formattedName": "SCL-004-Tuscan Ochre",
         "description": {
             "en": "A vibrant, high-saturation style with warm, earthy reds and yellows.\nIt brings a bold, sun-baked intensity to images, reminiscent of classic European travel photography.",
@@ -109,7 +109,7 @@ const recipesData = [
     },
     {
         "id": "scl-005",
-        "name": { "vi": "SCL-005: Somerset Meadow", "en": "SCL-005: Somerset Meadow" },
+        "name": "SCL-005: Somerset Meadow",
         "formattedName": "SCL-005-Somerset Meadow",
         "description": {
             "en": "A soft, pastel-like palette with gentle contrast and low saturation.\nIt renders skin tones beautifully and gives landscapes a dreamy, ethereal quality, perfect for romantic and fine-art portraits.",
@@ -136,7 +136,7 @@ const recipesData = [
     },
     {
         "id": "scl-006",
-        "name": { "vi": "SCL-006: Faded Cine", "en": "SCL-006: Faded Cine" },
+        "name": "SCL-006: Faded Cine",
         "formattedName": "SCL-006-Faded Canvas",
         "description": {
             "en": "A stylized look with heavily lifted blacks and muted colors, creating a soft, hazy effect.\nIt evokes a sense of nostalgia and is ideal for fashion, editorial, and lifestyle photography aiming for a vintage-modern feel.",
@@ -163,7 +163,7 @@ const recipesData = [
     },
     {
         "id": "scl-007",
-        "name": { "vi": "SCL-007: Dynachrome '75", "en": "SCL-007: Dynachrome '75" },
+        "name": "SCL-007: Dynachrome '75",
         "formattedName": "SCL-007-Dynachrome '75",
         "description": {
             "en": "A high-contrast, moody profile with deep blacks and a dramatic, cool color shift.\nIt emphasizes texture and form, creating a strong graphic style reminiscent of vintage documentary slide film.",
@@ -190,7 +190,7 @@ const recipesData = [
     },
     {
         "id": "scl-008",
-        "name": { "vi": "SCL-008: Modern Classic", "en": "SCL-008: Modern Classic" },
+        "name": "SCL-008: Modern Classic",
         "formattedName": "SCL-008-Modern Classic",
         "description": {
             "en": "A clean, vibrant, and contemporary style built on modern color science.\nIt delivers rich, pleasing colors with smooth tonal transitions, making it a versatile choice for everyday shooting, from portraits to products.",
@@ -217,7 +217,7 @@ const recipesData = [
     },
     {
         "id": "scl-009",
-        "name": { "vi": "SCL-009: Urban Teal", "en": "SCL-009: Urban Teal" },
+        "name": "SCL-009: Urban Teal",
         "formattedName": "SCL-009-Urban Teal",
         "description": {
             "en": "A muted, low-saturation color profile with a distinctive cyan-teal cast in the shadows and mid-tones.\nIt creates a subtle, gentle, and slightly melancholic mood, perfect for street photography and urban exploration.",
@@ -244,7 +244,7 @@ const recipesData = [
     },
     {
         "id": "scl-010",
-        "name": { "vi": "SCL-010: Cinema Verde", "en": "SCL-010: Cinema Verde" },
+        "name": "SCL-010: Cinema Verde",
         "formattedName": "SCL-010-Cinema Verde",
         "description": {
             "en": "A cinematic style with very low saturation and a subtle green tint, designed to emulate motion picture film.\nIt provides a flat, neutral base, ideal for shots requiring a desaturated, atmospheric feel.",
@@ -271,7 +271,7 @@ const recipesData = [
     },
     {
         "id": "scl-011",
-        "name": { "vi": "SCL-011: Midnight Halogen", "en": "SCL-011: Midnight Halogen" },
+        "name": "SCL-011: Midnight Halogen",
         "formattedName": "SCL-011-Midnight Halogen",
         "description": {
             "en": "A night-specific formula that transforms artificial city lights into vibrant blues and cyans, while maintaining good highlight control.\nIt creates a futuristic, cyberpunk-inspired aesthetic.",
@@ -298,7 +298,7 @@ const recipesData = [
     },
     {
         "id": "scl-012",
-        "name": { "vi": "SCL-012: Amber Glow", "en": "SCL-012: Amber Glow" },
+        "name": "SCL-012: Amber Glow",
         "formattedName": "SCL-012-Amber Glow",
         "description": {
             "en": "A warm, soft, and nostalgic profile with a gentle amber cast.\nIt excels at creating a cozy and intimate feel, perfect for golden hour portraits, family photos, and vintage-inspired shots.",
@@ -325,7 +325,7 @@ const recipesData = [
     },
     {
         "id": "scl-013",
-        "name": { "vi": "SCL-013: Flatiron Mist", "en": "SCL-013: Flatiron Mist" },
+        "name": "SCL-013: Flatiron Mist",
         "formattedName": "SCL-013-Flatiron Mist",
         "description": {
             "en": "An incredibly versatile, low-contrast profile that utilizes an S-Log gamma to maximize dynamic range.\nIt produces a flat, soft image with rich colors, perfect for harsh lighting conditions or as a robust base for post-production.",
@@ -352,7 +352,7 @@ const recipesData = [
     },
     {
         "id": "scl-014",
-        "name": { "vi": "SCL-014: Magenta Bloom", "en": "SCL-014: Magenta Bloom" },
+        "name": "SCL-014: Magenta Bloom",
         "formattedName": "SCL-014-Magenta Bloom",
         "description": {
             "en": "A vibrant, powerful style with a distinctive magenta cast, emulating a popular slide film.\nIdeal for landscapes and nature, making flowers and sunsets pop with intense, dramatic colors.",
@@ -379,7 +379,7 @@ const recipesData = [
     },
     {
         "id": "scl-015",
-        "name": { "vi": "SCL-015: Vintage Slide", "en": "SCL-015: Vintage Slide" },
+        "name": "SCL-015: Vintage Slide",
         "formattedName": "SCL-015-Vintage Slide",
         "description": {
             "en": "A neutral, slightly faded style with a subtle green-cyan tint in the shadows.\nIt evokes the feeling of looking through old family slide films, perfect for nostalgic portraits and everyday scenes.",
@@ -406,7 +406,7 @@ const recipesData = [
     },
     {
         "id": "scl-016",
-        "name": { "vi": "SCL-016: Everyday Natural", "en": "SCL-016: Everyday Natural" },
+        "name": "SCL-016: Everyday Natural",
         "formattedName": "SCL-016-Everyday Natural",
         "description": {
             "en": "A clean, balanced, and versatile profile with moderate saturation and natural skin tones.\nThis is a go-to choice for a wide range of situations, providing an authentic look with a subtle filmic feel.",
@@ -433,7 +433,7 @@ const recipesData = [
     },
     {
         "id": "scl-017",
-        "name": { "vi": "SCL-017: Soft Portrait", "en": "SCL-017: Soft Portrait" },
+        "name": "SCL-017: Soft Portrait",
         "formattedName": "SCL-017-Soft Portrait",
         "description": {
             "en": "Characterized by soft contrast and a gentle magenta cast, this formula is perfect for flattering portraits.\nIt renders skin tones with a smooth, delicate quality, creating a refined and elegant look.",
@@ -460,7 +460,7 @@ const recipesData = [
     },
     {
         "id": "scl-018",
-        "name": { "vi": "SCL-018: Vector Graphic", "en": "SCL-018: Vector Graphic" },
+        "name": "SCL-018: Vector Graphic",
         "formattedName": "SCL-018-Vector Graphic",
         "description": {
             "en": "A bold, high-contrast style with super-saturated, almost artificial colors and deep blacks.\nIt creates a strong graphic look, ideal for abstract subjects, modern architecture, and experimental photography.",
@@ -487,7 +487,7 @@ const recipesData = [
     },
     {
         "id": "scl-019",
-        "name": { "vi": "SCL-019: Pop Art", "en": "SCL-019: Pop Art" },
+        "name": "SCL-019: Pop Art",
         "formattedName": "SCL-019-Pop Art",
         "description": {
             "en": "An explosion of color. This formula pushes saturation to the maximum, creating a super-vibrant, high-energy style.\nPerfect for making bold statements and capturing the fun, playful side of life.",
@@ -514,7 +514,7 @@ const recipesData = [
     },
     {
         "id": "scl-020",
-        "name": { "vi": "SCL-020: Autumn Haze", "en": "SCL-020: Autumn Haze" },
+        "name": "SCL-020: Autumn Haze",
         "formattedName": "SCL-020-Autumn Haze",
         "description": {
             "en": "A modern take on classic warm film stocks, utilizing S-Cinetone for smooth tones.\nIt delivers a cozy feel, with slightly muted greens and yellows, perfect for capturing the essence of a misty autumn day.",
@@ -541,7 +541,7 @@ const recipesData = [
     },
     {
         "id": "scl-021",
-        "name": { "vi": "SCL-021: Muted Pastels", "en": "SCL-021: Muted Pastels" },
+        "name": "SCL-021: Muted Pastels",
         "formattedName": "SCL-021-Muted Pastels",
         "description": {
             "en": "A soft and subtle style with moderate saturation and gentle tones.\nIt's versatile for everyday shooting, lending images a peaceful and pleasant feel without being overwhelmed by color.",
@@ -568,7 +568,7 @@ const recipesData = [
     },
     {
         "id": "scl-022",
-        "name": { "vi": "SCL-022: Neutral Standard", "en": "SCL-022: Neutral Standard" },
+        "name": "SCL-022: Neutral Standard",
         "formattedName": "SCL-022-Neutral Standard",
         "description": {
             "en": "A neutral, true-to-life profile designed for accuracy.\nIt provides a clean, standard look with minimal color shifts, making it a great, reliable base for any type of photography.",
@@ -595,7 +595,7 @@ const recipesData = [
     },
     {
         "id": "scl-023",
-        "name": { "vi": "SCL-023: Alpine Cool", "en": "SCL-023: Alpine Cool" },
+        "name": "SCL-023: Alpine Cool",
         "formattedName": "SCL-023-Alpine Cool",
         "description": {
             "en": "A cool-toned formula with a high Kelvin temperature, giving images a clean, crisp blue cast.\nIt's well-suited for emphasizing cold light in urban or mountain landscapes, creating a clean and edgy aesthetic.",
@@ -622,7 +622,7 @@ const recipesData = [
     },
     {
         "id": "scl-024",
-        "name": { "vi": "SCL-024: Arctic Negative", "en": "SCL-024: Arctic Negative" },
+        "name": "SCL-024: Arctic Negative",
         "formattedName": "SCL-024-Arctic Negative",
         "description": {
             "en": "Pushing white balance to its coldest, this formula creates a unique, stylized look with a deep blue-green cast.\nIt's perfect for experimental, moody, and atmospheric photography.",
@@ -649,7 +649,7 @@ const recipesData = [
     },
     {
         "id": "scl-025",
-        "name": { "vi": "SCL-025: Saturated Cinema", "en": "SCL-025: Saturated Cinema" },
+        "name": "SCL-025: Saturated Cinema",
         "formattedName": "SCL-025-Saturated Cinema",
         "description": {
             "en": "A powerful, high-saturation cinematic style, distinct from Fuji emulations.\nIt utilizes a wide color space to produce deep, rich colors with a filmic gamma curve, well-suited for vivid visual storytelling.",
@@ -676,7 +676,7 @@ const recipesData = [
     },
     {
         "id": "scl-026",
-        "name": { "vi": "SCL-026: HDR Cinema", "en": "SCL-026: HDR Cinema" },
+        "name": "SCL-026: HDR Cinema",
         "formattedName": "SCL-026-HDR Cinema",
         "description": {
             "en": "Leveraging HLG (Hybrid Log-Gamma), this formula captures wide dynamic range with high saturation.\nIt produces a vivid, impactful image that feels both cinematic and surreal, ideal for high-energy shots.",
@@ -703,7 +703,7 @@ const recipesData = [
     },
     {
         "id": "scl-027",
-        "name": { "vi": "SCL-027: Daylight Cinema", "en": "SCL-027: Daylight Cinema" },
+        "name": "SCL-027: Daylight Cinema",
         "formattedName": "SCL-027-Daylight Cinema",
         "description": {
             "en": "A modern, clean cinematic style based on S-Cinetone.\nIt's designed for daylight conditions, delivering beautiful skin tones, high saturation, and a professional, polished feel straight out of camera.",
@@ -730,7 +730,7 @@ const recipesData = [
     },
     {
         "id": "scl-028",
-        "name": { "vi": "SCL-028: Phoenix Fire", "en": "SCL-028: Phoenix Fire" },
+        "name": "SCL-028: Phoenix Fire",
         "formattedName": "SCL-028-Phoenix Fire",
         "description": {
             "en": "An experimental and powerful style with ultra-high saturation and pronounced warm tones.\nIt creates fiery reds and oranges, perfect for bold, abstract, and high-impact photography.",
@@ -757,7 +757,7 @@ const recipesData = [
     },
     {
         "id": "scl-029",
-        "name": { "vi": "SCL-029: Hollywood Cool", "en": "SCL-029: Hollywood Cool" },
+        "name": "SCL-029: Hollywood Cool",
         "formattedName": "SCL-029-Hollywood Cool",
         "description": {
             "en": "A balanced cinematic formula for tungsten lighting with a cool blue-green bias.\nBased on S-Cinetone, it delivers smooth tones and a sophisticated, professional look reminiscent of classic Hollywood films.",
@@ -784,7 +784,7 @@ const recipesData = [
     },
     {
         "id": "scl-030",
-        "name": { "vi": "SCL-030: Graphite Standard", "en": "SCL-030: Graphite Standard" },
+        "name": "SCL-030: Graphite Standard",
         "formattedName": "SCL-030-Graphite Standard",
         "description": {
             "en": "A balanced, versatile monochrome style with a full tonal range and clean mid-tones.\nThis is a perfect starting point for black and white photography, delivering classic, timeless results for any subject.",
@@ -811,7 +811,7 @@ const recipesData = [
     },
     {
         "id": "scl-031",
-        "name": { "vi": "SCL-031: Obsidian Contrast", "en": "SCL-031: Obsidian Contrast" },
+        "name": "SCL-031: Obsidian Contrast",
         "formattedName": "SCL-031-Obsidian Contrast",
         "description": {
             "en": "A dramatic, high-contrast monochrome style with inky blacks and crisp whites.\nIdeal for architectural details, powerful street photography, and making subjects stand out with impressive clarity.",
@@ -838,7 +838,7 @@ const recipesData = [
     },
     {
         "id": "scl-032",
-        "name": { "vi": "SCL-032: Newsprint Grit", "en": "SCL-032: Newsprint Grit" },
+        "name": "SCL-032: Newsprint Grit",
         "formattedName": "SCL-032-Newsprint Grit",
         "description": {
             "en": "A powerful, high-contrast style that emulates the feel of 'pushed' black and white film used by photojournalists.\nIt's grainy, sharp, and full of character, perfect for capturing raw, unedited moments.",
@@ -865,7 +865,7 @@ const recipesData = [
     },
     {
         "id": "scl-033",
-        "name": { "vi": "SCL-033: Silver Gelatin", "en": "SCL-033: Silver Gelatin" },
+        "name": "SCL-033: Silver Gelatin",
         "formattedName": "SCL-033-Silver Gelatin",
         "description": {
             "en": "A flat, soft-contrast profile with rich mid-tones and smooth transitions.\nIt emulates the look of a classic darkroom print on silver gelatin paper, ideal for fine-art portraits and subtle compositions.",
@@ -892,7 +892,7 @@ const recipesData = [
     },
     {
         "id": "scl-034",
-        "name": { "vi": "SCL-034: Crystal Clear", "en": "SCL-034: Crystal Clear" },
+        "name": "SCL-034: Crystal Clear",
         "formattedName": "SCL-034-Crystal Clear",
         "description": {
             "en": "A clean, crisp, and cool-toned black and white style.\nIt features fine grain and high clarity, perfect for technical subjects, architecture, and portraits where detail is paramount.",
@@ -919,7 +919,7 @@ const recipesData = [
     },
     {
         "id": "scl-035",
-        "name": { "vi": "SCL-035: Classic Reportage", "en": "SCL-035: Classic Reportage" },
+        "name": "SCL-035: Classic Reportage",
         "formattedName": "SCL-035-Classic Reportage",
         "description": {
             "en": "A versatile, medium-contrast style with a classic grain structure.\nThis is a black and white 'workhorse' choice, ideal for photojournalism, street photography, and capturing everyday life with an authentic feel.",
@@ -946,7 +946,7 @@ const recipesData = [
     },
     {
         "id": "scl-036",
-        "name": { "vi": "SCL-036: Noir Film", "en": "SCL-036: Noir Film" },
+        "name": "SCL-036: Noir Film",
         "formattedName": "SCL-036-Noir Film",
         "description": {
             "en": "A very high-contrast, dramatic black and white style with deep, crushed blacks and bright whites.\nIt evokes the classic film noir aesthetic, perfect for creating mystery, drama, and graphic compositions.",
@@ -973,7 +973,7 @@ const recipesData = [
     },
     {
         "id": "scl-037",
-        "name": { "vi": "SCL-037: Low Light Grain", "en": "SCL-037: Low Light Grain" },
+        "name": "SCL-037: Low Light Grain",
         "formattedName": "SCL-037-Low Light Grain",
         "description": {
             "en": "Designed to emulate high-speed film, this formula uses a cinematic gamma to handle contrast while encouraging grain.\nIt's perfect for low-light situations, adding texture and atmosphere to shots.",
@@ -1000,7 +1000,7 @@ const recipesData = [
     },
     {
         "id": "scl-038",
-        "name": { "vi": "SCL-038: Modern B&W", "en": "SCL-038: Modern B&W" },
+        "name": "SCL-038: Modern B&W",
         "formattedName": "SCL-038-Modern B&W",
         "description": {
             "en": "A contemporary black and white style that utilizes S-Cinetone gamma for smooth, beautiful tonal transitions.\nIt delivers deep blacks without being overly harsh, well-suited for modern portraits and fine art.",
@@ -1027,7 +1027,7 @@ const recipesData = [
     },
     {
         "id": "scl-039",
-        "name": { "vi": "SCL-039: Ortho Portrait", "en": "SCL-039: Ortho Portrait" },
+        "name": "SCL-039: Ortho Portrait",
         "formattedName": "SCL-039-Ortho Portrait",
         "description": {
             "en": "Emulating orthochromatic film, which is insensitive to red light.\nThis results in darkened skin and lip tones, creating a unique, vintage, and often dramatic portrait style.",
@@ -1054,7 +1054,7 @@ const recipesData = [
     },
     {
         "id": "scl-040",
-        "name": { "vi": "SCL-040: Sunbath", "en": "SCL-040: Sunbath" },
+        "name": "SCL-040: Sunbath",
         "formattedName": "SCL-040-Sunbath",
         "description": {
             "en": "Based on the unique film style, this recipe offers a creative and unpredictable look with distinct color shifts, especially in reds and greens. It's perfect for photographers looking to experiment with a quirky, analog-inspired palette.",
@@ -1081,7 +1081,7 @@ const recipesData = [
     },
     {
         "id": "scl-041",
-        "name": { "vi": "SCL-041: Aya", "en": "SCL-041: Aya" },
+        "name": "SCL-041: Aya",
         "formattedName": "SCL-041-Aya",
         "description": {
             "en": "A highly stylized and atmospheric recipe with a dominant, warm yellow-green cast. It dramatically transforms landscapes and scenes, creating a surreal, vintage, or even dystopian feel. Ideal for bold artistic statements.",
@@ -1108,7 +1108,7 @@ const recipesData = [
     },
     {
         "id": "scl-042",
-        "name": { "vi": "SCL-42: Kando 25 Phuket", "en": "SCL-42: Kando 25 Phuket" },
+        "name": "SCL-42: Kando 25 Phuket",
         "formattedName": "SCL-42: Kando 25 Phuket",
         "description": {
             "en": "Capture Phuket's cinematic soul. This S-Cinetone formula delivers a filmic look with lush greens, vibrant turquoise waters, and warm golden light, perfect for Thailand's tropical paradise.",
@@ -1135,7 +1135,7 @@ const recipesData = [
     },
     {
         "id": "scl-043",
-        "name": { "vi": "SCL-43: Macro shooting for Tran Anh Tuan", "en": "SCL-43: Macro shooting for Tran Anh Tuan" },
+        "name": "SCL-43: Macro shooting for Tran Anh Tuan",
         "formattedName": "SCL-43: Macro shooting for Tran Anh Tuan",
         "description": {
             "en": "A color recipe with natural and vivid colors, suitable for Macro photography in the style of Photographer Tran Anh Tuan.",
@@ -1162,7 +1162,7 @@ const recipesData = [
     },
     {
         "id": "PROCOLOR-001",
-        "name": { "vi": "PROCOLOR-001: ClearCast Pro", "en": "PRO-SCL-001: ClearCast Pro" },
+        "name": "PRO-SCL-001: ClearCast Pro",
         "formattedName": "PRO-SCL-001: ClearCast Pro",
         "description": {
             "en": "A color recipe for crystal-clear images, featuring rich colors on a neutral foundation. Specially designed for livestreaming, it renders Asian skin tones authentically and radiantly.",
@@ -1189,7 +1189,7 @@ const recipesData = [
     },
       {
         "id": "PROCOLOR-002",
-        "name": { "vi": "PROCOLOR-001: ClearCast Pro 2", "en": "PRO-SCL-001: ClearCast Pro 2" },
+        "name": "PRO-SCL-001: ClearCast Pro 2",
         "formattedName": "PRO-SCL-001: ClearCast Pro 2",
         "description": {
             "en": "A color recipe for crystal-clear images, featuring rich colors on a neutral foundation. Specially designed for livestreaming, it renders Asian skin tones authentically and radiantly.",
@@ -1216,7 +1216,7 @@ const recipesData = [
     },
           {
         "id": "PROCOLOR-003",
-        "name": { "vi": "PROCOLOR-003: EXTRA DR Stream 109", "en": "PRO-SCL-003: EXTRA DR Stream 109" },
+        "name": "PRO-SCL-003: EXTRA DR Stream 109",
         "formattedName": "PRO-SCL-003: EXTRA DR Stream 109",
         "description": {
             "en": "A color recipe for crystal-clear images, featuring rich colors on a neutral foundation. Specially designed for livestreaming, it renders Asian skin tones authentically and radiantly.",
