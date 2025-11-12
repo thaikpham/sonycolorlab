@@ -20,7 +20,7 @@ import { state } from './state.js';
 import { showToast } from './ui.js';
 import { t } from './language.js';
 
-let db;
+export let db;
 
 export function initFirestore(app) {
     if (!app) return;

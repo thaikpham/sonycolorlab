@@ -236,4 +236,12 @@ const recipeImages = {
         "https://lh3.googleusercontent.com/pw/AP1GczNXJ3OUJXOjfZecO5mRrXBLNn9NHaMQRWGogsmBvvljqWBBWC1uvoZIlPz2uCko7DwCFPd2ruZIq3GDEipf_IjZtuxW5pBUAS18z8egEqZDxqoebuIsw7FO18Zlp9EUO01P0wAbKuS4Hx3mKN1YSEe5Rg=w498-h1077-s-no?authuser=0"
     ]
 };
+
+export function getRecipeImages(recipe) {
+    if (recipe && recipe.id && recipeImages[recipe.id]) {
+        recipe.imageUrls = recipeImages[recipe.id];
+    }
+    return recipe;
+}
+
 export default recipeImages;

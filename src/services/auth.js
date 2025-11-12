@@ -12,7 +12,7 @@ import { getFavoriteRecipes, createUserProfileIfNeeded } from './firestore.js';
 import { t } from './language.js';
 
 
-let auth;
+export let auth;
 
 export function initAuth(app) {
     if (!app) return;

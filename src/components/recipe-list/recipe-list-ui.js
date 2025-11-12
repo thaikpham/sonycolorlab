@@ -2,6 +2,8 @@
 // import { getLang } from '../../services/language.js';
 // import { getRecipeTitle, getRecipeDescription } from '../../services/recipes.js';
 import { state } from '../../services/state.js';
+import recipesData from '../../services/recipes.js';
+import { applyTranslations } from '../../services/language.js';
 
 // --- Bắt đầu logic sao chép từ file recipes.js ---
 // Chúng ta sao chép logic vào đây để tránh import file recipes.js,
@@ -85,4 +87,60 @@ export function createRecipeListItemHTML(recipe) {
             ${description ? `<p class="text-sm text-gray-600 mt-1 truncate">${description}</p>` : ''}
         </li>
     `;
+}
+
+export function renderLibraryList() {
+    const container = document.getElementById('recipeListContainer');
+    if (!container) return;
+
+    const { filter, searchTerm } = state.ui;
+
+    let filteredRecipes = recipesData;
+
+    if (filter === 'favorites') {
+        filteredRecipes = recipesData.filter(r => state.userFavorites.includes(r.id));
+    } else if (filter !== 'all') {
+        filteredRecipes = recipesData.filter(r => r.type === filter);
+    }
+
+    if (searchTerm) {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        filteredRecipes = filteredRecipes.filter(r =>
+            r.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+            r.tags.some(tag => tag.toLowerCase().includes(lowerCaseSearchTerm))
+        );
+    }
+
+    container.innerHTML = createRecipeListHTML(filteredRecipes);
+    applyTranslations();
+}
+
+export function renderLibraryDetails(recipe) {
+    const desktopContainer = document.getElementById('recipeContent');
+    const mobileContainer = document.getElementById('recipeContentMobile');
+    const welcomeContainer = document.getElementById('welcomeAndChartContainer');
+
+    if (!desktopContainer || !mobileContainer || !welcomeContainer) return;
+
+    if (!recipe) {
+        desktopContainer.classList.add('hidden');
+        welcomeContainer.style.display = 'flex'; // Show welcome text and chart
+        return;
+    }
+
+    desktopContainer.classList.remove('hidden');
+    welcomeContainer.style.display = 'none'; // Hide welcome text and chart
+
+    const lang = state.currentLanguage;
+    const description = typeof recipe.description === 'object' ? recipe.description[lang] : recipe.description;
+
+    const detailsHTML = `
+        <h2 class="text-3xl font-bold">${recipe.name}</h2>
+        <p class="text-lg text-gray-600 mt-2">${description}</p>
+        <!-- Add more details as needed -->
+    `;
+
+    desktopContainer.innerHTML = detailsHTML;
+    mobileContainer.innerHTML = detailsHTML;
+    applyTranslations();
 }

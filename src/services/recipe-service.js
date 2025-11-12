@@ -1,11 +1,10 @@
-import { getAllRecipes } from './recipes.js';
+import recipesData from './recipes.js';
 import { state } from './state.js';
 // SỬA LỖI BUILD: Chuyển renderLibraryDetails sang import từ ui.js
-import { updateListSelectionAndScroll, renderComments, renderLibraryDetails } from './ui.js';
+import { updateListSelectionAndScroll, renderComments } from './ui.js';
 // GỠ BỎ: Dòng import sai trỏ đến recipe-list-ui.js
-// import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
+import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { updateChartSelection } from './features.js';
-import recipesData from './recipes.js';
 import { getRecipeImages } from './recipe-images.js';
 
 // SỬA LỖI BUILD: Import 'db' từ file wrapper (đã đúng)
@@ -22,7 +21,7 @@ import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firest
 export async function selectRecipe(recipeId) {
     if (!recipeId) return;
 
-    const recipe = getAllRecipes().find(r => r.id === recipeId);
+    const recipe = recipesData.find(r => r.id === recipeId);
     if (!recipe) {
         console.error('Selected recipe not found:', recipeId);
         return;
@@ -101,4 +100,16 @@ export async function toggleFavorite(recipeId) {
     } catch (error) {
         console.error("Error toggling favorite: ", error);
     }
+}
+
+export function handleRecipeSelection(recipeId) {
+    selectRecipe(recipeId);
+}
+
+export function resetToChartView() {
+    state.selectedRecipe = null;
+    state.selectedRecipeId = null;
+    updateListSelectionAndScroll(null);
+    renderLibraryDetails(null);
+    updateChartSelection();
 }
