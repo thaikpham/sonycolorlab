@@ -16,13 +16,14 @@ import { state, __firebase_config, __app_id, isAIEnabled, API_KEY } from './stat
  * @returns {object|null} The Firebase app instance or null if initialization fails.
  */
 export function initializeFirebase() {
-    if (typeof __firebase_config === 'undefined' || __firebase_config.startsWith("%%") || __firebase_config === 'undefined' || __firebase_config === '{}') {
+    const firebaseConfigStr = import.meta.env.VITE_FIREBASE_CONFIG;
+    if (!firebaseConfigStr || firebaseConfigStr.startsWith("%%")) {
         console.warn("Firebase config not found. Features requiring Firebase will be disabled.");
         state.firebase.db = null;
         return null;
     }
     try {
-        const firebaseConfig = JSON.parse(__firebase_config);
+        const firebaseConfig = JSON.parse(firebaseConfigStr);
         if (!firebaseConfig.projectId) {
              console.error("Firebase config is missing projectId. Initialization aborted.");
              state.firebase.db = null;
