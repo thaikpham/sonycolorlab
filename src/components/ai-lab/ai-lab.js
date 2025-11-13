@@ -3,14 +3,13 @@ import { state } from '../../services/state.js';
 import { openModal, closeModal } from '../../services/ui.js';
 import { renderAILab, renderAIError } from './ai-lab-ui.js';
 import { callGeminiAPI } from '../../services/api.js';
-import recipesData from '../../services/recipes.js';
 
 /**
  * Opens the AI Lab to tweak an existing recipe from the library.
  * @param {string} recipeId The ID of the recipe to tweak.
  */
 export function openAILab(recipeId) {
-    const originalRecipe = recipesData.find(r => r.id === recipeId);
+    const originalRecipe = state.allRecipes.find(r => r.id === recipeId);
     if (!originalRecipe) return;
 
     // Reset state for a new session

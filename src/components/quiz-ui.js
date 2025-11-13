@@ -1,6 +1,5 @@
 // File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/components/quiz-ui.js
 import { t } from '../services/language.js';
-import recipeImages from '../services/recipe-images.js';
 import { state } from '../services/state.js';
 
 /**
@@ -78,7 +77,7 @@ export function renderQuizResult(bestMatch) {
             
             <div id="quiz-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
                 <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
-                    <img src="${recipeImages[bestMatch.id]?.[0] || 'https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image'}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview" onerror="this.onerror=null;this.src='https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image';">
+                    <img src="${bestMatch.image || 'https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image'}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview" onerror="this.onerror=null;this.src='https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image';">
                     <div class="text-center sm:text-left">
                         <h4 class="text-2xl font-bold">${bestMatch.name[state.language]}</h4>
                         <p class="text-gray-600 mt-1 italic">"${bestMatch.description[state.language]}"</p>

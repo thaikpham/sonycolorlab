@@ -8,9 +8,9 @@ import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, 
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
 import { parameterExplanations } from './parameterExplanations.js';
-import recipesData from './recipes.js';
 import { signInWithGoogle, handleSignOut } from './auth.js';
 import { addComment, toggleFavorite, getFavoriteRecipes, saveOrUpdateGeneratedRecipe, updateUserProfile, submitDemoPhoto } from './firestore.js';
+import * as RecipeService from './recipe-service.js';
 
 // Helper function to read recipe data from an editable form
 function getRecipeDataFromForm(formId) {
@@ -60,7 +60,7 @@ async function initializeAndStartQuiz() {
         const { Quiz } = await import('../components/quiz.js');
         state.quiz.instance = new Quiz({
             state,
-            recipesData,
+            recipesData: state.allRecipes,
             applyTranslations,
         });
     }
@@ -159,11 +159,11 @@ export function initEventListeners() {
             updateLangSlider();
             applyTranslations();
             if (state.ui.currentView === 'recipeFormulas') {
-                renderLibraryList();
-                renderLibraryDetails();
-                renderColorMapChart('#colorMapContainer', recipesData);
+                await renderLibraryList();
+                await renderLibraryDetails();
+                renderColorMapChart('#colorMapContainer', state.allRecipes);
             } else if (state.ui.currentView === 'home') {
-                renderColorMapChart('#homeColorMapContainer', recipesData);
+                renderColorMapChart('#homeColorMapContainer', state.allRecipes);
             }
             return;
         }
@@ -196,15 +196,19 @@ export function initEventListeners() {
             const recipeId = target.closest('#favoriteBtn').dataset.recipeId;
             await toggleFavorite(state.auth.user.uid, recipeId);
             state.auth.favorites = await getFavoriteRecipes(state.auth.user.uid);
-            renderLibraryDetails();
-            renderLibraryList();
+            await renderLibraryDetails();
+            await renderLibraryList();
             return;
         }
         
         if(target.closest('.filter-btn')) {
             const filter = target.closest('.filter-btn').dataset.filter;
+            const tag = target.closest('.filter-btn').dataset.tag;
+            if (tag) {
+                await RecipeService.getRecipesByTag(tag);
+            }
             state.ui.filter = filter;
-            renderLibraryList();
+            await renderLibraryList();
             return;
         }
 
@@ -228,7 +232,7 @@ export function initEventListeners() {
                          if (state.ai.editableRecipe) state.ai.editableRecipe.id = newDocId;
                          if (state.quiz.editableRecipe) state.quiz.editableRecipe.id = newDocId;
                     }
-                    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-5 w-5"></svg><span>${t('favoritedBtn')}</span>`;
+                    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 a 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-5 w-5"></svg><span>${t('favoritedBtn')}</span>`;
                 } else {
                     btn.innerHTML = originalBtnContent;
                     btn.disabled = false;
@@ -392,7 +396,7 @@ export function initEventListeners() {
         }
     });
 
-    document.addEventListener('input', e => {
-        if(e.target.id === 'searchInput') renderLibraryList();
+    document.addEventListener('input', async e => {
+        if(e.target.id === 'searchInput') await renderLibraryList();
     });
 }

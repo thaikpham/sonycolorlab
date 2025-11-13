@@ -12,8 +12,6 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { forceSimulation, forceCollide, forceX, forceY } from 'd3-force';
 import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, applyTranslations } from './language.js';
-import recipesData from './recipes.js';
-import recipeImages from './recipe-images.js';
 import { showToast, openModal, closeModal } from './ui.js';
 
 // --- CDN URLs for external libraries ---
@@ -187,13 +185,14 @@ export async function renderColorMapChart(containerSelector, data) {
  */
 export function updateChartSelection() {
     if (!state.chart.nodes) return;
-    state.chart.nodes.classed("selected", d => d.id === state.selectedRecipeId);
+    state.chart.nodes.classed("selected", d => d.id === state.ui.selectedRecipeId);
 }
 
 // --- IMAGE LIGHTBOX ---
 
 export function openLightbox(recipeId, startIndex) {
-    const images = recipeImages[recipeId] || [];
+    const recipe = state.allRecipes.find(r => r.id === recipeId);
+    const images = recipe ? [recipe.image] : [];
     if (images.length === 0) return;
 
     state.lightbox.images = images;
@@ -300,7 +299,7 @@ export async function generateRecipePng(elementId, recipeName) {
 }
 
 export async function generateRecipeCardPng(recipeId, generatedRecipeData = null) {
-    const originalRecipe = recipesData.find(r => r.id === recipeId);
+    const originalRecipe = state.allRecipes.find(r => r.id === recipeId);
     if (!originalRecipe && !generatedRecipeData) return;
 
     const recipeToRender = generatedRecipeData || originalRecipe;
@@ -392,7 +391,7 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
 }
 
 export async function shareRecipe(recipeId) {
-    const recipe = recipesData.find(r => r.id === recipeId);
+    const recipe = state.allRecipes.find(r => r.id === recipeId);
     if (!recipe) return;
 
     const shareData = {

@@ -20,6 +20,7 @@
     "vite-bundle-analyzer": "^1.2.3"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.81.1",
     "d3-axis": "^3.0.0",
     "d3-force": "^3.0.0",
     "d3-scale": "^4.0.2",

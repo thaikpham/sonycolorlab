@@ -1,11 +1,10 @@
 import { state } from '../../services/state.js';
 import { applyTranslations, t } from '../../services/language.js';
 import { fetchTrendingRecipeIds } from '../../services/api.js';
-import recipesData from '../../services/recipes.js';
-import recipeImages from '../../services/recipe-images.js';
 import { createSaveGuideHTML, formatRecipeName } from '../../services/ui.js';
 import { isAIEnabled } from '../../services/state.js';
 import { parameterExplanations } from '../../services/parameterExplanations.js';
+import * as RecipeService from '../../services/recipe-service.js';
 
 
 function createFilterHTML() {
@@ -43,7 +42,7 @@ export async function renderLibraryList() {
         filterContainer = document.createElement('div');
         filterContainer.id = 'recipeListFilter';
         const searchInput = document.getElementById('searchInput');
-        if(searchInput) {
+        if (searchInput) {
             searchInput.parentElement.insertAdjacentElement('afterend', filterContainer);
         }
     }
@@ -52,33 +51,31 @@ export async function renderLibraryList() {
 
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
     
-    let recipesToRender = recipesData;
-
-    // Apply filter
-    const { filter } = state.ui;
-    if (filter === 'trending') {
-        const trendingIds = await fetchTrendingRecipeIds();
-        recipesToRender = recipesData.filter(r => trendingIds.includes(r.id));
-    } else if (filter === 'favorites') {
-        const favoriteIds = state.auth.favorites || [];
-        recipesToRender = recipesData.filter(r => favoriteIds.includes(r.id));
-    }
-
-    // Apply search
+    // Prioritize search results if a search term exists
     if (searchTerm) {
-        recipesToRender = recipesToRender.filter(r =>
-            r.name[state.language].toLowerCase().includes(searchTerm) ||
-            r.description[state.language].toLowerCase().includes(searchTerm) ||
-            r.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-        );
+        await RecipeService.searchRecipes(searchTerm);
+    } else {
+        // Otherwise, apply the active filter
+        const { filter } = state.ui;
+        if (filter === 'trending') {
+            const trendingIds = await fetchTrendingRecipeIds();
+            state.recipes = state.allRecipes.filter(r => trendingIds.includes(r.id));
+        } else if (filter === 'favorites') {
+            const favoriteIds = state.auth.favorites || [];
+            state.recipes = state.allRecipes.filter(r => favoriteIds.includes(r.id));
+        } else {
+            // Default to all recipes if no specific filter is active
+            RecipeService.getInitialRecipes();
+        }
     }
     
+    const recipesToRender = state.recipes;
     const trendingIds = await fetchTrendingRecipeIds();
 
     container.innerHTML = recipesToRender.map((recipe, index) => {
         const isSelected = recipe.id === state.ui.selectedRecipeId;
         const isTrending = trendingIds.includes(recipe.id);
-        const hasImages = recipeImages[recipe.id] && recipeImages[recipe.id].length > 0 && recipeImages[recipe.id].some(url => !url.includes('placehold.co'));
+        const hasImages = recipe.image && !recipe.image.includes('placehold.co');
         const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
         const animationStyle = `animation-delay: ${index * 30}ms;`;
 
@@ -139,7 +136,7 @@ function createCommentsSectionHTML(recipeId) {
 }
 
 function createRecipeDetailHTML(recipe) {
-    const demoImages = recipeImages[recipe.id] || [];
+    const demoImages = recipe.image ? [recipe.image] : [];
     
     const createCollageHTML = (images) => {
         if (!images || images.length === 0) return '';
@@ -218,7 +215,7 @@ function createRecipeDetailHTML(recipe) {
     `;
 }
 
-export function renderLibraryDetails() {
+export async function renderLibraryDetails() {
     const isMobile = window.innerWidth < 768;
     const recipeListPanel = document.getElementById('recipeListPanel');
     const recipeMainPanel = document.getElementById('recipeMainPanel');
@@ -243,7 +240,13 @@ export function renderLibraryDetails() {
         recipeDetailPanelMobile?.classList.remove('visible');
     }
 
-    const recipe = recipesData.find(r => r.id === state.ui.selectedRecipeId);
+    const recipeId = state.ui.selectedRecipeId;
+    let recipe = state.allRecipes.find(r => r.id === recipeId);
+
+    if (recipeId && !recipe) {
+        recipe = await RecipeService.getRecipeById(recipeId);
+    }
+
     let recipeContentContainer = isMobile && state.ui.isMobileDetailActive
         ? document.getElementById('recipeContentMobile')
         : document.getElementById('recipeContent');
