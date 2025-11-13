@@ -1,5 +1,6 @@
 // File Path: src/app.js
 import './styles/style.css';
+import './styles/fonts.css';
 // --- Local Module Imports ---
 import { initLanguage, updateLangSlider } from './services/language.js';
 import { initializeFirebase } from './services/api.js';

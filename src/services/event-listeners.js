@@ -2,7 +2,6 @@
 import { select } from 'd3-selection';
 import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
-import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { setLanguage, updateLangSlider, applyTranslations, t } from './language.js';
 import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
@@ -11,6 +10,7 @@ import { parameterExplanations } from './parameterExplanations.js';
 import recipesData from './recipes.js';
 import { signInWithGoogle, handleSignOut } from './auth.js';
 import { addComment, toggleFavorite, getFavoriteRecipes, saveOrUpdateGeneratedRecipe, updateUserProfile, submitDemoPhoto } from './firestore.js';
+import { debounce } from './utils.js';
 
 // Helper function to read recipe data from an editable form
 function getRecipeDataFromForm(formId) {
@@ -159,6 +159,7 @@ export function initEventListeners() {
             updateLangSlider();
             applyTranslations();
             if (state.ui.currentView === 'recipeFormulas') {
+                const { renderLibraryList, renderLibraryDetails } = await import('../components/recipe-list/recipe-list-ui.js');
                 renderLibraryList();
                 renderLibraryDetails();
                 renderColorMapChart('#colorMapContainer', recipesData);
@@ -196,6 +197,7 @@ export function initEventListeners() {
             const recipeId = target.closest('#favoriteBtn').dataset.recipeId;
             await toggleFavorite(state.auth.user.uid, recipeId);
             state.auth.favorites = await getFavoriteRecipes(state.auth.user.uid);
+            const { renderLibraryList, renderLibraryDetails } = await import('../components/recipe-list/recipe-list-ui.js');
             renderLibraryDetails();
             renderLibraryList();
             return;
@@ -204,6 +206,7 @@ export function initEventListeners() {
         if(target.closest('.filter-btn')) {
             const filter = target.closest('.filter-btn').dataset.filter;
             state.ui.filter = filter;
+            const { renderLibraryList } = await import('../components/recipe-list/recipe-list-ui.js');
             renderLibraryList();
             return;
         }
@@ -392,7 +395,14 @@ export function initEventListeners() {
         }
     });
 
+    const debouncedRenderLibraryList = debounce(async () => {
+        const { renderLibraryList } = await import('../components/recipe-list/recipe-list-ui.js');
+        renderLibraryList();
+    }, 300);
+
     document.addEventListener('input', e => {
-        if(e.target.id === 'searchInput') renderLibraryList();
+        if (e.target.id === 'searchInput') {
+            debouncedRenderLibraryList();
+        }
     });
 }

@@ -3,7 +3,6 @@ import { state } from './state.js';
 import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
 import { applyTranslations, updateLangSlider } from './language.js';
 import { renderColorMapChart } from './features.js';
-import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import recipesData from './recipes.js';
 
 const mainContentEl = document.getElementById('mainContent');
@@ -78,6 +77,7 @@ export async function attachViewEventListeners(viewName) {
         }
     }
     if (viewName === 'recipeFormulas') {
+        const { renderLibraryList, renderLibraryDetails } = await import('../components/recipe-list/recipe-list-ui.js');
         renderLibraryList();
         renderLibraryDetails();
 

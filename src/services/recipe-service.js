@@ -1,14 +1,13 @@
 // File Path: src/services/recipe-service.js
 import { state } from './state.js';
 import { updateListSelectionAndScroll, renderComments } from './ui.js';
-import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { updateChartSelection } from './features.js';
 import recipesData from './recipes.js';
 import { onCommentsSnapshot } from './firestore.js';
 
 let unsubscribeComments = null;
 
-export function handleRecipeSelection(id) {
+export async function handleRecipeSelection(id) {
     // Unsubscribe from previous listener if it exists
     if (unsubscribeComments) {
         unsubscribeComments();
@@ -19,6 +18,7 @@ export function handleRecipeSelection(id) {
     state.ui.isMobileDetailActive = !!state.ui.selectedRecipeId;
 
     updateListSelectionAndScroll(state.ui.selectedRecipeId);
+    const { renderLibraryDetails } = await import('../components/recipe-list/recipe-list-ui.js');
     renderLibraryDetails(); // This now includes the comment section structure
     updateChartSelection();
 
@@ -44,7 +44,7 @@ export function handleRecipeSelection(id) {
     }
 }
 
-export function resetToChartView() {
+export async function resetToChartView() {
     // Unsubscribe from comment listener when leaving detail view
     if (unsubscribeComments) {
         unsubscribeComments();
@@ -54,6 +54,7 @@ export function resetToChartView() {
     state.ui.selectedRecipeId = null;
     state.ui.isMobileDetailActive = false;
     updateListSelectionAndScroll(null);
+    const { renderLibraryDetails } = await import('../components/recipe-list/recipe-list-ui.js');
     renderLibraryDetails();
     updateChartSelection();
 }
