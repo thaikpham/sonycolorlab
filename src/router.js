@@ -6,7 +6,7 @@ import { renderView } from './services/view-manager.js';
 
 export async function handleRouting() {
     const path = window.location.pathname;
-    const slug = path.substring(1);
+    const slug = decodeURIComponent(path.substring(1));
 
     if (slug) {
         await fetchRecipeBySlug(slug);
@@ -17,10 +17,13 @@ export async function handleRouting() {
 }
 
 async function fetchRecipeBySlug(slug) {
+    // Clean the slug to remove any potential versioning like ":1"
+    const cleanedSlug = slug.replace(/:\d+$/, '');
+
     const { data, error } = await supabase
         .from('recipes')
         .select('*')
-        .eq('formattedName', slug)
+        .eq('formattedName', cleanedSlug)
         .single();
 
     if (error) {
@@ -30,10 +33,19 @@ async function fetchRecipeBySlug(slug) {
     }
 
     if (data) {
-        state.ui.selectedRecipeId = data.id;
+        // Ensure description is parsed correctly, same as in recipe-service
+        let parsedDescription;
+        if (typeof data.description === 'string' && data.description.startsWith('{') && data.description.endsWith('}')) {
+            parsedDescription = JSON.parse(data.description);
+        } else {
+            parsedDescription = { en: data.description, vi: '' };
+        }
+        const processedData = { ...data, description: parsedDescription };
+
+        state.ui.selectedRecipeId = processedData.id;
         // If recipes haven't been loaded yet, add this one to the list
-        if (!state.recipes.find(r => r.id === data.id)) {
-            state.recipes.push(data);
+        if (!state.recipes.find(r => r.id === processedData.id)) {
+            state.recipes.push(processedData);
         }
         renderLibraryDetails();
     }

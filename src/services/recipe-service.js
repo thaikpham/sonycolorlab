@@ -20,16 +20,16 @@ export async function fetchRecipes() {
             return;
         }
         state.recipes = data.map(recipe => {
-            try {
-                return {
-                    ...recipe,
-                    name: typeof recipe.name === 'string' ? JSON.parse(recipe.name) : recipe.name,
-                    description: typeof recipe.description === 'string' ? JSON.parse(recipe.description) : recipe.description,
-                };
-            } catch (e) {
-                console.error('Failed to parse recipe data:', recipe);
-                return recipe;
+            let parsedDescription;
+            if (typeof recipe.description === 'string' && recipe.description.startsWith('{') && recipe.description.endsWith('}')) {
+                parsedDescription = JSON.parse(recipe.description);
+            } else {
+                parsedDescription = { en: recipe.description, vi: '' };
             }
+            return {
+                ...recipe,
+                description: parsedDescription,
+            };
         });
     } catch (error) {
         console.error('Error fetching recipes:', error);

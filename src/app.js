@@ -18,14 +18,14 @@ async function init() {
   await fetchRecipes();
   // The initConfig() call has been removed as configuration is handled by Vite environment variables.
   
-  const app = initializeFirebase();
-  if (app) {
-    initAuth(app);
-    initFirestore(app);
-    state.firebase.app = app;
-  } else {
-    console.error("Firebase App failed to initialize. Authentication and Firestore functionalities will be unavailable.");
-  }
+  // const app = initializeFirebase();
+  // if (app) {
+  //   initAuth(app);
+  //   initFirestore(app);
+  //   state.firebase.app = app;
+  // } else {
+  //   console.error("Firebase App failed to initialize. Authentication and Firestore functionalities will be unavailable.");
+  // }
 
   renderHeader();
   initEventListeners();

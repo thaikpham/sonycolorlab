@@ -4,16 +4,15 @@ import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
 import { applyTranslations, updateLangSlider } from './language.js';
 import { renderColorMapChart } from './features.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import recipesData from './recipes.js';
 
 const mainContentEl = document.getElementById('mainContent');
 
 const viewTemplates = {
-    home: () => `
+  home: () => `
         <div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 p-6 md:p-8">
             <div class="max-w-3xl">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;" data-translate-key="landingTitle"></h1>
-                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
+                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto my-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
             </div>
 
             <!-- Color Map for Desktop -->
@@ -29,7 +28,7 @@ const viewTemplates = {
                  </button>
             </div>
         </div>`,
-    recipeFormulas: () => `
+  recipeFormulas: () => `
         <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
             <aside id="recipeListPanel" class="h-full w-full md:w-auto md:flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
                 <div class="relative mb-4 flex-shrink-0">
@@ -57,111 +56,111 @@ const viewTemplates = {
                 </div>
             </div>
         </div>`,
-    userProfile: () => `
+  userProfile: () => `
         <div id="userProfileViewContainer" class="w-full h-full max-w-7xl mx-auto view-transition">
             <!-- Profile content will be rendered by profile-ui.js -->
         </div>`
 };
 
 export async function attachViewEventListeners(viewName) {
-    if (viewName === 'home') {
-        initializeBackgroundBlobs();
-        const homeChartContainer = document.getElementById('homeColorMapContainer');
-        if (homeChartContainer && window.innerWidth >= 768) { // Only observe if on desktop
-            const resizeObserver = new ResizeObserver(entries => {
-                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#homeColorMapContainer', recipesData);
-                     resizeObserver.unobserve(homeChartContainer);
-                }
-            });
-            resizeObserver.observe(homeChartContainer);
+  if (viewName === 'home') {
+    initializeBackgroundBlobs();
+    const homeChartContainer = document.getElementById('homeColorMapContainer');
+    if (homeChartContainer && window.innerWidth >= 768) { // Only observe if on desktop
+      const resizeObserver = new ResizeObserver(entries => {
+        if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
+          renderColorMapChart('#homeColorMapContainer', state.recipes);
+          resizeObserver.unobserve(homeChartContainer);
         }
+      });
+      resizeObserver.observe(homeChartContainer);
     }
-    if (viewName === 'recipeFormulas') {
-        renderLibraryList();
-        renderLibraryDetails();
+  }
+  if (viewName === 'recipeFormulas') {
+    renderLibraryList();
+    renderLibraryDetails();
 
-        const view = document.getElementById('recipeFormulasView');
-        const listPanel = document.getElementById('recipeListPanel');
-        const mainPanel = document.getElementById('recipeMainPanel');
+    const view = document.getElementById('recipeFormulasView');
+    const listPanel = document.getElementById('recipeListPanel');
+    const mainPanel = document.getElementById('recipeMainPanel');
 
-        if (view && listPanel && mainPanel && window.innerWidth >= 1024) {
-            const setStageActive = () => view.classList.remove('stage-inactive');
-            const setStageInactive = () => view.classList.add('stage-inactive');
+    if (view && listPanel && mainPanel && window.innerWidth >= 1024) {
+      const setStageActive = () => view.classList.remove('stage-inactive');
+      const setStageInactive = () => view.classList.add('stage-inactive');
 
-            setTimeout(setStageInactive, 500);
+      setTimeout(setStageInactive, 500);
 
-            listPanel.addEventListener('mouseenter', setStageActive);
-            mainPanel.addEventListener('mouseenter', setStageInactive);
-        }
-
-        const chartContainer = document.getElementById('colorMapContainer');
-        if (chartContainer) {
-            const resizeObserver = new ResizeObserver(entries => {
-                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#colorMapContainer', recipesData);
-                     resizeObserver.unobserve(chartContainer);
-                }
-            });
-            resizeObserver.observe(chartContainer);
-        }
-        updateLangSlider();
+      listPanel.addEventListener('mouseenter', setStageActive);
+      mainPanel.addEventListener('mouseenter', setStageInactive);
     }
-    if (viewName === 'userProfile') {
-        const { renderUserProfilePage } = await import('../components/profile-ui.js');
-        if (state.auth.user) {
-            renderUserProfilePage(state.auth.user.uid);
-        } else {
-            const container = document.getElementById('userProfileViewContainer');
-            if (container) {
-                 container.innerHTML = `<div class="text-center mt-20"><p class="text-xl">Please log in to view your profile.</p></div>`;
-            }
+
+    const chartContainer = document.getElementById('colorMapContainer');
+    if (chartContainer) {
+      const resizeObserver = new ResizeObserver(entries => {
+        if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
+          renderColorMapChart('#colorMapContainer', state.recipes);
+          resizeObserver.unobserve(chartContainer);
         }
+      });
+      resizeObserver.observe(chartContainer);
     }
+    updateLangSlider();
+  }
+  if (viewName === 'userProfile') {
+    const { renderUserProfilePage } = await import('../components/profile-ui.js');
+    if (state.auth.user) {
+      renderUserProfilePage(state.auth.user.uid);
+    } else {
+      const container = document.getElementById('userProfileViewContainer');
+      if (container) {
+        container.innerHTML = `<div class="text-center mt-20"><p class="text-xl">Please log in to view your profile.</p></div>`;
+      }
+    }
+  }
 }
 
 export function renderView(viewName, selectedId = null) {
-    state.ui.currentView = viewName;
-    if (selectedId) { state.ui.selectedRecipeId = selectedId; }
+  state.ui.currentView = viewName;
+  if (selectedId) { state.ui.selectedRecipeId = selectedId; }
 
-    const blobContainer = document.getElementById('blobContainer');
-    const ultimateButtonContainer = document.getElementById('ultimateButtonContainer');
+  const blobContainer = document.getElementById('blobContainer');
+  const ultimateButtonContainer = document.getElementById('ultimateButtonContainer');
 
-    if (viewName !== 'home') {
-        document.body.style.overflowY = 'auto';
-        if (state.animation.blobAnimationFrameId) {
-            cancelAnimationFrame(state.animation.blobAnimationFrameId);
-            state.animation.blobAnimationFrameId = null;
-        }
-        if(blobContainer) {
-            blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
-        }
-    } else {
-        document.body.style.overflowY = 'hidden';
-        if (!state.animation.blobAnimationFrameId) {
-            initializeBackgroundBlobs();
-        }
+  if (viewName !== 'home') {
+    document.body.style.overflowY = 'auto';
+    if (state.animation.blobAnimationFrameId) {
+      cancelAnimationFrame(state.animation.blobAnimationFrameId);
+      state.animation.blobAnimationFrameId = null;
     }
+    if (blobContainer) {
+      blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
+    }
+  } else {
+    document.body.style.overflowY = 'hidden';
+    if (!state.animation.blobAnimationFrameId) {
+      initializeBackgroundBlobs();
+    }
+  }
 
-    ultimateButtonContainer.classList.toggle('hidden', viewName !== 'home' && viewName !== 'recipeFormulas');
+  ultimateButtonContainer.classList.toggle('hidden', viewName !== 'home' && viewName !== 'recipeFormulas');
 
-    return new Promise(resolve => {
-        const currentContent = mainContentEl.children[0];
-        if (currentContent) {
-            currentContent.classList.add('view-transition-out');
-            currentContent.addEventListener('animationend', async () => {
-                mainContentEl.innerHTML = viewTemplates[viewName]();
-                await attachViewEventListeners(viewName);
-                renderUltimateButton();
-                applyTranslations();
-                resolve();
-            }, { once: true });
-        } else {
-            mainContentEl.innerHTML = viewTemplates[viewName]();
-            attachViewEventListeners(viewName);
-            renderUltimateButton();
-            applyTranslations();
-            resolve();
-        }
-    });
+  return new Promise(resolve => {
+    const currentContent = mainContentEl.children[0];
+    if (currentContent) {
+      currentContent.classList.add('view-transition-out');
+      currentContent.addEventListener('animationend', async () => {
+        mainContentEl.innerHTML = viewTemplates[viewName]();
+        await attachViewEventListeners(viewName);
+        renderUltimateButton();
+        applyTranslations();
+        resolve();
+      }, { once: true });
+    } else {
+      mainContentEl.innerHTML = viewTemplates[viewName]();
+      attachViewEventListeners(viewName);
+      renderUltimateButton();
+      applyTranslations();
+      resolve();
+    }
+  });
 }
