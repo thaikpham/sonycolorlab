@@ -2,7 +2,7 @@ import { state } from '../../services/state.js';
 import { applyTranslations, t } from '../../services/language.js';
 import { fetchTrendingRecipeIds } from '../../services/api.js';
 import recipeImages from '../../services/recipe-images.js';
-import { createSaveGuideHTML, formatRecipeName } from '../../services/ui.js';
+import { createSaveGuideHTML } from '../../services/ui.js';
 import { isAIEnabled } from '../../services/state.js';
 import { parameterExplanations } from '../../services/parameterExplanations.js';
 
@@ -86,6 +86,7 @@ export async function renderLibraryList() {
     const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
     const animationStyle = `animation-delay: ${index * 30}ms;`;
 
+
     const imageIconHTML = hasImages
       ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image text-teal-500 flex-shrink-0"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`
       : '';
@@ -104,7 +105,7 @@ export async function renderLibraryList() {
                     ${trendingIconHTML}
                 </div>
             </div>
-            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.language]}</p>
+            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe['description.en']}</p>
         </div>`;
   }).join('');
 }
@@ -142,10 +143,36 @@ function createCommentsSectionHTML(recipeId) {
     `;
 }
 
-function createRecipeDetailHTML(recipe) {
-  const demoImages = recipeImages[recipe.id] || [];
+function createRecipeDetailHTML(originalRecipe) {
+  const recipe = { ...originalRecipe };
 
-  const createCollageHTML = (images, recipe) => {
+  // Data transformation for new structure
+  const isNewStructure = Object.keys(recipe).some(k => k.startsWith('settings.'));
+  if (isNewStructure) {
+    recipe.settings = {};
+    recipe.colorDepth = {};
+    recipe.detailSettings = {};
+
+    for (const key in recipe) {
+      if (key.startsWith('settings.')) {
+        recipe.settings[key.substring('settings.'.length)] = recipe[key];
+      } else if (key.startsWith('colorDepth.')) {
+        recipe.colorDepth[key.substring('colorDepth.'.length)] = recipe[key];
+      } else if (key.startsWith('detailSettings.')) {
+        recipe.detailSettings[key.substring('detailSettings.'.length)] = recipe[key];
+      }
+    }
+
+    recipe.description = {
+      [state.language]: recipe[`description.${state.language}`] || recipe['description.en'] || ''
+    };
+
+    // formattedName is already at the top level
+  }
+
+
+  const createCollageHTML = (recipe) => {
+    const images = recipe?.images?.urls || [];
     if (!images || images.length === 0) return '';
 
     const imageElements = images.map((imgUrl, index) => {
@@ -175,8 +202,8 @@ function createRecipeDetailHTML(recipe) {
   const sections = [
     { titleKey: 'whiteBalanceTitle', content: `<div class="p-4 bg-white/50 rounded-xl"><p class="font-semibold text-xl text-gray-800">${recipe.whiteBalance || ''}</p></div>` },
     { titleKey: 'recipeSettingsTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.settings)}</div>` },
-    recipe.colorDepth ? { titleKey: 'colorDepthTitle', content: `<div class="grid grid-cols-3 md:grid-cols-6 gap-3">${createSettingsGrid(recipe.colorDepth)}</div>` } : null,
-    recipe.detailSettings ? { titleKey: 'detailTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.detailSettings)}</div>` } : null
+    recipe.colorDepth && Object.keys(recipe.colorDepth).length > 0 ? { titleKey: 'colorDepthTitle', content: `<div class="grid grid-cols-3 md:grid-cols-6 gap-3">${createSettingsGrid(recipe.colorDepth)}</div>` } : null,
+    recipe.detailSettings && Object.keys(recipe.detailSettings).length > 0 ? { titleKey: 'detailTitle', content: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${createSettingsGrid(recipe.detailSettings)}</div>` } : null
   ].filter(Boolean);
 
   const aiDisabledAttr = !isAIEnabled ? `disabled title="${t('aiKeyNotConfigured')}"` : '';
@@ -190,7 +217,7 @@ function createRecipeDetailHTML(recipe) {
 
 
   return `
-        ${createCollageHTML(demoImages, recipe)}
+        ${createCollageHTML(recipe)}
 
         <div class="mt-6 flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>

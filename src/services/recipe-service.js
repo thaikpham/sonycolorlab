@@ -19,18 +19,7 @@ export async function fetchRecipes() {
             state.recipes = [];
             return;
         }
-        state.recipes = data.map(recipe => {
-            let parsedDescription;
-            if (typeof recipe.description === 'string' && recipe.description.startsWith('{') && recipe.description.endsWith('}')) {
-                parsedDescription = JSON.parse(recipe.description);
-            } else {
-                parsedDescription = { en: recipe.description, vi: '' };
-            }
-            return {
-                ...recipe,
-                description: parsedDescription,
-            };
-        });
+        state.recipes = data;
     } catch (error) {
         console.error('Error fetching recipes:', error);
         state.recipes = [];
