@@ -3,7 +3,6 @@ import { state } from '../services/state.js';
 import { getUserProfile, getGeneratedRecipes, getFavoriteRecipes } from '../services/firestore.js';
 import { applyTranslations, t } from '../services/language.js';
 import { openModal, closeModal, formatRecipeName } from '../services/ui.js';
-import recipesData from '../services/recipes.js';
 
 function createSocialIcon(platform) {
     const icons = {
@@ -43,7 +42,7 @@ export async function renderUserProfilePage(userId) {
     
     // For demonstration, using favorites as a stand-in for "recently selected".
     // A proper implementation would track viewed recipes in localStorage or Firestore.
-    const recentlySelectedRecipes = recipesData.filter(r => favoriteRecipeIds.slice(0, 4).includes(r.id));
+    const recentlySelectedRecipes = state.recipes.filter(r => favoriteRecipeIds.slice(0, 4).includes(r.id));
 
     if (!profileData) {
         container.innerHTML = `<p class="text-center mt-20">Could not load user profile.</p>`;
@@ -210,7 +209,7 @@ export function closeEditProfileModal() {
 
 
 function createDemoPhotoSubmitModal() {
-    const recipeOptions = recipesData.map(r => `<option value="${r.id}">${formatRecipeName(r.name[state.language])}</option>`).join('');
+    const recipeOptions = state.recipes.map(r => `<option value="${r.id}">${formatRecipeName(r.name[state.language])}</option>`).join('');
 
     return `
     <div id="demoPhotoSubmitModal" class="modal hidden fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4">

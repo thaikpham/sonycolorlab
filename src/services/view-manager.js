@@ -4,7 +4,7 @@ import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
 import { applyTranslations, updateLangSlider } from './language.js';
 import { renderColorMapChart } from './features.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import recipesData from './recipes.js';
+import { getAllRecipes } from './supabase-recipes-service.js';
 
 const mainContentEl = document.getElementById('mainContent');
 
@@ -68,16 +68,22 @@ export async function attachViewEventListeners(viewName) {
         initializeBackgroundBlobs();
         const homeChartContainer = document.getElementById('homeColorMapContainer');
         if (homeChartContainer && window.innerWidth >= 768) { // Only observe if on desktop
-            const resizeObserver = new ResizeObserver(entries => {
+            const resizeObserver = new ResizeObserver(async entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#homeColorMapContainer', recipesData);
-                     resizeObserver.unobserve(homeChartContainer);
+                    if (state.recipes.length === 0) {
+                        state.recipes = await getAllRecipes();
+                    }
+                    renderColorMapChart('#homeColorMapContainer', state.recipes);
+                    resizeObserver.unobserve(homeChartContainer);
                 }
             });
             resizeObserver.observe(homeChartContainer);
         }
     }
     if (viewName === 'recipeFormulas') {
+        if (state.recipes.length === 0) {
+            state.recipes = await getAllRecipes();
+        }
         renderLibraryList();
         renderLibraryDetails();
 
@@ -99,7 +105,7 @@ export async function attachViewEventListeners(viewName) {
         if (chartContainer) {
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#colorMapContainer', recipesData);
+                     renderColorMapChart('#colorMapContainer', state.recipes);
                      resizeObserver.unobserve(chartContainer);
                 }
             });

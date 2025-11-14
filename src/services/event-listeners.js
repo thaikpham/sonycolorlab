@@ -8,7 +8,6 @@ import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, 
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
 import { parameterExplanations } from './parameterExplanations.js';
-import recipesData from './recipes.js';
 import { signInWithGoogle, handleSignOut } from './auth.js';
 import { addComment, toggleFavorite, getFavoriteRecipes, saveOrUpdateGeneratedRecipe, updateUserProfile, submitDemoPhoto } from './firestore.js';
 
@@ -60,7 +59,7 @@ async function initializeAndStartQuiz() {
         const { Quiz } = await import('../components/quiz.js');
         state.quiz.instance = new Quiz({
             state,
-            recipesData,
+            recipes: state.recipes,
             applyTranslations,
         });
     }
@@ -161,9 +160,9 @@ export function initEventListeners() {
             if (state.ui.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 renderLibraryDetails();
-                renderColorMapChart('#colorMapContainer', recipesData);
+                renderColorMapChart('#colorMapContainer', state.recipes);
             } else if (state.ui.currentView === 'home') {
-                renderColorMapChart('#homeColorMapContainer', recipesData);
+                renderColorMapChart('#homeColorMapContainer', state.recipes);
             }
             return;
         }

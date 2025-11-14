@@ -12,7 +12,6 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { forceSimulation, forceCollide, forceX, forceY } from 'd3-force';
 import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, applyTranslations } from './language.js';
-import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
 import { showToast, openModal, closeModal } from './ui.js';
 
@@ -65,11 +64,23 @@ function loadScript(url, stateKey) {
  * @param {object[]} data - The array of recipe data.
  */
 export async function renderColorMapChart(containerSelector, data) {
+    if (!Array.isArray(data) || data.length === 0) {
+        console.warn("D3: recipes not ready yet.");
+        return;
+    }
+
+    const cleanedData = data.filter(d => d.coords && typeof d.coords.x === 'number' && typeof d.coords.y === 'number');
+
+    if (cleanedData.length === 0) {
+        console.error("D3: coords missing from all recipes.");
+        return;
+    }
+
     // Fetch trending recipe IDs
     const trendingIds = await fetchTrendingRecipeIds();
     const container = d3.select(containerSelector);
-    if (container.empty() || !data || data.length === 0) {
-        console.warn("Chart container not found or no data provided.");
+    if (container.empty()) {
+        console.warn("Chart container not found.");
         return;
     }
     container.html(''); // Clear previous chart
@@ -131,7 +142,7 @@ export async function renderColorMapChart(containerSelector, data) {
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(state.language === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
     svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(state.language === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
 
-    const nodesData = data.filter(d => d.coords).map(d => ({...d, isTrending: trendingIds.includes(d.id)}));
+    const nodesData = cleanedData.map(d => ({...d, isTrending: trendingIds.includes(d.id)}));
 
     state.chart.nodes = svg.selectAll(".color-map-node-group")
         .data(nodesData, d => d.id)
@@ -300,7 +311,7 @@ export async function generateRecipePng(elementId, recipeName) {
 }
 
 export async function generateRecipeCardPng(recipeId, generatedRecipeData = null) {
-    const originalRecipe = recipesData.find(r => r.id === recipeId);
+    const originalRecipe = state.recipes.find(r => r.id === recipeId);
     if (!originalRecipe && !generatedRecipeData) return;
 
     const recipeToRender = generatedRecipeData || originalRecipe;
@@ -392,7 +403,7 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
 }
 
 export async function shareRecipe(recipeId) {
-    const recipe = recipesData.find(r => r.id === recipeId);
+    const recipe = state.recipes.find(r => r.id === recipeId);
     if (!recipe) return;
 
     const shareData = {

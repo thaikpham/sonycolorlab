@@ -9,10 +9,13 @@ import { initEventListeners } from './services/event-listeners.js';
 import { renderView } from './services/view-manager.js';
 import { state } from './services/state.js';
 import { renderHeader } from './services/ui.js';
+import { fetchRecipes } from './services/recipe-service.js';
+import { handleRouting } from './router.js';
 
 
 async function init() {
   initLanguage();
+  await fetchRecipes();
   // The initConfig() call has been removed as configuration is handled by Vite environment variables.
   
   const app = initializeFirebase();
@@ -27,7 +30,10 @@ async function init() {
   renderHeader();
   initEventListeners();
 
-  await renderView('home');
+  await handleRouting(); // Handle initial routing
+
+  window.addEventListener('popstate', handleRouting); // Handle browser navigation
+
   updateLangSlider();
 }
 

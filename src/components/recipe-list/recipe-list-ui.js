@@ -1,7 +1,6 @@
 import { state } from '../../services/state.js';
 import { applyTranslations, t } from '../../services/language.js';
 import { fetchTrendingRecipeIds } from '../../services/api.js';
-import recipesData from '../../services/recipes.js';
 import recipeImages from '../../services/recipe-images.js';
 import { createSaveGuideHTML, formatRecipeName } from '../../services/ui.js';
 import { isAIEnabled } from '../../services/state.js';
@@ -38,6 +37,11 @@ export async function renderLibraryList() {
     const container = document.getElementById('recipeListContainer');
     if (!container) return;
 
+    if (state.ui.isLoading) {
+        container.innerHTML = `<div class="p-4 text-center text-gray-500">${t('loadingRecipes')}</div>`;
+        return;
+    }
+
     let filterContainer = document.getElementById('recipeListFilter');
     if (!filterContainer) {
         filterContainer = document.createElement('div');
@@ -52,16 +56,16 @@ export async function renderLibraryList() {
 
     const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
     
-    let recipesToRender = recipesData;
+    let recipesToRender = state.recipes;
 
     // Apply filter
     const { filter } = state.ui;
     if (filter === 'trending') {
         const trendingIds = await fetchTrendingRecipeIds();
-        recipesToRender = recipesData.filter(r => trendingIds.includes(r.id));
+        recipesToRender = state.recipes.filter(r => trendingIds.includes(r.id));
     } else if (filter === 'favorites') {
         const favoriteIds = state.auth.favorites || [];
-        recipesToRender = recipesData.filter(r => favoriteIds.includes(r.id));
+        recipesToRender = state.recipes.filter(r => favoriteIds.includes(r.id));
     }
 
     // Apply search
@@ -243,7 +247,7 @@ export function renderLibraryDetails() {
         recipeDetailPanelMobile?.classList.remove('visible');
     }
 
-    const recipe = recipesData.find(r => r.id === state.ui.selectedRecipeId);
+    const recipe = state.recipes.find(r => r.id === state.ui.selectedRecipeId);
     let recipeContentContainer = isMobile && state.ui.isMobileDetailActive
         ? document.getElementById('recipeContentMobile')
         : document.getElementById('recipeContent');
