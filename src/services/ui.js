@@ -8,11 +8,22 @@
 // --- Local Module Imports ---
 import { state } from './state.js';
 import { t, applyTranslations } from './language.js';
-import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
 
 
 // --- HELPER FUNCTIONS ---
+
+export function showLoadingIndicator() {
+    state.ui.isLoading = true;
+    const container = document.getElementById('recipeListContainer');
+    if (container) {
+        container.innerHTML = `<div class="p-4 text-center text-gray-500">${t('loadingRecipes')}</div>`;
+    }
+}
+
+export function hideLoadingIndicator() {
+    state.ui.isLoading = false;
+}
 
 export function showLoadingOverlay() {
   const overlay = document.getElementById('loading-overlay');
@@ -344,7 +355,7 @@ export function updateListSelectionAndScroll(id) {
         const newSelectedItem = listContainer.querySelector(`.recipe-item[data-recipe-id="${id}"]`);
         if (newSelectedItem) {
             newSelectedItem.classList.add('selected');
-            const recipe = recipesData.find(r => r.id === id);
+            const recipe = state.recipes.find(r => r.id === id);
             if (recipe) {
                 newSelectedItem.style.setProperty('--glow-color', recipe.personalityColor);
             }

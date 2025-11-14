@@ -23,7 +23,11 @@ export const state = {
     selectedRecipeId: null,
     isMobileDetailActive: false,
     filter: 'all', // 'all', 'trending', 'favorites'
+    isLoading: false,
   },
+
+  // All recipes
+  recipes: [],
 
   // Authentication state
   auth: {
