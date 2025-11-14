@@ -15,8 +15,6 @@ const viewTemplates = {
                 <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto my-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
             </div>
 
-            <!-- Color Map for Desktop -->
-            <div id="homeColorMapContainer" class="w-full max-w-4xl flex-grow my-8 cursor-pointer hidden md:block"></div>
 
             <!-- Action Buttons for Mobile -->
             <div class="md:hidden mt-12 w-full max-w-sm space-y-4">
@@ -65,16 +63,6 @@ const viewTemplates = {
 export async function attachViewEventListeners(viewName) {
   if (viewName === 'home') {
     initializeBackgroundBlobs();
-    const homeChartContainer = document.getElementById('homeColorMapContainer');
-    if (homeChartContainer && window.innerWidth >= 768) { // Only observe if on desktop
-      const resizeObserver = new ResizeObserver(entries => {
-        if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-          renderColorMapChart('#homeColorMapContainer', state.recipes);
-          resizeObserver.unobserve(homeChartContainer);
-        }
-      });
-      resizeObserver.observe(homeChartContainer);
-    }
   }
   if (viewName === 'recipeFormulas') {
     renderLibraryList();

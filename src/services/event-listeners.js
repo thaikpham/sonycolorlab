@@ -135,12 +135,7 @@ export function initEventListeners() {
         const d3Node = target.closest('.color-map-node-group');
 
         if (d3Node) {
-            if (state.ui.currentView === 'home') {
-                const recipeId = select(d3Node).datum().id;
-                await renderView('recipeFormulas', recipeId);
-            } else {
-                handleRecipeSelection(select(d3Node).datum().id);
-            }
+            handleRecipeSelection(select(d3Node).datum().id);
             return;
         }
         
@@ -162,8 +157,6 @@ export function initEventListeners() {
                 renderLibraryList();
                 renderLibraryDetails();
                 renderColorMapChart('#colorMapContainer', recipesData);
-            } else if (state.ui.currentView === 'home') {
-                renderColorMapChart('#homeColorMapContainer', recipesData);
             }
             return;
         }
