@@ -1,0 +1,251 @@
+/* --- General Styling & Variables --- */
+:root {
+    --primary-accent: #007AFF;
+    --background-light: #f5f5f7;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
+    --border-color: #d2d2d7;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Core Components --- */
+.section-card {
+    background-color: white;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+}
+
+@media (min-width: 768px) {
+    .section-card {
+        padding: 2.5rem;
+    }
+}
+
+.step-number {
+    background: linear-gradient(135deg, #0077ff, #0058d6);
+    color: white;
+    border-radius: 9999px;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 119, 255, 0.2);
+}
+
+.path-text {
+    color: var(--text-secondary);
+    background-color: #f0f0f5;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.8rem;
+    border: 1px solid #e5e5e5;
+}
+
+.recipe-card {
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+    cursor: pointer;
+}
+.recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.07);
+}
+.recipe-card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.recipe-card-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+/* --- REDESIGNED: Video Player Section --- */
+.video-container {
+    background-color: #f5f5f7;
+    border: 1px solid #e5e5e5;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-info {
+    flex-grow: 1;
+}
+
+.video-thumbnail {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    margin-top: 0.75rem;
+    /* Forcing 16:9 aspect ratio */
+    height: 0;
+    padding-bottom: 56.25%; /* 9 / 16 = 0.5625 */
+    background-color: #222; /* Placeholder color */
+}
+
+.video-thumbnail img {
+    /* Make image fill the 16:9 container */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This crops the image to fit, removing black bars */
+    display: block;
+    transition: transform 0.3s var(--ease-apple);
+}
+
+.video-thumbnail:hover img {
+    transform: scale(1.05);
+}
+
+.play-button-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s var(--ease-apple);
+}
+
+.video-thumbnail:hover .play-button-overlay {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.play-button-overlay svg {
+    width: 48px;
+    height: 48px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    transition: transform 0.3s var(--ease-apple);
+}
+
+.video-thumbnail:hover .play-button-overlay svg {
+    transform: scale(1.1);
+}
+
+/* --- Modal & Lightbox Styles --- */
+.param-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; }
+.param-item { background: #f5f5f7; padding: 0.75rem; border-radius: 0.75rem; }
+.param-key { font-size: 0.8rem; color: #8a8a8e; font-weight: 500; }
+.param-value { font-weight: 700; font-size: 1.125rem; color: var(--text-primary); margin-top: 0.125rem; }
+.recipe-section-title { font-size: 1.125rem; font-weight: 700; color: var(--text-primary); padding-bottom: 0.5rem; border-bottom: 2px solid #e5e5e5; margin-bottom: 1rem; }
+.recipe-modal { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9990; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s var(--ease-apple); padding: 1rem; }
+.recipe-modal.visible { display: flex; opacity: 1; }
+.recipe-modal-content { background-color: white; border-radius: 1.5rem; padding: 2.5rem; width: 100%; max-width: 48rem; max-height: 90vh; overflow-y: auto; position: relative; transform: scale(0.95); opacity: 0; transition: transform 0.3s var(--ease-apple), opacity 0.3s var(--ease-apple); }
+.recipe-modal.visible .recipe-modal-content { transform: scale(1); opacity: 1; }
+.close-modal-btn { position: absolute; top: 1rem; right: 1rem; background: #e5e5e5; color: #555; width: 2.5rem; height: 2.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; line-height: 1; cursor: pointer; border: none; transition: background-color 0.2s, color 0.2s; }
+.close-modal-btn:hover { background-color: #d4d4d4; color: black; }
+#lightbox { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s var(--ease-apple); }
+#lightbox.visible { display: flex; opacity: 1; }
+#lightbox-image { max-width: 90vw; max-height: 90vh; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); opacity: 0; transition: transform 0.3s var(--ease-apple), opacity 0.3s var(--ease-apple); }
+#lightbox.visible #lightbox-image { transform: scale(1); opacity: 1; }
+#lightbox-close { position: absolute; top: 1rem; right: 1rem; color: rgba(255,255,255,0.7); background-color: rgba(0,0,0,0.3); border-radius: 9999px; width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+#lightbox-close:hover { background-color: rgba(0,0,0,0.5); color: white; }
+.photo-collage { display: grid; gap: 0.5rem; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); aspect-ratio: 4 / 3; }
+.photo-collage img { width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem; cursor: pointer; transition: transform 0.3s var(--ease-apple); }
+.photo-collage img:hover { transform: scale(1.05); }
+.photo-collage .main-image { grid-column: 1 / 2; grid-row: 1 / 3; }
+
+
+/* --- Video Lightbox Styles --- */
+.video-lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-apple);
+    padding: 1rem;
+}
+
+.video-lightbox-overlay.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.video-lightbox-content {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.3s var(--ease-apple), opacity 0.3s var(--ease-apple);
+}
+
+.video-lightbox-overlay.visible .video-lightbox-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+#video-player-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    background-color: #000;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+#video-player-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+#video-lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: -5px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 2.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+    font-weight: 200;
+}
+
+#video-lightbox-close:hover {
+    color: white;
+}
