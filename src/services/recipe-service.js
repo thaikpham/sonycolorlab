@@ -2,7 +2,6 @@
 import { state } from './state.js';
 import { updateListSelectionAndScroll, renderComments, showLoadingIndicator, hideLoadingIndicator } from './ui.js';
 import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import { updateChartSelection } from './features.js';
 import { supabase } from '../../supabaseClient.js';
 import { onCommentsSnapshot } from './firestore.js';
 import { updateURLForRecipe } from '../router.js';
@@ -41,7 +40,6 @@ export function handleRecipeSelection(id) {
 
     updateListSelectionAndScroll(state.ui.selectedRecipeId);
     renderLibraryDetails(); // This now includes the comment section structure
-    updateChartSelection();
 
     updateURLForRecipe(state.ui.selectedRecipeId);
 
@@ -67,7 +65,7 @@ export function handleRecipeSelection(id) {
     }
 }
 
-export function resetToChartView() {
+export function resetToListView() {
     // Unsubscribe from comment listener when leaving detail view
     if (unsubscribeComments) {
         unsubscribeComments();
@@ -78,6 +76,5 @@ export function resetToChartView() {
     state.ui.isMobileDetailActive = false;
     updateListSelectionAndScroll(null);
     renderLibraryDetails();
-    updateChartSelection();
     updateURLForRecipe(null);
 }

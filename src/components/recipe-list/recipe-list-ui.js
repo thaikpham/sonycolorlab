@@ -77,6 +77,33 @@ export async function renderLibraryList() {
     );
   }
 
+  // Custom sorting logic
+  const getSortKeys = (name) => {
+    const match = name.match(/^(SCL|PROCOLOR)-?(\d+)/i);
+    if (match) {
+      const prefix = match[1].toUpperCase();
+      const number = parseInt(match[2], 10);
+      // Prioritize SCL over PROCOLOR, then sort by number
+      return [prefix === 'SCL' ? 0 : 1, number];
+    }
+    // Place items that don't match the pattern at the end
+    return [2, name];
+  };
+
+  recipesToRender.sort((a, b) => {
+    const [prefixA, numberA] = getSortKeys(a.formattedName);
+    const [prefixB, numberB] = getSortKeys(b.formattedName);
+
+    if (prefixA !== prefixB) {
+      return prefixA - prefixB;
+    }
+    if (numberA !== numberB) {
+      return numberA - numberB;
+    }
+    return a.formattedName.localeCompare(b.formattedName);
+  });
+
+
   const trendingIds = await fetchTrendingRecipeIds();
 
   container.innerHTML = recipesToRender.map((recipe, index) => {
@@ -297,7 +324,7 @@ export function renderLibraryDetails() {
 
   recipeContentContainer.innerHTML = `
         <div class="mb-4 hidden md:block">
-            <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
+            <button id="backToListBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToListBtn"></button>
         </div>
         ${createRecipeDetailHTML(recipe)}
     `;

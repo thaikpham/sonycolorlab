@@ -4,8 +4,8 @@ import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { setLanguage, updateLangSlider, applyTranslations, t } from './language.js';
-import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
-import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
+import { openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
+import { handleRecipeSelection, resetToListView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
 import { parameterExplanations } from './parameterExplanations.js';
 import recipesData from './recipes.js';
@@ -140,7 +140,7 @@ export function initEventListeners() {
         }
         
         if (target.closest('#homeBtn')) { await renderView('home'); return; }
-        if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
+        if (target.closest('#backToListBtn')) { resetToListView(); return; }
         
         if (target.closest('#quizShortcutBtn')) {
             openModal('quizModal');
@@ -156,7 +156,6 @@ export function initEventListeners() {
             if (state.ui.currentView === 'recipeFormulas') {
                 renderLibraryList();
                 renderLibraryDetails();
-                renderColorMapChart('#colorMapContainer', recipesData);
             }
             return;
         }

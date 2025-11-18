@@ -14,7 +14,7 @@ import { handleRouting } from './router.js';
 
 
 async function init() {
-  initLanguage();
+  // initLanguage();
   await fetchRecipes();
   // The initConfig() call has been removed as configuration is handled by Vite environment variables.
   

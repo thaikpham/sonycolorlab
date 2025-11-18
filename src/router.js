@@ -12,7 +12,7 @@ export async function handleRouting() {
     await fetchRecipeBySlug(slug);
     renderView('recipeFormulas'); // Make sure the recipe view is active
   } else {
-    renderView('home');
+    renderView('landing');
   }
 }
 
