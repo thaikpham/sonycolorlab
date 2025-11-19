@@ -340,9 +340,6 @@ export function renderHeader() {
         </button>
         <div class="flex items-center gap-2 md:gap-4">
             <div id="authContainer" class="flex items-center gap-4"></div>
-            <div class="p-1 bg-gray-200/70 rounded-full flex relative">
-                <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
-            </div>
         </div>
     `;
 }

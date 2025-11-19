@@ -24,19 +24,3 @@ export function applyTranslations() {
     }
   });
 }
-
-export function updateLangSlider() {
-    const glider = document.getElementById('lang-glider');
-    const langVI = document.getElementById('langVI');
-    const langEN = document.getElementById('langEN');
-    if (!glider || !langVI || !langEN) return;
-
-    const isEnglish = state.language === 'en';
-    
-    langVI.classList.toggle('text-blue-600', !isEnglish);
-    langVI.classList.toggle('text-gray-500', isEnglish);
-    langEN.classList.toggle('text-blue-600', isEnglish);
-    langEN.classList.toggle('text-gray-500', !isEnglish);
-    
-    glider.style.transform = isEnglish ? 'translateX(100%)' : 'translateX(0%)';
-}

@@ -1,7 +1,6 @@
 // File Path: src/services/view-manager.js
 import { state } from './state.js';
 import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
-import { applyTranslations, updateLangSlider } from './language.js';
 import { renderColorMapChart } from './features.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 
@@ -11,8 +10,8 @@ const viewTemplates = {
     home: () => `
         <div id="homeView" class="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0 p-6 md:p-8">
             <div class="max-w-3xl">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;" data-translate-key="landingTitle"></h1>
-                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;" data-translate-key="landingSubtitle"></p>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-800 mb-4" style="text-wrap: balance;">Create with Color</h1>
+                <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mt-4" style="text-wrap: balance;">A curated collection of in-camera color recipes for Sony Alpha cameras.</p>
             </div>
 
             <!-- Color Map for Desktop -->
@@ -21,10 +20,10 @@ const viewTemplates = {
             <!-- Action Buttons for Mobile -->
             <div class="md:hidden mt-12 w-full max-w-sm space-y-4">
                  <button id="enterLabBtn" class="btn btn-primary w-full py-4 text-lg">
-                    <span data-translate-key="enterLabBtn"></span>
+                    <span>Enter the Lab</span>
                  </button>
                  <button id="findMyColorBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 hover:bg-white/90 w-full py-4 text-lg">
-                    <span data-translate-key="findMyColorBtn"></span>
+                    <span>Find My Color</span>
                  </button>
             </div>
         </div>`,
@@ -32,7 +31,7 @@ const viewTemplates = {
         <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
             <aside id="recipeListPanel" class="h-full w-full md:w-auto md:flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
                 <div class="relative mb-4 flex-shrink-0">
-                    <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                    <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" placeholder="Search recipes...">
                 </div>
                 <div id="recipeListFilter"></div>
                 <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
@@ -41,8 +40,8 @@ const viewTemplates = {
                 <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
                         <div id="welcomeText" class="text-center">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
-                            <p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-700">Welcome to the Lab</h2>
+                            <p class="text-neutral-500 mt-2 max-w-xl mx-auto">Select a recipe from the list to view its details, or use the chart to explore.</p>
                         </div>
                         <div id="colorMapContainer" class="flex-grow w-full mt-8"></div>
                     </div>
@@ -51,7 +50,7 @@ const viewTemplates = {
             </main>
             <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] overflow-y-auto hidden sleek-scrollbar">
                 <div class="p-4">
-                    <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
+                    <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4">Back to List</button>
                     <div id="recipeContentMobile"></div>
                 </div>
             </div>
@@ -100,7 +99,6 @@ export async function attachViewEventListeners(viewName) {
             });
             resizeObserver.observe(chartContainer);
         }
-        updateLangSlider();
     }
 }
 
@@ -127,7 +125,9 @@ export function renderView(viewName, selectedId = null) {
         }
     }
 
-    ultimateButtonContainer.classList.toggle('hidden', viewName !== 'home' && viewName !== 'recipeFormulas');
+    if (ultimateButtonContainer) {
+        ultimateButtonContainer.classList.toggle('hidden', viewName !== 'home' && viewName !== 'recipeFormulas');
+    }
 
     return new Promise(resolve => {
         const currentContent = mainContentEl.children[0];
@@ -137,14 +137,12 @@ export function renderView(viewName, selectedId = null) {
                 mainContentEl.innerHTML = viewTemplates[viewName]();
                 await attachViewEventListeners(viewName);
                 renderUltimateButton();
-                applyTranslations();
                 resolve();
             }, { once: true });
         } else {
             mainContentEl.innerHTML = viewTemplates[viewName]();
             attachViewEventListeners(viewName);
             renderUltimateButton();
-            applyTranslations();
             resolve();
         }
     });
