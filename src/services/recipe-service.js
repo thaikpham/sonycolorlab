@@ -18,33 +18,6 @@ export async function fetchRecipes() {
             state.recipes = [];
             return;
         }
-
-        // Custom sorting logic
-        const getSortKeys = (name) => {
-            const match = name.match(/^(SCL|PROCOLOR)-?(\d+)/i);
-            if (match) {
-                const prefix = match[1].toUpperCase();
-                const number = parseInt(match[2], 10);
-                // Prioritize SCL over PROCOLOR, then sort by number
-                return [prefix === 'SCL' ? 0 : 1, number];
-            }
-            // Place items that don't match the pattern at the end
-            return [2, name];
-        };
-
-        data.sort((a, b) => {
-            const [prefixA, numberA] = getSortKeys(a.formattedName);
-            const [prefixB, numberB] = getSortKeys(b.formattedName);
-
-            if (prefixA !== prefixB) {
-                return prefixA - prefixB;
-            }
-            if (numberA !== numberB) {
-                return numberA - numberB;
-            }
-            return a.formattedName.localeCompare(b.formattedName);
-        });
-
         state.recipes = data;
     } catch (error) {
         console.error('Error fetching recipes:', error);

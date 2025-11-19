@@ -1,7 +1,7 @@
 // File Path: src/services/event-listeners.js
 import { select } from 'd3-selection';
 import { state } from './state.js';
-import { openModal, closeModal, showToast } from './ui.js';
+import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { setLanguage, updateLangSlider, applyTranslations, t } from './language.js';
 import { openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
@@ -103,6 +103,7 @@ export function initEventListeners() {
             return;
         }
         
+        // --- Ultimate Button Logic (removed) ---
         
         const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');

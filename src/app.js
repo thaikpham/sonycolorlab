@@ -8,7 +8,6 @@ import { initFirestore } from './services/firestore.js';
 import { initEventListeners } from './services/event-listeners.js';
 import { renderView } from './services/view-manager.js';
 import { state } from './services/state.js';
-import { renderHeader } from './services/ui.js';
 import { fetchRecipes } from './services/recipe-service.js';
 import { handleRouting } from './router.js';
 
@@ -27,7 +26,6 @@ async function init() {
   //   console.error("Firebase App failed to initialize. Authentication and Firestore functionalities will be unavailable.");
   // }
 
-  renderHeader();
   initEventListeners();
 
   await handleRouting(); // Handle initial routing

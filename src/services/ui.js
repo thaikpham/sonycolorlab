@@ -94,6 +94,8 @@ export function closeModal(modalId) {
   }, { once: true });
 }
 
+// This functionality has been removed to simplify the UI.
+export function toggleUltimateActionsMenu() {}
 
 
 // --- HTML TEMPLATE GENERATORS ---
@@ -144,6 +146,60 @@ export function createSaveGuideHTML() {
         `
   };
 
+  const relocatedContent = `
+    <div class="space-y-8">
+        <!-- STEP 3: SAVE THE RECIPES -->
+        <div class="section-card-condensed">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Save the Recipes</h2>
+            <p class="text-gray-600 mb-6">Watch the corresponding video tutorial for your camera model to save the settings.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- New Menu Video Player -->
+                <div class="video-container">
+                    <div class="video-info">
+                        <h4 class="font-semibold text-sm">NEW MENU</h4>
+                        <p class="text-xs text-gray-500">A7IV, A7SIII, FX3, A7CII...</p>
+                    </div>
+                    <div class="video-thumbnail" data-video-id="nAWs5Mus90s">
+                        <img src="https://img.youtube.com/vi/nAWs5Mus90s/hqdefault.jpg" alt="Video tutorial for new Sony menu cameras" loading="lazy">
+                        <div class="play-button-overlay">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 5.604v12.792a1.5 1.5 0 0 0 2.25 1.3l10.5-6.396a1.5 1.5 0 0 0 0-2.6L9.75 4.304a1.5 1.5 0 0 0-2.25 1.3z" /></svg>
+                        </div>
+                    </div>
+                </div>
+                <!-- Old Menu Video Player -->
+                <div class="video-container">
+                    <div class="video-info">
+                        <h4 class="font-semibold text-sm">OLD MENU</h4>
+                        <p class="text-xs text-gray-500">A7III, A6400, ZV-E10...</p>
+                    </div>
+                    <div class="video-thumbnail" data-video-id="SI0bdb_oP9A">
+                        <img src="https://img.youtube.com/vi/SI0bdb_oP9A/hqdefault.jpg" alt="Video tutorial for old Sony menu cameras" loading="lazy">
+                        <div class="play-button-overlay">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 5.604v12.792a1.5 1.5 0 0 0 2.25 1.3l10.5-6.396a1.5 1.5 0 0 0 0-2.6L9.75 4.304a1.5 1.5 0 0 0-2.25 1.3z" /></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: RECALL & USE -->
+        <div class="section-card-condensed">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recall & Use</h2>
+            <p class="text-gray-600 mb-6">Once saved, you can quickly access the recipes on the mode dial.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                    <h4 class="font-semibold text-sm">Save on Camera (1, 2, 3)</h4>
+                    <p class="text-xs text-gray-500 mt-1">Turn the mode dial directly to the corresponding number.</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                    <h4 class="font-semibold text-sm">Save on Card (M1-M4)</h4>
+                    <p class="text-xs text-gray-500 mt-1">Turn to <span class="font-bold text-gray-700">MR</span> and select the saved memory on the card.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  `;
+
   return `
         <div class="mt-8 p-5 md:p-6 bg-gray-50 border border-gray-200/80 rounded-2xl">
             <div class="flex justify-between items-center cursor-pointer" id="toggleSaveGuideBtn">
@@ -156,6 +212,8 @@ export function createSaveGuideHTML() {
                 </button>
             </div>
             <div id="saveGuideContent" class="mt-4 text-sm md:text-base overflow-hidden max-h-0 transition-all duration-700 ease-in-out">
+                ${relocatedContent}
+                <hr class="my-6 border-gray-300">
                 ${guideContent[state.language]}
             </div>
         </div>
@@ -258,6 +316,8 @@ export function initializeBackgroundBlobs() {
   animate();
 }
 
+// This functionality has been removed to simplify the UI.
+export function renderUltimateButton() {}
 
 export function updateListSelectionAndScroll(id) {
   const listContainer = document.getElementById('recipeListContainer');
@@ -285,11 +345,5 @@ export function updateListSelectionAndScroll(id) {
 }
 
 
-export function renderHeader() {
-  const header = document.getElementById('appHeader');
-  if (!header) return;
-
-  header.innerHTML = `
-        <img src="/assets/logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
-    `;
-}
+// This functionality has been removed to simplify the UI.
+export function renderHeader() {}
