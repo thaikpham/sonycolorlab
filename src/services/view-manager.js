@@ -4,7 +4,6 @@ import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
 import { applyTranslations, updateLangSlider } from './language.js';
 import { renderColorMapChart } from './features.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import recipesData from './recipes.js';
 
 const mainContentEl = document.getElementById('mainContent');
 
@@ -56,10 +55,6 @@ const viewTemplates = {
                     <div id="recipeContentMobile"></div>
                 </div>
             </div>
-        </div>`,
-    userProfile: () => `
-        <div id="userProfileViewContainer" class="w-full h-full max-w-7xl mx-auto view-transition">
-            <!-- Profile content will be rendered by profile-ui.js -->
         </div>`
 };
 
@@ -70,7 +65,7 @@ export async function attachViewEventListeners(viewName) {
         if (homeChartContainer && window.innerWidth >= 768) { // Only observe if on desktop
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#homeColorMapContainer', recipesData);
+                     renderColorMapChart('#homeColorMapContainer', state.recipes);
                      resizeObserver.unobserve(homeChartContainer);
                 }
             });
@@ -99,24 +94,13 @@ export async function attachViewEventListeners(viewName) {
         if (chartContainer) {
             const resizeObserver = new ResizeObserver(entries => {
                 if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#colorMapContainer', recipesData);
+                     renderColorMapChart('#colorMapContainer', state.recipes);
                      resizeObserver.unobserve(chartContainer);
                 }
             });
             resizeObserver.observe(chartContainer);
         }
         updateLangSlider();
-    }
-    if (viewName === 'userProfile') {
-        const { renderUserProfilePage } = await import('../components/profile-ui.js');
-        if (state.auth.user) {
-            renderUserProfilePage(state.auth.user.uid);
-        } else {
-            const container = document.getElementById('userProfileViewContainer');
-            if (container) {
-                 container.innerHTML = `<div class="text-center mt-20"><p class="text-xl">Please log in to view your profile.</p></div>`;
-            }
-        }
     }
 }
 

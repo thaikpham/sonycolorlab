@@ -3,21 +3,17 @@ import { select } from 'd3-selection';
 import { state } from './state.js';
 import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
-import { setLanguage, updateLangSlider, applyTranslations, t } from './language.js';
 import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
 import { parameterExplanations } from './parameterExplanations.js';
-import recipesData from './recipes.js';
-import { signInWithGoogle, handleSignOut } from './auth.js';
-import { addComment, toggleFavorite, getFavoriteRecipes, saveOrUpdateGeneratedRecipe, updateUserProfile, submitDemoPhoto } from './firestore.js';
 
 // Helper function to read recipe data from an editable form
 function getRecipeDataFromForm(formId) {
     const form = document.getElementById(formId);
     if (!form) return null;
 
-    const lang = state.language;
+    const lang = 'en';
     // Determine which editable recipe to use as the source
     const sourceRecipe = state.ai.editableRecipe || state.quiz.editableRecipe;
     if (!sourceRecipe) {
@@ -47,10 +43,6 @@ function getRecipeDataFromForm(formId) {
         recipe.detailSettings[input.dataset.key] = input.value;
     });
 
-    // Ensure the other language's fields are not lost
-    const otherLang = lang === 'en' ? 'vi' : 'en';
-    if (!recipe.name[otherLang]) recipe.name[otherLang] = sourceRecipe.name[otherLang];
-    if (!recipe.description[otherLang]) recipe.description[otherLang] = sourceRecipe.description[otherLang];
 
     return recipe;
 }
@@ -60,8 +52,7 @@ async function initializeAndStartQuiz() {
         const { Quiz } = await import('../components/quiz.js');
         state.quiz.instance = new Quiz({
             state,
-            recipesData,
-            applyTranslations,
+            recipesData: state.recipes,
         });
     }
     state.quiz.instance.start();
@@ -71,27 +62,6 @@ export function initEventListeners() {
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
         
-        // --- Authentication & User Dropdown ---
-        if (target.closest('#signInGoogleBtn')) { signInWithGoogle(); return; }
-        if (target.closest('#signOutBtn')) { handleSignOut(); return; }
-        if (target.closest('#myProfileBtn')) { await renderView('userProfile'); return; }
-
-        
-        // Toggle user dropdown
-        const avatarBtn = target.closest('#avatarBtn');
-        const userDropdown = document.getElementById('userDropdown');
-        if (avatarBtn) {
-            userDropdown?.classList.toggle('invisible');
-            userDropdown?.classList.toggle('opacity-0');
-            userDropdown?.classList.toggle('-translate-y-2');
-            userDropdown?.classList.toggle('pointer-events-none');
-            return;
-        }
-        // Close dropdown if clicking outside
-        if (userDropdown && !userDropdown.classList.contains('invisible') && !target.closest('#userDropdown')) {
-             userDropdown.classList.add('invisible', 'opacity-0', '-translate-y-2', 'pointer-events-none');
-        }
-
         // --- Landing Page Mobile Buttons ---
         if (target.closest('#enterLabBtn')) {
             await renderView('recipeFormulas');
@@ -129,7 +99,6 @@ export function initEventListeners() {
             toggleUltimateActionsMenu(true);
         }
         
-        const langBtn = target.closest('.lang-btn-slider');
         const recipeItem = target.closest('.recipe-item');
         const collageItem = target.closest('.collage-item');
         const d3Node = target.closest('.color-map-node-group');
@@ -153,20 +122,6 @@ export function initEventListeners() {
             return;
         }
 
-        if (langBtn) {
-            const newLang = langBtn.id === 'langEN' ? 'en' : 'vi';
-            setLanguage(newLang);
-            updateLangSlider();
-            applyTranslations();
-            if (state.ui.currentView === 'recipeFormulas') {
-                renderLibraryList();
-                renderLibraryDetails();
-                renderColorMapChart('#colorMapContainer', recipesData);
-            } else if (state.ui.currentView === 'home') {
-                renderColorMapChart('#homeColorMapContainer', recipesData);
-            }
-            return;
-        }
 
         if (recipeItem) { handleRecipeSelection(recipeItem.dataset.recipeId); return; }
         if (collageItem) { openLightbox(collageItem.dataset.recipeId, collageItem.dataset.index); return; }
@@ -188,52 +143,11 @@ export function initEventListeners() {
             return;
         }
         
-        if (target.closest('#favoriteBtn')) {
-            if (!state.auth.isLoggedIn) {
-                showToast("Please log in to save recipes.", true);
-                return;
-            }
-            const recipeId = target.closest('#favoriteBtn').dataset.recipeId;
-            await toggleFavorite(state.auth.user.uid, recipeId);
-            state.auth.favorites = await getFavoriteRecipes(state.auth.user.uid);
-            renderLibraryDetails();
-            renderLibraryList();
-            return;
-        }
         
         if(target.closest('.filter-btn')) {
             const filter = target.closest('.filter-btn').dataset.filter;
             state.ui.filter = filter;
             renderLibraryList();
-            return;
-        }
-
-        if (target.closest('#saveAIGeneratedRecipeBtn')) {
-            if (!state.auth.isLoggedIn) {
-                showToast(t('logInToSave'), true);
-                return;
-            }
-            const recipeData = getRecipeDataFromForm('aiRecipeForm');
-
-            if (recipeData) {
-                const btn = target.closest('#saveAIGeneratedRecipeBtn');
-                const originalBtnContent = btn.innerHTML;
-                btn.innerHTML = `<div class="loader"></div>`;
-                btn.disabled = true;
-    
-                const newDocId = await saveOrUpdateGeneratedRecipe(state.auth.user.uid, recipeData);
-    
-                if (newDocId) {
-                    if (!recipeData.id || recipeData.id.startsWith('SCL-AI-')) {
-                         if (state.ai.editableRecipe) state.ai.editableRecipe.id = newDocId;
-                         if (state.quiz.editableRecipe) state.quiz.editableRecipe.id = newDocId;
-                    }
-                    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-5 w-5"></svg><span>${t('favoritedBtn')}</span>`;
-                } else {
-                    btn.innerHTML = originalBtnContent;
-                    btn.disabled = false;
-                }
-            }
             return;
         }
 
@@ -245,13 +159,12 @@ export function initEventListeners() {
             if (isHidden) {
                 content.classList.remove('max-h-0');
                 content.classList.add('max-h-[1000px]');
-                btnSpan.dataset.translateKey = 'hideGuideBtn';
+                btnSpan.textContent = 'Hide Guide';
             } else {
                 content.classList.add('max-h-0');
                 content.classList.remove('max-h-[1000px]');
-                btnSpan.dataset.translateKey = 'showGuideBtn';
+                btnSpan.textContent = 'Show Guide';
             }
-            applyTranslations();
             return;
         }
 
@@ -293,77 +206,6 @@ export function initEventListeners() {
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
             if (target.closest('#downloadAIPngBtn')) { generateRecipeCardPng(target.closest('#downloadAIPngBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
         }
-
-        // Profile Page specific listeners
-        if (state.ui.currentView === 'userProfile') {
-            const { openEditProfileModal, openDemoPhotoSubmitModal } = await import('../components/profile-ui.js');
-            
-            if (target.closest('#editProfileBtn')) {
-                openEditProfileModal();
-                return;
-            }
-            if (target.closest('#openDemoPhotoModalBtn')) {
-                openDemoPhotoSubmitModal();
-                return;
-            }
-            const recipeCard = target.closest('.generated-recipe-card');
-            if (recipeCard) {
-                 if (recipeCard.dataset.recipe) {
-                    try {
-                        const recipeData = JSON.parse(recipeCard.dataset.recipe);
-                        const { openAILabWithExistingRecipe } = await import('../components/ai-lab/ai-lab.js');
-                        openAILabWithExistingRecipe(recipeData);
-                    } catch (error) {
-                        console.error("Failed to parse recipe data:", error, recipeCard.dataset.recipe);
-                        showToast(t('genericError'), true);
-                    }
-                }
-                return;
-            }
-        }
-    });
-    
-    document.body.addEventListener('submit', async (e) => {
-        if (e.target.id === 'commentForm') {
-            e.preventDefault();
-            const form = e.target;
-            const recipeId = form.dataset.recipeId;
-            const input = form.querySelector('#commentInput');
-            const text = input.value;
-            
-            if (text.trim() && state.auth.user) {
-                await addComment(recipeId, state.auth.user, text);
-                input.value = ''; // Clear input on success
-            }
-        }
-        if (e.target.id === 'editProfileForm') {
-            e.preventDefault();
-            const { closeEditProfileModal } = await import('../components/profile-ui.js');
-            const formData = new FormData(e.target);
-            const socialData = {
-                instagram: formData.get('instagram'),
-                threads: formData.get('threads'),
-                website: formData.get('website'),
-            };
-            await updateUserProfile(state.auth.user.uid, socialData);
-            closeEditProfileModal();
-            renderView('userProfile'); // Re-render to show changes
-        }
-        if (e.target.id === 'demoPhotoSubmitForm') {
-            e.preventDefault();
-            const { closeDemoPhotoSubmitModal } = await import('../components/profile-ui.js');
-            const formData = new FormData(e.target);
-            const photoData = {
-                photoURL: formData.get('photoURL'),
-                recipeId: formData.get('recipeId'),
-                caption: formData.get('caption'),
-                description: formData.get('description'),
-            };
-            await submitDemoPhoto(state.auth.user.uid, photoData);
-            closeDemoPhotoSubmitModal();
-            // Optionally, re-render the profile view to show the new submission
-            renderView('userProfile');
-        }
     });
 
     document.body.addEventListener('mouseover', (e) => {
@@ -371,7 +213,7 @@ export function initEventListeners() {
         const tooltipEl = document.getElementById('infoTooltip');
         if (title && tooltipEl) {
             const key = title.dataset.paramKey;
-            const explanation = parameterExplanations[key]?.[state.language];
+            const explanation = parameterExplanations[key]?.en;
             if (explanation) {
                 tooltipEl.innerHTML = explanation;
                 const titleRect = title.getBoundingClientRect();

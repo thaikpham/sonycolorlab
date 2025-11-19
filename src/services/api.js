@@ -6,7 +6,7 @@
 
 // --- Firebase SDK Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Local Module Imports ---
 import { state, __firebase_config, __app_id, isAIEnabled, API_KEY } from './state.js';

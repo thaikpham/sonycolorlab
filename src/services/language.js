@@ -1,5 +1,4 @@
 import { state } from './state.js';
-import { showLoadingOverlay, hideLoadingOverlay } from './ui.js';
 import { getDefaultTranslations } from './translations.js';
 
 if (!state.loadedTranslations) {
@@ -24,47 +23,6 @@ export function applyTranslations() {
       el.innerHTML = translation;
     }
   });
-}
-
-export async function setLanguage(lang) {
-  if (state.loadedTranslations[lang]) {
-    state.currentTranslations = state.loadedTranslations[lang];
-    state.language = lang;
-    applyTranslations();
-    updateLangSlider();
-    localStorage.setItem('userLanguage', lang);
-    return;
-  }
-
-  showLoadingOverlay();
-
-  try {
-    const response = await fetch(`/locales/${lang}.json`);
-    if (!response.ok) {
-      throw new Error(`Failed to load language file: ${lang}.json`);
-    }
-    const newTranslations = await response.json();
-
-    state.loadedTranslations[lang] = newTranslations;
-    state.currentTranslations = newTranslations;
-    state.language = lang;
-    applyTranslations();
-    updateLangSlider();
-    localStorage.setItem('userLanguage', lang);
-  } catch (error) {
-    console.error('Error loading language:', error);
-    state.currentTranslations = state.loadedTranslations['en'];
-    state.language = 'en';
-    applyTranslations();
-    updateLangSlider();
-  } finally {
-    hideLoadingOverlay();
-  }
-}
-
-export function initLanguage() {
-  const savedLang = localStorage.getItem('userLanguage') || 'en';
-  setLanguage(savedLang);
 }
 
 export function updateLangSlider() {

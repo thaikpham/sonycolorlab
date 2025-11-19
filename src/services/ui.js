@@ -7,8 +7,6 @@
 
 // --- Local Module Imports ---
 import { state } from './state.js';
-import { t, applyTranslations } from './language.js';
-import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
 
 
@@ -125,64 +123,40 @@ export function toggleUltimateActionsMenu(forceClose = false) {
 // --- HTML TEMPLATE GENERATORS ---
 
 export function createSaveGuideHTML() {
-    const guideContent = {
-        vi: `
-            <p class="mb-4">Trên các máy ảnh Sony Alpha thế hệ mới (như α7 IV, α7R V, α1, ZV-E1), bạn có thể lưu được <strong>3 preset trên thân máy</strong> (vị trí 1, 2, 3 trên vòng xoay) và <strong>4 preset trên thẻ nhớ</strong> (M1, M2, M3, M4).</p>
-            <ol class="space-y-4 list-decimal list-inside">
-                <li>
-                    <strong>Bước 1: Thiết lập máy ảnh theo công thức</strong>
-                    <p class="pl-6 text-gray-600">Trước tiên, hãy cài đặt tất cả các thông số của công thức này vào máy ảnh của bạn, bao gồm Cân bằng trắng (WB) và tất cả các mục trong Picture Profile.</p>
-                </li>
-                <li>
-                    <strong>Bước 2: Truy cập Menu để lưu cài đặt</strong>
-                    <p class="pl-6 text-gray-600">Nhấn nút <strong>MENU</strong>, di chuyển đến tab <strong>Shooting (màu hồng)</strong> &rarr; <strong>Shooting Mode</strong> &rarr; <strong>Camera Set. Memory</strong>.</p>
-                </li>
-                <li>
-                    <strong>Bước 3: Chọn vị trí lưu</strong>
-                    <p class="pl-6 text-gray-600">Chọn một trong các vị trí bạn muốn lưu (ví dụ: số <strong>1</strong> hoặc <strong>M1</strong>) và nhấn nút Enter để xác nhận. Cài đặt của bạn đã được lưu!</p>
-                </li>
-                <li>
-                    <strong>Bước 4: Gọi lại cài đặt đã lưu</strong>
-                    <p class="pl-6 text-gray-600">Để sử dụng, chỉ cần xoay vòng xoay chế độ trên đỉnh máy đến đúng số <strong>1, 2, hoặc 3</strong>. Máy ảnh sẽ ngay lập tức áp dụng tất cả các thông số bạn đã lưu.</p>
-                </li>
-            </ol>
-        `,
-        en: `
-            <p class="mb-4">On new generation Sony Alpha cameras (like α7 IV, α7R V, α1, ZV-E1), you can save <strong>3 presets on the camera body</strong> (positions 1, 2, 3 on the mode dial) and <strong>4 presets on the memory card</strong> (M1, M2, M3, M4).</p>
-            <ol class="space-y-4 list-decimal list-inside">
-                <li>
-                    <strong>Step 1: Set Up Your Camera with the Recipe</strong>
-                    <p class="pl-6 text-gray-600">First, input all the parameters from this recipe into your camera, including White Balance (WB) and all Picture Profile settings.</p>
-                </li>
-                <li>
-                    <strong>Step 2: Access the Save Settings Menu</strong>
-                    <p class="pl-6 text-gray-600">Press the <strong>MENU</strong> button, navigate to the <strong>Shooting tab (pink)</strong> &rarr; <strong>Shooting Mode</strong> &rarr; <strong>Camera Set. Memory</strong>.</p>
-                </li>
-                <li>
-                    <strong>Step 3: Choose a Memory Slot</strong>
-                    <p class="pl-6 text-gray-600">Select one of the memory slots you want to save to (e.g., <strong>1</strong> or <strong>M1</strong>) and press the Enter button to confirm. Your settings are now saved!</p>
-                </li>
-                <li>
-                    <strong>Step 4: Recall the Saved Setting</strong>
-                    <p class="pl-6 text-gray-600">To use the preset, simply turn the top mode dial to the corresponding number <strong>1, 2, or 3</strong>. The camera will instantly apply all your saved settings.</p>
-                </li>
-            </ol>
-        `
-    };
-
     return `
         <div class="mt-8 p-5 md:p-6 bg-gray-50 border border-gray-200/80 rounded-2xl">
             <div class="flex justify-between items-center cursor-pointer" id="toggleSaveGuideBtn">
                 <div>
-                    <h4 class="text-lg md:text-xl font-bold text-gray-800" data-translate-key="saveGuideTitle"></h4>
-                    <p class="mt-1 text-gray-600 text-sm" data-translate-key="saveGuideSubtitle"></p>
+                    <h4 class="text-lg md:text-xl font-bold text-gray-800">Save & Recall Guide</h4>
+                    <p class="mt-1 text-gray-600 text-sm">Learn how to save and recall these settings on your camera.</p>
                 </div>
                 <button class="btn bg-gray-200 text-gray-700 hover:bg-gray-300 py-2 px-4 text-sm pointer-events-none">
-                    <span data-translate-key="showGuideBtn"></span>
+                    <span>Show Guide</span>
                 </button>
             </div>
             <div id="saveGuideContent" class="mt-4 text-sm md:text-base overflow-hidden max-h-0 transition-all duration-700 ease-in-out">
-                ${guideContent[state.language]}
+                <p class="mb-4">On new generation Sony Alpha cameras (like α7 IV, α7R V, α1, ZV-E1), you can save <strong>3 presets on the camera body</strong> (positions 1, 2, 3 on the mode dial) and <strong>4 presets on the memory card</strong> (M1, M2, M3, M4).</p>
+                <ol class="space-y-4 list-decimal list-inside">
+                    <li>
+                        <strong>Step 1: Set Up Your Camera with the Recipe</strong>
+                        <p class="pl-6 text-gray-600">First, input all the parameters from this recipe into your camera, including White Balance (WB) and all Picture Profile settings.</p>
+                    </li>
+                    <li>
+                        <strong>Step 2: Access the Save Settings Menu</strong>
+                        <p class="pl-6 text-gray-600">Press the <strong>MENU</strong> button, navigate to the <strong>Shooting tab (pink)</strong> &rarr; <strong>Shooting Mode</strong> &rarr; <strong>Camera Set. Memory</strong>.</p>
+                    </li>
+                    <li>
+                        <strong>Step 3: Video Guides</strong>
+                        <p class="pl-6 text-gray-600">Watch these videos to see the process in action.</p>
+                        <div class="aspect-w-16 aspect-h-9 my-4">
+                            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </li>
+                    <li>
+                        <strong>Step 4: Recall the Saved Setting</strong>
+                        <p class="pl-6 text-gray-600">To use the preset, simply turn the top mode dial to the corresponding number <strong>1, 2, or 3</strong>. The camera will instantly apply all your saved settings.</p>
+                    </li>
+                </ol>
             </div>
         </div>
     `;
@@ -197,8 +171,7 @@ export function renderComments(comments) {
     if (!container) return;
 
     if (comments.length === 0) {
-        container.innerHTML = `<p class="text-gray-500 itaic" data-translate-key="noCommentsYet"></p>`;
-        applyTranslations();
+        container.innerHTML = `<p class="text-gray-500 itaic">No comments yet.</p>`;
         return;
     }
 
@@ -328,7 +301,6 @@ export function renderUltimateButton() {
         wrapper.innerHTML = menuHTML + mainButtonHTML;
     }
     
-    applyTranslations();
 }
 
 export function updateListSelectionAndScroll(id) {
@@ -344,7 +316,7 @@ export function updateListSelectionAndScroll(id) {
         const newSelectedItem = listContainer.querySelector(`.recipe-item[data-recipe-id="${id}"]`);
         if (newSelectedItem) {
             newSelectedItem.classList.add('selected');
-            const recipe = recipesData.find(r => r.id === id);
+            const recipe = state.recipes.find(r => r.id === id);
             if (recipe) {
                 newSelectedItem.style.setProperty('--glow-color', recipe.personalityColor);
             }
@@ -361,57 +333,16 @@ export function renderHeader() {
     const header = document.getElementById('appHeader');
     if (!header) return;
 
-    const { isLoggedIn, user } = state.auth;
-
-    const authSectionHTML = isLoggedIn ? `
-        <div class="relative">
-            <button id="avatarBtn" class="flex items-center gap-3">
-                <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer">
-            </button>
-            <div id="userDropdown" class="absolute top-full right-0 mt-3 w-56 bg-white rounded-xl shadow-xl p-2 transition-all duration-200 opacity-0 invisible -translate-y-2 pointer-events-none z-30">
-                 <div class="px-3 py-2">
-                    <p class="text-sm font-semibold text-gray-800 truncate">${user.displayName || 'User'}</p>
-                    <p class="text-xs text-gray-500 truncate">${user.email || ''}</p>
-                 </div>
-                 <div class="my-1 h-px bg-gray-100"></div>
-                 <button id="myProfileBtn" class="w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle w-5 h-5"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
-                    <span data-translate-key="myProfile"></span>
-                 </button>
-                 <div class="my-1 h-px bg-gray-100"></div>
-                 <button id="signOutBtn" class="w-full text-left px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-5 h-5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                    <span data-translate-key="signOutBtn"></span>
-                 </button>
-            </div>
-        </div>
-    ` : `
-        <div class="flex items-center gap-2">
-            <button id="signInGoogleBtn" class="btn bg-white hover:bg-gray-100 text-gray-800 py-2 px-4 border border-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 35.245 44 30.028 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>
-                <span class="hidden sm:inline" data-translate-key="signInBtn"></span>
-            </button>
-        </div>
-    `;
 
     header.innerHTML = `
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
             <img src="/assets/logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
         </button>
         <div class="flex items-center gap-2 md:gap-4">
-            <div id="authContainer" class="flex items-center gap-4">${authSectionHTML}</div>
+            <div id="authContainer" class="flex items-center gap-4"></div>
             <div class="p-1 bg-gray-200/70 rounded-full flex relative">
                 <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
-                <button id="langVI" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-5 h-5 rounded-sm"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
-                    <span class="hidden sm:inline">VIE</span>
-                </button>
-                <button id="langEN" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-5 rounded-sm"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
-                    <span class="hidden sm:inline">ENG</span>
-                </button>
             </div>
         </div>
     `;
-    applyTranslations();
 }

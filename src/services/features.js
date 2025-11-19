@@ -11,8 +11,6 @@ import { scaleLinear, scaleSqrt } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { forceSimulation, forceCollide, forceX, forceY } from 'd3-force';
 import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
-import { t, applyTranslations } from './language.js';
-import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
 import { showToast, openModal, closeModal } from './ui.js';
 
@@ -103,10 +101,10 @@ export async function renderColorMapChart(containerSelector, data) {
     const rScale = d3.scaleSqrt().domain([0, 10]).range([7, 12]);
 
     const quadrantLabels = [
-        { x: width * 0.25, y: height * 0.25, text: {vi: 'LẠNH & GẮT', en: 'COOL & PUNCHY'} },
-        { x: width * 0.75, y: height * 0.25, text: {vi: 'ẤM & RỰC RỠ', en: 'WARM & VIBRANT'} },
-        { x: width * 0.25, y: height * 0.75, text: {vi: 'LẠNH & DỊU', en: 'COOL & MUTED'} },
-        { x: width * 0.75, y: height * 0.75, text: {vi: 'ẤM & MỜ', en: 'WARM & FADED'} },
+        { x: width * 0.25, y: height * 0.25, text: 'COOL & PUNCHY' },
+        { x: width * 0.75, y: height * 0.25, text: 'WARM & VIBRANT' },
+        { x: width * 0.25, y: height * 0.75, text: 'COOL & MUTED' },
+        { x: width * 0.75, y: height * 0.75, text: 'WARM & FADED' },
     ];
     svg.selectAll(".quadrant-label")
         .data(quadrantLabels)
@@ -115,7 +113,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .attr("x", d => d.x)
         .attr("y", d => d.y)
         .attr("dy", "0.35em")
-        .text(d => d.text[state.language]);
+        .text(d => d.text);
 
     svg.append("g").attr("class", "grid")
         .call(d3.axisBottom(xScale).ticks(10).tickSize(height).tickFormat(""))
@@ -126,10 +124,10 @@ export async function renderColorMapChart(containerSelector, data) {
 
     svg.selectAll(".domain").remove();
 
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(state.language === 'vi' ? '← Lạnh' : '← Cool');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(state.language === 'vi' ? 'Ấm →' : 'Warm →');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(state.language === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(state.language === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text('← Cool');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text('Warm →');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text('↑ Punchy Contrast');
+    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text('↓ Soft Contrast');
 
     const nodesData = data.filter(d => d.coords).map(d => ({...d, isTrending: trendingIds.includes(d.id)}));
 
@@ -155,7 +153,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .attr("class", "color-map-node-label")
         .attr("x", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 6)
         .attr("dy", "0.35em")
-        .text(d => d.name[state.language]);
+        .text(d => d.name.en);
 
     const starNodes = state.chart.nodes.filter(d => d.isTrending);
     
@@ -174,7 +172,7 @@ export async function renderColorMapChart(containerSelector, data) {
         .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.1))
         .stop();
 
-    for (let i = 0; i < 30; ++i) state.chart.simulation.tick();
+    for (let i = 0; i < 20; ++i) state.chart.simulation.tick();
 
     state.chart.nodes
         .attr("transform", d => `translate(${d.x}, ${d.y})`);
@@ -265,7 +263,7 @@ export async function generateRecipePng(elementId, recipeName) {
     const btn = document.querySelector(`button[data-element-id="${elementId}"]`);
     const originalBtnContent = btn ? btn.innerHTML : '';
     if (btn) {
-        btn.innerHTML = `<div class="loader-dark"></div> ${t('aiQuizGenerating')}`;
+        btn.innerHTML = `<div class="loader-dark"></div> Generating...`;
         btn.disabled = true;
     }
 
@@ -282,7 +280,7 @@ export async function generateRecipePng(elementId, recipeName) {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
         const safeFileName = recipeName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        link.download = `SonyColorLab-${safeFileName}.png`;
+        link.download = `${safeFileName}.png`;
         
         document.body.appendChild(link);
         link.click();
@@ -300,7 +298,7 @@ export async function generateRecipePng(elementId, recipeName) {
 }
 
 export async function generateRecipeCardPng(recipeId, generatedRecipeData = null) {
-    const originalRecipe = recipesData.find(r => r.id === recipeId);
+    const originalRecipe = state.recipes.find(r => r.id === recipeId);
     if (!originalRecipe && !generatedRecipeData) return;
 
     const recipeToRender = generatedRecipeData || originalRecipe;
@@ -346,8 +344,8 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
                         <img src="/assets/logo_black.png" style="height: 80px; width: auto;" alt="Logo">
                         <p style="font-size: 24px; font-weight: 600; color: #6b7280;">sonycolorlab.app</p>
                     </div>
-                    <h2 style="font-size: 80px; font-weight: 800; margin: 56px 0 16px 0; line-height: 1.1; letter-spacing: -2px;">${recipeToRender.name[state.language]}</h2>
-                    <p style="font-size: 28px; color: #4b5563; margin: 0 0 56px 0; font-style: italic; max-width: 90%;">"${recipeToRender.description[state.language]}"</p>
+                    <h2 style="font-size: 80px; font-weight: 800; margin: 56px 0 16px 0; line-height: 1.1; letter-spacing: -2px;">${recipeToRender.name.en}</h2>
+                    <p style="font-size: 28px; color: #4b5563; margin: 0 0 56px 0; font-style: italic; max-width: 90%;">"${recipeToRender.description.en}"</p>
                     
                     <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">White Balance</h3>
                     <div style="background: rgba(255, 255, 255, 0.6); border-radius: 16px; padding: 24px; font-size: 32px; font-weight: 600; border: 1px solid rgba(0,0,0,0.05);">${recipeToRender.whiteBalance}</div>
@@ -375,7 +373,7 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
         const safeFileName = recipeName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        link.download = `SonyColorLab-${safeFileName}.png`;
+        link.download = `${safeFileName}.png`;
         
         document.body.appendChild(link);
         link.click();
@@ -392,12 +390,12 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
 }
 
 export async function shareRecipe(recipeId) {
-    const recipe = recipesData.find(r => r.id === recipeId);
+    const recipe = state.recipes.find(r => r.id === recipeId);
     if (!recipe) return;
 
     const shareData = {
-        title: `Sony Color Lab: ${recipe.name[state.language]}`,
-        text: `Check out this Sony Alpha color recipe: "${recipe.name[state.language]}".\n${recipe.description[state.language]}`,
+        title: `Color Recipe: ${recipe.name.en}`,
+        text: `Check out this color recipe: "${recipe.name.en}".\n${recipe.description.en}`,
         url: window.location.href
     };
     
@@ -416,91 +414,3 @@ export async function shareRecipe(recipeId) {
         }
     }
 }
-
-export async function saveRecipeToGoogleDrive(recipeData) {
-    if (!state.auth.isLoggedIn) {
-        showToast(t('logInToContinue'), true);
-        return;
-    }
-    if (!state.auth.googleAccessToken) {
-        showToast(t('googleSignInRequired'), true);
-        return;
-    }
-
-    const btn = document.activeElement;
-    const originalBtnContent = btn.innerHTML;
-    btn.innerHTML = `<div class="loader-dark"></div> ${t('savingToDrive')}`;
-    btn.disabled = true;
-
-    // Format the recipe content for the file
-    const lang = state.language;
-    let fileContent = `Sony Color Lab Recipe: ${recipeData.name[lang] || recipeData.name.en}\n`;
-    fileContent += `==============================================\n\n`;
-    fileContent += `Description: ${recipeData.description[lang] || recipeData.description.en}\n\n`;
-    fileContent += `--- SETTINGS ---\n`;
-    fileContent += `White Balance: ${recipeData.whiteBalance}\n`;
-    for (const [key, value] of Object.entries(recipeData.settings)) {
-        fileContent += `${key}: ${value}\n`;
-    }
-    if (recipeData.colorDepth) {
-        fileContent += `\n--- COLOR DEPTH ---\n`;
-        for (const [key, value] of Object.entries(recipeData.colorDepth)) {
-            fileContent += `${key}: ${value}\n`;
-        }
-    }
-    if (recipeData.detailSettings) {
-        fileContent += `\n--- DETAIL ---\n`;
-        for (const [key, value] of Object.entries(recipeData.detailSettings)) {
-            fileContent += `${key}: ${value}\n`;
-        }
-    }
-    if (recipeData.notes) {
-        fileContent += `\n--- MY NOTES ---\n`;
-        fileContent += `${recipeData.notes}\n`;
-    }
-    fileContent += `\n\nGenerated via sonycolorlab.app`;
-
-    const metadata = {
-        name: `Sony Recipe - ${recipeData.name.en}.txt`,
-        mimeType: 'text/plain',
-    };
-
-    const form = new FormData();
-    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-    form.append('file', new Blob([fileContent], { type: 'text/plain' }));
-
-    try {
-        const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${state.auth.googleAccessToken}`
-            },
-            body: form
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            console.error("Google Drive API Error:", error);
-            // Handle expired token scenario by prompting re-login
-            if (error.error.code === 401) {
-                 showToast(t('googleAuthExpired'), true);
-            } else {
-                throw new Error(error.error.message || 'Failed to upload file.');
-            }
-        } else {
-            await response.json();
-            showToast(t('driveSaveSuccess'));
-        }
-
-    } catch (error) {
-        console.error("Failed to save to Google Drive:", error);
-        showToast(t('driveSaveError'), true);
-    } finally {
-        if (btn) {
-            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-5 h-5"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M11.5 12.5 13 14l-2.5 2.5"/><path d="m10 16.5 1.5-1.5"/></svg><span data-translate-key="saveToDriveBtn"></span>`;
-            applyTranslations();
-            btn.disabled = false;
-        }
-    }
-}
-

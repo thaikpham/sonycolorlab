@@ -619,3 +619,12 @@ body.dark .loading-overlay p {
 body.dark .spinner {
   border-left-color: #0af; /* Màu sáng hơn cho dark mode */
 }
+
+#preloader.fade-out {
+  animation: fadeOut 1s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
