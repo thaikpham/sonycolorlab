@@ -4,7 +4,6 @@ import { state } from './state';
 import { updateListSelectionAndScroll, renderComments } from './ui';
 import { renderLibraryDetails } from '../components/recipe-list/recipe-list-ui';
 import { updateChartSelection } from './features';
-import { onCommentsSnapshot } from './firestore';
 
 // Mocking dependencies
 vi.mock('./state', () => ({
@@ -29,10 +28,6 @@ vi.mock('./features', () => ({
   updateChartSelection: vi.fn(),
 }));
 
-vi.mock('./firestore', () => ({
-  onCommentsSnapshot: vi.fn(() => () => {}), // Mock returns an unsubscribe function
-}));
-
 describe('recipe-service', () => {
   beforeEach(() => {
     // Reset state before each test
@@ -49,7 +44,6 @@ describe('recipe-service', () => {
       expect(updateListSelectionAndScroll).toHaveBeenCalledWith('recipe-1');
       expect(renderLibraryDetails).toHaveBeenCalled();
       expect(updateChartSelection).toHaveBeenCalled();
-      expect(onCommentsSnapshot).toHaveBeenCalled();
     });
 
     it('should deselect a recipe if it is already selected', () => {

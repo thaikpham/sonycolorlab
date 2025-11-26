@@ -268,45 +268,11 @@ export function renderHeader() {
     const header = document.getElementById('appHeader');
     if (!header) return;
 
-    const { isLoggedIn, user } = state.auth;
-
-    const authSectionHTML = isLoggedIn ? `
-        <div class="relative">
-            <button id="avatarBtn" class="flex items-center gap-3">
-                <img src="${user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="User" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer">
-            </button>
-            <div id="userDropdown" class="absolute top-full right-0 mt-3 w-56 bg-white rounded-xl shadow-xl p-2 transition-all duration-200 opacity-0 invisible -translate-y-2 pointer-events-none z-30">
-                 <div class="px-3 py-2">
-                    <p class="text-sm font-semibold text-gray-800 truncate">${user.displayName || 'User'}</p>
-                    <p class="text-xs text-gray-500 truncate">${user.email || ''}</p>
-                 </div>
-                 <div class="my-1 h-px bg-gray-100"></div>
-                 <button id="myProfileBtn" class="w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-circle w-5 h-5"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
-                    <span data-translate-key="myProfile"></span>
-                 </button>
-                 <div class="my-1 h-px bg-gray-100"></div>
-                 <button id="signOutBtn" class="w-full text-left px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-5 h-5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                    <span data-translate-key="signOutBtn"></span>
-                 </button>
-            </div>
-        </div>
-    ` : `
-        <div class="flex items-center gap-2">
-            <button id="signInGoogleBtn" class="btn bg-white hover:bg-gray-100 text-gray-800 py-2 px-4 border border-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 35.245 44 30.028 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>
-                <span class="hidden sm:inline" data-translate-key="signInBtn"></span>
-            </button>
-        </div>
-    `;
-
     header.innerHTML = `
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
             <img src="/assets/logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
         </button>
         <div class="flex items-center gap-2 md:gap-4">
-            <div id="authContainer" class="flex items-center gap-4">${authSectionHTML}</div>
             <div class="p-1 bg-gray-200/70 rounded-full flex relative">
                 <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
                 <button id="langVI" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
