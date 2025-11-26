@@ -27,7 +27,7 @@ async function init() {
   renderHeader();
   initEventListeners();
 
-  await renderView('home');
+  await renderView('recipeFormulas');
   updateLangSlider();
 }
 
