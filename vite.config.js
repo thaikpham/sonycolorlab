@@ -7,4 +7,8 @@ export default defineConfig({
   define: {
     // This ensures environment variables work in both dev and production
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+  },
 });

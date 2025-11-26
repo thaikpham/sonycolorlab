@@ -3,7 +3,8 @@ import { applyTranslations, t } from '../../services/language.js';
 import { fetchTrendingRecipeIds } from '../../services/api.js';
 import recipesData from '../../services/recipes.js';
 import recipeImages from '../../services/recipe-images.js';
-import { createSaveGuideHTML, formatRecipeName } from '../../services/ui.js';
+import { createSaveGuideHTML } from '../ui/SaveGuide.js';
+import { formatRecipeName } from '../../services/ui.js';
 import { isAIEnabled } from '../../services/state.js';
 import { parameterExplanations } from '../../services/parameterExplanations.js';
 
