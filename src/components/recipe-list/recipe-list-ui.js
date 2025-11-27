@@ -68,8 +68,8 @@ export async function renderLibraryList() {
     // Apply search
     if (searchTerm) {
         recipesToRender = recipesToRender.filter(r =>
-            r.name[state.language].toLowerCase().includes(searchTerm) ||
-            r.description[state.language].toLowerCase().includes(searchTerm) ||
+            r.name.toLowerCase().includes(searchTerm) ||
+            r.description.toLowerCase().includes(searchTerm) ||
             r.tags.some(tag => tag.toLowerCase().includes(searchTerm))
         );
     }
@@ -80,7 +80,8 @@ export async function renderLibraryList() {
         const isSelected = recipe.id === state.ui.selectedRecipeId;
         const isTrending = trendingIds.includes(recipe.id);
         const hasImages = recipeImages[recipe.id] && recipeImages[recipe.id].length > 0 && recipeImages[recipe.id].some(url => !url.includes('placehold.co'));
-        const glowStyle = isSelected ? `--glow-color: ${recipe.personalityColor};` : '';
+        // Removed personalityColor, use default highlight
+        const glowStyle = isSelected ? `--glow-color: #3b82f6;` : ''; 
         const animationStyle = `animation-delay: ${index * 30}ms;`;
 
         const imageIconHTML = hasImages
@@ -95,13 +96,13 @@ export async function renderLibraryList() {
                      data-recipe-id="${recipe.id}"
                      style="${glowStyle} ${animationStyle}">
             <div class="flex justify-between items-start">
-                <span class="font-semibold text-primary pr-2">${formatRecipeName(recipe.name[state.language])}</span>
+                <span class="font-semibold text-primary pr-2">${formatRecipeName(recipe.name)}</span>
                 <div class="flex items-center gap-2 pt-1">
                     ${imageIconHTML}
                     ${trendingIconHTML}
                 </div>
             </div>
-            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description[state.language]}</p>
+            <p class="text-sm text-neutral-600 mt-1 leading-snug">${recipe.description}</p>
         </div>`;
     }).join('');
 }
@@ -152,7 +153,7 @@ function createRecipeDetailHTML(recipe) {
                     src="${imgUrl}" 
                     loading="lazy" 
                     decoding="async"
-                    alt="Demo image ${index + 1} for ${formatRecipeName(recipe.name[state.language])}"
+                    alt="Demo image ${index + 1} for ${formatRecipeName(recipe.name)}"
                     onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-gray-400 text-xs p-2 text-center\\'>Image failed to load</div>';"
                 >
             </div>`).join('');
@@ -189,8 +190,8 @@ function createRecipeDetailHTML(recipe) {
 
         <div class="mt-6 flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
-                <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name[state.language])}</h3>
-                <p class="text-lg text-neutral-600 mt-1">"${recipe.description[state.language]}"</p>
+                <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name)}</h3>
+                <p class="text-lg text-neutral-600 mt-1">"${recipe.description}"</p>
             </div>
             <div class="flex-shrink-0 mt-2 sm:mt-0">
                 ${favoriteButtonHTML}
