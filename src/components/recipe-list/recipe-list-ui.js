@@ -155,11 +155,7 @@ function createRecipeDetailHTML(recipe) {
     return `
         ${createCollageHTML(demoImages)}
 
-        <div class="mt-6 flex flex-col sm:flex-row justify-between items-start gap-4">
-            <div>
-                <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name)}</h3>
-                <p class="text-lg text-neutral-600 mt-1">"${recipe.description}"</p>
-            </div>
+        <div class="mt-6 flex justify-end items-start gap-4">
             <div class="flex-shrink-0 mt-2 sm:mt-0">
                 ${favoriteButtonHTML}
             </div>
@@ -231,8 +227,9 @@ export function renderLibraryDetails() {
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
 
     recipeContentContainer.innerHTML = `
-        <div class="mb-4 hidden md:block">
-            <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
+        <div class="mb-6">
+            <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name)}</h3>
+            <p class="text-lg text-neutral-600 mt-1">"${recipe.description}"</p>
         </div>
         ${createRecipeDetailHTML(recipe)}
     `;
