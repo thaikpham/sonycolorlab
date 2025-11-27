@@ -82,45 +82,6 @@ export function closeModal(modalId) {
     }, { once: true });
 }
 
-export function toggleUltimateActionsMenu(forceClose = false) {
-    const menu = document.getElementById('ultimateActionsMenu');
-    const icon = document.getElementById('ultimateCtaIcon');
-    if (!menu || !icon) return;
-
-    const actionButtons = menu.querySelectorAll('.ultimate-action-btn');
-    const isOpen = menu.classList.contains('menu-open');
-
-    if (forceClose || isOpen) {
-        menu.classList.remove('menu-open');
-        icon.style.transform = 'rotate(0deg)';
-        actionButtons.forEach(btn => {
-            btn.classList.remove('visible');
-            btn.style.transform = `scale(0.5)`;
-        });
-    } else {
-        menu.classList.add('menu-open');
-        icon.style.transform = 'rotate(135deg)';
-
-        const radius = 130;
-        const startAngle = 167;
-        const endAngle = 283;
-
-        const angleStep = (endAngle - startAngle) / (actionButtons.length > 1 ? actionButtons.length - 1 : 1);
-
-        actionButtons.forEach((btn, index) => {
-            const angle = startAngle + (angleStep * index);
-            const angleRad = angle * (Math.PI / 180);
-
-            const x = radius * Math.cos(angleRad);
-            const y = radius * Math.sin(angleRad);
-
-            btn.style.transitionDelay = `${index * 40}ms`;
-            btn.classList.add('visible');
-            btn.style.transform = `translate(${x}px, ${y}px) scale(1)`;
-        });
-    }
-}
-
 
 // --- CORE UI RENDERING LOGIC ---
 
@@ -191,53 +152,6 @@ export function initializeBackgroundBlobs() {
     animate();
 }
 
-export function renderUltimateButton() {
-    const wrapper = document.getElementById('ultimateButtonWrapper');
-    if (!wrapper) return;
-
-    wrapper.innerHTML = ''; // Clear wrapper for a fresh, safe render
-
-    const mainButtonHTML = `
-        <button id="ultimateCtaBtn" class="liquid-glass-button" style="width: 80px; height: 80px; padding: 16px; border-radius: 32px;">
-             <img id="ultimateCtaIcon" src="/assets/Logo.png" alt="Actions" style="width: 100%; height: auto; transition: transform 0.4s var(--ease-out-back);">
-        </button>
-    `;
-
-    if (state.ui.currentView === 'home') {
-        wrapper.innerHTML = mainButtonHTML;
-    } else if (state.ui.currentView === 'recipeFormulas') {
-        const icons = {
-            contributePhotosBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><line x1="16" x2="22" y1="5" y2="5"/><line x1="19" x2="19" y1="2" y2="8"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`,
-            findMyColorBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flask-round"><path d="M10 2v7.31"/><path d="M14 9.31V2"/><path d="M12 12.31v4"/><path d="M10 16.31h4"/><path d="M12 22a7 7 0 0 0 7-7c0-3.87-3.13-7-7-7s-7 3.13-7 7a7 7 0 0 0 7 7z"/></svg>`,
-            sonyGuideBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
-            contributeRecipeBtn: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-plus-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" x2="12" y1="18" y2="12"/><line x1="9" x2="15" y1="15" y2="15"/></svg>`,
-            ctaButton: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
-        };
-
-        const menuActions = [
-             { id: 'ultimateContributeBtn', key: 'contributePhotosBtn', colorClass: 'btn-pastel-blue', icon: icons.contributePhotosBtn },
-             { id: 'ultimateQuizBtn', key: 'findMyColorBtn', colorClass: 'btn-pastel-red', icon: icons.findMyColorBtn },
-             { key: 'sonyGuideBtn', href: 'https://helpguide.sony.net/di/pp/v1/en/contents/TP0000909106.html', colorClass: 'btn-pastel-yellow', icon: icons.sonyGuideBtn },
-             { key: 'contributeRecipeBtn', href: 'https://forms.gle/your-form-id', colorClass: 'btn-pastel-magenta', icon: icons.contributeRecipeBtn },
-             { key: 'ctaButton', href: 'https://www.facebook.com/groups/sonycolorlab', colorClass: 'btn-pastel-cyan', icon: icons.ctaButton }
-        ];
-
-        const menuHTML = `<div id="ultimateActionsMenu">` + menuActions.reverse().map(action => {
-            const commonAttrs = `class="ultimate-action-btn ${action.colorClass}"`;
-            const content = `${action.icon}<span class="ultimate-tooltip" data-translate-key="${action.key}"></span>`;
-            if (action.href) {
-                return `<a href="${action.href}" target="_blank" rel="noopener noreferrer" ${commonAttrs}>${content}</a>`;
-            } else {
-                return `<button id="${action.id}" ${commonAttrs}>${content}</button>`;
-            }
-        }).join('') + `</div>`;
-        
-        wrapper.innerHTML = menuHTML + mainButtonHTML;
-    }
-    
-    applyTranslations();
-}
-
 export function updateListSelectionAndScroll(id) {
     const listContainer = document.getElementById('recipeListContainer');
     if (!listContainer) return;
@@ -267,13 +181,12 @@ export function renderHeader() {
     const header = document.getElementById('appHeader');
     if (!header) return;
 
-    // Language switcher removed as per "English only" request
     header.innerHTML = `
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
             <img src="/assets/logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
         </button>
         <div class="flex items-center gap-2 md:gap-4">
-            <!-- Language switcher was here -->
+            <!-- Language switcher removed -->
         </div>
     `;
     applyTranslations();

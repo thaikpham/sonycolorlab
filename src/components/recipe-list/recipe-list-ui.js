@@ -107,39 +107,6 @@ export async function renderLibraryList() {
     }).join('');
 }
 
-
-function createCommentsSectionHTML(recipeId) {
-    const isLoggedIn = state.auth.isLoggedIn;
-
-    const commentFormHTML = isLoggedIn ? `
-        <form id="commentForm" class="mt-4 flex items-start gap-4" data-recipe-id="${recipeId}">
-            <img src="${state.auth.user.photoURL || 'https://placehold.co/40x40/e2e8f0/a0aec0?text=A'}" alt="Your avatar" class="w-10 h-10 rounded-full">
-            <div class="flex-grow">
-                <textarea id="commentInput" required class="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="${t('commentPlaceholder')}" rows="3"></textarea>
-                <div class="flex justify-end mt-2">
-                    <button type="submit" class="btn btn-primary py-2 px-6">
-                        <span data-translate-key="submitCommentBtn"></span>
-                    </button>
-                </div>
-            </div>
-        </form>
-    ` : `
-        <div class="mt-6 text-center p-4 bg-gray-100 rounded-lg">
-            <p data-translate-key="logInToComment"></p>
-        </div>
-    `;
-
-    return `
-        <div class="mt-12">
-            <h3 class="text-2xl font-bold" data-translate-key="commentsTitle"></h3>
-            ${commentFormHTML}
-            <div id="commentsListContainer" class="mt-6 space-y-4">
-                <!-- Comments will be rendered here by ui.js -->
-            </div>
-        </div>
-    `;
-}
-
 function createRecipeDetailHTML(recipe) {
     const demoImages = recipeImages[recipe.id] || [];
     
@@ -186,9 +153,7 @@ function createRecipeDetailHTML(recipe) {
     ` : '';
 
     return `
-        ${createCollageHTML(demoImages)}
-
-        <div class="mt-6 flex flex-col sm:flex-row justify-between items-start gap-4">
+        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
                 <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name)}</h3>
                 <p class="text-lg text-neutral-600 mt-1">"${recipe.description}"</p>
@@ -197,6 +162,8 @@ function createRecipeDetailHTML(recipe) {
                 ${favoriteButtonHTML}
             </div>
         </div>
+
+        ${createCollageHTML(demoImages)}
 
         <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
             <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
@@ -216,7 +183,6 @@ function createRecipeDetailHTML(recipe) {
             ${sections.map(section => `<div><h4 class="text-xl font-bold mb-3 text-gray-700" data-translate-key="${section.titleKey}"></h4><div class="p-4 bg-gray-500/5 rounded-2xl">${section.content}</div></div>`).join('')}
         </div>
         ${createSaveGuideHTML()}
-        ${createCommentsSectionHTML(recipe.id)}
     `;
 }
 
@@ -264,11 +230,6 @@ export function renderLibraryDetails() {
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
 
-    recipeContentContainer.innerHTML = `
-        <div class="mb-4 hidden md:block">
-            <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn"></button>
-        </div>
-        ${createRecipeDetailHTML(recipe)}
-    `;
+    recipeContentContainer.innerHTML = createRecipeDetailHTML(recipe);
     applyTranslations();
 }
