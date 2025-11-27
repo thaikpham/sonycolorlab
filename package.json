@@ -21,11 +21,5 @@
     "vite": "^7.0.0",
     "vite-bundle-analyzer": "^1.2.3",
     "vitest": "^4.0.14"
-  },
-  "dependencies": {
-    "d3-axis": "^3.0.0",
-    "d3-force": "^3.0.0",
-    "d3-scale": "^4.0.2",
-    "d3-selection": "^3.0.0"
   }
 }

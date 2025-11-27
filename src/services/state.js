@@ -7,7 +7,6 @@
 // --- CONFIGURATION CONSTANTS ---
 // These values are replaced by vite during the build process from .env files
 export const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
-export const __firebase_config = import.meta.env.VITE_FIREBASE_CONFIG || 'undefined';
 export const __app_id = import.meta.env.VITE_APP_ID || 'default-app-id';
 
 // A computed flag to easily check if the AI features should be enabled.
@@ -25,15 +24,12 @@ export const state = {
     filter: 'all', // 'all', 'trending', 'favorites'
   },
 
-  // Authentication state
-  auth: {
-    isLoggedIn: false,
-    user: null, // Will hold the Firebase user object
-    googleAccessToken: null, // For Google Drive API access
-    favorites: [], // Cache for user's favorite recipe IDs
-  },
+  // Language state (keeping structure for compatibility)
+  language: 'en',
+  loadedTranslations: {},
+  currentTranslations: {},
 
-  // D3 Chart state
+  // D3 Chart state (Legacy/Unused but keeping placeholder to avoid crash if referenced)
   chart: {
     nodes: null,
     simulation: null,
@@ -49,12 +45,12 @@ export const state = {
     abortController: null,
   },
   
-  // Quiz feature state
+  // Quiz feature state (Legacy/Unused)
   quiz: {
     instance: null,
     answers: {},
-    editableRecipe: null, // Holds the state of the recipe being edited in the UI
-    aiContext: { // For the new AI Contextual Assistant
+    editableRecipe: null,
+    aiContext: {
       initialPrompt: "",
       clarificationQuestion: "",
       userClarification: "",
@@ -62,7 +58,7 @@ export const state = {
     }
   },
 
-  // Firebase state
+  // Firebase state (Stubbed)
   firebase: {
     db: null,
     app: null,
@@ -85,4 +81,3 @@ export const state = {
     html2canvas: false,
   }
 };
-

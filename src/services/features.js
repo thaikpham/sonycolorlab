@@ -1,16 +1,15 @@
 /**
  * features.js
  * This module encapsulates logic for complex, self-contained features
- * like the AI labs, D3 chart, PDF generation, and image lightbox.
+ * like the AI labs, PDF generation, and image lightbox.
  */
 
 // --- Local Module Imports ---
 import { state } from './state.js';
-import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
-import { t, applyTranslations } from './language.js';
+import { t } from './language.js';
 import recipesData from './recipes.js';
 import recipeImages from './recipe-images.js';
-import { showToast, openModal, closeModal } from './ui.js';
+import { showToast } from './ui.js';
 
 // --- CDN URLs for external libraries ---
 const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
@@ -42,27 +41,17 @@ function loadScript(url, stateKey) {
 }
 
 // --- D3 COLOR MAP CHART ---
+// Removed
 
-/**
- * Renders the interactive D3.js color map chart.
- * DISABLED as per request.
- * @param {string} containerSelector - The CSS selector for the container element.
- * @param {object[]} data - The array of recipe data.
- */
-export async function renderColorMapChart(containerSelector, data) {
-    // Feature disabled.
-    const container = document.querySelector(containerSelector);
-    if (container) {
-        container.innerHTML = '';
-        container.style.display = 'none';
-    }
+// Export a dummy function for backward compatibility if needed,
+// though all usages should have been removed.
+// However, the error log says `recipe-service.js` or someone is trying to import `updateChartSelection`.
+export function updateChartSelection() {
+    // No-op
 }
 
-/**
- * Updates the visual selection state of nodes on the D3 chart.
- */
-export function updateChartSelection() {
-    // Feature disabled.
+export async function renderColorMapChart(containerSelector, data) {
+    // No-op
 }
 
 // --- IMAGE LIGHTBOX ---
@@ -295,92 +284,6 @@ export async function shareRecipe(recipeId) {
         if (error.name !== 'AbortError') {
              await navigator.clipboard.writeText(shareData.url);
              showToast('Sharing failed. Link copied instead!', true);
-        }
-    }
-}
-
-export async function saveRecipeToGoogleDrive(recipeData) {
-    if (!state.auth.isLoggedIn) {
-        showToast(t('logInToContinue'), true);
-        return;
-    }
-    if (!state.auth.googleAccessToken) {
-        showToast(t('googleSignInRequired'), true);
-        return;
-    }
-
-    const btn = document.activeElement;
-    const originalBtnContent = btn.innerHTML;
-    btn.innerHTML = `<div class="loader-dark"></div> ${t('savingToDrive')}`;
-    btn.disabled = true;
-
-    // Format the recipe content for the file
-    let fileContent = `Sony Color Lab Recipe: ${recipeData.name}\n`;
-    fileContent += `==============================================\n\n`;
-    fileContent += `Description: ${recipeData.description}\n\n`;
-    fileContent += `--- SETTINGS ---\n`;
-    fileContent += `White Balance: ${recipeData.whiteBalance}\n`;
-    for (const [key, value] of Object.entries(recipeData.settings)) {
-        fileContent += `${key}: ${value}\n`;
-    }
-    if (recipeData.colorDepth) {
-        fileContent += `\n--- COLOR DEPTH ---\n`;
-        for (const [key, value] of Object.entries(recipeData.colorDepth)) {
-            fileContent += `${key}: ${value}\n`;
-        }
-    }
-    if (recipeData.detailSettings) {
-        fileContent += `\n--- DETAIL ---\n`;
-        for (const [key, value] of Object.entries(recipeData.detailSettings)) {
-            fileContent += `${key}: ${value}\n`;
-        }
-    }
-    if (recipeData.notes) {
-        fileContent += `\n--- MY NOTES ---\n`;
-        fileContent += `${recipeData.notes}\n`;
-    }
-    fileContent += `\n\nGenerated via sonycolorlab.app`;
-
-    const metadata = {
-        name: `Sony Recipe - ${recipeData.name}.txt`,
-        mimeType: 'text/plain',
-    };
-
-    const form = new FormData();
-    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-    form.append('file', new Blob([fileContent], { type: 'text/plain' }));
-
-    try {
-        const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${state.auth.googleAccessToken}`
-            },
-            body: form
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            console.error("Google Drive API Error:", error);
-            // Handle expired token scenario by prompting re-login
-            if (error.error.code === 401) {
-                 showToast(t('googleAuthExpired'), true);
-            } else {
-                throw new Error(error.error.message || 'Failed to upload file.');
-            }
-        } else {
-            await response.json();
-            showToast(t('driveSaveSuccess'));
-        }
-
-    } catch (error) {
-        console.error("Failed to save to Google Drive:", error);
-        showToast(t('driveSaveError'), true);
-    } finally {
-        if (btn) {
-            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-5 h-5"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M11.5 12.5 13 14l-2.5 2.5"/><path d="m10 16.5 1.5-1.5"/></svg><span data-translate-key="saveToDriveBtn"></span>`;
-            applyTranslations();
-            btn.disabled = false;
         }
     }
 }
