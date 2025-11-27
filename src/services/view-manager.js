@@ -2,7 +2,6 @@
 import { state } from './state.js';
 import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
 import { applyTranslations, updateLangSlider } from './language.js';
-import { renderColorMapChart } from './features.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import recipesData from './recipes.js';
 
@@ -25,7 +24,7 @@ const viewTemplates = {
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
                             <p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
                         </div>
-                        <div id="colorMapContainer" class="flex-grow w-full mt-8"></div>
+                        <!-- Chart container removed -->
                     </div>
                     <div id="recipeContent" class="hidden"></div>
                 </div>
@@ -57,17 +56,7 @@ export async function attachViewEventListeners(viewName) {
             listPanel.addEventListener('mouseenter', setStageActive);
             mainPanel.addEventListener('mouseenter', setStageInactive);
         }
-
-        const chartContainer = document.getElementById('colorMapContainer');
-        if (chartContainer) {
-            const resizeObserver = new ResizeObserver(entries => {
-                if (entries && entries.length > 0 && entries[0].contentRect.width > 0) {
-                     renderColorMapChart('#colorMapContainer', recipesData);
-                     resizeObserver.unobserve(chartContainer);
-                }
-            });
-            resizeObserver.observe(chartContainer);
-        }
+        // Chart initialization removed
         updateLangSlider();
     }
 }
