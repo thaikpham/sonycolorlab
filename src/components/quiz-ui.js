@@ -1,233 +1,217 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/components/quiz-ui.js
-import { t } from '../services/language.js';
-import recipeImages from '../services/recipe-images.js';
+// File Path: src/components/quiz.js
+/**
+ * quiz.js
+ * This module encapsulates the core logic and data for the "Find My Color" quiz.
+ */
+
+// --- QUIZ DATA ---
+export const quizQuestions = [
+    {
+        question: "What will you be shooting today?",
+        options: [
+            { tags: ['portrait', 'fine-art-portrait', 'nostalgic-portrait'], text: "Portraits", icon: '<circle cx="12" cy="7" r="4" stroke="#f43f5e"/><path d="M5.5 21v-2a4 4 0 0 1 4-4h5a4 4 0 0 1 4 4v2" stroke="#f43f5e"/>' },
+            { tags: ['landscape', 'travel', 'summer', 'golden-hour'], text: "Landscape", icon: '<path d="m8 3 4 8 5-5 5 15H2L8 3z" stroke="#22c55e"/>' },
+            { tags: ['urban-night', 'street-photography', 'city-lights'], text: "Urban", icon: '<rect width="16" height="20" x="4" y="2" rx="2" stroke="#6366f1"/><path d="M9 22v-4h6v4" stroke="#6366f1"/><path d="M8 6h.01" stroke="#a78bfa"/><path d="M16 6h.01" stroke="#a78bfa"/><path d="M12 6h.01" stroke="#a78bfa"/><path d="M12 10h.01" stroke="#a78bfa"/><path d="M12 14h.01" stroke="#a78bfa"/><path d="M16 10h.01" stroke="#a78bfa"/><path d="M8 10h.01" stroke="#a78bfa"/><path d="M8 14h.01" stroke="#a78bfa"/><path d="M16 14h.01" stroke="#a78bfa"/>' },
+            { tags: ['lifestyle', 'everyday', 'family-photos'], text: "Lifestyle", icon: '<rect width="20" height="20" x="2" y="2" rx="2" ry="2" stroke="#f97316"/><path d="M7 2v20" stroke="#f97316"/><path d="M17 2v20" stroke="#f97316"/><path d="M2 12h20" stroke="#f97316"/><path d="M2 7h5" stroke="#f97316"/><path d="M2 17h5" stroke="#f97316"/><path d="M17 17h5" stroke="#f97316"/><path d="M17 7h5" stroke="#f97316"/>' }
+        ]
+    },
+    {
+        question: "What's your preferred color tone?",
+        options: [
+            { tags: ['warm', 'golden-hour', 'amber-tint'], text: "Warm", icon: '<circle cx="12" cy="12" r="4" stroke="#f59e0b"/><path d="M12 2v2" stroke="#f59e0b"/><path d="M12 20v2" stroke="#f59e0b"/><path d="m4.93 4.93 1.41 1.41" stroke="#f59e0b"/><path d="m17.66 17.66 1.41 1.41" stroke="#f59e0b"/><path d="M2 12h2" stroke="#f59e0b"/><path d="M20 12h2" stroke="#f59e0b"/><path d="m6.34 17.66-1.41 1.41" stroke="#f59e0b"/><path d="m19.07 4.93-1.41 1.41" stroke="#f59e0b"/>' },
+            { tags: ['neutral', 'clean', 'balanced'], text: "Neutral", icon: '<line x1="21" x2="14" y1="4" y2="4" stroke="#71717a"/><line x1="10" x2="3" y1="4" y2="4" stroke="#71717a"/><line x1="21" x2="12" y1="12" y2="12" stroke="#71717a"/><line x1="8" x2="3" y1="12" y2="12" stroke="#71717a"/><line x1="21" x2="16" y1="20" y2="20" stroke="#71717a"/><line x1="12" x2="3" y1="20" y2="20" stroke="#71717a"/><line x1="14" x2="14" y1="2" y2="6" stroke="#a1a1aa"/><line x1="8" x2="8" y1="10" y2="14" stroke="#a1a1aa"/><line x1="16" x2="16" y1="18" y2="22" stroke="#a1a1aa"/>' },
+            { tags: ['cool-tone', 'deep-blues', 'cyan-teal'], text: "Cool", icon: '<path d="M2 12h20" stroke="#0ea5e9"/><path d="M12 2v20" stroke="#0ea5e9"/><path d="m20 16-4-4 4-4" stroke="#38bdf8"/><path d="m4 8 4 4-4 4" stroke="#38bdf8"/><path d="m16 4-4 4-4-4" stroke="#38bdf8"/><path d="m8 20 4-4 4 4" stroke="#38bdf8"/>' }
+        ]
+    },
+    {
+        question: "How do you like your contrast?",
+        options: [
+            { tags: ['high-contrast', 'dramatic', 'powerful'], text: "Punchy", icon: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17" stroke="#ef4444"/><polyline points="16 7 22 7 22 13" stroke="#ef4444"/>' },
+            { tags: ['normal', 'balanced', 'versatile'], text: "Natural", icon: '<path d="M5 12h14" stroke="#71717a"/><path d="M12 5v14" stroke="#71717a"/>' },
+            { tags: ['soft-contrast', 'faded', 'lifted-blacks'], text: "Soft & Faded", icon: '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" stroke="#a8a29e"/><line x1="16" x2="2" y1="8" y2="22" stroke="#a8a29e"/><line x1="17.5" x2="9" y1="15" y2="15" stroke="#a8a29e"/>' },
+        ]
+    },
+    {
+        question: "Do you prefer color or black & white?",
+        options: [
+            { tags: ['color'], text: "Color", icon: '<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#3b82f6"/><path d="m2 12 5 5" stroke="#ef4444"/><path d="m7 17 5-10" stroke="#f97316"/><path d="m12 7 5 10" stroke="#84cc16"/><path d="m17 17 5-5" stroke="#3b82f6"/>' },
+            { tags: ['bw'], text: "Black & White", icon: '<circle cx="12" cy="12" r="10" stroke="#52525b"/><path d="M12 2a10 10 0 0 0-10 10h20a10 10 0 0 0-10-10z" fill="#71717a"/>' }
+        ]
+    },
+    {
+        type: 'conditional_saturation',
+        question: "How do you like your color saturation?",
+        options: [
+            { tags: ['high-saturation', 'vibrant', 'super-saturated'], text: "Rich", icon: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.7-3.29C8.2 7.95 7 6.46 7 5.06V3" stroke="#e11d48"/><path d="M14 3v2.06c0 1.4-.93 2.89-2.3 3.9-1.13 1.03-1.7 2.13-1.7 3.29 0 2.22 1.8 4.05 4 4.05Z" stroke="#f43f5e"/>' },
+            { tags: ['normal', 'moderate', 'natural'], text: "Natural", icon: '<circle cx="12" cy="12" r="10" stroke="#71717a"/><circle cx="12" cy="12" r="4" fill="#a1a1aa"/>' },
+            { tags: ['low-saturation', 'muted', 'faded'], text: "Muted", icon: '<circle cx="12" cy="12" r="10" stroke="#a1a1aa"/><path d="M22 2 2 22" stroke="#d4d4d8"/>' },
+        ]
+    },
+    {
+        type: 'ai_prompt',
+        question: "Create a color recipe from your inspiration",
+        description: "Describe the context, mood, or style you want. Gemini will try to create a unique color recipe for you. (Optional)"
+    }
+];
+
+import { renderOnePageQuizLayout, renderQuizResult, renderQuizAIResult, renderQuizLoading, renderQuizError, renderAIClarification } from './quiz-ui.js';
+import { callGeminiAPI } from '../services/api.js';
 import { state } from '../services/state.js';
 
-/**
- * Renders the entire one-page quiz layout.
- * @param {Array<object>} questions - The array of question data from quiz.js.
- */
-export function renderOnePageQuizLayout(questions) {
-    const quizContent = document.getElementById('quizContent');
-    if (!quizContent) return;
+async function getAIClarification(userInput, answers) {
+    const preferences = Object.values(answers).flat().join(', ');
+    const clarificationPrompt = `Based on the user's quiz answers "${preferences}" and their initial prompt "${userInput}", generate one single, concise, multiple-choice question to clarify their creative intent. The question must be in English. Respond ONLY with a valid JSON object in the format: {"question": "...", "options": ["...", "..."]}. For example: {"question": "Do you prefer a fiery sunset with vibrant reds, or a soft, pastel-toned sunset?", "options": ["Fiery and vibrant", "Soft and pastel"]}`;
 
-    const gridAreas = ["1", "2", "3", "4", "5", "6"];
-
-    const questionsHTML = questions.map((q, index) => {
-        if (q.type === 'ai_prompt') {
-            // AI Prompt Island
-            return `
-                <div class="quiz-island" data-question-index="${index}" data-grid-area="6" style="transition-delay: ${index * 100}ms;">
-                    <h3 class="text-xl font-bold text-center mb-2">${q.question[state.language]}</h3>
-                    <p class="text-gray-600 text-center text-sm mb-4">${q.description[state.language]}</p>
-                    <textarea id="aiQuizPrompt" class="w-full p-3 rounded-xl bg-white/60 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all min-h-[100px]" placeholder="${t('aiQuizPromptPlaceholder')}"></textarea>
-                </div>`;
-        } else {
-            // Standard Question Island
-            const optionsHTML = q.options.map(opt => `
-                <button class="quiz-option w-full text-left p-4 flex items-center gap-4" data-tags="${opt.tags.join(',')}" data-question-index="${index}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-8 h-8 flex-shrink-0 text-gray-500 transition-colors">${opt.icon}</svg>
-                    <span class="font-semibold text-base md:text-lg">${opt.text[state.language]}</span>
-                </button>`).join('');
-
-            return `
-                <div class="quiz-island" data-question-index="${index}" data-grid-area="${gridAreas[index] || ''}" style="transition-delay: ${index * 100}ms;">
-                    <h3 class="text-xl font-bold text-center mb-4">${q.question[state.language]}</h3>
-                    <div class="space-y-3">${optionsHTML}</div>
-                </div>`;
+    try {
+        const response = await callGeminiAPI(clarificationPrompt, null);
+        // Basic validation
+        if (response.question && Array.isArray(response.options) && response.options.length > 0) {
+            return response;
         }
-    }).join('');
+        return null;
+    } catch (error) {
+        console.error("Failed to get AI clarification:", error);
+        return null;
+    }
+}
 
-    const submitHTML = `
-        <div id="quizSubmitIsland" class="quiz-island p-6 flex flex-col items-center justify-center text-center" style="transition-delay: ${questions.length * 100}ms;">
-             <p class="text-gray-600 mb-4 text-sm" data-translate-key="quizSubmitInfo"></p>
-             <button id="submitQuizBtn" class="btn btn-pastel-submit w-full max-w-xs py-4 text-lg" disabled>
-                <span data-translate-key="quizSubmitBtn"></span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-        </div>
-    `;
+export async function handleQuizAIGeneration(finalPrompt) {
+    const { instance } = state.quiz;
+    if (!instance) return;
 
-    quizContent.innerHTML = `<div class="quiz-one-page-layout">${questionsHTML}${submitHTML}</div>`;
+    renderQuizLoading();
+    instance.applyTranslations();
 
-    // Trigger activation animation
-    setTimeout(() => {
-        document.querySelectorAll('.quiz-island').forEach(island => {
-            island.classList.add('active');
+    const expertPrompt = `As a professional colorist specializing in Sony Picture Profiles, create a completely new, creative, and fully detailed JSON object for a unique color recipe. The recipe must be inspired by this user prompt: "${finalPrompt}". The new JSON must be a complete, valid recipe object following this exact structure: { "id": "SCL-AI-001", "name": "...", "description": "...", "type": "color", "tags": [], "whiteBalance": "...", "settings": { "Black level": 0, "Gamma": "...", "Black Gamma": "...", "Knee": "...", "Color Mode": "...", "Saturation": 0, "Color Phase": 0 }, "colorDepth": { "R": 0, "G": 0, "B": 0, "C": 0, "M": 0, "Y": 0 }, "detailSettings": { "Level": 0 } }. You must only respond with the raw JSON object, without any surrounding text, explanations, or markdown formatting. The generated name and description must be in English.`;
+
+    try {
+        const generatedRecipe = await callGeminiAPI(expertPrompt, null);
+        renderQuizAIResult(generatedRecipe);
+    } catch (error) {
+        console.error("Quiz Gemini API call failed:", error);
+        renderQuizError();
+    } finally {
+        instance.applyTranslations();
+    }
+}
+
+export class Quiz {
+    constructor(dependencies) {
+        this.state = dependencies.state;
+        this.recipesData = dependencies.recipesData;
+        this.applyTranslations = dependencies.applyTranslations;
+    }
+
+    start() {
+        // Reset quiz state
+        this.state.quiz.answers = {};
+        this.state.quiz.aiContext = {
+            initialPrompt: "",
+            clarificationQuestion: "",
+            userClarification: "",
+            isAsking: false,
+        };
+        renderOnePageQuizLayout(quizQuestions);
+        this.applyTranslations();
+    }
+
+    close() {
+        // Visibility is handled by the caller.
+    }
+
+    handleAnswer(e) {
+        const selectedOption = e.target.closest('.quiz-option');
+        if (!selectedOption) return;
+
+        const questionIndex = selectedOption.dataset.questionIndex;
+        const tags = selectedOption.dataset.tags.split(',');
+        
+        this.state.quiz.answers[questionIndex] = tags;
+
+        const island = selectedOption.closest('.quiz-island');
+        island.querySelectorAll('.quiz-option').forEach(btn => btn.classList.remove('selected'));
+        selectedOption.classList.add('selected');
+
+        const bwIsland = document.querySelector('.quiz-island[data-question-index="4"]');
+        if(questionIndex === '3') {
+            if(tags.includes('bw')) {
+                bwIsland?.classList.add('hidden');
+                delete this.state.quiz.answers['4'];
+            } else {
+                bwIsland?.classList.remove('hidden');
+            }
+        }
+        
+        this.checkCompletion();
+    }
+    
+    checkCompletion() {
+        const requiredQuestions = quizQuestions.filter(q => q.type !== 'ai_prompt' && q.type !== 'conditional_saturation');
+        const answeredCount = Object.keys(this.state.quiz.answers).filter(key => {
+            const q = quizQuestions[key];
+            return q && q.type !== 'ai_prompt' && q.type !== 'conditional_saturation';
+        }).length;
+
+        const isBwSelected = this.state.quiz.answers['3']?.includes('bw');
+        let allAnswered = answeredCount >= requiredQuestions.length;
+
+        if (!isBwSelected && !this.state.quiz.answers['4']) {
+            allAnswered = false;
+        }
+
+        const submitBtn = document.getElementById('submitQuizBtn');
+        if (submitBtn) {
+            submitBtn.disabled = !allAnswered;
+        }
+    }
+
+    async submitQuiz() {
+        const aiPromptInput = document.getElementById('aiQuizPrompt');
+        const initialPrompt = aiPromptInput?.value.trim();
+
+        if (initialPrompt) {
+            state.quiz.aiContext.initialPrompt = initialPrompt;
+            renderQuizLoading();
+            this.applyTranslations();
+
+            const clarification = await getAIClarification(initialPrompt, this.state.quiz.answers);
+            if (clarification) {
+                state.quiz.aiContext.isAsking = true;
+                state.quiz.aiContext.clarificationQuestion = clarification.question;
+                renderAIClarification(clarification.question, clarification.options);
+                this.applyTranslations();
+            } else {
+                // If clarification fails, proceed directly
+                const finalPrompt = `Preferences: ${Object.values(this.state.quiz.answers).flat().join(', ')}. Creative Idea: ${initialPrompt}`;
+                handleQuizAIGeneration(finalPrompt);
+            }
+        } else {
+            this.calculateAndShowResult();
+        }
+    }
+
+    handleClarification(answer) {
+        state.quiz.aiContext.userClarification = answer;
+        state.quiz.aiContext.isAsking = false;
+        
+        const finalPrompt = `Preferences: ${Object.values(this.state.quiz.answers).flat().join(', ')}. Creative Idea: ${state.quiz.aiContext.initialPrompt}. Further Clarification: ${answer}`;
+        handleQuizAIGeneration(finalPrompt);
+    }
+
+    calculateAndShowResult() {
+        const allAnswers = Object.values(this.state.quiz.answers).flat();
+        const isBW = allAnswers.includes('bw');
+        const availableRecipes = this.recipesData.filter(r => isBW ? r.type === 'bw' : r.type === 'color');
+
+        const scores = availableRecipes.map(recipe => {
+            let score = recipe.tags.reduce((acc, tag) => acc + (allAnswers.includes(tag) ? 1 : 0), 0);
+            return { id: recipe.id, score: score };
         });
-    }, 100);
+
+        scores.sort((a, b) => b.score - a.score);
+        const bestMatch = this.recipesData.find(r => r.id === scores[0].id);
+
+        renderQuizResult(bestMatch);
+        this.applyTranslations();
+    }
 }
-
-
-/**
- * Renders the standard quiz result by replacing the quiz layout.
- * @param {object} bestMatch - The recipe object that best matches the answers.
- */
-export function renderQuizResult(bestMatch) {
-    const quizContent = document.getElementById('quizContent');
-    const createSettingsHTML = (settings) => Object.entries(settings || {}).map(([key, value]) => `
-        <div class="flex flex-col p-3 rounded-lg bg-white/70">
-            <span class="text-sm text-gray-500 font-medium">${key}</span>
-            <span class="font-semibold text-lg text-gray-800">${value}</span>
-        </div>`).join('');
-
-    quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-3xl mx-auto py-8">
-            <h3 class="text-3xl font-bold" data-translate-key="quizResultTitle"></h3>
-            <p class="mt-2 text-gray-600" data-translate-key="quizResultDescription"></p>
-            
-            <div id="quiz-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left">
-                <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
-                    <img src="${recipeImages[bestMatch.id]?.[0] || 'https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image'}" class="w-full sm:w-48 h-32 rounded-lg object-cover shadow-lg" alt="Preview" onerror="this.onerror=null;this.src='https://placehold.co/400x300/e2e8f0/a0aec0?text=No+Image';">
-                    <div class="text-center sm:text-left">
-                        <h4 class="text-2xl font-bold">${bestMatch.name[state.language]}</h4>
-                        <p class="text-gray-600 mt-1 italic">"${bestMatch.description[state.language]}"</p>
-                    </div>
-                </div>
-
-                <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
-                <div class="p-3 bg-white/70 rounded-lg font-semibold">${bestMatch.whiteBalance}</div>
-
-                <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(bestMatch.settings)}</div>
-
-                ${bestMatch.colorDepth ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2">${createSettingsHTML(bestMatch.colorDepth)}</div>` : ''}
-                ${bestMatch.detailSettings ? `<h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2">${createSettingsHTML(bestMatch.detailSettings)}</div>` : ''}
-            </div>
-
-            <div class="flex flex-wrap gap-4 justify-center">
-                <button id="viewResultBtn" data-recipe-id="${bestMatch.id}" class="btn btn-primary py-3 px-8 text-base">
-                    <span data-translate-key="viewRecipeBtn"></span>
-                </button>
-                <button id="downloadQuizResultPngBtn" data-element-id="quiz-result-card" data-recipe-name="${bestMatch.name.en}" class="btn bg-gray-700 hover:bg-gray-800 text-white py-3 px-6 shadow-lg shadow-gray-500/30">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image h-5 w-5"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                    <span data-translate-key="downloadPNG"></span>
-                </button>
-                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                    <span data-translate-key="retakeQuizBtn"></span>
-                </button>
-            </div>
-        </div>`;
-}
-
-
-/**
- * Renders the AI-generated recipe result as an editable form.
- * @param {object} recipe - The AI-generated recipe object.
- */
-export function renderQuizAIResult(recipe) {
-    state.quiz.editableRecipe = JSON.parse(JSON.stringify(recipe)); // Deep copy to avoid state mutation
-    const quizContent = document.getElementById('quizContent');
-
-    const createSettingsHTML = (settings, section) => Object.entries(settings || {}).map(([key, value]) => `
-        <div class="flex flex-col p-3 rounded-lg bg-white/70">
-            <label for="${section}-${key.replace(/\s+/g, '-')}" class="text-sm text-gray-500 font-medium">${key}</label>
-            <input type="text" id="${section}-${key.replace(/\s+/g, '-')}" data-section="${section}" data-key="${key}" class="font-semibold text-lg text-gray-800 bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none p-1" value="${value}">
-        </div>`).join('');
-
-    quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-3xl mx-auto py-8">
-            <h3 class="text-3xl font-bold" data-translate-key="aiQuizResultTitle"></h3>
-            <p class="mt-2 text-gray-600" data-translate-key="aiQuizResultDescription"></p>
-            <form id="aiRecipeForm">
-                <div id="quiz-ai-result-card" class="my-8 p-6 bg-white/80 rounded-2xl border text-left space-y-4">
-                    <div>
-                        <label for="recipeName" class="text-base font-bold mb-2 block" data-translate-key="recipeNameLabel"></label>
-                        <input type="text" id="recipeName" class="w-full text-2xl font-bold text-center p-2 border-b-2" value="${recipe.name[state.language]}">
-                    </div>
-                    <div>
-                         <label for="recipeDescription" class="text-base font-bold mb-2 block" data-translate-key="recipeDescriptionLabel"></label>
-                        <textarea id="recipeDescription" rows="2" class="w-full text-gray-600 mt-1 text-center italic p-2 border-b-2">${recipe.description[state.language]}</textarea>
-                    </div>
-
-                    <div>
-                        <h5 class="text-base font-bold mt-6 mb-2" data-translate-key="whiteBalanceTitle"></h5>
-                        <input type="text" id="whiteBalance" class="w-full p-3 bg-white/70 rounded-lg font-semibold border-b-2" value="${recipe.whiteBalance}">
-                    </div>
-
-                    <div>
-                        <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="recipeSettingsTitle"></h5>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="main-settings-grid">${createSettingsHTML(recipe.settings, 'settings')}</div>
-                    </div>
-
-                    ${recipe.colorDepth ? `<div><h5 class="text-base font-bold mt-4 mb-2" data-translate-key="colorDepthTitle"></h5><div class="grid grid-cols-3 md:grid-cols-6 gap-2" id="color-depth-grid">${createSettingsHTML(recipe.colorDepth, 'colorDepth')}</div></div>` : ''}
-                    ${recipe.detailSettings ? `<div><h5 class="text-base font-bold mt-4 mb-2" data-translate-key="detailTitle"></h5><div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="detail-settings-grid">${createSettingsHTML(recipe.detailSettings, 'detailSettings')}</div></div>` : ''}
-
-                     <div>
-                        <h5 class="text-base font-bold mt-4 mb-2" data-translate-key="notesLabel"></h5>
-                        <textarea id="recipeNotes" class="w-full p-3 rounded-lg bg-white/70 border-2 border-gray-200" rows="4" placeholder="${t('notesPlaceholder')}"></textarea>
-                    </div>
-                </div>
-                <div class="flex flex-wrap gap-4 justify-center">
-                    <button id="saveAIGeneratedRecipeBtn" type="button" class="btn btn-primary py-3 px-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save h-5 w-5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        <span data-translate-key="saveAIGeneratedRecipe"></span>
-                    </button>
-                    <button id="retakeQuizBtn" type="button" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base">
-                        <span data-translate-key="retakeQuizBtn"></span>
-                    </button>
-                </div>
-            </form>
-        </div>`;
-}
-
-/**
- * Renders a loading spinner by replacing the quiz layout.
- */
-export function renderQuizLoading() {
-    const quizContent = document.getElementById('quizContent');
-    quizContent.innerHTML = `
-        <div class="ai-loading-container">
-            <img src="/assets/Logo.png" alt="Loading..." class="ai-loading-logo">
-            <p class="mt-4 text-gray-600" data-translate-key="aiQuizGenerating"></p>
-        </div>`;
-}
-
-/**
- * Renders an error message by replacing the quiz layout.
- */
-export function renderQuizError() {
-    const quizContent = document.getElementById('quizContent');
-    quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-lg mx-auto py-8">
-            <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <h3 class="text-xl font-bold text-red-800" data-translate-key="aiErrorTitle"></h3>
-                <p class="mt-2 text-red-700" data-translate-key="aiErrorText"></p>
-                <button id="retakeQuizBtn" class="btn bg-gray-200 text-gray-800 py-3 px-8 text-base mt-4">
-                    <span data-translate-key="retakeQuizBtn"></span>
-                </button>
-            </div>
-        </div>`;
-}
-
-/**
- * Renders the AI clarification question step in the quiz.
- * @param {string} question The clarification question from the AI.
- * @param {Array<string>} options The answer options from the AI.
- */
-export function renderAIClarification(question, options) {
-    const quizContent = document.getElementById('quizContent');
-    if (!quizContent) return;
-
-    const optionsHTML = options.map(option => `
-        <button class="quiz-clarification-option btn bg-white hover:bg-gray-100 text-gray-800 py-3 px-6 border border-gray-300">
-            ${option}
-        </button>
-    `).join('');
-
-    quizContent.innerHTML = `
-        <div class="quiz-result-view text-center max-w-2xl mx-auto py-8">
-            <div class="flex justify-center items-center gap-3 mb-4">
-                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm12.25-3.625a.75.75 0 0 0-1.06-1.06l-1.592 1.591a.75.75 0 1 0 1.06 1.061l1.592-1.591ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM17.81 17.81a.75.75 0 0 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM4.19 17.81a.75.75 0 1 0-1.06-1.06l-1.591 1.592a.75.75 0 0 0 1.06 1.06l1.591-1.592ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0-1.5H3.75A.75.75 0 0 1 3 12ZM4.19 6.19a.75.75 0 0 0 1.06-1.06L3.657 3.536a.75.75 0 0 0-1.06 1.06l1.592 1.592Z" /></svg>
-                </div>
-                <h3 class="text-2xl font-bold" data-translate-key="aiClarificationTitle"></h3>
-            </div>
-            <p class="mt-2 text-lg text-gray-700">${question}</p>
-            <div class="mt-6 flex flex-wrap justify-center gap-4">
-                ${optionsHTML}
-            </div>
-        </div>
-    `;
-}
-
