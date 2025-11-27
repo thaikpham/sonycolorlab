@@ -224,6 +224,11 @@ const recipeImages = {
         "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+2",
         "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+3"
     ],
+    "scl-044": [
+        "https://placehold.co/800x600/808080/ffffff?text=Filmic+FJ+C200+1",
+        "https://placehold.co/800x600/808080/ffffff?text=Filmic+FJ+C200+2",
+        "https://placehold.co/800x600/808080/ffffff?text=Filmic+FJ+C200+3"
+    ],
     "PROCOLOR-001": [
         "https://lh3.googleusercontent.com/pw/AP1GczPxaOjzhD4jE_WqMK3d_-E0xMbf62ixSg0ccUYS51nYXHOk-y4HJ3wwq3F3Hmd51W_jjYo0JWWCTMLQ1vhmOTCV7YXO6eBW1_CmzD0bRY9Iv2u24oYSctIa0TolR1beQFo7sFoE5UaWCoN4rpl50GwnUw=w481-h1048-s-no?authuser=0",
         "https://lh3.googleusercontent.com/pw/AP1GczOukBYkXG6Tx4wyZVr6SG-4KO7SDu_hOHlqqWH7lXECgaSQd-E1Y5Gei5OM7tpYtdqJPG3T3GviII7Lbq3ytJpFe5hn2j2eZmQYOkyhIVlronmdHn2p-i_Ikfg4JQNMCa7GOALUFPOTUSVGW1MTgVr5bA=w484-h1048-s-no?authuser=0"

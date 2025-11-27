@@ -924,8 +924,8 @@ const recipesData = [
         }
     },
     {
-        "id": "scl-1001",
-        "name": "SCL-1001: ClearCast Pro",
+        "id": "PROCOLOR-001",
+        "name": "PROCOLOR-001: ClearCast Pro",
         "description": "A color recipe for crystal-clear images, featuring rich colors on a neutral foundation. Specially designed for livestreaming, it renders Asian skin tones authentically and radiantly.",
         "type": "color",
         "contrast": "normal",
@@ -945,8 +945,8 @@ const recipesData = [
         }
     },
       {
-        "id": "scl-1002",
-        "name": "SCL-1002: ClearCast Pro 2",
+        "id": "PROCOLOR-002",
+        "name": "PROCOLOR-002: ClearCast Pro 2",
         "description": "A color recipe for crystal-clear images, featuring rich colors on a neutral foundation. Specially designed for livestreaming, it renders Asian skin tones authentically and radiantly.",
         "type": "color",
         "contrast": "normal",
@@ -966,8 +966,8 @@ const recipesData = [
         }
     },
           {
-        "id": "scl-1003",
-        "name": "SCL-1003: EXTRA DR Stream 109",
+        "id": "PROCOLOR-003",
+        "name": "PROCOLOR-003: EXTRA DR Stream 109",
         "description": "A color recipe for crystal-clear images, featuring rich colors on a neutral foundation. Specially designed for livestreaming, it renders Asian skin tones authentically and radiantly.",
         "type": "color",
         "contrast": "normal",
