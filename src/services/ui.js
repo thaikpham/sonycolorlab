@@ -1,4 +1,4 @@
-// File Path: thaikpham/sonycolorlab/sonycolorlab-main/src/services/ui.js
+// File Path: src/services/ui.js
 /**
  * ui.js
  * This module is responsible for all DOM manipulations and HTML generation.
@@ -251,10 +251,9 @@ export function updateListSelectionAndScroll(id) {
         const newSelectedItem = listContainer.querySelector(`.recipe-item[data-recipe-id="${id}"]`);
         if (newSelectedItem) {
             newSelectedItem.classList.add('selected');
-            const recipe = recipesData.find(r => r.id === id);
-            if (recipe) {
-                newSelectedItem.style.setProperty('--glow-color', recipe.personalityColor);
-            }
+            // Use a default blue color since personalityColor is removed
+            newSelectedItem.style.setProperty('--glow-color', '#3b82f6');
+            
             newSelectedItem.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
@@ -268,22 +267,13 @@ export function renderHeader() {
     const header = document.getElementById('appHeader');
     if (!header) return;
 
+    // Language switcher removed as per "English only" request
     header.innerHTML = `
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
             <img src="/assets/logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
         </button>
         <div class="flex items-center gap-2 md:gap-4">
-            <div class="p-1 bg-gray-200/70 rounded-full flex relative">
-                <div id="lang-glider" class="absolute top-1 bottom-1 w-1/2 bg-white rounded-full shadow-sm transition-transform duration-300"></div>
-                <button id="langVI" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-5 h-5 rounded-sm"><path fill="#da251d" d="M0 0h900v600H0z"/><path fill="#ff0" d="m450 186-86 266 226-164h-280l226 164z"/></svg>
-                    <span class="hidden sm:inline">VIE</span>
-                </button>
-                <button id="langEN" class="lang-btn-slider relative w-1/2 p-2 rounded-full font-semibold z-10 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="w-5 h-5 rounded-sm"><clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#00247d"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/></svg>
-                    <span class="hidden sm:inline">ENG</span>
-                </button>
-            </div>
+            <!-- Language switcher was here -->
         </div>
     `;
     applyTranslations();
