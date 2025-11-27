@@ -6,10 +6,6 @@
 
 // --- Local Module Imports ---
 import { state } from './state.js';
-import { select } from 'd3-selection';
-import { scaleLinear, scaleSqrt } from 'd3-scale';
-import { axisBottom, axisLeft } from 'd3-axis';
-import { forceSimulation, forceCollide, forceX, forceY } from 'd3-force';
 import { callGeminiAPI, fetchTrendingRecipeIds } from './api.js';
 import { t, applyTranslations } from './language.js';
 import recipesData from './recipes.js';
@@ -18,18 +14,6 @@ import { showToast, openModal, closeModal } from './ui.js';
 
 // --- CDN URLs for external libraries ---
 const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-
-const d3 = {
-    select,
-    scaleLinear,
-    scaleSqrt,
-    axisBottom,
-    axisLeft,
-    forceSimulation,
-    forceCollide,
-    forceX,
-    forceY
-};
 
 // --- UTILITY ---
 
@@ -61,133 +45,24 @@ function loadScript(url, stateKey) {
 
 /**
  * Renders the interactive D3.js color map chart.
+ * DISABLED as per request.
  * @param {string} containerSelector - The CSS selector for the container element.
  * @param {object[]} data - The array of recipe data.
  */
 export async function renderColorMapChart(containerSelector, data) {
-    // Fetch trending recipe IDs
-    const trendingIds = await fetchTrendingRecipeIds();
-    const container = d3.select(containerSelector);
-    if (container.empty() || !data || data.length === 0) {
-        console.warn("Chart container not found or no data provided.");
-        return;
+    // Feature disabled.
+    const container = document.querySelector(containerSelector);
+    if (container) {
+        container.innerHTML = '';
+        container.style.display = 'none';
     }
-    container.html(''); // Clear previous chart
-
-    const bounds = container.node().getBoundingClientRect();
-    if (bounds.width === 0 || bounds.height === 0) {
-        return; // Don't render if container is not visible
-    }
-
-    const margin = { top: 40, right: 30, bottom: 50, left: 30 };
-    const width = bounds.width - margin.left - margin.right;
-    const height = bounds.height - margin.top - margin.bottom;
-
-    const svg = container.append("svg")
-        .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    const defs = svg.append("defs");
-    const filter = defs.append("filter")
-        .attr("id", "soft-glow")
-        .attr("x", "-50%").attr("y", "-50%")
-        .attr("width", "200%").attr("height", "200%");
-    filter.append("feGaussianBlur")
-        .attr("in", "SourceGraphic")
-        .attr("stdDeviation", "4")
-        .attr("result", "blur");
-
-    const xScale = d3.scaleLinear().domain([-11, 11]).range([0, width]);
-    const yScale = d3.scaleLinear().domain([-11, 11]).range([height, 0]);
-    const rScale = d3.scaleSqrt().domain([0, 10]).range([7, 12]);
-
-    const quadrantLabels = [
-        { x: width * 0.25, y: height * 0.25, text: {vi: 'LẠNH & GẮT', en: 'COOL & PUNCHY'} },
-        { x: width * 0.75, y: height * 0.25, text: {vi: 'ẤM & RỰC RỠ', en: 'WARM & VIBRANT'} },
-        { x: width * 0.25, y: height * 0.75, text: {vi: 'LẠNH & DỊU', en: 'COOL & MUTED'} },
-        { x: width * 0.75, y: height * 0.75, text: {vi: 'ẤM & MỜ', en: 'WARM & FADED'} },
-    ];
-    svg.selectAll(".quadrant-label")
-        .data(quadrantLabels)
-        .enter().append("text")
-        .attr("class", "quadrant-label")
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-        .attr("dy", "0.35em")
-        .text(d => d.text[state.language]);
-
-    svg.append("g").attr("class", "grid")
-        .call(d3.axisBottom(xScale).ticks(10).tickSize(height).tickFormat(""))
-        .selectAll("line").attr("stroke", "#f1f5f9").attr("stroke-opacity", 0.7);
-    svg.append("g").attr("class", "grid")
-        .call(d3.axisLeft(yScale).ticks(10).tickSize(-width).tickFormat(""))
-        .selectAll("line").attr("stroke", "#f1f5f9").attr("stroke-opacity", 0.7);
-
-    svg.selectAll(".domain").remove();
-
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 8).text(state.language === 'vi' ? '← Lạnh' : '← Cool');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 8).text(state.language === 'vi' ? 'Ấm →' : 'Warm →');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text(state.language === 'vi' ? '↑ Tương phản Gắt' : '↑ Punchy Contrast');
-    svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text(state.language === 'vi' ? '↓ Tương phản Dịu' : '↓ Soft Contrast');
-
-    const nodesData = data.filter(d => d.coords).map(d => ({...d, isTrending: trendingIds.includes(d.id)}));
-
-    state.chart.nodes = svg.selectAll(".color-map-node-group")
-        .data(nodesData, d => d.id)
-        .enter()
-        .append("g")
-        .attr("class", "color-map-node-group");
-
-    state.chart.nodes.append("circle")
-        .attr("class", "color-map-node-aura")
-        .attr("r", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)))
-        .attr("fill", d => d.personalityColor)
-        .attr("filter", "url(#soft-glow)")
-        .attr("opacity", 0.3);
-
-    state.chart.nodes.append("circle")
-        .attr("class", "color-map-node-core")
-        .attr("r", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)))
-        .attr("fill", d => d.personalityColor);
-
-    state.chart.nodes.append("text")
-        .attr("class", "color-map-node-label")
-        .attr("x", d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 6)
-        .attr("dy", "0.35em")
-        .text(d => d.name[state.language]);
-
-    const starNodes = state.chart.nodes.filter(d => d.isTrending);
-    
-    starNodes.append("polygon")
-        .attr("class", "trending-star-icon")
-        .attr("points", "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2")
-        .attr("fill", "#FFC700")
-        .attr("stroke", "#B38B00")
-        .attr("stroke-width", 1.5)
-        .attr("transform", "translate(5, -15) scale(0.6)");
-
-
-    state.chart.simulation = d3.forceSimulation(nodesData)
-        .force("collide", d3.forceCollide().radius(d => rScale(Math.abs(d.coords.x) + Math.abs(d.coords.y)) + 3).strength(0.8))
-        .force("x", d3.forceX(d => xScale(d.coords.x)).strength(0.1))
-        .force("y", d3.forceY(d => yScale(d.coords.y)).strength(0.1))
-        .stop();
-
-    for (let i = 0; i < 30; ++i) state.chart.simulation.tick();
-
-    state.chart.nodes
-        .attr("transform", d => `translate(${d.x}, ${d.y})`);
-
-    updateChartSelection();
 }
 
 /**
  * Updates the visual selection state of nodes on the D3 chart.
  */
 export function updateChartSelection() {
-    if (!state.chart.nodes) return;
-    state.chart.nodes.classed("selected", d => d.id === state.selectedRecipeId);
+    // Feature disabled.
 }
 
 // --- IMAGE LIGHTBOX ---
@@ -304,12 +179,15 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
     if (!originalRecipe && !generatedRecipeData) return;
 
     const recipeToRender = generatedRecipeData || originalRecipe;
-    const recipeName = recipeToRender.name.en;
+    const recipeName = recipeToRender.name; // Directly use the English string
 
     const btn = document.activeElement;
     const originalBtnContent = btn.innerHTML;
     btn.innerHTML = `<div class="loader-dark"></div> Generating...`;
     btn.disabled = true;
+
+    // Default color since personalityColor was removed
+    const accentColor = '#3b82f6'; 
 
     try {
         await loadScript(HTML2CANVAS_URL, 'html2canvas');
@@ -346,18 +224,18 @@ export async function generateRecipeCardPng(recipeId, generatedRecipeData = null
                         <img src="/assets/logo_black.png" style="height: 80px; width: auto;" alt="Logo">
                         <p style="font-size: 24px; font-weight: 600; color: #6b7280;">sonycolorlab.app</p>
                     </div>
-                    <h2 style="font-size: 80px; font-weight: 800; margin: 56px 0 16px 0; line-height: 1.1; letter-spacing: -2px;">${recipeToRender.name[state.language]}</h2>
-                    <p style="font-size: 28px; color: #4b5563; margin: 0 0 56px 0; font-style: italic; max-width: 90%;">"${recipeToRender.description[state.language]}"</p>
+                    <h2 style="font-size: 80px; font-weight: 800; margin: 56px 0 16px 0; line-height: 1.1; letter-spacing: -2px;">${recipeToRender.name}</h2>
+                    <p style="font-size: 28px; color: #4b5563; margin: 0 0 56px 0; font-style: italic; max-width: 90%;">"${recipeToRender.description}"</p>
                     
-                    <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">White Balance</h3>
+                    <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${accentColor}; padding-left: 16px;">White Balance</h3>
                     <div style="background: rgba(255, 255, 255, 0.6); border-radius: 16px; padding: 24px; font-size: 32px; font-weight: 600; border: 1px solid rgba(0,0,0,0.05);">${recipeToRender.whiteBalance}</div>
 
-                    <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">Main Settings</h3>
+                    <h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${accentColor}; padding-left: 16px;">Main Settings</h3>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.settings)}</div>
                     
-                    ${recipeToRender.colorDepth ? `<h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">Color Depth</h3><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.colorDepth)}</div>` : ''}
+                    ${recipeToRender.colorDepth ? `<h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${accentColor}; padding-left: 16px;">Color Depth</h3><div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.colorDepth)}</div>` : ''}
                     
-                    ${recipeToRender.detailSettings ? `<h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${recipeToRender.personalityColor || '#3b82f6'}; padding-left: 16px;">Detail</h3><div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.detailSettings)}</div>` : ''}
+                    ${recipeToRender.detailSettings ? `<h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 20px 0; border-left: 4px solid ${accentColor}; padding-left: 16px;">Detail</h3><div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">${createSettingsHTML(recipeToRender.detailSettings)}</div>` : ''}
                 </div>
             </div>
         `;
@@ -396,8 +274,8 @@ export async function shareRecipe(recipeId) {
     if (!recipe) return;
 
     const shareData = {
-        title: `Sony Color Lab: ${recipe.name[state.language]}`,
-        text: `Check out this Sony Alpha color recipe: "${recipe.name[state.language]}".\n${recipe.description[state.language]}`,
+        title: `Sony Color Lab: ${recipe.name}`,
+        text: `Check out this Sony Alpha color recipe: "${recipe.name}".\n${recipe.description}`,
         url: window.location.href
     };
     
@@ -433,10 +311,9 @@ export async function saveRecipeToGoogleDrive(recipeData) {
     btn.disabled = true;
 
     // Format the recipe content for the file
-    const lang = state.language;
-    let fileContent = `Sony Color Lab Recipe: ${recipeData.name[lang] || recipeData.name.en}\n`;
+    let fileContent = `Sony Color Lab Recipe: ${recipeData.name}\n`;
     fileContent += `==============================================\n\n`;
-    fileContent += `Description: ${recipeData.description[lang] || recipeData.description.en}\n\n`;
+    fileContent += `Description: ${recipeData.description}\n\n`;
     fileContent += `--- SETTINGS ---\n`;
     fileContent += `White Balance: ${recipeData.whiteBalance}\n`;
     for (const [key, value] of Object.entries(recipeData.settings)) {
@@ -461,7 +338,7 @@ export async function saveRecipeToGoogleDrive(recipeData) {
     fileContent += `\n\nGenerated via sonycolorlab.app`;
 
     const metadata = {
-        name: `Sony Recipe - ${recipeData.name.en}.txt`,
+        name: `Sony Recipe - ${recipeData.name}.txt`,
         mimeType: 'text/plain',
     };
 
