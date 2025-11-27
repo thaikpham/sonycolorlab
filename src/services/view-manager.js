@@ -1,6 +1,6 @@
 // File Path: src/services/view-manager.js
 import { state } from './state.js';
-import { initializeBackgroundBlobs, renderUltimateButton } from './ui.js';
+import { initializeBackgroundBlobs } from './ui.js';
 import { applyTranslations, updateLangSlider } from './language.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import recipesData from './recipes.js';
@@ -68,7 +68,7 @@ export function renderView(viewName, selectedId = null) {
     if (selectedId) { state.ui.selectedRecipeId = selectedId; }
 
     const blobContainer = document.getElementById('blobContainer');
-    const ultimateButtonContainer = document.getElementById('ultimateButtonContainer');
+    // ultimateButtonContainer removed
 
     document.body.style.overflowY = 'auto';
     if (state.animation.blobAnimationFrameId) {
@@ -79,7 +79,7 @@ export function renderView(viewName, selectedId = null) {
         blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
     }
 
-    ultimateButtonContainer.classList.toggle('hidden', viewName !== 'recipeFormulas');
+    // ultimateButtonContainer toggle logic removed
 
     return new Promise(resolve => {
         const currentContent = mainContentEl.children[0];
@@ -88,14 +88,14 @@ export function renderView(viewName, selectedId = null) {
             currentContent.addEventListener('animationend', async () => {
                 mainContentEl.innerHTML = viewTemplates[viewName]();
                 await attachViewEventListeners(viewName);
-                renderUltimateButton();
+                // renderUltimateButton removed
                 applyTranslations();
                 resolve();
             }, { once: true });
         } else {
             mainContentEl.innerHTML = viewTemplates[viewName]();
             attachViewEventListeners(viewName);
-            renderUltimateButton();
+            // renderUltimateButton removed
             applyTranslations();
             resolve();
         }
