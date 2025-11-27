@@ -6,12 +6,11 @@ import { initializeFirebase } from './services/api.js';
 import { initEventListeners } from './services/event-listeners.js';
 import { renderView } from './services/view-manager.js';
 import { state } from './services/state.js';
-import { renderHeader } from './services/ui.js';
+import { renderHeader, updateListSelectionAndScroll } from './services/ui.js';
 
 
 async function init() {
   initLanguage();
-  // The initConfig() call has been removed as configuration is handled by Vite environment variables.
   
   const app = initializeFirebase();
   if (app) {
@@ -23,7 +22,20 @@ async function init() {
   renderHeader();
   initEventListeners();
 
-  await renderView('recipeFormulas');
+  // Check URL parameters for initial recipe ID
+  const params = new URLSearchParams(window.location.search);
+  const initialRecipeId = params.get('id');
+
+  // Render the main view, passing the recipe ID if present
+  await renderView('recipeFormulas', initialRecipeId);
+  
+  // If we have an initial ID, we might need to ensure the list item is scrolled into view
+  if (initialRecipeId) {
+      setTimeout(() => {
+          updateListSelectionAndScroll(initialRecipeId);
+      }, 100);
+  }
+
   updateLangSlider();
 }
 
