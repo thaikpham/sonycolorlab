@@ -273,10 +273,14 @@ export async function shareRecipe(recipeId) {
     const recipe = recipesData.find(r => r.id === recipeId);
     if (!recipe) return;
 
+    // Construct specific share URL
+    const shareUrl = new URL(window.location.origin);
+    shareUrl.searchParams.set('id', recipeId);
+
     const shareData = {
         title: `Sony Color Lab: ${recipe.name}`,
         text: `Check out this Sony Alpha color recipe: "${recipe.name}".\n${recipe.description}`,
-        url: window.location.href
+        url: shareUrl.toString()
     };
     
     try {
@@ -380,4 +384,3 @@ export async function saveRecipeToGoogleDrive(recipeData) {
         }
     }
 }
-
