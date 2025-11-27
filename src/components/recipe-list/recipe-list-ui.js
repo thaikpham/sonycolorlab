@@ -153,9 +153,7 @@ function createRecipeDetailHTML(recipe) {
     ` : '';
 
     return `
-        ${createCollageHTML(demoImages)}
-
-        <div class="mt-6 flex flex-col sm:flex-row justify-between items-start gap-4">
+        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
                 <h3 class="text-3xl md:text-4xl font-bold">${formatRecipeName(recipe.name)}</h3>
                 <p class="text-lg text-neutral-600 mt-1">"${recipe.description}"</p>
@@ -164,6 +162,8 @@ function createRecipeDetailHTML(recipe) {
                 ${favoriteButtonHTML}
             </div>
         </div>
+
+        ${createCollageHTML(demoImages)}
 
         <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
             <button class="btn btn-primary py-3 px-6" id="tweakWithAIBtn" data-recipe-id="${recipe.id}" ${aiDisabledAttr}>
@@ -230,11 +230,6 @@ export function renderLibraryDetails() {
     recipeContentContainer.classList.remove('hidden');
     if(!isMobile) recipeMainPanel?.classList.remove('hidden');
 
-    recipeContentContainer.innerHTML = `
-        <div class="mb-4 hidden md:block">
-            <button id="backToChartBtn" class="btn bg-white/60 border border-gray-200/80 text-gray-700 hover:bg-white/90 py-2 px-4 text-sm" data-translate-key="backToChartBtn">← Back to Color Map</button>
-        </div>
-        ${createRecipeDetailHTML(recipe)}
-    `;
+    recipeContentContainer.innerHTML = createRecipeDetailHTML(recipe);
     applyTranslations();
 }
