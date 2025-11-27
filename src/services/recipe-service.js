@@ -9,6 +9,16 @@ export function handleRecipeSelection(id) {
     state.ui.selectedRecipeId = (state.ui.selectedRecipeId === id) ? null : id;
     state.ui.isMobileDetailActive = !!state.ui.selectedRecipeId;
 
+    // --- Update URL Parameter ---
+    const newUrl = new URL(window.location);
+    if (state.ui.selectedRecipeId) {
+        newUrl.searchParams.set('id', state.ui.selectedRecipeId);
+    } else {
+        newUrl.searchParams.delete('id');
+    }
+    window.history.pushState({}, '', newUrl);
+    // ----------------------------
+
     updateListSelectionAndScroll(state.ui.selectedRecipeId);
     renderLibraryDetails();
     updateChartSelection();
@@ -30,6 +40,13 @@ export function handleRecipeSelection(id) {
 export function resetToChartView() {
     state.ui.selectedRecipeId = null;
     state.ui.isMobileDetailActive = false;
+
+    // --- Reset URL Parameter ---
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.delete('id');
+    window.history.pushState({}, '', newUrl);
+    // ---------------------------
+
     updateListSelectionAndScroll(null);
     renderLibraryDetails();
     updateChartSelection();
