@@ -183,7 +183,7 @@ export function renderHeader() {
 
     header.innerHTML = `
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
-            <img src="/assets/logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
+            <!-- Logo removed as requested -->
         </button>
         <div class="flex items-center gap-2 md:gap-4">
             <!-- Language switcher removed -->
