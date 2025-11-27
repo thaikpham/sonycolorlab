@@ -19,12 +19,11 @@ const viewTemplates = {
             </aside>
             <main id="recipeMainPanel" class="h-full flex-grow hidden md:flex flex-col min-h-0">
                 <div class="glass-panel flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
-                    <div id="welcomeAndChartContainer" class="flex flex-col items-center justify-center h-full">
-                        <div id="welcomeText" class="text-center">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-700" data-translate-key="recipeDetailWelcomeTitle"></h2>
-                            <p class="text-neutral-500 mt-2 max-w-xl mx-auto" data-translate-key="recipeDetailWelcomeText"></p>
-                        </div>
-                        <!-- Chart container removed -->
+                    <div id="welcomeAndChartContainer" class="w-full h-full flex items-center justify-center p-4 overflow-hidden">
+                         <img src="https://raw.githubusercontent.com/thaikpham/color-lab-flyer/main/ColorLAB%20Flyer.png" 
+                              alt="Color Lab Flyer" 
+                              class="max-w-full max-h-full object-contain rounded-2xl shadow-sm"
+                              style="width: auto; height: auto;" />
                     </div>
                     <div id="recipeContent" class="hidden"></div>
                 </div>
