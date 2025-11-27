@@ -11,6 +11,10 @@ const viewTemplates = {
     recipeFormulas: () => `
         <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
             <aside id="recipeListPanel" class="h-full w-full md:w-auto md:flex-shrink-0 glass-panel p-4 md:p-5 flex flex-col">
+                <div class="mb-6 flex-shrink-0">
+                    <h3 class="text-3xl md:text-4xl font-bold" data-translate-key="navRecipeFormulas">Color Recipes</h3>
+                    <p class="text-lg text-neutral-600 mt-1 leading-snug" data-translate-key="landingSubtitle">Discover and create unique color recipes for your Sony Alpha camera, powered by AI.</p>
+                </div>
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                 </div>
