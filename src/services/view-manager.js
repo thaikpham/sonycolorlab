@@ -68,7 +68,6 @@ export function renderView(viewName, selectedId = null) {
     if (selectedId) { state.ui.selectedRecipeId = selectedId; }
 
     const blobContainer = document.getElementById('blobContainer');
-    // ultimateButtonContainer removed
 
     document.body.style.overflowY = 'auto';
     if (state.animation.blobAnimationFrameId) {
@@ -79,8 +78,6 @@ export function renderView(viewName, selectedId = null) {
         blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
     }
 
-    // ultimateButtonContainer toggle logic removed
-
     return new Promise(resolve => {
         const currentContent = mainContentEl.children[0];
         if (currentContent) {
@@ -88,14 +85,12 @@ export function renderView(viewName, selectedId = null) {
             currentContent.addEventListener('animationend', async () => {
                 mainContentEl.innerHTML = viewTemplates[viewName]();
                 await attachViewEventListeners(viewName);
-                // renderUltimateButton removed
                 applyTranslations();
                 resolve();
             }, { once: true });
         } else {
             mainContentEl.innerHTML = viewTemplates[viewName]();
             attachViewEventListeners(viewName);
-            // renderUltimateButton removed
             applyTranslations();
             resolve();
         }
