@@ -225,9 +225,12 @@ const recipeImages = {
         "https://placehold.co/800x600/CDDC39/ffffff?text=AnhTuanMacro+3"
     ],
     "scl-044": [
-        "https://placehold.co/800x600/808080/ffffff?text=Filmic+FJ+C200+1",
-        "https://placehold.co/800x600/808080/ffffff?text=Filmic+FJ+C200+2",
-        "https://placehold.co/800x600/808080/ffffff?text=Filmic+FJ+C200+3"
+        "https://lh3.googleusercontent.com/pw/AP1GczPnyzVYoDRI4KAz-NrYS_0k0sm5bRcbj3lfD1moTz82sj4Z5nvT4Pq-swKC620Vq7YoPiQsKO46pmQHaZcmRtbl6BLL6ZNYB-ChFz6-z_g5VMAIa_YpyE8Sgb4TtZsSEkmaciZP6_JQNcslEw19R1AdGQ=w1436-h957-s-no?authuser=0",
+        "https://lh3.googleusercontent.com/pw/AP1GczOZtNn_cOJ6d_1m_ucJwvl-_syINIH8Qplrdi1EnvUFexjSFCat1JyPBs5Kuy6LFiGkIncV0SsVLiw_0H19N3AQu8CuLDtgEyXLTPGOMQIotC2wC3XZcGaZV1pdyDcPgQ5pjOrNH7O7k07Mdg6R6onicw=w638-h957-s-no?authuser=0",
+        "https://lh3.googleusercontent.com/pw/AP1GczPfRTJ8042SRqhnZpG979LFUblBx0dLFsss7epLcRDPP8XMbHfBCB3kpiWavcyCv1U3wcJUFJF_VkK0LqwrlshMRtMcWLEV8NyJExcffKcubk4D7twQh9pFHPQg5Dmy1psFcSLgzAmvANDMF9TYOzNl1w=w638-h957-s-no?authuser=0",
+        "https://lh3.googleusercontent.com/pw/AP1GczNSJKieV12GRRZYuBKplzCSk4DT7XFnByOU6x3UjT3oExhYoGKJwmyqjY3m1DWzvRK2Ip--ToggF9MSp9lkyWiUu_GNuP1OO5aj3DjhReNpHf_O-yiqTjffuEG7P5i7ev7Mehz722vaJD27EspMA7MnoQ=w638-h957-s-no?authuser=0",
+        "https://lh3.googleusercontent.com/pw/AP1GczPYm59hstz61nyhh3zP2l6rjHq4yjKtD8L7TMH9e-OqlcNMmTf1iN71eYiBHpbxtsXUHEde-EA7ZjHC1FK5WIpZOMQgr_uGKhHDD1O0xhteAydopSn6vhPTc6dXASd-h142femVCr9f2yYZwB71Rd54mw=w638-h957-s-no?authuser=0",
+        "https://lh3.googleusercontent.com/pw/AP1GczOwbck7Y2xXrE7T53f9G_H_W5Yz8ofqowhKpSPHPaH4UsSxcHVL9qnLVFgVspbnhgdb57H-zi-cAicp0j9mz8XkPJpM7Oy0Qh-i35DyDqFs2003-JvmSP4Srk9RT550fAVODU5_dThObH97SNEWlqq0xQ=w638-h957-s-no?authuser=0"     
     ],
     "PROCOLOR-001": [
         "https://lh3.googleusercontent.com/pw/AP1GczPxaOjzhD4jE_WqMK3d_-E0xMbf62ixSg0ccUYS51nYXHOk-y4HJ3wwq3F3Hmd51W_jjYo0JWWCTMLQ1vhmOTCV7YXO6eBW1_CmzD0bRY9Iv2u24oYSctIa0TolR1beQFo7sFoE5UaWCoN4rpl50GwnUw=w481-h1048-s-no?authuser=0",
