@@ -11,7 +11,8 @@ import { parameterExplanations } from '../../services/parameterExplanations.js';
 
 function createFilterHTML() {
     const { filter } = state.ui;
-    const isLoggedIn = state.auth.isLoggedIn;
+    // Auth is removed, default to false
+    const isLoggedIn = false;
 
     const filters = [
         { key: 'all', nameKey: 'allRecipes' },
@@ -61,7 +62,8 @@ export async function renderLibraryList() {
         const trendingIds = await fetchTrendingRecipeIds();
         recipesToRender = recipesData.filter(r => trendingIds.includes(r.id));
     } else if (filter === 'favorites') {
-        const favoriteIds = state.auth.favorites || [];
+        // Auth removed, empty favorites
+        const favoriteIds = [];
         recipesToRender = recipesData.filter(r => favoriteIds.includes(r.id));
     }
 
@@ -144,13 +146,10 @@ function createRecipeDetailHTML(recipe) {
     ].filter(Boolean);
 
     const aiDisabledAttr = !isAIEnabled ? `disabled title="${t('aiKeyNotConfigured')}"` : '';
-    const isFavorited = state.auth.favorites?.includes(recipe.id);
-    const favoriteButtonHTML = state.auth.isLoggedIn ? `
-        <button id="favoriteBtn" data-recipe-id="${recipe.id}" class="btn ${isFavorited ? 'bg-yellow-400 hover:bg-yellow-500 text-white' : 'bg-white/60 hover:bg-white/90 text-gray-700'} border border-gray-200/80 py-2.5 px-6 shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${isFavorited ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star h-5 w-5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <span data-translate-key="${isFavorited ? 'favoritedBtn' : 'favoriteBtn'}"></span>
-        </button>
-    ` : '';
+    const isFavorited = false; // Auth removed
+
+    // Favorite button removed since auth is removed
+    const favoriteButtonHTML = '';
 
     return `
         <div class="mb-6 flex flex-col sm:flex-row justify-between items-start gap-4">

@@ -2,7 +2,7 @@
 import './styles/style.css';
 // --- Local Module Imports ---
 import { initLanguage, updateLangSlider } from './services/language.js';
-import { initializeFirebase } from './services/api.js';
+// initializeFirebase removed
 import { initEventListeners } from './services/event-listeners.js';
 import { renderView } from './services/view-manager.js';
 import { state } from './services/state.js';
@@ -12,12 +12,8 @@ import { renderHeader, updateListSelectionAndScroll } from './services/ui.js';
 async function init() {
   initLanguage();
   
-  const app = initializeFirebase();
-  if (app) {
-    state.firebase.app = app;
-  } else {
-    console.error("Firebase App failed to initialize. Authentication and Firestore functionalities will be unavailable.");
-  }
+  // Firebase initialization removed
+  state.firebase.app = null;
 
   renderHeader();
   initEventListeners();

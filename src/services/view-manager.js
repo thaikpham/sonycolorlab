@@ -95,7 +95,7 @@ export async function attachViewEventListeners(viewName) {
             listPanel.addEventListener('mouseenter', setStageActive);
             mainPanel.addEventListener('mouseenter', setStageInactive);
         }
-        // Chart initialization removed
+
         updateLangSlider();
     }
 }

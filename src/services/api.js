@@ -4,61 +4,25 @@
  * This module handles all interactions with external services.
  */
 
-// --- Firebase SDK Imports ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
 // --- Local Module Imports ---
-import { state, __firebase_config, __app_id, isAIEnabled, API_KEY } from './state.js';
+import { isAIEnabled, API_KEY } from './state.js';
 
 /**
  * Initializes the Firebase application and returns the app instance.
  * @returns {object|null} The Firebase app instance or null if initialization fails.
  */
 export function initializeFirebase() {
-    const firebaseConfigStr = import.meta.env.VITE_FIREBASE_CONFIG;
-    if (!firebaseConfigStr || firebaseConfigStr.startsWith("%%")) {
-        console.warn("Firebase config not found. Features requiring Firebase will be disabled.");
-        state.firebase.db = null;
-        return null;
-    }
-    try {
-        const firebaseConfig = JSON.parse(firebaseConfigStr);
-        if (!firebaseConfig.projectId) {
-             console.error("Firebase config is missing projectId. Initialization aborted.");
-             state.firebase.db = null;
-             return null;
-        }
-        const app = initializeApp(firebaseConfig);
-        console.log("Firebase app initialized successfully.");
-        return app;
-    } catch (error) {
-        console.error("Firebase initialization failed:", error);
-        state.firebase.db = null;
-        return null;
-    }
+    // Firebase removed as per user request
+    return null;
 }
 
 /**
- * Fetches the latest trending recipe IDs from Firestore.
+ * Fetches the latest trending recipe IDs.
  */
 export async function fetchTrendingRecipeIds() {
+    // Static fallback since Firebase is removed
     const fallbackIDs = ["scl-001", "scl-007", "scl-008", "scl-015", "scl-027"];
-    if (!state.firebase.db) {
-        return fallbackIDs;
-    }
-    try {
-        const docRef = doc(state.firebase.db, `artifacts/${__app_id}/public/data/trending/latest`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists() && docSnap.data().ids && docSnap.data().ids.length > 0) {
-            return docSnap.data().ids;
-        } else {
-            return fallbackIDs;
-        }
-    } catch (error) {
-        console.error("Error fetching trending data:", error);
-        return fallbackIDs;
-    }
+    return fallbackIDs;
 }
 
 /**
@@ -102,4 +66,3 @@ export async function callGeminiAPI(prompt, signal) {
     
     return JSON.parse(result.candidates[0].content.parts[0].text);
 }
-
