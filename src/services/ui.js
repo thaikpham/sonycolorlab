@@ -181,13 +181,12 @@ export function renderHeader() {
     const header = document.getElementById('appHeader');
     if (!header) return;
 
-    // Language switcher removed as per "English only" request
     header.innerHTML = `
         <button id="homeBtn" class="flex items-center transition-transform duration-200 hover:scale-105 active:scale-100">
             <img src="/assets/logo_black.png" alt="Alpha AI Color Lab Logo" class="h-16 md:h-20 w-auto">
         </button>
         <div class="flex items-center gap-2 md:gap-4">
-            <!-- Language switcher was here -->
+            <!-- Language switcher removed -->
         </div>
     `;
     applyTranslations();
