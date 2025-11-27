@@ -1,7 +1,7 @@
 // File Path: src/services/event-listeners.js
 import { select } from 'd3-selection';
 import { state } from './state.js';
-import { openModal, closeModal, toggleUltimateActionsMenu, showToast } from './ui.js';
+import { openModal, closeModal, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { setLanguage, updateLangSlider, applyTranslations, t } from './language.js';
 import { renderColorMapChart, openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
@@ -78,32 +78,6 @@ export function initEventListeners() {
             openModal('quizModal');
             initializeAndStartQuiz();
             return;
-        }
-        
-        // --- Ultimate Button Logic ---
-        if (target.closest('#ultimateCtaBtn')) {
-            if (state.ui.currentView === 'home') {
-                await renderView('recipeFormulas');
-            } else if (state.ui.currentView === 'recipeFormulas') {
-                toggleUltimateActionsMenu();
-            }
-            return;
-        }
-
-        // --- Ultimate Actions Menu Logic ---
-        if (target.closest('#ultimateQuizBtn')) {
-            toggleUltimateActionsMenu(true);
-            openModal('quizModal');
-            initializeAndStartQuiz();
-            return;
-        }
-        if (target.closest('#ultimateContributeBtn')) {
-            toggleUltimateActionsMenu(true);
-            openModal('contributionNoteModal');
-            return;
-        }
-        if (!target.closest('#ultimateButtonWrapper')) {
-            toggleUltimateActionsMenu(true);
         }
         
         const langBtn = target.closest('.lang-btn-slider');
