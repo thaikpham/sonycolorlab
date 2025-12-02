@@ -10,14 +10,17 @@ const mainContentEl = document.getElementById('mainContent');
 const viewTemplates = {
     recipeFormulas: () => `
         <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0 view-transition">
-            <aside id="recipeListPanel" class="h-full w-full md:w-1/2 md:flex-shrink-0 bg-white/60 backdrop-blur-md border-r border-gray-200 p-4 md:p-5 flex flex-col">
+            <!-- SIDEBAR: Fixed full height on desktop -->
+            <aside id="recipeListPanel" class="w-full md:fixed md:top-0 md:left-0 md:h-screen md:w-[320px] lg:w-[25%] md:z-40 bg-white/60 backdrop-blur-md border-r border-gray-200 p-4 md:p-5 flex flex-col transition-all duration-300">
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
                 </div>
                 <div id="recipeListFilter"></div>
                 <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
             </aside>
-            <main id="recipeMainPanel" class="h-full flex-grow hidden md:flex flex-col min-h-0">
+            
+            <!-- MAIN CONTENT: Pushed right on desktop -->
+            <main id="recipeMainPanel" class="h-full flex-grow hidden md:flex flex-col min-h-0 md:ml-[320px] lg:ml-[25%] transition-all duration-300">
                 <div class="w-full h-full flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="w-full h-full flex flex-col items-center justify-start p-4 overflow-y-auto">
                          <div class="max-w-4xl w-full space-y-8 text-center">
@@ -81,21 +84,6 @@ export async function attachViewEventListeners(viewName) {
     if (viewName === 'recipeFormulas') {
         renderLibraryList();
         renderLibraryDetails();
-
-        const view = document.getElementById('recipeFormulasView');
-        const listPanel = document.getElementById('recipeListPanel');
-        const mainPanel = document.getElementById('recipeMainPanel');
-
-        if (view && listPanel && mainPanel && window.innerWidth >= 1024) {
-            const setStageActive = () => view.classList.remove('stage-inactive');
-            const setStageInactive = () => view.classList.add('stage-inactive');
-
-            setTimeout(setStageInactive, 500);
-
-            listPanel.addEventListener('mouseenter', setStageActive);
-            mainPanel.addEventListener('mouseenter', setStageInactive);
-        }
-
         updateLangSlider();
     }
 }
