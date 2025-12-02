@@ -1,3 +1,4 @@
+// File Path: src/services/features.js
 /**
  * features.js
  * This module encapsulates logic for complex, self-contained features
@@ -13,6 +14,7 @@ import { showToast } from './ui.js';
 
 // --- CDN URLs for external libraries ---
 const HTML2CANVAS_URL = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+const CHARTJS_URL = "https://cdn.jsdelivr.net/npm/chart.js";
 
 // --- UTILITY ---
 
@@ -52,6 +54,160 @@ export function updateChartSelection() {
 
 export async function renderColorMapChart(containerSelector, data) {
     // No-op
+}
+
+// --- GUIDE CHART & LOGIC ---
+
+const menuPaths = {
+    new: [
+        { icon: '🔘', text: 'Mode Dial: P, A, S, M' },
+        { icon: '🟨', text: 'Menu → Exposure/Color' },
+        { icon: '🎨', text: 'Color/Tone → Picture Profile' },
+        { icon: '➡️', text: 'Select PP1 → Right Arrow' }
+    ],
+    old: [
+        { icon: '🔘', text: 'Mode Dial: P, A, S, M' },
+        { icon: '🟥', text: 'Menu → Camera Settings 1' },
+        { icon: '📄', text: 'Page 11/12 (Color/WB)' },
+        { icon: '➡️', text: 'Picture Profile → Right Arrow' }
+    ]
+};
+
+export function renderMenuPath() {
+    const container = document.getElementById('path-container');
+    if (!container) return;
+    
+    const pathData = menuPaths[state.guide.menuSystem];
+    container.innerHTML = ''; // Clear
+
+    pathData.forEach((step, index) => {
+        const stepEl = document.createElement('div');
+        stepEl.className = 'flex items-center gap-3 bg-white/10 p-3 rounded-lg border border-white/10 backdrop-blur-sm w-full md:w-auto transition-all animate-fade-in';
+        stepEl.style.animationDelay = `${index * 100}ms`;
+        
+        stepEl.innerHTML = `
+            <span class="text-2xl">${step.icon}</span>
+            <span class="font-bold">${step.text}</span>
+        `;
+        
+        container.appendChild(stepEl);
+
+        // Add arrow if not last
+        if (index < pathData.length - 1) {
+            const arrow = document.createElement('div');
+            arrow.className = 'hidden md:block text-slate-500 text-xl font-bold';
+            arrow.innerText = '→';
+            container.appendChild(arrow);
+        }
+    });
+}
+
+export function updateMenuSystemUI(system) {
+    const btnNew = document.getElementById('btn-new-menu');
+    const btnOld = document.getElementById('btn-old-menu');
+    const textModel = document.getElementById('camera-model-text');
+
+    if (btnNew && btnOld && textModel) {
+        if (system === 'new') {
+            btnNew.classList.add('guide-active-tab');
+            btnNew.classList.remove('guide-inactive-tab');
+            btnOld.classList.remove('guide-active-tab');
+            btnOld.classList.add('guide-inactive-tab');
+            textModel.innerText = "New Menu System";
+        } else {
+            btnOld.classList.add('guide-active-tab');
+            btnOld.classList.remove('guide-inactive-tab');
+            btnNew.classList.remove('guide-active-tab');
+            btnNew.classList.add('guide-inactive-tab');
+            textModel.innerText = "Old Menu System";
+        }
+    }
+}
+
+export async function initGuideChart() {
+    const ctx = document.getElementById('exposureChart');
+    if (!ctx) return;
+
+    try {
+        await loadScript(CHARTJS_URL, 'chartjs');
+        
+        new window.Chart(ctx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Standard (Normal)', 'Cine2 Recipes', 'S-Log Recipes'],
+                datasets: [{
+                    label: 'Required Exposure Compensation (Ev)',
+                    data: [0, 0.7, 2.0], 
+                    backgroundColor: [
+                        '#cbd5e1', // Slate-300
+                        '#f97316', // Orange-500
+                        '#ef4444'  // Red-500
+                    ],
+                    borderColor: [
+                        '#94a3b8',
+                        '#ea580c',
+                        '#dc2626'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 2.5,
+                        title: {
+                            display: true,
+                            text: 'Exposure Value (+)',
+                            font: { family: 'Inter', weight: 'bold' }
+                        },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter', weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y > 0) {
+                                    label += '+';
+                                }
+                                label += context.parsed.y + ' Stops';
+                                return label;
+                            },
+                            afterBody: function(context) {
+                                const val = context[0].parsed.y;
+                                if(val === 0) return "Meter at 0. Standard digital exposure.";
+                                if(val === 0.7) return "Overexpose slightly to avoid muddy shadows.";
+                                if(val === 2.0) return "CRITICAL: Must overexpose to avoid noise floor.";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Failed to load Chart.js", error);
+    }
+}
+
+export function initGuideFeatures() {
+    renderMenuPath();
+    updateMenuSystemUI(state.guide.menuSystem);
+    initGuideChart();
 }
 
 // --- IMAGE LIGHTBOX ---
