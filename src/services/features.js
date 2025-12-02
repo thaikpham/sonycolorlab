@@ -73,6 +73,32 @@ const menuPaths = {
     ]
 };
 
+const guideVideos = {
+    new: 'nAWs5Mus90s', // New Menu Video
+    old: 'SI0bdb_oP9A'  // Old Menu Video
+};
+
+export function renderGuideVideo(system) {
+    const container = document.getElementById('guide-video-container');
+    const videoId = guideVideos[system];
+    
+    if(!container || !videoId) return;
+
+    container.innerHTML = `
+        <div class="relative aspect-video w-full rounded-xl overflow-hidden cursor-pointer group video-thumbnail-wrapper" data-video-id="${videoId}">
+            <img src="https://img.youtube.com/vi/${videoId}/maxresdefault.jpg" alt="Guide Video" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-2xl transition-transform duration-300 group-hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+            </div>
+            <div class="absolute bottom-3 left-4 text-white font-medium text-sm drop-shadow-md bg-black/60 px-3 py-1 rounded-md backdrop-blur-sm">
+                Watch Setup Guide
+            </div>
+        </div>
+    `;
+}
+
 export function renderMenuPath() {
     const container = document.getElementById('path-container');
     if (!container) return;
@@ -122,6 +148,8 @@ export function updateMenuSystemUI(system) {
             textModel.innerText = "Old Menu System";
         }
     }
+    // Also update video when system changes
+    renderGuideVideo(system);
 }
 
 export async function initGuideChart() {
@@ -207,6 +235,7 @@ export async function initGuideChart() {
 export function initGuideFeatures() {
     renderMenuPath();
     updateMenuSystemUI(state.guide.menuSystem);
+    renderGuideVideo(state.guide.menuSystem); // Initial render of video
     initGuideChart();
 }
 
