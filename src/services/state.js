@@ -58,6 +58,11 @@ export const state = {
     }
   },
 
+  // Guide feature state
+  guide: {
+    menuSystem: 'new', // 'new' or 'old'
+  },
+
   // Firebase state (Stubbed)
   firebase: {
     db: null,
@@ -79,5 +84,6 @@ export const state = {
   scripts: {
     jspdf: false,
     html2canvas: false,
+    chartjs: false,
   }
 };

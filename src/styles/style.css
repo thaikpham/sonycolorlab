@@ -519,3 +519,38 @@ body.dark .loading-overlay p {
 body.dark .spinner {
   border-left-color: #0af; /* Màu sáng hơn cho dark mode */
 }
+
+/* Guide specific styles */
+.chart-container {
+    position: relative;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    max-height: 400px;
+}
+@media (min-width: 768px) {
+    .chart-container {
+        height: 350px;
+    }
+}
+.guide-step-card {
+    transition: all 0.3s ease;
+}
+.guide-step-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.guide-active-tab {
+    background-color: #f97316; /* Orange-500 */
+    color: white;
+    border-color: #f97316;
+}
+.guide-inactive-tab {
+    background-color: white;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+.guide-inactive-tab:hover {
+    background-color: #f1f5f9;
+}

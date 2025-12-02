@@ -5,7 +5,7 @@ import { openModal, closeModal, showToast } from './ui.js';
 import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
 import { setLanguage, updateLangSlider, applyTranslations, t } from './language.js';
 // renderColorMapChart removed
-import { openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng } from './features.js';
+import { openLightbox, generateRecipeCardPng, shareRecipe, generateRecipePng, renderMenuPath, updateMenuSystemUI } from './features.js';
 import { handleRecipeSelection, resetToChartView } from './recipe-service.js';
 import { renderView } from './view-manager.js';
 import { parameterExplanations } from './parameterExplanations.js';
@@ -36,7 +36,58 @@ export function initEventListeners() {
 
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
         
-        // Quiz shortcut removed
+        // Guide Interactions
+        
+        // 1. Menu System Toggles
+        if (target.closest('.guide-menu-btn')) {
+            const btn = target.closest('.guide-menu-btn');
+            const system = btn.dataset.menu;
+            state.guide.menuSystem = system;
+            updateMenuSystemUI(system);
+            renderMenuPath();
+            return;
+        }
+
+        // 2. Video Thumbnail Click (New Feature)
+        if (target.closest('.video-thumbnail-wrapper')) {
+            const wrapper = target.closest('.video-thumbnail-wrapper');
+            const videoId = wrapper.dataset.videoId;
+            if (videoId) {
+                wrapper.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+                wrapper.classList.remove('cursor-pointer', 'group'); // Remove pointer behavior once playing
+            }
+            return;
+        }
+
+        // 3. Checklist Items
+        if (target.closest('.guide-checklist-item')) {
+            const item = target.closest('.guide-checklist-item');
+            const circle = item.querySelector('.check-circle');
+            if (circle) {
+                circle.classList.toggle('bg-orange-500');
+                circle.classList.toggle('border-transparent');
+                // Optional: Change icon color if needed, currently CSS handles bg
+                circle.style.color = circle.classList.contains('bg-orange-500') ? 'white' : '';
+            }
+            return;
+        }
+
+        // 4. Ingredient Cards Toggle
+        if (target.closest('.guide-ingredient-card')) {
+            const card = target.closest('.guide-ingredient-card');
+            const ingredientId = card.dataset.ingredient;
+            const desc = document.getElementById(`desc-${ingredientId}`);
+            if (desc) {
+                if (desc.classList.contains('hidden')) {
+                    desc.classList.remove('hidden');
+                    desc.classList.add('block');
+                } else {
+                    desc.classList.add('hidden');
+                    desc.classList.remove('block');
+                }
+            }
+            return;
+        }
 
         // Language switcher removed
 
