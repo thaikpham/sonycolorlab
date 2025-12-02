@@ -20,6 +20,11 @@ const viewTemplates = {
                  2. view-transition: Animates the sidebar itself. Since the parent has no transform, this works correctly.
                  3. z-50: Ensures it overlays the header. -->
             <aside id="recipeListPanel" class="view-transition w-full md:!fixed md:!top-0 md:!left-0 md:!h-screen md:w-[320px] lg:w-[25%] z-50 bg-white/60 backdrop-blur-md border-r border-gray-200 p-4 md:p-5 flex flex-col transition-all duration-300">
+                <!-- Added Logo at the top of the sidebar -->
+                <div class="mb-6 flex justify-center md:justify-start flex-shrink-0 cursor-pointer" id="sidebarLogoBtn">
+                    <img src="/assets/logo_black.png" alt="Alpha AI Color Lab" class="h-24 w-auto object-contain hover:opacity-80 transition-opacity">
+                </div>
+
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" placeholder="Find your signature style">
                 </div>
@@ -33,11 +38,12 @@ const viewTemplates = {
             <main id="recipeMainPanel" class="view-transition h-full flex-grow hidden md:flex flex-col min-h-0 md:ml-[320px] lg:ml-[25%] transition-all duration-300">
                 <div class="w-full h-full flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="w-full h-full flex flex-col items-center justify-start p-4 overflow-y-auto">
-                         <div class="max-w-4xl w-full space-y-8 text-center">
+                         <!-- Changed max-w-4xl to max-w-full to utilize full width of the container -->
+                         <div class="max-w-full w-full space-y-8 text-center">
                             <!-- Hero Section -->
                             <div class="space-y-4">
-                                <!-- Adjusted H1 font size for better one-line fit: text-2xl sm:text-3xl md:text-5xl -->
-                                <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+                                <!-- Adjusted H1 font size for better one-line fit: text-2xl sm:text-3xl md:text-4xl lg:text-5xl -->
+                                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">
                                     Unlock Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Sony Alpha's</span> True Potential
                                 </h1>
                                 <!-- Adjusted subtitle size and added line-clamp-3 -->
