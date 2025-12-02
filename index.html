@@ -42,7 +42,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div id="appContainer" class="min-h-screen w-screen flex flex-col">
-    <header id="appHeader" class="flex justify-between items-center w-full z-20 flex-shrink-0 p-4">
+    <!-- Updated Header: Added md:pl-[336px] lg:pl-[calc(25%+16px)] to offset the fixed sidebar -->
+    <header id="appHeader" class="flex justify-between items-center w-full z-20 flex-shrink-0 p-4 md:pl-[336px] lg:pl-[calc(25%+16px)] transition-all duration-300">
         <!-- Header content will be rendered by ui.js -->
     </header>
     <main id="mainContent" class="flex-grow min-h-0 relative"></main>

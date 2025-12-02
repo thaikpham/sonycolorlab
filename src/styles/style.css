@@ -97,7 +97,7 @@ body {
 }
 @keyframes zoomInFade {
     from { opacity: 0; transform: scale(0.95); filter: blur(8px); }
-    to { opacity: 1; transform: scale(1); filter: blur(0px); }
+    to { opacity: 1; transform: none; filter: blur(0px); }
 }
 @keyframes fadeOutScale {
     from { opacity: 1; transform: scale(1); filter: blur(0px); }
@@ -216,27 +216,6 @@ body {
 .color-map-node-group:hover .color-map-node-label { opacity: 1; }
 .axis-label { font-size: 0.75rem; font-weight: 600; fill: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
 .quadrant-label { font-size: 1.8rem; font-weight: 800; fill: rgba(203, 213, 225, 0.5); text-anchor: middle; pointer-events: none; opacity: 0; animation: text-fade-in 1s ease-out 0.5s forwards; }
-
-@media (min-width: 1024px) {
-    #recipeFormulasView { gap: 1rem; }
-    #recipeListPanel, #recipeMainPanel {
-        transition: flex-basis 0.5s var(--stage-manager-ease),
-                    transform 0.5s var(--stage-manager-ease),
-                    opacity 0.5s var(--stage-manager-ease);
-        will-change: flex-basis, transform, opacity;
-    }
-    #recipeListPanel { flex-basis: 25%; transform: translateX(0%); }
-    #recipeMainPanel { flex-basis: 75%; }
-    #recipeFormulasView.stage-inactive #recipeListPanel {
-        flex-basis: 10%;
-        transform: translateX(-50%);
-        opacity: 0.6;
-    }
-    #recipeFormulasView.stage-inactive #recipeMainPanel {
-        flex-basis: 90%;
-        margin-left: -6%;
-    }
-}
 
 .btn-pastel-cyan { background-color: rgba(26, 188, 156, 0.8); }
 .btn-pastel-magenta { background-color: rgba(155, 89, 182, 0.8); }
