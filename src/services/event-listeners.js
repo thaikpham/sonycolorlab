@@ -48,7 +48,18 @@ export function initEventListeners() {
             return;
         }
 
-        // 2. Checklist Items
+        // 2. Video Thumbnail Click (New Feature)
+        if (target.closest('.video-thumbnail-wrapper')) {
+            const wrapper = target.closest('.video-thumbnail-wrapper');
+            const videoId = wrapper.dataset.videoId;
+            if (videoId) {
+                wrapper.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+                wrapper.classList.remove('cursor-pointer', 'group'); // Remove pointer behavior once playing
+            }
+            return;
+        }
+
+        // 3. Checklist Items
         if (target.closest('.guide-checklist-item')) {
             const item = target.closest('.guide-checklist-item');
             const circle = item.querySelector('.check-circle');
@@ -61,7 +72,7 @@ export function initEventListeners() {
             return;
         }
 
-        // 3. Ingredient Cards Toggle
+        // 4. Ingredient Cards Toggle
         if (target.closest('.guide-ingredient-card')) {
             const card = target.closest('.guide-ingredient-card');
             const ingredientId = card.dataset.ingredient;
