@@ -41,8 +41,8 @@ const viewTemplates = {
                          <div class="max-w-4xl w-full space-y-8 text-center">
                             <!-- Hero Section -->
                             <div class="space-y-4">
-                                <!-- Adjusted H1 font size for better one-line fit: text-2xl sm:text-3xl md:text-5xl -->
-                                <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+                                <!-- Adjusted H1 font size for better one-line fit: text-2xl sm:text-3xl md:text-4xl lg:text-5xl -->
+                                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">
                                     Unlock Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Sony Alpha's</span> True Potential
                                 </h1>
                                 <!-- Adjusted subtitle size and added line-clamp-3 -->
