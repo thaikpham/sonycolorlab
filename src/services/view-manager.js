@@ -47,13 +47,24 @@ const viewTemplates = {
                                     <h3 class="text-xl font-bold text-gray-900 mb-2">Curated Recipes</h3>
                                     <p class="text-gray-600 line-clamp-3">Access a growing collection of styles, from vintage Kodak film stocks to modern cinematic looks.</p>
                                 </div>
-                                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
-                                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 text-purple-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                                
+                                <!-- AI-Powered Colorist Card (Updated) -->
+                                <div id="openNewColorBakingBtn" class="p-6 bg-white rounded-2xl shadow-sm border border-purple-100 cursor-pointer hover:shadow-lg hover:-translate-y-1 hover:border-purple-300 transition-all duration-300 group relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative z-10">
+                                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 text-purple-600 group-hover:scale-110 transition-transform duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                                        </div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors">AI-Powered Colorist</h3>
+                                            <span class="opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-purple-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                            </span>
+                                        </div>
+                                        <p class="text-gray-600 line-clamp-3 group-hover:text-gray-800">Enter the Color Lab. Mix ingredients and prompt Gemini AI to bake a custom Picture Profile just for you.</p>
                                     </div>
-                                    <h3 class="text-xl font-bold text-gray-900 mb-2">AI-Powered Colorist</h3>
-                                    <p class="text-gray-600 line-clamp-3">Describe the mood you want, and our Gemini AI will generate a custom Picture Profile setting just for you.</p>
                                 </div>
+
                                 <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
                                     <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 text-green-600">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
