@@ -21,7 +21,7 @@ const viewTemplates = {
                  3. z-50: Ensures it overlays the header. -->
             <aside id="recipeListPanel" class="view-transition w-full md:!fixed md:!top-0 md:!left-0 md:!h-screen md:w-[320px] lg:w-[25%] z-50 bg-white/60 backdrop-blur-md border-r border-gray-200 p-4 md:p-5 flex flex-col transition-all duration-300">
                 <div class="relative mb-4 flex-shrink-0">
-                    <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                    <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" placeholder="Find your signature style">
                 </div>
                 <div id="recipeListFilter"></div>
                 <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
