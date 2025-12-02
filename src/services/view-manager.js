@@ -20,6 +20,11 @@ const viewTemplates = {
                  2. view-transition: Animates the sidebar itself. Since the parent has no transform, this works correctly.
                  3. z-50: Ensures it overlays the header. -->
             <aside id="recipeListPanel" class="view-transition w-full md:!fixed md:!top-0 md:!left-0 md:!h-screen md:w-[320px] lg:w-[25%] z-50 bg-white/60 backdrop-blur-md border-r border-gray-200 p-4 md:p-5 flex flex-col transition-all duration-300">
+                <!-- Added Logo at the top of the sidebar -->
+                <div class="mb-6 flex justify-center md:justify-start flex-shrink-0 cursor-pointer" id="sidebarLogoBtn">
+                    <img src="/assets/logo_black.png" alt="Alpha AI Color Lab" class="h-12 w-auto object-contain hover:opacity-80 transition-opacity">
+                </div>
+
                 <div class="relative mb-4 flex-shrink-0">
                     <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" placeholder="Find your signature style">
                 </div>
@@ -57,7 +62,7 @@ const viewTemplates = {
                                 </div>
                                 <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
                                     <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 text-purple-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
                                     </div>
                                     <h3 class="text-xl font-bold text-gray-900 mb-2">AI-Powered Colorist</h3>
                                     <p class="text-gray-600 line-clamp-3">Describe the mood you want, and our Gemini AI will generate a custom Picture Profile setting just for you.</p>
