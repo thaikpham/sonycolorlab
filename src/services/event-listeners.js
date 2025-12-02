@@ -26,7 +26,14 @@ export function initEventListeners() {
         const collageItem = target.closest('.collage-item');
         // d3Node logic removed
 
-        if (target.closest('#homeBtn')) { await renderView('home'); return; }
+        // Handle Home Button (both the header button and the new sidebar logo)
+        if (target.closest('#homeBtn') || target.closest('#sidebarLogoBtn')) { 
+            await renderView('home'); 
+            // Also reset selection if we are "going home"
+            resetToChartView(); 
+            return; 
+        }
+
         if (target.closest('#backToListBtn') || target.closest('#backToChartBtn')) { resetToChartView(); return; }
         
         // Quiz shortcut removed
