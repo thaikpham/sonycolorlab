@@ -1,521 +1,136 @@
-@import "tailwindcss";
+// File Path: src/services/view-manager.js
+import { state } from './state.js';
+import { initializeBackgroundBlobs } from './ui.js';
+import { applyTranslations, updateLangSlider } from './language.js';
+import { renderLibraryList, renderLibraryDetails } from '../components/recipe-list/recipe-list-ui.js';
+import recipesData from './recipes.js';
 
-/* General Styles */
-html { scroll-behavior: smooth; }
-:root {
-    --primary-accent: #007AFF;
-    --primary-accent-darker: #0056B3;
-    --background-light: #F0F2F5;
-    --glass-bg: rgba(255, 255, 255, 0.65);
-    --glass-border: rgba(0, 0, 0, 0.05);
-    --text-primary: #1d1d1f;
-    --text-secondary: #6e6e73;
-    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-apple: cubic-bezier(0.4, 0, 0.2, 1);
-    --stage-manager-ease: cubic-bezier(0.36, 0, 0.06, 1);
-}
-body {
-    font-family: 'Be Vietnam Pro', sans-serif;
-    background-color: var(--background-light);
-    color: var(--text-primary);
-    position: relative;
-    overflow-x: hidden;
-}
-.bg-blob {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(150px);
-    opacity: 0;
-    z-index: -1;
-    transition: opacity 1.5s var(--ease-out-back);
-    will-change: transform;
-}
-.bg-blob.visible {
-    opacity: 0.15;
-}
-.glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    border-radius: 20px;
-    transition: all 0.4s var(--ease-apple);
-}
-@media (min-width: 768px) {
-    .glass-panel {
-        border-radius: 28px;
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+const mainContentEl = document.getElementById('mainContent');
+
+const viewTemplates = {
+    recipeFormulas: () => `
+        <!-- Removed 'view-transition' class from this parent div. 
+             This is CRITICAL. If the parent has a transform/animation, 
+             the fixed child (sidebar) becomes relative to this div (below header) 
+             instead of the viewport (top of screen). -->
+        <div id="recipeFormulasView" class="w-full h-full flex flex-col md:flex-row absolute inset-0">
+            
+            <!-- SIDEBAR: 
+                 1. !fixed !h-screen !top-0 !left-0: Forces it to stick to the viewport edges.
+                 2. view-transition: Animates the sidebar itself. Since the parent has no transform, this works correctly.
+                 3. z-50: Ensures it overlays the header. -->
+            <aside id="recipeListPanel" class="view-transition w-full md:!fixed md:!top-0 md:!left-0 md:!h-screen md:w-[320px] lg:w-[25%] z-50 bg-white/60 backdrop-blur-md border-r border-gray-200 p-4 md:p-5 flex flex-col transition-all duration-300">
+                <div class="relative mb-4 flex-shrink-0">
+                    <input type="search" id="searchInput" class="w-full p-3 pl-4 pr-12 rounded-xl bg-gray-200/50 border-2 border-transparent focus:border-blue-500 focus:bg-white transition-all" data-translate-key="searchInputPlaceholder">
+                </div>
+                <div id="recipeListFilter"></div>
+                <div id="recipeListContainer" class="space-y-2 flex-grow overflow-y-auto sleek-scrollbar -mr-2 pr-2"></div>
+            </aside>
+            
+            <!-- MAIN CONTENT: 
+                 1. view-transition: Animates in sync with sidebar.
+                 2. md:ml-...: Adds margin to prevent content from hiding behind the fixed sidebar. -->
+            <main id="recipeMainPanel" class="view-transition h-full flex-grow hidden md:flex flex-col min-h-0 md:ml-[320px] lg:ml-[25%] transition-all duration-300">
+                <div class="w-full h-full flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
+                    <div id="welcomeAndChartContainer" class="w-full h-full flex flex-col items-center justify-start p-4 overflow-y-auto">
+                         <div class="max-w-4xl w-full space-y-8 text-center">
+                            <!-- Hero Section -->
+                            <div class="space-y-4">
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight">
+                                    Unlock Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Sony Alpha's</span> True Potential
+                                </h1>
+                                <p class="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto">
+                                    Discover a library of film-inspired color recipes. Create cinematic looks straight out of camera. No grading required.
+                                </p>
+                            </div>
+
+                            <!-- Feature Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 text-left">
+                                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 text-blue-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Curated Recipes</h3>
+                                    <p class="text-gray-600">Access a growing collection of styles, from vintage Kodak film stocks to modern cinematic looks.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 text-purple-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">AI-Powered Colorist</h3>
+                                    <p class="text-gray-600">Describe the mood you want, and our Gemini AI will generate a custom Picture Profile setting just for you.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 text-green-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">SOOC Perfection</h3>
+                                    <p class="text-gray-600">Save time on editing. Get beautiful, share-ready JPEGs straight out of camera (SOOC).</p>
+                                </div>
+                            </div>
+
+                            <!-- Call to Action -->
+                            <div class="mt-12 py-8">
+                                <p class="text-lg font-medium text-gray-500 mb-6">Start exploring now. Select a recipe from the list on the left.</p>
+                                <div class="inline-flex items-center justify-center p-1 rounded-full bg-gray-100 border border-gray-200">
+                                    <span class="px-4 py-1 text-sm font-semibold text-gray-600">Beta Version 1.0</span>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                    <div id="recipeContent" class="hidden"></div>
+                </div>
+            </main>
+            <div id="recipeDetailPanelMobile" class="w-full h-full absolute inset-0 bg-[#f8f9fa] overflow-y-auto hidden sleek-scrollbar">
+                <div class="p-4">
+                    <button id="backToListBtn" class="btn bg-white/80 border border-gray-200 text-gray-800 mb-4 py-2 px-4" data-translate-key="backToListBtn"></button>
+                    <div id="recipeContentMobile"></div>
+                </div>
+            </div>
+        </div>`,
+};
+
+export async function attachViewEventListeners(viewName) {
+    if (viewName === 'recipeFormulas') {
+        renderLibraryList();
+        renderLibraryDetails();
+        updateLangSlider();
     }
 }
 
-.recipe-item {
-    border-left: 4px solid transparent;
-    transition: transform 0.3s var(--ease-apple), background-color 0.3s var(--ease-apple), box-shadow 0.4s var(--ease-apple), border-color 0.3s var(--ease-apple);
-    will-change: transform, box-shadow, border-color;
-}
-.recipe-item.selected {
-    background-color: white;
-    transform: translateX(4px) scale(1.02);
-    border-left-color: var(--glow-color, var(--primary-accent));
-    box-shadow: 0 5px 15px rgba(0,0,0,0.07);
-}
-.recipe-item:hover:not(.selected) {
-    background-color: rgba(255, 255, 255, 0.8);
-    transform: translateX(2px);
-}
-
-.btn {
-    border-radius: 9999px;
-    font-weight: 600;
-    transition: transform 0.25s var(--ease-apple), background-color 0.25s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    transform: scale(1);
-    will-change: transform, box-shadow;
-}
-.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
-.btn-primary { background-color: var(--primary-accent); border: none; color: white; box-shadow: 0 4px 14px rgba(0, 118, 255, 0.3); }
-.btn-primary:hover:not(:disabled) {
-    background-color: var(--primary-accent-darker);
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 8px 25px rgba(0, 118, 255, 0.4);
-}
-.btn:active:not(:disabled) { transform: translateY(0px) scale(0.97); }
-
-.view-transition, .view-transition-out {
-    will-change: transform, opacity, filter;
-}
-.view-transition {
-    animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-}
-.view-transition-out {
-    animation: fadeOutScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    position: absolute;
-}
-@keyframes zoomInFade {
-    from { opacity: 0; transform: scale(0.95); filter: blur(8px); }
-    to { opacity: 1; transform: none; filter: blur(0px); }
-}
-@keyframes fadeOutScale {
-    from { opacity: 1; transform: scale(1); filter: blur(0px); }
-    to { opacity: 0; transform: scale(0.95); filter: blur(8px); }
-}
-
-.recipe-item-stagger {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: listItemFadeIn 0.5s var(--ease-out-back) forwards;
-}
-@keyframes listItemFadeIn { to { opacity: 1; transform: translateY(0); } }
-
-.sleek-scrollbar { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-.sleek-scrollbar::-webkit-scrollbar { display: none; }
-
-.modal.hidden { display: none; }
-.modal {
-    opacity: 0;
-    transition: opacity 0.3s var(--ease-apple);
-}
-.modal.visible {
-    opacity: 1;
-}
-.modal-panel {
-    background: #ffffff;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-    border: 1px solid #e5e7eb;
-    transform: scale(0.95) translateY(15px);
-    opacity: 0;
-    transition: transform 0.35s var(--ease-apple), opacity 0.35s var(--ease-apple);
-    will-change: transform, opacity;
-}
-.modal.visible .modal-panel {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-}
-
-#recipeDetailPanelMobile {
-    opacity: 0;
-    transform: translateX(100%);
-    transition: transform 0.4s var(--ease-apple), opacity 0.4s var(--ease-apple), visibility 0.4s;
-    pointer-events: none;
-    visibility: hidden;
-    will-change: transform, opacity;
-}
-#recipeDetailPanelMobile.visible {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-    visibility: visible;
-}
-
-.parameter-title { cursor: help; border-bottom: 1px dashed #ccc; }
-#infoTooltip { position: absolute; z-index: 1000; background-color: rgba(29, 29, 31, 0.9); color: white; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; max-width: 300px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.2s ease, transform 0.2s ease; pointer-events: none; }
-#infoTooltip.visible { opacity: 1; transform: translateY(0); }
-.loader { width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; }
-.loader-dark { width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.2); border-top: 3px solid #333; border-radius: 50%; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-.photo-collage {
-    display: grid;
-    gap: 0.5rem;
-    grid-template-columns: repeat(3, 1fr);
-}
-@media (min-width: 640px) {
-    .photo-collage {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
+export function renderView(viewName, selectedId = null) {
+    if (viewName === 'home') {
+        viewName = 'recipeFormulas';
     }
-}
-.collage-item {
-    cursor: pointer;
-    overflow: hidden;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: box-shadow 0.3s var(--ease-apple), transform 0.3s var(--ease-apple);
-    background-color: #e2e8f0;
-    aspect-ratio: 1 / 1;
-}
-.collage-item:hover {
-    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
-}
-.collage-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    transition: transform 0.4s var(--ease-apple);
-}
-.collage-item:hover img { transform: scale(1.08); }
+    state.ui.currentView = viewName;
+    if (selectedId) { state.ui.selectedRecipeId = selectedId; }
 
-#lightbox { position: fixed; inset: 0; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s var(--ease-apple); pointer-events: none; }
-#lightbox.visible { opacity: 1; pointer-events: auto; }
-#lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s var(--ease-apple), opacity 0.3s ease; opacity: 1; object-fit: contain; }
-#lightbox.visible img { transform: scale(1); }
-.lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background-color: rgba(255,255,255,0.1); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: background-color 0.2s ease; user-select: none; }
-.lightbox-arrow:hover { background-color: rgba(255,255,255,0.2); }
-#lightboxPrev { left: 1rem; }
-#lightboxNext { right: 1rem; }
-#lightboxClose { position: absolute; top: 1rem; right: 1rem; color: white; font-size: 3rem; font-weight: 200; cursor: pointer; transition: transform 0.2s ease; }
-#lightboxClose:hover { transform: scale(1.1); }
-#lightboxCounter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem; }
+    const blobContainer = document.getElementById('blobContainer');
 
-#colorMapContainer, #homeColorMapContainer { width: 100%; height: 100%; min-height: 450px; position: relative; }
-#colorMapContainer svg, #homeColorMapContainer svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; }
-.color-map-node-group { cursor: pointer; }
-.color-map-node-aura { transition: all 0.3s var(--ease-apple); }
-.color-map-node-core { transition: all 0.3s var(--ease-apple); }
-.color-map-node-group:hover .color-map-node-aura { opacity: 0.5; transform: scale(1.8); }
-.color-map-node-group:hover .color-map-node-core { transform: scale(1.2); }
-.color-map-node-group.selected .color-map-node-core { stroke: white; stroke-width: 3px; transform: scale(1.3); }
-.color-map-node-group.selected .color-map-node-aura { opacity: 0.6; transform: scale(2); }
-.color-map-node-label { font-size: 12px; font-weight: 600; fill: #334155; pointer-events: none; transition: opacity 0.3s ease; text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white; opacity: 0; }
-.color-map-node-group:hover .color-map-node-label { opacity: 1; }
-.axis-label { font-size: 0.75rem; font-weight: 600; fill: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
-.quadrant-label { font-size: 1.8rem; font-weight: 800; fill: rgba(203, 213, 225, 0.5); text-anchor: middle; pointer-events: none; opacity: 0; animation: text-fade-in 1s ease-out 0.5s forwards; }
-
-.btn-pastel-cyan { background-color: rgba(26, 188, 156, 0.8); }
-.btn-pastel-magenta { background-color: rgba(155, 89, 182, 0.8); }
-.btn-pastel-yellow { background-color: rgba(241, 196, 15, 0.8); }
-.btn-pastel-red { background-color: rgba(231, 76, 60, 0.8); }
-.btn-pastel-blue { background-color: rgba(52, 152, 219, 0.8); }
-
-.btn-pastel-cyan:hover { background-color: rgba(26, 188, 156, 1); }
-.btn-pastel-magenta:hover { background-color: rgba(155, 89, 182, 1); }
-.btn-pastel-yellow:hover { background-color: rgba(241, 196, 15, 1); }
-.btn-pastel-red:hover { background-color: rgba(231, 76, 60, 1); }
-.btn-pastel-blue:hover { background-color: rgba(52, 152, 219, 1); }
-
-/* --- REWORKED QUIZ SUBMIT BUTTON STYLE --- */
-.btn-pastel-submit {
-    background-image: linear-gradient(45deg, #a855f7, #6366f1, #ec4899, #f59e0b);
-    background-size: 400% 400%;
-    color: white;
-    font-weight: 700;
-    border: none;
-    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4), 0 0 0 0 rgba(168, 85, 247, 0);
-    transition: all 0.4s var(--ease-apple);
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-
-@keyframes gradient-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.btn-pastel-submit .lucide-arrow-right {
-    transition: transform 0.3s var(--ease-out-back);
-}
-
-.btn-pastel-submit:hover:not(:disabled) {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.5);
-}
-
-.btn-pastel-submit:hover:not(:disabled) .lucide-arrow-right {
-    transform: translateX(5px);
-}
-
-/* Adding a subtle pulse effect to draw attention */
-.btn-pastel-submit:not(:disabled) {
-    animation: gradient-flow 10s ease infinite, pulse-glow 2.5s infinite;
-}
-
-@keyframes pulse-glow {
-    0% {
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4), 0 0 0 0 rgba(168, 85, 247, 0.7);
+    document.body.style.overflowY = 'auto';
+    if (state.animation.blobAnimationFrameId) {
+        cancelAnimationFrame(state.animation.blobAnimationFrameId);
+        state.animation.blobAnimationFrameId = null;
     }
-    70% {
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4), 0 0 0 10px rgba(168, 85, 247, 0);
-    }
-    100% {
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4), 0 0 0 0 rgba(168, 85, 247, 0);
-    }
-}
-
-
-.btn-pastel-submit:disabled {
-    background: #e0e0e0;
-    box-shadow: none;
-    color: #9e9e9e;
-    animation: none; /* Disable animations when disabled */
-}
-
-/* Adding a shine effect on hover */
-.btn-pastel-submit::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
-    transform: skewX(-25deg);
-    transition: left 0.6s ease;
-    z-index: -1;
-}
-
-.btn-pastel-submit:hover::before {
-    left: 100%;
-}
-
-/* --- REWORKED QUIZ STYLES --- */
-#quizContent {
-    --island-gap: 1.5rem;
-    --island-padding: 1.75rem;
-}
-.quiz-island {
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 24px;
-    padding: var(--island-padding);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s var(--ease-apple), transform 0.5s var(--ease-apple);
-    will-change: opacity, transform;
-    display: flex;
-    flex-direction: column;
-}
-.quiz-island.active {
-    opacity: 1;
-    transform: translateY(0);
-}
-.quiz-option {
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 16px;
-    transition: all 0.3s var(--ease-apple);
-}
-.quiz-option:hover {
-    transform: scale(1.03);
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-.quiz-option.selected {
-    background: white;
-    border-color: var(--primary-accent);
-    color: var(--primary-accent);
-    box-shadow: 0 5px 20px rgba(0, 122, 255, 0.2);
-    transform: scale(1.05);
-}
-.quiz-option.selected svg {
-    stroke: var(--primary-accent);
-}
-
-/* Mobile layout: single column scroll */
-@media (max-width: 1023px) {
-    .quiz-one-page-layout {
-        display: flex;
-        flex-direction: column;
-        gap: var(--island-gap);
-    }
-}
-
-/* Desktop layout: Masonry-style Grid */
-@media (min-width: 1024px) {
-    #quizContent {
-        height: 100%; /* Ensure content area can be used for grid height */
-    }
-    .quiz-one-page-layout {
-        display: grid;
-        height: 100%;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: auto auto 1fr; /* Allow rows to size by content */
-        gap: var(--island-gap);
-        grid-template-areas:
-            "q0 q1 q2"
-            "q0 q5 q5"
-            "q3 q5 q5"
-            "q4 sub sub";
+    if(blobContainer) {
+        blobContainer.querySelectorAll('.bg-blob').forEach(b => b.classList.remove('visible'));
     }
 
-    /* Assigning each question block to its named grid area */
-    .quiz-island[data-question-index="0"] { grid-area: q0; }
-    .quiz-island[data-question-index="1"] { grid-area: q1; }
-    .quiz-island[data-question-index="2"] { grid-area: q2; }
-    .quiz-island[data-question-index="3"] { grid-area: q3; }
-    .quiz-island[data-question-index="4"] { grid-area: q4; }
-    .quiz-island[data-question-index="5"] { grid-area: q5; }
-    #quizSubmitIsland { grid-area: sub; }
-
-    /* Make AI prompt area fill its available space */
-    .quiz-island[data-question-index="5"], #aiQuizPrompt {
-        flex-grow: 1;
-    }
-    /* Push the submit button to the bottom of its area for a clean look */
-    #quizSubmitIsland {
-        justify-content: flex-end;
-    }
-}
-
-.quiz-result-view {
-    animation: zoomInFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-}
-
-/* --- NEW AI Loading Animation --- */
-.ai-loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    min-height: 256px;
-}
-
-.ai-loading-logo {
-    width: 80px;
-    height: 80px;
-    animation: logo-bounce-spin 2s ease-in-out infinite;
-}
-
-@keyframes logo-bounce-spin {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-    25% {
-        transform: rotate(90deg) scale(1.2);
-    }
-    50% {
-        transform: rotate(180deg) scale(0.9);
-    }
-    75% {
-        transform: rotate(270deg) scale(1.1);
-    }
-    100% {
-        transform: rotate(360deg) scale(1);
-    }
-}
-
-/* Profile Page Styles */
-.tab-btn {
-    padding: 0.5rem 0.25rem;
-    border-bottom: 2px solid transparent;
-    font-weight: 600;
-    color: #6b7280; /* text-gray-500 */
-    transition: all 0.2s ease;
-}
-.tab-btn:hover {
-    color: #111827; /* text-gray-900 */
-}
-.tab-btn.active {
-    color: var(--primary-accent);
-    border-bottom-color: var(--primary-accent);
-}
-
-.animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- Thêm vào cuối tệp style.css --- */
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.3s ease;
-}
-
-.loading-overlay.hidden {
-  display: none;
-  opacity: 0;
-}
-
-/* CSS cho spinner (vòng quay) */
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border-left-color: #09f; /* Màu chủ đạo của bạn */
-  animation: spin 1s ease infinite;
-  margin-bottom: 10px;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Style cho văn bản "Đang tải..." */
-.loading-overlay p {
-  font-size: 1rem;
-  color: #333;
-}
-
-/* Style cho Dark mode (nếu có) */
-body.dark .loading-overlay {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-body.dark .loading-overlay p {
-  color: #f1f1f1;
-}
-
-body.dark .spinner {
-  border-left-color: #0af; /* Màu sáng hơn cho dark mode */
+    return new Promise(resolve => {
+        const currentContent = mainContentEl.children[0];
+        if (currentContent) {
+            currentContent.classList.add('view-transition-out');
+            currentContent.addEventListener('animationend', async () => {
+                mainContentEl.innerHTML = viewTemplates[viewName]();
+                await attachViewEventListeners(viewName);
+                applyTranslations();
+                resolve();
+            }, { once: true });
+        } else {
+            mainContentEl.innerHTML = viewTemplates[viewName]();
+            attachViewEventListeners(viewName);
+            applyTranslations();
+            resolve();
+        }
+    });
 }
