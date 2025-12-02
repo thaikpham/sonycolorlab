@@ -70,6 +70,7 @@ const viewTemplates = {
                                 <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
                                     <h2 class="text-xl font-bold mb-4 text-slate-800">📷 Select Your Camera System</h2>
                                     <p class="text-slate-600 mb-6">Sony menus changed drastically in 2021. Select your model to customize this guide.</p>
+                                    
                                     <div class="flex flex-col sm:flex-row gap-4">
                                         <button id="btn-new-menu" data-menu="new" class="guide-menu-btn flex-1 py-4 px-6 rounded-lg border-2 font-bold text-lg flex items-center justify-center gap-2 guide-active-tab transition-colors">
                                             <span>New Menu System</span>
@@ -79,6 +80,11 @@ const viewTemplates = {
                                             <span>Old Menu System</span>
                                             <span class="text-xs font-normal block sm:inline opacity-75">(A7III, A6000s, A6400)</span>
                                         </button>
+                                    </div>
+
+                                    <!-- Video Guide Container -->
+                                    <div id="guide-video-container" class="mt-6 w-full max-w-3xl mx-auto rounded-xl overflow-hidden shadow-sm">
+                                        <!-- Video content injected via features.js -->
                                     </div>
                                 </div>
                             </section>
