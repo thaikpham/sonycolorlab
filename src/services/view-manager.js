@@ -38,7 +38,8 @@ const viewTemplates = {
             <main id="recipeMainPanel" class="view-transition h-full flex-grow hidden md:flex flex-col min-h-0 md:ml-[320px] lg:ml-[25%] transition-all duration-300">
                 <div class="w-full h-full flex-grow overflow-y-auto p-6 lg:p-8 sleek-scrollbar">
                     <div id="welcomeAndChartContainer" class="w-full h-full flex flex-col items-center justify-start p-4 overflow-y-auto">
-                         <div class="max-w-4xl w-full space-y-8 text-center">
+                         <!-- Changed max-w-4xl to max-w-full to utilize full width of the container -->
+                         <div class="max-w-full w-full space-y-8 text-center">
                             <!-- Hero Section -->
                             <div class="space-y-4">
                                 <!-- Adjusted H1 font size for better one-line fit: text-2xl sm:text-3xl md:text-4xl lg:text-5xl -->
