@@ -916,7 +916,7 @@ const recipesData = [
         "detailSettings": {
             level: -5,
             mode: "Manual",
-            vhBalance: "-22",
+            vhBalance: "-2",
             bwBalance: "Type 1",
             limit: 3,
             crispening: 3,
