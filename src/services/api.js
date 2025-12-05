@@ -37,7 +37,7 @@ export async function callGeminiAPI(prompt, signal) {
     }
 
     // Using a stable model version
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
     const payload = {
         contents: [{ parts: [{ text: prompt }] }],
@@ -55,7 +55,16 @@ export async function callGeminiAPI(prompt, signal) {
 
     if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`API Error: ${response.status} ${errorText}`);
+        let errorMessage = `API Error: ${response.status} ${errorText}`;
+        try {
+            const errorJson = JSON.parse(errorText);
+            if (errorJson.error && errorJson.error.message) {
+                errorMessage = errorJson.error.message;
+            }
+        } catch (e) {
+            // keep default error message
+        }
+        throw new Error(errorMessage);
     }
 
     const result = await response.json();
