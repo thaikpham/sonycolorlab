@@ -39,8 +39,10 @@ export const state = {
 
   // Gemini AI Colorist feature state
   ai: {
+    mode: 'tweak', // 'tweak' (existing) or 'bake' (new)
     isGenerating: false,
-    originalRecipe: null,
+    originalRecipe: null, // Used for 'tweak' mode
+    selectedTags: [], // Used for 'bake' mode
     userPrompt: '',
     generatedRecipe: null,
     editableRecipe: null, // Holds the state of the recipe being edited in the UI

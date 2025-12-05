@@ -99,9 +99,18 @@ export function initEventListeners() {
         // Quiz result PNG download removed
 
         if (target.closest('#shareRecipeBtn')) { shareRecipe(target.closest('#shareRecipeBtn').dataset.recipeId); return; }
+        
+        // --- AI Features ---
         if (target.closest('#tweakWithAIBtn')) {
             const { openAILab } = await import('../components/ai-lab/ai-lab.js');
             openAILab(target.closest('#tweakWithAIBtn').dataset.recipeId);
+            return;
+        }
+
+        // New Color Baking (AI Creative Lab)
+        if (target.closest('#openNewColorBakingBtn')) {
+            const { openNewColorBaking } = await import('../components/ai-lab/ai-lab.js');
+            openNewColorBaking();
             return;
         }
         
@@ -130,8 +139,6 @@ export function initEventListeners() {
             return;
         }
 
-        // Quiz Modal logic removed
-
         if (target.closest('#contributionNoteModal')) {
             if (target.closest('#closeContributionNoteBtn') || target.closest('#closeContributionNoteBtn2')) {
                 closeModal('contributionNoteModal');
@@ -144,14 +151,22 @@ export function initEventListeners() {
         }
 
         if (target.closest('#aiLabModal')) {
-            const { closeAILab, handleAIGeneration, confirmAndCallAI } = await import('../components/ai-lab/ai-lab.js');
+            const { closeAILab, handleAIGeneration, confirmAndCallAI, toggleAITag } = await import('../components/ai-lab/ai-lab.js');
             const { renderAILab } = await import('../components/ai-lab/ai-lab-ui.js');
 
-            if (target.closest('#closeAILabBtn')) { closeAILab(); return; }
+            if (target.closest('#closeAILabBtn') || target.closest('#closeAILabBtn2')) { closeAILab(); return; }
             if (target.closest('#cancelAIBtn')) { state.ai.userPrompt = ''; state.ai.generatedRecipe = null; renderAILab(); return; }
-            if (target.closest('#generateAIBtn')) { handleAIGeneration(); return; }
+            if (target.closest('#generateAIBtn') || target.closest('#startBakingBtn')) { handleAIGeneration(); return; }
             if (target.closest('#confirmAIBtn')) { confirmAndCallAI(); return; }
             if (target.closest('#downloadAIPngBtn')) { generateRecipeCardPng(target.closest('#downloadAIPngBtn').dataset.recipeId, state.ai.generatedRecipe); return; }
+            
+            // Tag handling
+            if (target.closest('.ai-tag-btn')) {
+                const btn = target.closest('.ai-tag-btn');
+                const tag = btn.dataset.tag;
+                toggleAITag(tag);
+                return;
+            }
         }
     });
 

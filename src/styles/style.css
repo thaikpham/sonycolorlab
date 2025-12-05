@@ -554,3 +554,15 @@ body.dark .spinner {
 .guide-inactive-tab:hover {
     background-color: #f1f5f9;
 }
+
+/* Tag Pills */
+.ai-tag-btn {
+    user-select: none;
+    cursor: pointer;
+}
+.ai-tag-btn:hover {
+    transform: scale(1.05);
+}
+.ai-tag-btn:active {
+    transform: scale(0.95);
+}
