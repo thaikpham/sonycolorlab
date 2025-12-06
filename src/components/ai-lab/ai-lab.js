@@ -166,7 +166,7 @@ export async function confirmAndCallAI() {
     } catch (error) {
         if (error.name !== 'AbortError') {
             console.error("Gemini API call failed:", error);
-            renderAIError(document.getElementById('aiLabContent'));
+            renderAIError(document.getElementById('aiLabContent'), error.message);
         }
     } finally {
         state.ai.isGenerating = false;

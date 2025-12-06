@@ -188,7 +188,7 @@ function renderAIComparison(container) {
     applyTranslations();
 }
 
-export function renderAIError(container) {
+export function renderAIError(container, errorMessage = null) {
     if (!container) return;
     container.innerHTML = `
         <div class="flex flex-col items-center justify-center h-full p-8 text-center">
@@ -196,7 +196,10 @@ export function renderAIError(container) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
             </div>
             <h3 class="text-xl font-bold text-gray-800 mb-2" data-translate-key="aiErrorTitle"></h3>
-            <p class="text-gray-600 max-w-md mx-auto mb-8" data-translate-key="aiErrorText"></p>
+            ${errorMessage
+                ? `<p class="text-gray-600 max-w-md mx-auto mb-8 break-words text-sm font-mono bg-gray-50 p-3 rounded border border-gray-200">${errorMessage}</p>`
+                : `<p class="text-gray-600 max-w-md mx-auto mb-8" data-translate-key="aiErrorText"></p>`
+            }
             <button id="cancelAIBtn" class="btn bg-gray-200 text-gray-800 py-2 px-8 hover:bg-gray-300 transition-colors">
                 <span data-translate-key="aiCancelBtn"></span>
             </button>
