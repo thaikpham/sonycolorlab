@@ -5,7 +5,7 @@
  */
 
 // --- Local Module Imports ---
-import { isAIEnabled, API_KEY } from './state.js';
+import { API_KEY } from './state.js';
 
 /**
  * Initializes the Firebase application and returns the app instance.
@@ -32,12 +32,12 @@ export async function fetchTrendingRecipeIds() {
  * @returns {Promise<object>} A promise that resolves to the parsed JSON response from the API.
  */
 export async function callGeminiAPI(prompt, signal) {
-    if (!isAIEnabled) {
-        throw new Error("API key not configured.");
-    }
+    // Note: We do not check for !isAIEnabled or empty API_KEY here because 
+    // the execution environment intercepts the request and injects the key automatically.
 
-    // Using a stable model version
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+    // Using the supported preview model version
+    const MODEL_NAME = 'gemini-2.5-flash-preview-09-2025';
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
 
     const payload = {
         contents: [{ parts: [{ text: prompt }] }],
