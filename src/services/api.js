@@ -8,11 +8,9 @@
 import { API_KEY } from './state.js';
 
 /**
- * Initializes the Firebase application and returns the app instance.
- * @returns {object|null} The Firebase app instance or null if initialization fails.
+ * Initializes the Firebase application.
  */
 export function initializeFirebase() {
-    // Firebase removed as per user request
     return null;
 }
 
@@ -20,7 +18,6 @@ export function initializeFirebase() {
  * Fetches the latest trending recipe IDs.
  */
 export async function fetchTrendingRecipeIds() {
-    // Static fallback since Firebase is removed
     const fallbackIDs = ["scl-001", "scl-007", "scl-008", "scl-015", "scl-027"];
     return fallbackIDs;
 }
@@ -32,8 +29,13 @@ export async function fetchTrendingRecipeIds() {
  * @returns {Promise<object>} A promise that resolves to the parsed JSON response from the API.
  */
 export async function callGeminiAPI(prompt, signal) {
-    // Note: We do not check for !isAIEnabled or empty API_KEY here because 
-    // the execution environment intercepts the request and injects the key automatically.
+    // 1. Validation: Ensure we have an API Key before calling Google
+    if (!API_KEY) {
+        console.warn("Gemini API Key is missing. Check your .env file for VITE_GEMINI_API_KEY.");
+        // If we are strictly local, this will fail. 
+        // If in an intercepted environment, the interceptor might fix it, but usually it requires a key placeholder.
+        // We will proceed but warn.
+    }
 
     // Using the supported preview model version
     const MODEL_NAME = 'gemini-2.5-flash-preview-09-2025';
@@ -56,6 +58,7 @@ export async function callGeminiAPI(prompt, signal) {
     if (!response.ok) {
         const errorText = await response.text();
         let errorMessage = `API Error: ${response.status} ${errorText}`;
+        
         try {
             const errorJson = JSON.parse(errorText);
             if (errorJson.error && errorJson.error.message) {
@@ -64,6 +67,12 @@ export async function callGeminiAPI(prompt, signal) {
         } catch (e) {
             // keep default error message
         }
+        
+        // Handle specific "Unregistered caller" case clearly
+        if (response.status === 400 && errorMessage.includes("unregistered caller")) {
+            throw new Error("API Key is missing or invalid. Please check your .env file.");
+        }
+
         throw new Error(errorMessage);
     }
 
