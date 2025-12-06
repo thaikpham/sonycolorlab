@@ -4,13 +4,17 @@
  * This module centralizes the entire application's state and configuration constants.
  * By keeping state in one place, it's easier to manage, debug, and understand data flow.
  */
-// --- CONFIGURATION CONSTANTS ---
-// These values are replaced by vite during the build process from .env files
-export const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
-export const __app_id = import.meta.env.VITE_APP_ID || 'default-app-id';
 
-// A computed flag to easily check if the AI features should be enabled.
-export const isAIEnabled = API_KEY && API_KEY !== '';
+// --- CONFIGURATION CONSTANTS ---
+// In this preview environment, the API Key is provided at runtime.
+// We initialize it to an empty string to comply with environment security rules.
+export const API_KEY = ""; 
+
+// Use the global __app_id if available, otherwise fall back to default
+export const __app_id = typeof window.__app_id !== 'undefined' ? window.__app_id : 'default-app-id';
+
+// Force AI features to be enabled for this environment
+export const isAIEnabled = true;
 
 // --- CENTRAL APPLICATION STATE ---
 // This single object holds all the dynamic data for the application.
@@ -24,7 +28,7 @@ export const state = {
     filter: 'all', // 'all', 'trending', 'favorites'
   },
 
-  // Language state (keeping structure for compatibility)
+  // Language state
   language: 'en',
   loadedTranslations: {},
   currentTranslations: {},
