@@ -7,13 +7,6 @@ export default defineConfig({
     minify: 'esbuild',
     target: 'esnext',
     cssMinify: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['html2canvas'], // Ensure html2canvas is split if it's large, though it's loaded from CDN in some places, checking imports...
-        }
-      }
-    }
   },
   define: {
     // This ensures environment variables work in both dev and production
