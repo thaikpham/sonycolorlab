@@ -3,7 +3,11 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [tailwindcss()],
-  // Optional: Configure environment variables for development
+  build: {
+    minify: 'esbuild',
+    target: 'esnext',
+    cssMinify: true,
+  },
   define: {
     // This ensures environment variables work in both dev and production
   },

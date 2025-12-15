@@ -13,7 +13,7 @@ export const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
 export const __app_id = typeof window.__app_id !== 'undefined' ? window.__app_id : 'default-app-id';
 
 // Force AI features to be enabled if a key is present or if we are in a special environment
-export const isAIEnabled = !!API_KEY || true;
+export const isAIEnabled = !!API_KEY;
 
 // --- CENTRAL APPLICATION STATE ---
 export const state = {
