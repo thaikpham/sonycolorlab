@@ -106,6 +106,8 @@ export function renderMenuPath() {
     const pathData = menuPaths[state.guide.menuSystem];
     container.innerHTML = ''; // Clear
 
+    const fragment = document.createDocumentFragment();
+
     pathData.forEach((step, index) => {
         const stepEl = document.createElement('div');
         stepEl.className = 'flex items-center gap-3 bg-white/10 p-3 rounded-lg border border-white/10 backdrop-blur-sm w-full md:w-auto transition-all animate-fade-in';
@@ -116,16 +118,18 @@ export function renderMenuPath() {
             <span class="font-bold">${step.text}</span>
         `;
         
-        container.appendChild(stepEl);
+        fragment.appendChild(stepEl);
 
         // Add arrow if not last
         if (index < pathData.length - 1) {
             const arrow = document.createElement('div');
             arrow.className = 'hidden md:block text-slate-500 text-xl font-bold';
             arrow.innerText = '→';
-            container.appendChild(arrow);
+            fragment.appendChild(arrow);
         }
     });
+
+    container.appendChild(fragment);
 }
 
 export function updateMenuSystemUI(system) {
@@ -250,7 +254,7 @@ export function openLightbox(recipeId, startIndex) {
 
     const lightbox = document.getElementById('lightbox');
     lightbox.classList.remove('hidden');
-    setTimeout(() => lightbox.classList.add('visible'), 10);
+    requestAnimationFrame(() => lightbox.classList.add('visible'));
 
     showLightboxImage();
 }
@@ -267,11 +271,13 @@ function showLightboxImage() {
     const lightboxCounter = document.getElementById('lightboxCounter');
 
     lightboxImage.style.opacity = '0';
-    setTimeout(() => {
-        lightboxImage.src = images[currentIndex];
-        lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
-        lightboxImage.style.opacity = '1';
-    }, 150);
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            lightboxImage.src = images[currentIndex];
+            lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+            lightboxImage.style.opacity = '1';
+        }, 150);
+    });
 }
 
 function showNextImage() {
