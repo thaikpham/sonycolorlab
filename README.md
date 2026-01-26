@@ -82,7 +82,6 @@ Ensure environment variables (API keys) are set in .env or the deployment platfo
 ├── functions/         # Cloudflare Workers serverless functions
 └── index.html         # Application entry point
 
+Domain: https://sonycolorlab.app is still manage by Thai K. Pham
 
-📝 License
-
-This project is licensed under the MIT License.
+thai.pham@sony.com 
