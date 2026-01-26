@@ -1,6 +1,6 @@
 {
-  "name": "Alpha AI Color Lab",
-  "short_name": "ColorLAB",
+  "name": "Film Simulation App",
+  "short_name": "FilmSim",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F7F7F7",

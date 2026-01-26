@@ -1,7 +1,8 @@
 {
   "name": "sony-colorlab",
   "version": "1.0.0",
-  "description": "Alpha AI Color Lab",
+  "description": "Film Simulation App",
+  "author": "Development Team",
   "main": "index.html",
   "type": "module",
   "scripts": {
